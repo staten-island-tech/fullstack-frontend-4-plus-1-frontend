@@ -1,11 +1,12 @@
 <template>
   <div class="nav">
-    <nuxt-link to="/" class="brand">!Uso</nuxt-link>
+    <nuxt-link to="/"></nuxt-link>!Uso</nuxt-link>
     <nav>
-      <nuxt-link to="/community">Community</nuxt-link>&nbsp;|
-      <nuxt-link to="/play">Songs</nuxt-link> |
-      <nuxt-link to="/leaderboard">Leaderboard</nuxt-link> |
-      <nuxt-link to="/login">Log In</nuxt-link> |
+      <nuxt-link to="/">home</nuxt-link>
+      <nuxt-link to="/community">Community</nuxt-link>&nbsp;
+      <nuxt-link to="/play">Song Selection</nuxt-link> 
+      <nuxt-link to="/leaderboard">Leaderboard</nuxt-link> 
+      <nuxt-link to="/login">Log In</nuxt-link> 
     </nav>
   </div>
 </template>
