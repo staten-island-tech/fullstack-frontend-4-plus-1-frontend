@@ -6,6 +6,8 @@
       <nuxt-link to="/play">Songs</nuxt-link> |
       <nuxt-link to="/leaderboard">Leaderboard</nuxt-link> |
       <nuxt-link to="/login">Log In</nuxt-link> |
+      <nuxt-link to="/testGame">testGame</nuxt-link> |
+      
     </nav>
   </div>
 </template>
