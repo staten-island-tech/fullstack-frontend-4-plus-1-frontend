@@ -1,9 +1,15 @@
 <template>
-  <h1>Forums</h1>
+  <div>
+    <nav-bar />
+    <h1>Forums</h1>
+  </div>
 </template>
 
 <script>
-export default {}
+import NavBar from '../components/NavBar.vue'
+export default {
+  components: { NavBar },
+}
 </script>
 
 <style></style>
