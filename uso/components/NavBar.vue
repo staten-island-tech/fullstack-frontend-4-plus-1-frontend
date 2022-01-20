@@ -1,17 +1,28 @@
 <template>
+
   <div class="nav">
+
     <nuxt-link to="/" class="brand">!Uso</nuxt-link>
-    <nav>
-      <nuxt-link to="/community">Community</nuxt-link>&nbsp;|
-      <nuxt-link to="/play">Songs</nuxt-link> |
-      <nuxt-link to="/leaderboard">Leaderboard</nuxt-link> |
-      <nuxt-link to="/login">Log In</nuxt-link> |
-    </nav>
+
+      <nav class="uso-nav">
+
+        <nuxt-link to="/">home</nuxt-link>
+        <nuxt-link to="/play">beatmaps</nuxt-link>
+        <nuxt-link to="/leaderboard">rankings</nuxt-link>
+        <nuxt-link to="/community">community</nuxt-link>
+        <nuxt-link to="/help">help</nuxt-link>
+        
+      </nav>
+
+      <nuxt-link to="/login">login</nuxt-link>
+
   </div>
+
 </template>
 
 <style scoped>
-/* .brand {
+
+.brand {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 1.5em;
@@ -36,5 +47,6 @@
 }
 .nav a {
   display: inline-block;
-} */
+}
+
 </style>
