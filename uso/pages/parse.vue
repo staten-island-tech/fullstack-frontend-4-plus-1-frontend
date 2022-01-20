@@ -27,7 +27,7 @@
 /* global zip */
 
 // eslint-disable-next-line no-unused-vars
-import {localforage} from "localforage";
+// import {localforage} from "localforage";
 
 export default {
   name: 'ParseTest',

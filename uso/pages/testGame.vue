@@ -16,6 +16,8 @@
 // eslint-disable-next-line no-unused-vars
 import { createjs } from "createjs";
 
+// const createjs = require("@/static/lib/createjs.min.js");
+
 export default {
   data() {
     return {
@@ -75,7 +77,7 @@ export default {
       // Each tick is run 1/60 times per second
       createjs.Ticker.framerate = 60;
       // Automatically updates the stage every tick (aka frame)
-      createjs.Ticker.addEventListener("tick", stage);
+      createjs.Ticker.addEventListener("tick", this.stage);
 
     /* ===============
         BACKGROUND
@@ -86,10 +88,10 @@ export default {
       // Draws the gray background on the canvas
       background.graphics
         .beginFill("#D3D3D3")
-        .drawRect(0, 0, stageWidth, stageHeight);
+        .drawRect(0, 0, this.stageWidth, this.stageHeight);
 
       // "Mounts" the background to the stage
-      stage.addChild(background);
+      this.stage.addChild(background);
 
     /* ===============
         COLUMN CONTAINER
@@ -113,7 +115,7 @@ export default {
       // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
       const borderGraphic = new createjs.Graphics()
         .beginStroke("Black")
-        .drawRect(0, 0, stageColWidth, stageHeight);
+        .drawRect(0, 0, this.stageColWidth, this.stageHeight);
 
       this.columnContainers.forEach((container) => {
         const columnBorder = new createjs.Shape(borderGraphic);
@@ -129,7 +131,7 @@ export default {
       const circleGraphic = new createjs.Graphics()
         .beginStroke("Black")
         .beginFill("Gray")
-        .drawCircle(50, stageHeight - 50, radius);
+        .drawCircle(50, this.stageHeight - 50, this.radius);
 
       this.columnContainers.forEach((container) => {
         const targetCircle = new createjs.Shape(circleGraphic);
