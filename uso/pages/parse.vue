@@ -1,39 +1,47 @@
 <template>
-<div id="parse-container">
-  <h1>Check Vue-Dev Tools</h1>
+  <div id="parse-container">
+    <h1>Check Vue-Dev Tools</h1>
 
-  <input id="file-upload" ref="fileInput" type="file" accept=".osz" hidden @change="selectFile">
+    <input
+      id="file-upload"
+      ref="fileInput"
+      type="file"
+      accept=".osz"
+      hidden
+      @change="selectFile"
+    />
 
-  <div class="drop-area" :class="{hovered: isHovered}" v-on="dropboxEventHandlers">
-    <img src="/img/upload-icon.png" alt="Upload Icon"/>
-    <p><b>Drop</b> your .osz file here!</p>
-    <p>Or <b>click</b> to browse through files to upload</p>
+    <div
+      class="drop-area"
+      :class="{ hovered: isHovered }"
+      v-on="dropboxEventHandlers"
+    >
+      <img src="/img/upload-icon.png" alt="Upload Icon" />
+      <p><b>Drop</b> your .osz file here!</p>
+      <p>Or <b>click</b> to browse through files to upload</p>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
+/* global zip */
+
+// eslint-disable-next-line no-unused-vars
+import {localforage} from "localforage";
 
 export default {
   name: 'ParseTest',
-  head() {
-      return{
-          meta: [
-            "script": [{ src: '/lib/zip.min.js' }, { src: '/lib/localforage.min.js' }],
-          ]
-      }
-  },
   data() {
     return {
       dropboxEventHandlers: {
-        "dragover": this.dropboxEvents,
-        "dragleave": this.dropboxEvents,
-        "drop": this.dropboxEvents,
+        dragover: this.dropboxEvents,
+        dragleave: this.dropboxEvents,
+        drop: this.dropboxEvents,
 
-        "mouseover": this.dropboxEvents,
-        "mouseleave": this.dropboxEvents,
+        mouseover: this.dropboxEvents,
+        mouseleave: this.dropboxEvents,
 
-        "click": this.dropboxEvents,
+        click: this.dropboxEvents,
       },
       isHovered: false,
       rawFile: null,
@@ -41,49 +49,51 @@ export default {
       readEntries: [],
     }
   },
-  created () {
+  head() {
+    return {
+      /* script: { src: '/lib/zip.min.js', type: 'text/javascript', body: true }, */
+    }
   },
+  created() {},
   methods: {
     selectFile(event) {
-      this.rawFile = event.target.files[0];
-      this.readFile(this.rawFile);
+      this.rawFile = event.target.files[0]
+      this.readFile(this.rawFile)
     },
     async readFile(rawfile) {
       // If the current file is a .osz file
-      if (rawfile.name.slice(-4) === ".osz") {
+      if (rawfile.name.slice(-4) === '.osz') {
         /* localforage.setItem(rawfile.name, rawfile, function(err, val) {
           if (err) {
             console.error(`Error while saving beatmap: ${rawfile.name}`)
           }
         }) */
-        
-        this.entries = await new zip.ZipReader(new zip.BlobReader(this.rawFile)).getEntries();
+
+        this.entries = await new zip.ZipReader(new zip.BlobReader(this.rawFile)).getEntries()
 
         /* for (let i = 0; i < this.entries.length; i++) {
           const data = await this.entries[i].getData(new zip.Writer());
 
           this.readEntries.push(data);
         } */
-
       } else {
-        alert(`${this.rawFile.name} is not a valid .osz file!`);
+        alert(`${this.rawFile.name} is not a valid .osz file!`)
       }
-
     },
     dropboxEvents(event) {
-      event.preventDefault();
+      event.preventDefault()
       switch (event.type) {
-        case "dragover":
-        case "mouseover":
+        case 'dragover':
+        case 'mouseover':
           this.isHovered = true;
           break;
-        
-        case "dragleave":
-        case "mouseleave":
+
+        case 'dragleave':
+        case 'mouseleave':
           this.isHovered = false;
           break;
 
-        case "drop":
+        case 'drop':
           this.isHovered = false;
 
           this.rawFile = event.dataTransfer.files[0];
@@ -95,12 +105,12 @@ export default {
           }
           break;
 
-        case "click": 
+        case 'click':
           this.$refs.fileInput.click();
           break;
 
         default:
-          alert(`Dropbox event does not exist: ${event.type}`)
+          alert(`Dropbox event does not exist: ${event.type}`);
           break;
       }
     },
@@ -109,7 +119,6 @@ export default {
 </script>
 
 <style scoped>
-
 
 #parse-container {
   display: flex;
