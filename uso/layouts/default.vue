@@ -33,13 +33,17 @@ export default {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
+
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  background-color: rgb(15, 15, 15);
 }
+
+/*
 #app {
   box-sizing: border-box;
   width: 500px;
