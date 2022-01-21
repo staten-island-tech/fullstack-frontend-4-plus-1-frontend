@@ -14,7 +14,7 @@
 <script>
 
 // eslint-disable-next-line no-unused-vars
-import { createjs } from "createjs";
+/* import { createjs } from "createjs"; */
 
 // const createjs = require("@/static/lib/createjs.min.js");
 
