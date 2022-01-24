@@ -36,18 +36,6 @@
       
       </div>
 
-      <!-- <div class="uso-avatar">
-
-        <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-        <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-        <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-
-        <nuxt-link to="/login" class="uso-avatar">
-          <img src="~/assets/images/navigation/nav-avatar.png" class="uso-login">
-        </nuxt-link>
-
-      </div> -->
-
       <div class="uso--hb-menu">
         <span class="hb-bar"></span>
         <span class="hb-bar"></span>
