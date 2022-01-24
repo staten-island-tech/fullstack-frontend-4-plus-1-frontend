@@ -144,6 +144,7 @@ export default {
 
   .uso-nav {
     padding: 0 5%;
+    filter: hue-rotate(255deg);
   }
 
   .uso--hb-menu {
@@ -167,10 +168,10 @@ export default {
   .uso--nav-links {
     position: fixed;
     left: -100%;
-    top: 70px;
+    top: 10px;
     gap: 0;
     flex-direction: column;
-    background-color: #262626;
+    /* background-color: #262626; */
     width: 100%;
     text-align: center;
     transition: 0.3s;
