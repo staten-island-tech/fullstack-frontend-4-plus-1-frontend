@@ -2,6 +2,8 @@
 
   <div class="uso-nav">
 
+    <div class="uso--logo-container">
+
     <nuxt-link to="/" class="uso-logo">
       <img class="uso--logo-hover" src="~/assets/images/navigation/osu-white.svg" alt="logo">
     </nuxt-link>
@@ -15,6 +17,8 @@
         <nuxt-link to="/help" class="uso-links">help</nuxt-link>
         
       </nav>
+
+      </div>
 
       <div class="uso--avatar-container">
 
@@ -84,13 +88,10 @@ export default {
 
 .uso-nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   height: 6.1rem;
-  padding: 0 25%;
   background-image: url("~/assets/images/navigation/nav-bg.png");
-  margin-left:auto;
-  margin-right:auto;
 
   filter: hue-rotate(0deg);
     /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
@@ -151,7 +152,7 @@ export default {
   background-color: #fff;
 }
 
-@media(max-width: 1525px){
+@media(max-width: 992px){
 
   .uso-nav {
     padding: 0 5%;
@@ -159,7 +160,8 @@ export default {
 
   .uso--hb-menu {
     display: block;
-    padding-bottom: 0.7rem;
+    padding-bottom: 1rem;
+    margin-left: auto;
   }
 
   .uso--hb-menu.active .hb-bar:nth-child(2){
@@ -206,6 +208,12 @@ export default {
 
 /* uso logo */
 
+.uso--logo-container {
+  display: flex;
+  align-items: center;
+  padding-right: 5.5rem;
+}
+
 .uso-logo {
   margin-right: 0.5rem;
   transition: all 150ms ease 0s;
@@ -226,6 +234,10 @@ export default {
 }
 
 /* avatar container */
+
+.uso--avatar-container {
+  padding-left: 5.5rem;
+}
 
 .uso-avatar {
   display: flex;
