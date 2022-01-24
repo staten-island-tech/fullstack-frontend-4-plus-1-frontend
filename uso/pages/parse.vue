@@ -24,10 +24,10 @@
 </template>
 
 <script>
-/* global zip */
+
 
 // eslint-disable-next-line no-unused-vars
-import { zip } from "zip";
+import * as zip from "@zip.js/zip.js";
 
 // eslint-disable-next-line no-unused-vars
 // import { localforage } from "localforage";
@@ -57,8 +57,11 @@ export default {
       /* script: { src: '/lib/zip.min.js', type: 'text/javascript', body: true }, */
     }
   },
-  created() {},
+  created() {
+    console.log(zip)
+  },
   methods: {
+  
     selectFile(event) {
       this.rawFile = event.target.files[0]
       this.readFile(this.rawFile)
