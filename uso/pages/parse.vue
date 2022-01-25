@@ -25,12 +25,11 @@
 
 <script>
 
+// eslint-disable-next-line no-unused-vars
+const zip = require("~/static/lib/zip.min.js");
 
 // eslint-disable-next-line no-unused-vars
-import * as zip from "@zip.js/zip.js";
-
-// eslint-disable-next-line no-unused-vars
-// import { localforage } from "localforage";
+const localforage = require("~/static/lib/localforage.min.js");
 
 export default {
   name: 'ParseTest',
@@ -53,15 +52,12 @@ export default {
     }
   },
   head() {
-    return {
-      /* script: { src: '/lib/zip.min.js', type: 'text/javascript', body: true }, */
-    }
+    return {}
   },
-  created() {
-    console.log(zip)
-  },
+
+  created() {},
+
   methods: {
-  
     selectFile(event) {
       this.rawFile = event.target.files[0]
       this.readFile(this.rawFile)
@@ -69,11 +65,11 @@ export default {
     async readFile(rawfile) {
       // If the current file is a .osz file
       if (rawfile.name.slice(-4) === '.osz') {
-        /* localforage.setItem(rawfile.name, rawfile, function(err, val) {
+        localforage.setItem(rawfile.name, rawfile, function(err, val) {
           if (err) {
             console.error(`Error while saving beatmap: ${rawfile.name}`)
           }
-        }) */
+        })
 
         this.entries = await new zip.ZipReader(new zip.BlobReader(this.rawFile)).getEntries()
 
