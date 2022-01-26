@@ -2,7 +2,13 @@
 
   <div class="uso-nav">
 
-    <div class="uso--logo-container">
+    <div class="uso--nav-container">
+
+      <div class="uso--hb-menu">
+        <span class="hb-bar"></span>
+        <span class="hb-bar"></span>
+        <span class="hb-bar"></span>
+      </div>
 
     <nuxt-link to="/" class="uso-logo">
       <img class="uso--logo-hover" src="~/assets/images/navigation/osu-white.svg" alt="logo">
@@ -18,7 +24,7 @@
         
       </nav>
 
-      </div>
+    </div>
 
       <div class="uso--avatar-container">
 
@@ -34,12 +40,6 @@
 
       </div>
       
-      </div>
-
-      <div class="uso--hb-menu">
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
       </div>
 
   </div>
@@ -80,23 +80,25 @@ export default {
   align-items: center;
   height: 6.1rem;
   background-image: url("~/assets/images/navigation/nav-bg.png");
-
   filter: hue-rotate(0deg);
     /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
     /* filter: hue-rotate(255deg) saturate(.6); */
 
-    /* -webkit-animation: filterChange 5s infinite ease 0s;;
-    -moz-animation: filterChange 5s infinite ease 0s;;
-    -o-animation: filterChange 5s infinite ease 0s;;
-     animation: filterChange 5s infinite ease 0s; */
+    /* 
+      -webkit-animation: filterChange 5s infinite ease 0s;;
+      -moz-animation: filterChange 5s infinite ease 0s;;
+      -o-animation: filterChange 5s infinite ease 0s;;
+       animation: filterChange 5s infinite ease 0s; 
+    */
     
-    /* Filter Notes:
-        20deg = yellow
-        45deg = brown
-        115deg = green
-        200deg = blue
-        255deg = indigo
-        333deg = purple
+    /* 
+      Filter Notes:
+      20deg = yellow
+      45deg = brown
+      115deg = green
+      200deg = blue
+      255deg = indigo
+      333deg = purple
     */
 }
 
@@ -129,6 +131,7 @@ export default {
 .uso--hb-menu {
   display: none;
   cursor: pointer;
+  position: fixed;
 }
 
 .hb-bar {
@@ -144,7 +147,6 @@ export default {
 
   .uso-nav {
     padding: 0 5%;
-    filter: hue-rotate(255deg);
   }
 
   .uso--hb-menu {
@@ -171,7 +173,6 @@ export default {
     top: 10px;
     gap: 0;
     flex-direction: column;
-    /* background-color: #262626; */
     width: 100%;
     text-align: center;
     transition: 0.3s;
@@ -193,14 +194,14 @@ export default {
     display: none;
   }
   
-}
+} 
 
 /* uso logo */
 
-.uso--logo-container {
+.uso--nav-container {
   display: flex;
   align-items: center;
-  padding-right: 5.5rem;
+  padding-right: 9rem;
 }
 
 .uso-logo {
@@ -224,9 +225,7 @@ export default {
 
 /* avatar container */
 
-.uso--avatar-container {
-  padding-left: 5.5rem;
-}
+/* .uso--avatar-container { } */
 
 .uso-avatar {
   display: flex;
