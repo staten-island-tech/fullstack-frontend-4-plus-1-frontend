@@ -12,14 +12,12 @@
 </template>
 
 <script>
-
-// eslint-disable-next-line no-unused-vars
-// const createjs = require("~/static/lib/createjs.min.js");
+/* global createjs */
 
 export default {
   data() {
     return {
-      createjs: null,
+      isCreatejsLoaded: false,
 
       score: 0,
       combo: 0,
@@ -46,110 +44,113 @@ export default {
     }
   },
 
-  created () {
-    this.createjs = require("~/static/lib/createjs.min.js");
-  },
-
-  computed: {
-    canvasWidth() {
-      return this.columnWidth * this.numColumns; 
+  head() {
+    return {
+      script: [
+        { src: "/lib/createjs.min.js", callback: () => {
+          this._mounted();
+        }}
+      ]
     }
   },
 
-  mounted () {
-  },
+  computed: {},
+
+  created () {},
+
+  mounted () {},
 
   methods: {
-    // _mounted() {
-    //   const $canvas = document.querySelector("#canvas");
-    // const $canvasContainer = document.querySelector(".canvas-container");
-    
-    // // Sets the canvas container display size
-    // $canvasContainer.style.width = `${this.canvasWidth}px`;
-    // $canvasContainer.style.height = `${this.canvasHeight}px`;
+    _mounted() {
+      const $canvas = document.querySelector("#canvas");
+      const $canvasContainer = document.querySelector(".canvas-container");
+      
+      // Sets the canvas container display size
+      $canvasContainer.style.width = `${this.canvasWidth}px`;
+      $canvasContainer.style.height = `${this.canvasHeight}px`;
 
-    // // Sets the canvas width/height pixels = to canvas display size width/height
-    // $canvas.width = $canvas.offsetWidth;
-    // $canvas.height = $canvas.offsetHeight;
+      // Sets the canvas width/height pixels = to canvas display size width/height
+      $canvas.width = $canvas.offsetWidth;
+      $canvas.height = $canvas.offsetHeight;
 
-    // this.stage = new createjs.Stage("canvas");
-    // this.stageWidth = this.stage.canvas.width;
-    // this.stageColWidth = this.stageWidth / this.numColumns;
-    // this.stageHeight = this.stage.canvas.height;
+      this.stage = new createjs.Stage("canvas");
+      this.stageWidth = this.stage.canvas.width;
+      this.stageColWidth = this.stageWidth / this.numColumns;
+      this.stageHeight = this.stage.canvas.height;
 
-    // /* ===============
-    //     TICKER
-    //     =============== */
+      /* ===============
+          TICKER
+          =============== */
 
-    //   createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-    //   // Each tick is run 1/60 times per second
-    //   createjs.Ticker.framerate = 60;
-    //   // Automatically updates the stage every tick (aka frame)
-    //   createjs.Ticker.addEventListener("tick", this.stage);
+      createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+      // Each tick is run 1/60 times per second
+      createjs.Ticker.framerate = 60;
+      // Automatically updates the stage every tick (aka frame)
+      createjs.Ticker.addEventListener("tick", this.stage);
 
-    // /* ===============
-    //     BACKGROUND
-    //     =============== */
+      /* ===============
+          BACKGROUND
+          =============== */
 
-    //   const background = new createjs.Shape();
+      const background = new createjs.Shape();
 
-    //   // Draws the gray background on the canvas
-    //   background.graphics
-    //     .beginFill("#D3D3D3")
-    //     .drawRect(0, 0, this.stageWidth, this.stageHeight);
+      // Draws the gray background on the canvas
+      background.graphics
+        .beginFill("#D3D3D3")
+        .drawRect(0, 0, this.stageWidth, this.stageHeight);
 
-    //   // "Mounts" the background to the stage
-    //   this.stage.addChild(background);
+      // "Mounts" the background to the stage
+      this.stage.addChild(background);
 
-    // /* ===============
-    //     COLUMN CONTAINER
-    //     =============== */
+      /* ===============
+          COLUMN CONTAINER
+          =============== */
 
-    //   for (let i = 0; i < this.numColumns; i++) {
-    //     // Creates a new column container for each column
-    //     this.columnContainers.push(new createjs.Container());
+      for (let i = 0; i < this.numColumns; i++) {
+        // Creates a new column container for each column
+        this.columnContainers.push(new createjs.Container());
 
-    //     // Sets the x-offset for each container
-    //     this.columnContainers[i].x = i * 100;
+        // Sets the x-offset for each container
+        this.columnContainers[i].x = i * 100;
 
-    //     // "Mounts" the container to the stage
-    //     this.stage.addChild(this.columnContainers[i]);
-    //   }
+        // "Mounts" the container to the stage
+        this.stage.addChild(this.columnContainers[i]);
+      }
 
-    // /* ===============
-    //     COLUMN BORDERS
-    //     =============== */
+      /* ===============
+          COLUMN BORDERS
+          =============== */
 
-    //   // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
-    //   const borderGraphic = new createjs.Graphics()
-    //     .beginStroke("Black")
-    //     .drawRect(0, 0, this.stageColWidth, this.stageHeight);
+      // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
+      const borderGraphic = new createjs.Graphics()
+        .beginStroke("Black")
+        .drawRect(0, 0, this.stageColWidth, this.stageHeight);
 
-    //   this.columnContainers.forEach((container) => {
-    //     const columnBorder = new createjs.Shape(borderGraphic);
+      this.columnContainers.forEach((container) => {
+        const columnBorder = new createjs.Shape(borderGraphic);
 
-    //     // Adds the child to the specific container which automatically "mounts" the border lines to the stage because the columnContainer was already "mounted"
-    //     container.addChild(columnBorder);
-    //   });
+        // Adds the child to the specific container which automatically "mounts" the border lines to the stage because the columnContainer was already "mounted"
+        container.addChild(columnBorder);
+      });
 
-    // /* ===============
-    //     TARGET CIRCLES
-    //     =============== */
+      /* ===============
+          TARGET CIRCLES
+          =============== */
 
-    //   const circleGraphic = new createjs.Graphics()
-    //     .beginStroke("Black")
-    //     .beginFill("Gray")
-    //     .drawCircle(50, this.stageHeight - 50, this.radius);
+      const circleGraphic = new createjs.Graphics()
+        .beginStroke("Black")
+        .beginFill("Gray")
+        .drawCircle(50, this.stageHeight - 50, this.radius);
 
-    //   this.columnContainers.forEach((container) => {
-    //     const targetCircle = new createjs.Shape(circleGraphic);
+      this.columnContainers.forEach((container) => {
+        const targetCircle = new createjs.Shape(circleGraphic);
 
-    //     this.targetCircles.push(targetCircle);
+        this.targetCircles.push(targetCircle);
 
-    //     container.addChild(targetCircle);
-    //   });
+        container.addChild(targetCircle);
+      });
 
-    // },
+    },
     _mounted2() {
       console.log("HELLO");
     },
