@@ -1,7 +1,7 @@
 <template>
   <div id="test-game-index">
     <div class="canvas-container" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
-      <canvas id="canvas">Canvas is not supported on your browser.</canvas>
+      <canvas id="canvas" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">Canvas is not supported on your browser.</canvas>
     </div>
     <div>
       <h1 id="score">Score: {{ score }}</h1>
@@ -44,358 +44,7 @@ export default {
       circles: null,
 
       beatmapData: {},
-      notes: [
-        {
-            "x": 448,
-            "time": 26597,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 64,
-            "time": 26897,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 192,
-            "time": 27347,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 320,
-            "time": 27497,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 2
-        },
-        {
-            "x": 448,
-            "time": 27647,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 64,
-            "time": 27797,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 192,
-            "time": 28097,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 448,
-            "time": 28397,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 320,
-            "time": 28997,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 2
-        },
-        {
-            "x": 192,
-            "time": 29447,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 448,
-            "time": 29597,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 320,
-            "time": 30047,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 2
-        },
-        {
-            "x": 64,
-            "time": 30197,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 192,
-            "time": 30497,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 448,
-            "time": 30797,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 320,
-            "time": 31097,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 2
-        },
-        {
-            "x": 64,
-            "time": 31397,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 192,
-            "time": 31697,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 448,
-            "time": 31997,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 64,
-            "time": 32297,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 192,
-            "time": 32597,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-        {
-            "x": 320,
-            "time": 32897,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 2
-        },
-        {
-            "x": 64,
-            "time": 33197,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 0
-        },
-        {
-            "x": 448,
-            "time": 33497,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 3
-        },
-        {
-            "x": 192,
-            "time": 33797,
-            "type": "note",
-            "hitSound": 0,
-            "hitSample": {
-                "normalSet": 0,
-                "additionSet": 0,
-                "index": 0,
-                "volume": 0,
-                "filename": ""
-            },
-            "columnIndex": 1
-        },
-      ],
+      notes: [],
     }
   },
 
@@ -406,7 +55,7 @@ export default {
           console.log("1");
           this._mounted();
           console.log("2");
-        } */}
+        } */}, { src: "/lib/keydrown.min.js" }
       ]
     }
   },
@@ -417,40 +66,25 @@ export default {
     }
   },
 
-  created () {
-    /* try {
-      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json").then((response) => response = response.json()).then(data => {
-        this.beatmapData = data;
-        this.notes = data.hitObjects;
-      })
-    } catch (error) {
-      console.log(error);
-    } */
-  },
+  created () {},
 
-  beforeMount() {
-    try {
-      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json").then((response) => response = response.json()).then(data => {
-        this.beatmapData = data;
-        this.notes = data.hitObjects;
-      })
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  beforeMount() {},
 
-  mounted () {
-    this._mounted();
+  mounted() {
+    this._fetch();
+
   },
 
   methods: {
-    _mounted() {
-      const self = this;
-      
-      /* fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json").then((response) => response = response.json()).then(data => {
+    _fetch() {
+      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json").then((response) => response = response.json()).then(data => {
           this.beatmapData = data;
           this.notes = data.hitObjects;
-        }) */
+          this.init();
+        })
+    },
+    init() {
+      const t = this;
 
       const $canvas = document.querySelector("#canvas");
 
@@ -458,10 +92,10 @@ export default {
       $canvas.width = $canvas.offsetWidth;
       $canvas.height = $canvas.offsetHeight;
 
-      this.stage = new createjs.Stage("canvas");
-      this.stageWidth = this.stage.canvas.width;
-      this.stageColWidth = this.stageWidth / this.numColumns;
-      this.stageHeight = this.stage.canvas.height;
+      t.stage = new createjs.Stage("canvas");
+      t.stageWidth = t.stage.canvas.width;
+      t.stageColWidth = t.stageWidth / t.numColumns;
+      t.stageHeight = t.stage.canvas.height;
 
       /* ===============
           TICKER
@@ -471,7 +105,7 @@ export default {
       // Each tick is run 1/60 times per second
       createjs.Ticker.framerate = 60;
       // Automatically updates the stage every tick (aka frame)
-      createjs.Ticker.addEventListener("tick", this.stage);
+      createjs.Ticker.addEventListener("tick", t.stage);
 
       /* ===============
           BACKGROUND
@@ -482,24 +116,24 @@ export default {
       // Draws the gray background on the canvas
       background.graphics
         .beginFill("#D3D3D3")
-        .drawRect(0, 0, this.stageWidth, this.stageHeight);
+        .drawRect(0, 0, t.stageWidth, t.stageHeight);
 
       // "Mounts" the background to the stage
-      this.stage.addChild(background);
+      t.stage.addChild(background);
 
       /* ===============
           COLUMN CONTAINER
           =============== */
 
-      for (let i = 0; i < this.numColumns; i++) {
+      for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
-        this.columnContainers.push(new createjs.Container());
+        t.columnContainers.push(new createjs.Container());
 
         // Sets the x-offset for each container
-        this.columnContainers[i].x = i * 100;
+        t.columnContainers[i].x = i * 100;
 
         // "Mounts" the container to the stage
-        this.stage.addChild(this.columnContainers[i]);
+        t.stage.addChild(t.columnContainers[i]);
       }
 
       /* ===============
@@ -509,9 +143,9 @@ export default {
       // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
       const borderGraphic = new createjs.Graphics()
         .beginStroke("Black")
-        .drawRect(0, 0, this.stageColWidth, this.stageHeight);
+        .drawRect(0, 0, t.stageColWidth, t.stageHeight);
 
-      this.columnContainers.forEach((container) => {
+      t.columnContainers.forEach((container) => {
         const columnBorder = new createjs.Shape(borderGraphic);
 
         // Adds the child to the specific container which automatically "mounts" the border lines to the stage because the columnContainer was already "mounted"
@@ -525,12 +159,12 @@ export default {
       const circleGraphic = new createjs.Graphics()
         .beginStroke("Black")
         .beginFill("Gray")
-        .drawCircle(50, this.stageHeight - 50, this.radius);
+        .drawCircle(50, t.stageHeight - 50, t.radius);
 
-      this.columnContainers.forEach((container) => {
+      t.columnContainers.forEach((container) => {
         const targetCircle = new createjs.Shape(circleGraphic);
 
-        this.targetCircles.push(targetCircle);
+        t.targetCircles.push(targetCircle);
 
         container.addChild(targetCircle);
       });
@@ -539,19 +173,18 @@ export default {
               NOTES
           =============== */
 
-      this.notes.forEach((note) => {
-        console.log(note);
+      t.notes.forEach((note) => {
         const h = (note.endTime - note.time) / 1.25;
 
         const sliderGraphic = new createjs.Graphics()
         .beginStroke("Black")
-        .beginFill(this.circleColors[note.columnIndex])
+        .beginFill(t.circleColors[note.columnIndex])
         .drawRoundRectComplex(10, -h, 80, h, 40, 40, 40, 40);
         
         const circleGraphic = new createjs.Graphics()
         .beginStroke("Black")
-        .beginFill(this.circleColors[note.columnIndex])
-        .drawCircle(50, 2(this.radius), this.radius);
+        .beginFill(t.circleColors[note.columnIndex])
+        .drawCircle(50, -(t.radius), t.radius);
 
         const Slider = new createjs.Shape(sliderGraphic);
         const thisCircle = new createjs.Shape(circleGraphic);
@@ -564,15 +197,15 @@ export default {
         if (note.type === "hold") {
           console.log(note.type)
           // Creates the circle "template" for later use to initialize a shape
-          this.columnContainers[note.columnIndex].addChild(Slider);
+          t.columnContainers[note.columnIndex].addChild(Slider);
           createjs.Tween.get(Slider, { onComplete: animate }).wait(
-            note.time - 25000 - (6860 * (650 / 700) + 6860) / this.scrollSpeed
+            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
 
           function animate() {
             /* 
             useTicks: uses update ticks (60 fps) instead of ms
-            onChange: runs ths function when the position is changed (thus this function is run every tick)
+            onChange: runs ths function when the position is changed (thus t function is run every tick)
             onComplete: runs this function when animation is done
             */
             createjs.Tween.get(Slider, {
@@ -583,7 +216,7 @@ export default {
               {
                 y:
                   Slider.y +
-                  (this.scrollSpeed * 1000 * this.canvasHeight) /
+                  (t.scrollSpeed * 1000 * t.canvasHeight) /
                     (60 * (6860 * (650 / 700) + 6860)),
               },
               1
@@ -596,16 +229,16 @@ export default {
             // }
             // combo = 0;
             // If it reaches offscreen, dismount the circle
-            if (Slider.y - h > this.canvasHeight + 2 * this.radius) {
-              this.columnContainers[note.columnIndex].removeChild(Slider);
+            if (Slider.y - h > t.canvasHeight + 2 * t.radius) {
+              t.columnContainers[note.columnIndex].removeChild(Slider);
             }
           }
         } /* ELSEIF NOTE.TYPE === "NOTE" */ else {
-          this.columnContainers[note.columnIndex].addChild(thisCircle);
+          t.columnContainers[note.columnIndex].addChild(thisCircle);
           // Creates the circle "template" for later use to initialize a shape
           // Sets the delay before the notes animate (or before the notes drop)
           createjs.Tween.get(thisCircle, { onComplete: animateCircle }).wait(
-            note.time - 25000 - (6860 * (650 / 700) + 6860) / this.scrollSpeed
+            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
           function animateCircle() {
             /* 
@@ -621,7 +254,7 @@ export default {
               {
                 y:
                   thisCircle.y +
-                  (this.scrollSpeed * 1000 * this.canvasHeight) /
+                  (t.scrollSpeed * 1000 * t.canvasHeight) /
                     (60 * (6860 * (650 / 700) + 6860)),
               },
               1
@@ -630,7 +263,7 @@ export default {
           function onChange() {
             // noteType = true;
             // If it reaches offscreen then ...
-            if (thisCircle.y > this.canvasHeight + 2 * this.radius) {
+            if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
               // Remove tweens on the object
               createjs.Tween.removeTweens(thisCircle);
               // Reset combo
@@ -638,7 +271,7 @@ export default {
             
               // $combo.innerHTML = `Combo: ${combo}`;
               // Remove circle from stage
-              this.columnContainers[note.columnIndex].removeChild(thisCircle);
+              t.columnContainers[note.columnIndex].removeChild(thisCircle);
             }
           }
         }
@@ -661,12 +294,5 @@ export default {
   justify-content: space-evenly;
 }
 
-.canvas-container {
-  border: 0.1rem black solid;
-}
 
-#canvas {
-  width: 100%;
-  height: 100%;
-}
 </style>
