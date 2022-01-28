@@ -1,46 +1,74 @@
 <template>
 
-  <div class="uso-nav">
+  <div class="uso__navbar--body">
 
-    <div class="uso--nav-container">
+    <nav class="uso__navbar">
 
-      <div class="uso--hb-menu">
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
-      </div>
-
-    <nuxt-link to="/" class="uso-logo">
-      <img class="uso--logo-hover" src="~/assets/images/navigation/osu-white.svg" alt="logo">
-    </nuxt-link>
-
-      <nav class="uso--nav-links">
-
-        <nuxt-link to="/" class="uso-links">home</nuxt-link>
-        <nuxt-link to="/play" class="uso-links">beatmaps</nuxt-link>
-        <nuxt-link to="/leaderboard" class="uso-links">rankings</nuxt-link>
-        <nuxt-link to="/community" class="uso-links">community</nuxt-link>
-        <nuxt-link to="/help" class="uso-links">help</nuxt-link>
-        
-      </nav>
-
-    </div>
-
-      <div class="uso--avatar-container">
-
-        <div class="uso-avatar">
-
-          <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-          <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-          <div class="uso-circle"><nuxt-link to="/login" class="uso-button"></nuxt-link></div>
-
-          <nuxt-link to="/login" class="uso-avatar">
-            <img src="~/assets/images/navigation/nav-avatar.png" class="uso-login">
-          </nuxt-link>
-
-      </div>
+      <div class="uso__logolinks--container">
       
+        <div class="uso__logo">
+          <img class="uso__logo--hover" 
+              src="~/assets/images/navigation/osu-white.svg" 
+              alt="logo">
+        </div>
+
+        <ul class="uso__navbar--links">
+
+          <li>
+            <nuxt-link to="/" 
+            class="uso__links">home</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/play" 
+            class="uso__links">beatmaps</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/leaderboard" 
+            class="uso__links">rankings</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/community" 
+            class="uso__links">community</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/help" 
+            class="uso__links">help</nuxt-link>
+          </li>
+
+        </ul>
+
+      </div> 
+
+        <div class="uso__avatar--container">
+          <div class="uso__avatar">
+
+            <div class="uso__circle">
+              <nuxt-link to="/login" 
+              class="uso__button"></nuxt-link>
+            </div>
+            <div class="uso__circle">
+              <nuxt-link to="/login" 
+              class="uso__button"></nuxt-link>
+            </div>
+            <div class="uso__circle">
+              <nuxt-link to="/login" 
+              class="uso__button"></nuxt-link>
+            </div>
+
+              <nuxt-link to="/login" class="uso__avatar--img">
+                <img src="~/assets/images/navigation/nav-avatar.png" class="uso__login">
+              </nuxt-link>
+
+          </div>
+        </div>
+
+      <div class="uso__navburger">
+        <div class="uso__navline1"></div>
+        <div class="uso__navline2"></div>
+        <div class="uso__navline3"></div>
       </div>
+
+    </nav>
 
   </div>
 
@@ -53,18 +81,32 @@ export default {
   name: 'NavBar',
 
   mounted (){
-    const hamburger = document.querySelector(".uso--hb-menu");
-    const navMenu = document.querySelector(".uso--nav-links");
+    
+    const animateNav = () => {
+      const navBurger = document.querySelector('.uso__navburger');
+      const navLinks = document.querySelector('.uso__navbar--links');
+      const navbarLinks = document.querySelectorAll('.uso__navbar--links li');
 
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active");
-      navMenu.classList.toggle("active");
-    })
+      navBurger.addEventListener('click', () => {
+        navLinks.classList.toggle('nav-active');
 
-    document.querySelectorAll(".uso--nav-links").forEach(n => n.addEventListener("click", () => {
-      hamburger.classList.remove("active");
-      navMenu.classList.remove("active");
-    }))
+        navbarLinks.forEach((link, index) => {
+          if (link.style.animation) {
+            link.style.animation = '';
+          } else {
+            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 1.5}s`;
+          }
+
+      });
+
+      navBurger.classList.toggle('toggle');
+
+    });
+
+  }
+
+    animateNav();
+
   }
 }
 
@@ -72,26 +114,40 @@ export default {
 
 <style scoped>
 
-/* navigation components, list */
+/* Roots */
 
-.uso-nav {
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+/* Navigation Leftside */
+
+.uso__logolinks--container {
+  display: contents;
+}
+
+.uso__navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  height: 6.1rem;
+  height: 6.2rem;
+  min-height: 8vh;
   background-image: url("~/assets/images/navigation/nav-bg.png");
   filter: hue-rotate(0deg);
-    /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
-    /* filter: hue-rotate(255deg) saturate(.6); */
 
-    /* 
+  /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
+  /* filter: hue-rotate(255deg) saturate(.6); */
+
+  /* 
       -webkit-animation: filterChange 5s infinite ease 0s;;
       -moz-animation: filterChange 5s infinite ease 0s;;
       -o-animation: filterChange 5s infinite ease 0s;;
        animation: filterChange 5s infinite ease 0s; 
-    */
+  */
     
-    /* 
+  /* 
       Filter Notes:
       20deg = yellow
       45deg = brown
@@ -99,146 +155,45 @@ export default {
       200deg = blue
       255deg = indigo
       333deg = purple
-    */
+  */
 }
 
-.uso-nav a {
-  display: inline-block;
+.uso__logo {
+  cursor: pointer;
+  width: 4.7rem;
+}
+
+.uso__navbar--links {
+  display: flex;
+  justify-content: space-around;
+  width: 30%; 
+}
+
+.uso__navbar--links li {
+  list-style: none;
+}
+
+.uso__navbar--links a {
   color: #EDF0F1;
+  font-size: 24px;
   font-weight: 300;
   text-decoration: none;
 }
 
-.uso-links {
-  font-size: 1.6rem;
-}
+/* Navigation Rightside */
 
-.uso-links:hover {
-  text-decoration: underline;
-}
-
-.uso--nav-links {
-  margin-right: auto;
-}
-
-.uso--nav-links .uso-links {
-  display: inline-block;
-  padding: 0px 14px;
-}
-
-/* uso hamburger menu */
-
-.uso--hb-menu {
-  display: none;
-  cursor: pointer;
-  position: fixed;
-}
-
-.hb-bar {
-  display: block;
-  width: 25px;
-  height: 3px;
-  margin: 5px auto;
-  transition: all 0.3s ease-in-out;
-  background-color: #fff;
-}
-
-@media(max-width: 992px){
-
-  .uso-nav {
-    padding: 0 5%;
-  }
-
-  .uso--hb-menu {
-    display: block;
-    padding-bottom: 1rem;
-    margin-left: auto;
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(2){
-    opacity: 0;
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(1){
-    transform: translateY(8px) rotate(45deg);
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(3){
-    transform: translateY(-8px) rotate(-45deg);
-  }
-
-  .uso--nav-links {
-    position: fixed;
-    left: -100%;
-    top: 10px;
-    gap: 0;
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-    transition: 0.3s;
-  }
-
-  .uso--nav-links.active {
-    left: 0;
-  }
-
-  .uso-links {
-    margin: 16px 0;
-  }
-
-  .uso--logo-hover {
-    display: none;
-  }
-
-  .uso--avatar-container {
-    display: none;
-  }
-  
-} 
-
-/* uso logo */
-
-.uso--nav-container {
-  display: flex;
-  align-items: center;
-  padding-right: 9rem;
-}
-
-.uso-logo {
-  margin-right: 0.5rem;
-  transition: all 150ms ease 0s;
-}
-
-.uso-logo:hover {
-    transform: scale(1.07);
-}
-
-.uso--logo-hover {
-   width: 4.8rem;
-   cursor: pointer;
-   transform: scaleX(-1);
-}
-
-.uso--logo-hover:hover {
-    background-image: url("~/assets/images/navigation/osu-pink.svg");
-}
-
-/* avatar container */
-
-/* .uso--avatar-container { } */
-
-.uso-avatar {
+.uso__avatar {
   display: flex;
   flex: none;
 }
   
-.uso-circle {
+.uso__circle {
   display: flex;
   align-items: center;
   flex: none;
 }
 
-.uso-button {
+.uso__button {
   outline: none;
   border: none;
   padding: 0;
@@ -253,14 +208,98 @@ export default {
   align-items: center;
   border: 3px solid hsla(0,0%,100%,.25);
   font-size: 16px;
-  color: #fff;
+  color: #EDF0F1;
   margin: 0 3px;
 }
 
-.uso-login {
+.uso__login {
   border-radius: 50%;
   width: 4.1rem;
   margin-left: 0.5rem;
+}
+
+/* Navigation Burger Menu */
+
+.uso__navburger {
+  display: none;
+  cursor: pointer;
+  padding-bottom: 0.5rem;
+}
+
+.uso__navburger div {
+  width: 22.5px;
+  height: 3px;
+  margin: 5px;
+  background-color: #EDF0F1;
+  transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 1024px) {
+
+  .uso__navbar--links {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  .uso__navbar--body {
+    overflow: hidden;
+  }
+
+  .uso__navbar {
+    background-color: rgb(75, 55, 225);
+    background-image: none;
+  }
+
+  .uso__navbar--links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    right: 0px;
+    height: 40vh;
+    top: 8vh;
+    background-color: rgb(100, 80, 240);
+    width: 50%;
+    transform: translateX(100%);
+    transition: transform 0.5 ease-in;
+  }
+
+  .uso__navbar--links li {
+    opacity: 0;
+  }
+
+  .uso__navburger {
+    display: block;
+  }
+}
+
+.nav-active {
+  transform: translateX(0%);
+}
+
+@keyframes navLinkFade {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 3;
+    transform: translateX(0px);
+  }
+}
+
+.toggle .uso__navline1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.toggle .uso__navline2 {
+  opacity: 0;
+}
+
+.toggle .uso__navline3 {
+  transform: rotate(45deg) translate(-5px, -6px);
 }
 
 </style>
