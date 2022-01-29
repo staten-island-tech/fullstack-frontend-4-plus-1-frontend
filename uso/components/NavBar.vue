@@ -130,7 +130,7 @@ export default {
 
 .uso__navbar {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
   height: 6.2rem;
   min-height: 8vh;
@@ -161,6 +161,8 @@ export default {
 .uso__logo {
   cursor: pointer;
   width: 4.7rem;
+  display: flex;
+  align-items: center;
 }
 
 .uso__navbar--links {
@@ -193,6 +195,11 @@ export default {
   flex: none;
 }
 
+.uso__avatar--img {
+  display: flex;
+  align-items: center;
+}
+
 .uso__button {
   outline: none;
   border: none;
@@ -223,7 +230,6 @@ export default {
 .uso__navburger {
   display: none;
   cursor: pointer;
-  padding-bottom: 0.5rem;
 }
 
 .uso__navburger div {
@@ -232,6 +238,13 @@ export default {
   margin: 5px;
   background-color: #EDF0F1;
   transition: all 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 1280px) {
+
+  .uso__navbar--links {
+    width: 50%;
+  }
 }
 
 @media screen and (max-width: 1024px) {
@@ -243,13 +256,45 @@ export default {
 
 @media screen and (max-width: 768px) {
 
-  .uso__navbar--body {
-    overflow: hidden;
+  .uso__logo {
+    width: 3.8rem;
+    margin-right: auto;
+    z-index: 9999;
+  }
+
+  .uso__logo--hover {
+    width: 3.8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .uso__circle {
+    display: none;
+  }
+
+  .uso__avatar--img {
+    display: flex;
+    align-items: center;
+    padding-right: 35px;
+  }
+
+  .uso__button {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #EDF0F1;
+  }
+
+  .uso__login {
+    width: 3.3rem;
+    margin-left: 0;
+    z-index: 9999;
   }
 
   .uso__navbar {
     background-color: rgb(75, 55, 225);
     background-image: none;
+    height: 0;
+    padding: 0 2.5rem;
   }
 
   .uso__navbar--links {
@@ -257,13 +302,12 @@ export default {
     flex-direction: column;
     align-items: center;
     position: absolute;
-    right: 0px;
     height: 40vh;
     top: 8vh;
     background-color: rgb(100, 80, 240);
-    width: 50%;
-    transform: translateX(100%);
-    transition: transform 0.5 ease-in;
+    width: 100%;
+    transform: translateY(-120%);
+    /* transition: 0.2s ease-in-out; */
   }
 
   .uso__navbar--links li {
@@ -272,11 +316,12 @@ export default {
 
   .uso__navburger {
     display: block;
+    z-index: 9999;
   }
 }
 
 .nav-active {
-  transform: translateX(0%);
+  transform: translateY(0%);
 }
 
 @keyframes navLinkFade {
