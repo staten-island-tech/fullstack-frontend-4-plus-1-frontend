@@ -6,11 +6,11 @@
 
       <div class="uso__logolinks--container">
       
-        <div class="uso__logo">
-          <img class="uso__logo--hover" 
-              src="~/assets/images/navigation/osu-white.svg" 
-              alt="logo">
-        </div>
+        <nuxt-link to="/" class="uso__logo">
+              <img class="uso__logo--hover" 
+                  src="~/assets/images/navigation/osu-white.svg" 
+                  alt="logo">
+        </nuxt-link>
 
         <ul class="uso__navbar--links">
 
@@ -122,6 +122,11 @@ export default {
   box-sizing: border-box;
 }
 
+.uso__navbar--body {
+  background-image: url("~/assets/images/navigation/nav-bg.png");
+  background-size: cover;
+}
+
 /* Navigation Leftside */
 
 .uso__logolinks--container {
@@ -132,9 +137,11 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  height: 6.2rem;
-  min-height: 8vh;
-  background-image: url("~/assets/images/navigation/nav-bg.png");
+  height: 6.25rem;
+  padding-bottom: 0.4rem;
+
+  /* background-image: url("~/assets/images/navigation/nav-bg.png"); */
+
   filter: hue-rotate(0deg);
 
   /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
@@ -163,6 +170,11 @@ export default {
   width: 4.7rem;
   display: flex;
   align-items: center;
+  transform: scaleX(1.07);
+}
+
+.uso__logo--hover:hover {
+  background-image: url("~/assets/images/navigation/osu-pink.svg");
 }
 
 .uso__navbar--links {
@@ -285,7 +297,7 @@ export default {
   }
 
   .uso__login {
-    width: 3.3rem;
+    width: 3.25rem;
     margin-left: 0;
     z-index: 9999;
   }
@@ -293,7 +305,7 @@ export default {
   .uso__navbar {
     background-color: rgb(75, 55, 225);
     background-image: none;
-    height: 0;
+    height: 4.5rem;
     padding: 0 2.5rem;
   }
 
@@ -302,26 +314,30 @@ export default {
     flex-direction: column;
     align-items: center;
     position: absolute;
-    height: 40vh;
+    height: 30vh;
     top: 8vh;
     background-color: rgb(100, 80, 240);
     width: 100%;
-    transform: translateY(-120%);
+    transform: translateY(-130%);
     /* transition: 0.2s ease-in-out; */
   }
 
-  .uso__navbar--links li {
+  .nav-active {
+  transform: translateY(-2%);
+}
+
+  /* .uso__navbar--links li {
     opacity: 0;
-  }
+  } */
 
   .uso__navburger {
     display: block;
     z-index: 9999;
   }
-}
 
-.nav-active {
-  transform: translateY(0%);
+  .uso__navbar--links a {
+    font-size: 26px;
+  }
 }
 
 @keyframes navLinkFade {
