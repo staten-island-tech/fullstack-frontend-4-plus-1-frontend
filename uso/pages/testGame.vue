@@ -16,8 +16,34 @@
 /* eslint-disable */
 
 export default {
+  head: {
+    script: [
+      {
+        src: "/lib/createjs.min.js", 
+       },
+             {
+        src: "/lib/tweenjs.min.js", 
+       },
+    ],
+  },
+  
+  // head() {
+  //   return {
+  //     script: [
+  //       { src: "/lib/createjs.min.js",
+  //       body: true, /* callback: () => {
+  //         console.log("1");
+  //         this._mounted();
+  //         console.log("2");
+          
+  //       } */}, { src: "/lib/keydrown.min.js" }
+  //     ]
+  //   }
+  // },
+  
   data() {
     return {
+       externalLoaded: false,
       isCreatejsLoaded: false,
 
       score: 0,
@@ -48,17 +74,6 @@ export default {
     }
   },
 
-  head() {
-    return {
-      script: [
-        { src: "/lib/createjs.min.js", /* callback: () => {
-          console.log("1");
-          this._mounted();
-          console.log("2");
-        } */}, { src: "/lib/keydrown.min.js" }
-      ]
-    }
-  },
 
   computed: {
     canvasWidth() {
@@ -66,13 +81,9 @@ export default {
     }
   },
 
-  created () {},
-
-  beforeMount() {},
 
   mounted() {
     this._fetch();
-
   },
 
   methods: {
