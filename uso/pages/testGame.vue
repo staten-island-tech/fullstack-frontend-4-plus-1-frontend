@@ -191,80 +191,91 @@ export default {
         container.addChild(targetCircle);
       });
 
+      document.addEventListener('keydown', function (e) {
+        // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
+        for (let i = 0; i < t.numColumns; i++) {
+          if (e.key === t.keys[i]) {
+            t.columnContainers[i].children.forEach((circle) => {
+              //console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
 
-  document.addEventListener("keydown", function (e) {
-    // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
-    for (let i = 0; i < t.numColumns; i++) {
-      if (e.key === t.keys[i]) {
-        t.columnContainers[i].children.forEach((circle) => {
-          //console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
+              const diffFromTargetCircle = Math.abs(circle.y - 700);
 
-          const diffFromTargetCircle = Math.abs(circle.y - 700);
+              if (circle.y >= 610 && circle.name === 'thisCircle') {
+                // let arrCircles = Object.values(circles)
 
-          if (circle.y >= 610 && circle.name === "thisCircle") {
-      
-            // let arrCircles = Object.values(circles)
+                //  arrCircles.forEach(el => {
+                //   const found = el.find(element => element === thisCircle);
+                //   console.log(found)
+                //   });
+                createjs.Tween.removeTweens(circle);
+                t.columnContainers[i].removeChild(circle);
 
-            //  arrCircles.forEach(el => {
-            //   const found = el.find(element => element === thisCircle);
-            //   console.log(found)
-            //   });
-            createjs.Tween.removeTweens(circle);
-            t.columnContainers[i].removeChild(circle);
- 
-            if (diffFromTargetCircle >= 0 && diffFromTargetCircle <= 6) {
-              t.score += 300 * t.combo;
-            } else if (
-              diffFromTargetCircle >= 6 &&
-              diffFromTargetCircle <= 12
-            ) {
-              t.score += 200 * t.combo;
-            } else if (
-              diffFromTargetCircle >= 12 &&
-              diffFromTargetCircle <= 20
-            ) {
-              t.score += 100 * t.combo;
-            } else {
-              t.score += 50 * t.combo;
-            }
+                if (diffFromTargetCircle >= 0 && diffFromTargetCircle <= 6) {
+                  t.score += 300 * t.combo;
+                } else if (
+                  diffFromTargetCircle >= 6 &&
+                  diffFromTargetCircle <= 12
+                ) {
+                  t.score += 200 * t.combo;
+                } else if (
+                  diffFromTargetCircle >= 12 &&
+                  diffFromTargetCircle <= 20
+                ) {
+                  t.score += 100 * t.combo;
+                } else {
+                  t.score += 50 * t.combo;
+                }
 
-            t.combo += 1;
-
+                t.combo += 1;
+              }
+            });
           }
-        });
-      }
-    }
-  });
+        }
+      });
       /* ===============
               NOTES
           =============== */
 
-      t.notes.forEach((note) => {
-        const h = (note.endTime - note.time) / 1.25;
+      let sliderHeight;
 
+      t.notes.forEach((note) => {
         const sliderGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
-          .drawRoundRectComplex(10, -h, 80, h, 40, 40, 40, 40);
+          .drawRoundRectComplex(
+            10,
+            -sliderHeight,
+            80,
+            sliderHeight,
+            40,
+            40,
+            40,
+            40
+          );
 
         const circleGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
           .drawCircle(50, -t.radius, t.radius);
 
-        const Slider = new createjs.Shape(sliderGraphic);
+        const thisSlider = new createjs.Shape(sliderGraphic);
         const thisCircle = new createjs.Shape(circleGraphic);
 
         thisCircle.name = 'thisCircle';
-        Slider.name = 'Slider';
+        thisSlider.name = 'thisSlider';
 
         // Adds it to the column container which mounts it onto the stage
 
         if (note.type === 'hold') {
-          console.log(note.type);
+          sliderHeight =
+            ((note.endTime - note.time) * t.scrollSpeed) /
+            (t.canvasHeight * (6860 * (650 / 700) + 6860));
+
+          console.log(sliderHeight);
+
           // Creates the circle "template" for later use to initialize a shape
-          t.columnContainers[note.columnIndex].addChild(Slider);
-          createjs.Tween.get(Slider, { onComplete: animate }).wait(
+          t.columnContainers[note.columnIndex].addChild(thisSlider);
+          createjs.Tween.get(thisSlider, { onComplete: animate }).wait(
             note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
 
@@ -274,14 +285,14 @@ export default {
             onChange: runs ths function when the position is changed (thus t function is run every tick)
             onComplete: runs this function when animation is done
             */
-            createjs.Tween.get(Slider, {
+            createjs.Tween.get(thisSlider, {
               useTicks: true,
               onChange: onChange,
               onComplete: animate,
             }).to(
               {
                 y:
-                  Slider.y +
+                  thisSlider.y +
                   (t.scrollSpeed * 1000 * t.canvasHeight) /
                     (60 * (6860 * (650 / 700) + 6860)),
               },
@@ -295,8 +306,8 @@ export default {
             // }
             // combo = 0;
             // If it reaches offscreen, dismount the circle
-            if (Slider.y - h > t.canvasHeight + 2 * t.radius) {
-              t.columnContainers[note.columnIndex].removeChild(Slider);
+            if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
+              t.columnContainers[note.columnIndex].removeChild(thisSlider);
             }
           }
         } /* ELSEIF NOTE.TYPE === "NOTE" */ else {
