@@ -333,7 +333,7 @@ export default {
               // Remove tweens on the object
               createjs.Tween.removeTweens(thisCircle);
               // Reset combo
-              // combo = 0;
+              t.combo = 0;
 
               // $combo.innerHTML = `Combo: ${combo}`;
               // Remove circle from stage
