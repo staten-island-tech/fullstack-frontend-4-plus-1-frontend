@@ -1,119 +1,97 @@
 <template>
-
   <div class="uso__navbar--body">
-
     <nav class="uso__navbar">
-
       <div class="uso__logolinks--container">
-      
         <nuxt-link to="/" class="uso__logo">
-              <img class="uso__logo--hover" 
-                  src="~/assets/images/navigation/osu-white.svg" 
-                  alt="logo">
+          <img
+            class="uso__logo--hover"
+            src="~/assets/images/navigation/osu-white.svg"
+            alt="logo"
+          />
         </nuxt-link>
 
         <ul class="uso__navbar--links">
-
           <li>
-            <nuxt-link to="/" 
-            class="uso__links">home</nuxt-link>
+            <nuxt-link to="/" class="uso__links">home</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" 
-            class="uso__links">beatmaps</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">beatmaps</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/leaderboard" 
-            class="uso__links">rankings</nuxt-link>
+            <nuxt-link to="/leaderboard" class="uso__links">rankings</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/community" 
-            class="uso__links">community</nuxt-link>
+            <nuxt-link to="/community" class="uso__links">community</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/help" 
-            class="uso__links">help</nuxt-link>
+            <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
-
         </ul>
+      </div>
 
-      </div> 
-
-        <div class="uso__avatar--container">
-          <div class="uso__avatar">
-
-            <div class="uso__circle">
-              <nuxt-link to="/login" 
-              class="uso__button"></nuxt-link>
-            </div>
-            <div class="uso__circle">
-              <nuxt-link to="/login" 
-              class="uso__button"></nuxt-link>
-            </div>
-            <div class="uso__circle">
-              <nuxt-link to="/login" 
-              class="uso__button"></nuxt-link>
-            </div>
-
-              <nuxt-link to="/login" class="uso__avatar--img">
-                <img src="~/assets/images/navigation/nav-avatar.png" class="uso__login">
-              </nuxt-link>
-
+      <div class="uso__avatar--container">
+        <div class="uso__avatar">
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
           </div>
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+          </div>
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+          </div>
+
+          <nuxt-link to="/login" class="uso__avatar--img">
+            <img
+              src="~/assets/images/navigation/nav-avatar.png"
+              class="uso__login"
+            />
+          </nuxt-link>
         </div>
+      </div>
 
       <div class="uso__navburger">
         <div class="uso__navline1"></div>
         <div class="uso__navline2"></div>
         <div class="uso__navline3"></div>
       </div>
-
     </nav>
-
   </div>
-
 </template>
 
-
 <script>
-
 export default {
   name: 'NavBar',
 
-  mounted (){
-    
+  mounted() {
     const animateNav = () => {
-      const navBurger = document.querySelector('.uso__navburger');
-      const navLinks = document.querySelector('.uso__navbar--links');
-      const navbarLinks = document.querySelectorAll('.uso__navbar--links li');
+      const navBurger = document.querySelector('.uso__navburger')
+      const navLinks = document.querySelector('.uso__navbar--links')
+      const navbarLinks = document.querySelectorAll('.uso__navbar--links li')
 
       navBurger.addEventListener('click', () => {
-        navLinks.classList.toggle('nav-active');
+        navLinks.classList.toggle('nav-active')
 
         navbarLinks.forEach((link, index) => {
           if (link.style.animation) {
-            link.style.animation = '';
+            link.style.animation = ''
           } else {
-            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 1.5}s`;
+            link.style.animation = `navLinkFade 0.5s ease forwards ${
+              index / 7 + 1.5
+            }s`
           }
+        })
 
-      });
+        navBurger.classList.toggle('toggle')
+      })
+    }
 
-      navBurger.classList.toggle('toggle');
-
-    });
-
-  }
-
-    animateNav();
-
-  }
+    animateNav()
+  },
 }
-
 </script>
 
 <style scoped>
-
 /* Roots */
 
 * {
@@ -123,7 +101,7 @@ export default {
 }
 
 .uso__navbar--body {
-  background-image: url("~/assets/images/navigation/nav-bg.png");
+  background-image: url('~/assets/images/navigation/nav-bg.png');
   background-size: cover;
 }
 
@@ -153,7 +131,7 @@ export default {
       -o-animation: filterChange 5s infinite ease 0s;;
        animation: filterChange 5s infinite ease 0s; 
   */
-    
+
   /* 
       Filter Notes:
       20deg = yellow
@@ -174,13 +152,13 @@ export default {
 }
 
 .uso__logo--hover:hover {
-  background-image: url("~/assets/images/navigation/osu-pink.svg");
+  background-image: url('~/assets/images/navigation/osu-pink.svg');
 }
 
 .uso__navbar--links {
   display: flex;
   justify-content: space-around;
-  width: 30%; 
+  width: 30%;
 }
 
 .uso__navbar--links li {
@@ -188,7 +166,7 @@ export default {
 }
 
 .uso__navbar--links a {
-  color: #EDF0F1;
+  color: #edf0f1;
   font-size: 24px;
   font-weight: 300;
   text-decoration: none;
@@ -200,7 +178,7 @@ export default {
   display: flex;
   flex: none;
 }
-  
+
 .uso__circle {
   display: flex;
   align-items: center;
@@ -225,9 +203,9 @@ export default {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: 3px solid hsla(0,0%,100%,.25);
+  border: 3px solid hsla(0, 0%, 100%, 0.25);
   font-size: 16px;
-  color: #EDF0F1;
+  color: #edf0f1;
   margin: 0 3px;
 }
 
@@ -248,26 +226,23 @@ export default {
   width: 22.5px;
   height: 3px;
   margin: 5px;
-  background-color: #EDF0F1;
+  background-color: #edf0f1;
   transition: all 0.3s ease-in-out;
 }
 
 @media screen and (max-width: 1280px) {
-
   .uso__navbar--links {
     width: 50%;
   }
 }
 
 @media screen and (max-width: 1024px) {
-
   .uso__navbar--links {
     width: 60%;
   }
 }
 
 @media screen and (max-width: 768px) {
-
   .uso__logo {
     width: 3.8rem;
     margin-right: auto;
@@ -293,7 +268,7 @@ export default {
   .uso__button {
     width: 35px;
     height: 35px;
-    border: 2px solid #EDF0F1;
+    border: 2px solid #edf0f1;
   }
 
   .uso__login {
@@ -323,8 +298,8 @@ export default {
   }
 
   .nav-active {
-  transform: translateY(-2%);
-}
+    transform: translateY(-2%);
+  }
 
   /* .uso__navbar--links li {
     opacity: 0;
@@ -362,5 +337,4 @@ export default {
 .toggle .uso__navline3 {
   transform: rotate(45deg) translate(-5px, -6px);
 }
-
 </style>

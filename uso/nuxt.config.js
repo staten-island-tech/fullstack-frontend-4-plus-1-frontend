@@ -12,6 +12,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    css: ['~/assets/global.css'],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -34,6 +35,11 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
   ],
+
+  server: {
+    host: '0.0.0.0',
+    port: 8090,
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
