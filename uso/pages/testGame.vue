@@ -191,6 +191,10 @@ export default {
         container.addChild(targetCircle);
       });
 
+      /* ===============
+            KEY PRESSES
+          =============== */
+
       document.addEventListener('keydown', function (e) {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         for (let i = 0; i < t.numColumns; i++) {
@@ -232,6 +236,7 @@ export default {
           }
         }
       });
+
       /* ===============
               NOTES
           =============== */

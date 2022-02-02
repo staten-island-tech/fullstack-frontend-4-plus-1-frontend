@@ -1,5 +1,5 @@
 export default {
-  ssr: false,
+  /* ssr: false, */
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'uso',
@@ -44,4 +44,4 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
-}
+};
