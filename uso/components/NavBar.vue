@@ -137,8 +137,9 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  height: 6.25rem;
-  padding-bottom: 0.4rem;
+  height: 7rem;
+  padding-bottom: 0.7rem;
+  padding: 0 25%;
 
   /* background-image: url("~/assets/images/navigation/nav-bg.png"); */
 
@@ -167,20 +168,26 @@ export default {
 
 .uso__logo {
   cursor: pointer;
-  width: 4.7rem;
+  width: 5rem;
   display: flex;
   align-items: center;
-  transform: scaleX(1.07);
+}
+
+.uso__logo--hover {
+  transition: all 0.1s ease-in;
+  width: 5rem;
 }
 
 .uso__logo--hover:hover {
   background-image: url("~/assets/images/navigation/osu-pink.svg");
+  transform: scale(1.07);
 }
 
 .uso__navbar--links {
   display: flex;
   justify-content: space-around;
-  width: 30%; 
+  /* width: 30%;  */
+  margin-right: auto;
 }
 
 .uso__navbar--links li {
@@ -192,9 +199,14 @@ export default {
   font-size: 24px;
   font-weight: 300;
   text-decoration: none;
+  padding: 1.25rem;
 }
 
 /* Navigation Rightside */
+
+.uso__avatar--container {
+  padding-left: 0 20%;
+}
 
 .uso__avatar {
   display: flex;
@@ -233,8 +245,8 @@ export default {
 
 .uso__login {
   border-radius: 50%;
-  width: 4.1rem;
-  margin-left: 0.5rem;
+  width: 4.2rem;
+  margin: 0.5rem;
 }
 
 /* Navigation Burger Menu */
@@ -251,7 +263,7 @@ export default {
   background-color: #EDF0F1;
   transition: all 0.3s ease-in-out;
 }
-
+/* 
 @media screen and (max-width: 1280px) {
 
   .uso__navbar--links {
@@ -264,7 +276,7 @@ export default {
   .uso__navbar--links {
     width: 60%;
   }
-}
+} */
 
 @media screen and (max-width: 768px) {
 
@@ -338,16 +350,20 @@ export default {
   .uso__navbar--links a {
     font-size: 26px;
   }
+
+  .uso__navbar--links {
+    padding-left: 0;
+  }
 }
 
 @keyframes navLinkFade {
   from {
     opacity: 0;
-    transform: translateX(50px);
+    transform: translateY(50px);
   }
   to {
     opacity: 3;
-    transform: translateX(0px);
+    transform: translateY(0px);
   }
 }
 
