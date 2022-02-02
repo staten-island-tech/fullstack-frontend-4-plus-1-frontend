@@ -191,6 +191,50 @@ export default {
         container.addChild(targetCircle);
       });
 
+
+  document.addEventListener("keydown", function (e) {
+    // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
+    for (let i = 0; i < t.numColumns; i++) {
+      if (e.key === t.keys[i]) {
+        t.columnContainers[i].children.forEach((circle) => {
+          //console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
+
+          const diffFromTargetCircle = Math.abs(circle.y - 700);
+
+          if (circle.y >= 610 && circle.name === "thisCircle") {
+      
+            // let arrCircles = Object.values(circles)
+
+            //  arrCircles.forEach(el => {
+            //   const found = el.find(element => element === thisCircle);
+            //   console.log(found)
+            //   });
+            createjs.Tween.removeTweens(circle);
+            t.columnContainers[i].removeChild(circle);
+ 
+            if (diffFromTargetCircle >= 0 && diffFromTargetCircle <= 6) {
+              t.score += 300 * t.combo;
+            } else if (
+              diffFromTargetCircle >= 6 &&
+              diffFromTargetCircle <= 12
+            ) {
+              t.score += 200 * t.combo;
+            } else if (
+              diffFromTargetCircle >= 12 &&
+              diffFromTargetCircle <= 20
+            ) {
+              t.score += 100 * t.combo;
+            } else {
+              t.score += 50 * t.combo;
+            }
+
+            t.combo += 1;
+
+          }
+        });
+      }
+    }
+  });
       /* ===============
               NOTES
           =============== */
