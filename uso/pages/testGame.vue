@@ -1,7 +1,14 @@
 <template>
   <div id="test-game-index">
-    <div class="canvas-container" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
-      <canvas id="canvas" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">Canvas is not supported on your browser.</canvas>
+    <div
+      class="canvas-container"
+      :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
+    >
+      <canvas
+        id="canvas"
+        :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
+        >Canvas is not supported on your browser.</canvas
+      >
     </div>
     <div>
       <h1 id="score">Score: {{ score }}</h1>
@@ -16,47 +23,25 @@
 /* eslint-disable */
 
 export default {
-  head: {
-    script: [
-      {
-        src: "/lib/createjs.min.js", 
-       },
-             {
-        src: "/lib/tweenjs.min.js", 
-       },
-    ],
-  },
-  
-  // head() {
-  //   return {
-  //     script: [
-  //       { src: "/lib/createjs.min.js",
-  //       body: true, /* callback: () => {
-  //         console.log("1");
-  //         this._mounted();
-  //         console.log("2");
-          
-  //       } */}, { src: "/lib/keydrown.min.js" }
-  //     ]
-  //   }
-  // },
-  
   data() {
     return {
-       externalLoaded: false,
-      isCreatejsLoaded: false,
+      areScriptsLoaded: {
+        createjs: false,
+        keydrown: false,
+      },
+      areAllScriptsLoaded: false,
 
       score: 0,
       combo: 0,
       scrollSpeed: 10,
 
-      keys: ["d", "f", "j", "k"],
+      keys: ['d', 'f', 'j', 'k'],
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
       canvasHeight: 700, // in px (we change this to rem later)
 
-      circleColors: ["#FFE6CC", "#E1D5E7", "#DAE8FC", "#F8CECC"],
+      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
       radius: 40,
 
       thisCircle: null,
@@ -71,39 +56,65 @@ export default {
 
       beatmapData: {},
       notes: [],
-    }
+    };
   },
 
+  head() {
+    return {
+      script: [
+        {
+          src: '/lib/createjs.min.js',
+          callback: () => {
+            this.areScriptsLoaded.createjs = true;
+            this.scriptsLoaded();
+          },
+        },
+        {
+          src: '/lib/keydrown.min.js',
+          callback: () => {
+            this.areScriptsLoaded.keydrown = true;
+            this.scriptsLoaded();
+          },
+        },
+      ],
+    };
+  },
 
   computed: {
     canvasWidth() {
       return this.numColumns * this.columnWidth;
-    }
+    },
   },
 
-
-  mounted() {
-    this._fetch();
-  },
+  mounted() {},
 
   methods: {
+    scriptsLoaded() {
+      this.areAllScriptsLoaded = !Object.values(this.areScriptsLoaded).some(
+        (bool) => !bool
+      );
+
+      if (this.areAllScriptsLoaded) this._fetch();
+    },
     _fetch() {
-      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json").then((response) => response = response.json()).then(data => {
+      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json")
+        .then((response) => (response = response.json()))
+        .then((data) => {
           this.beatmapData = data;
           this.notes = data.hitObjects;
           this.init();
-        })
+        });
     },
     init() {
       const t = this;
 
-      const $canvas = document.querySelector("#canvas");
+      const $canvas = document.querySelector('#canvas');
 
       // Sets the canvas width/height pixels = to canvas display size width/height
       $canvas.width = $canvas.offsetWidth;
       $canvas.height = $canvas.offsetHeight;
 
-      t.stage = new createjs.Stage("canvas");
+      t.stage = new createjs.Stage('canvas');
       t.stageWidth = t.stage.canvas.width;
       t.stageColWidth = t.stageWidth / t.numColumns;
       t.stageHeight = t.stage.canvas.height;
@@ -116,7 +127,7 @@ export default {
       // Each tick is run 1/60 times per second
       createjs.Ticker.framerate = 60;
       // Automatically updates the stage every tick (aka frame)
-      createjs.Ticker.addEventListener("tick", t.stage);
+      createjs.Ticker.addEventListener('tick', t.stage);
 
       /* ===============
           BACKGROUND
@@ -126,7 +137,7 @@ export default {
 
       // Draws the gray background on the canvas
       background.graphics
-        .beginFill("#D3D3D3")
+        .beginFill('#D3D3D3')
         .drawRect(0, 0, t.stageWidth, t.stageHeight);
 
       // "Mounts" the background to the stage
@@ -153,7 +164,7 @@ export default {
 
       // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
       const borderGraphic = new createjs.Graphics()
-        .beginStroke("Black")
+        .beginStroke('Black')
         .drawRect(0, 0, t.stageColWidth, t.stageHeight);
 
       t.columnContainers.forEach((container) => {
@@ -168,8 +179,8 @@ export default {
           =============== */
 
       const circleGraphic = new createjs.Graphics()
-        .beginStroke("Black")
-        .beginFill("Gray")
+        .beginStroke('Black')
+        .beginFill('Gray')
         .drawCircle(50, t.stageHeight - 50, t.radius);
 
       t.columnContainers.forEach((container) => {
@@ -188,25 +199,25 @@ export default {
         const h = (note.endTime - note.time) / 1.25;
 
         const sliderGraphic = new createjs.Graphics()
-        .beginStroke("Black")
-        .beginFill(t.circleColors[note.columnIndex])
-        .drawRoundRectComplex(10, -h, 80, h, 40, 40, 40, 40);
-        
+          .beginStroke('Black')
+          .beginFill(t.circleColors[note.columnIndex])
+          .drawRoundRectComplex(10, -h, 80, h, 40, 40, 40, 40);
+
         const circleGraphic = new createjs.Graphics()
-        .beginStroke("Black")
-        .beginFill(t.circleColors[note.columnIndex])
-        .drawCircle(50, -(t.radius), t.radius);
+          .beginStroke('Black')
+          .beginFill(t.circleColors[note.columnIndex])
+          .drawCircle(50, -t.radius, t.radius);
 
         const Slider = new createjs.Shape(sliderGraphic);
         const thisCircle = new createjs.Shape(circleGraphic);
 
-        thisCircle.name = "thisCircle";
-        Slider.name = "Slider";
+        thisCircle.name = 'thisCircle';
+        Slider.name = 'Slider';
 
         // Adds it to the column container which mounts it onto the stage
-   
-        if (note.type === "hold") {
-          console.log(note.type)
+
+        if (note.type === 'hold') {
+          console.log(note.type);
           // Creates the circle "template" for later use to initialize a shape
           t.columnContainers[note.columnIndex].addChild(Slider);
           createjs.Tween.get(Slider, { onComplete: animate }).wait(
@@ -214,7 +225,7 @@ export default {
           );
 
           function animate() {
-            /* 
+            /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus t function is run every tick)
             onComplete: runs this function when animation is done
@@ -252,7 +263,7 @@ export default {
             note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
           function animateCircle() {
-            /* 
+            /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus this function is run every tick)
             onComplete: runs this function when animation is done
@@ -279,7 +290,7 @@ export default {
               createjs.Tween.removeTweens(thisCircle);
               // Reset combo
               // combo = 0;
-            
+
               // $combo.innerHTML = `Combo: ${combo}`;
               // Remove circle from stage
               t.columnContainers[note.columnIndex].removeChild(thisCircle);
@@ -287,15 +298,12 @@ export default {
           }
         }
       });
-      
     },
   },
-}
-
+};
 </script>
 
 <style scoped>
-
 #test-game-index {
   box-sizing: border-box;
   margin: 0;
@@ -304,6 +312,4 @@ export default {
   align-items: center;
   justify-content: space-evenly;
 }
-
-
 </style>

@@ -24,17 +24,19 @@
 </template>
 
 <script>
-
-// eslint-disable-next-line no-unused-vars
-const zip = require("~/static/lib/zip.min.js");
-
-// eslint-disable-next-line no-unused-vars
-const localforage = require("~/static/lib/localforage.min.js");
+/* global zip, localforage */
 
 export default {
   name: 'ParseTest',
+
   data() {
     return {
+      areScriptsLoaded: {
+        zip: false,
+        localforage: false,
+      },
+      areAllScriptsLoaded: false,
+
       dropboxEventHandlers: {
         dragover: this.dropboxEvents,
         dragleave: this.dropboxEvents,
@@ -49,29 +51,56 @@ export default {
       rawFile: null,
       entries: null,
       readEntries: [],
-    }
+    };
   },
+
   head() {
-    return {}
+    return {
+      script: [
+        {
+          src: '/lib/zip.min.js',
+          callback: () => {
+            this.areScriptsLoaded.zip = true;
+            this.scriptsLoaded();
+          },
+        },
+        {
+          src: '/lib/localforage.min.js',
+          callback: () => {
+            this.areScriptsLoaded.localforage = true;
+            this.scriptsLoaded();
+          },
+        },
+      ],
+    };
   },
 
   created() {},
 
   methods: {
+    scriptsLoaded() {
+      this.areAllScriptsLoaded = !Object.values(this.areScriptsLoaded).some(
+        (bool) => !bool
+      );
+
+      if (this.areAllScriptsLoaded) console.log('Scripts loaded!');
+    },
     selectFile(event) {
-      this.rawFile = event.target.files[0]
-      this.readFile(this.rawFile)
+      this.rawFile = event.target.files[0];
+      this.readFile(this.rawFile);
     },
     async readFile(rawfile) {
       // If the current file is a .osz file
       if (rawfile.name.slice(-4) === '.osz') {
-        localforage.setItem(rawfile.name, rawfile, function(err, val) {
+        localforage.setItem(rawfile.name, rawfile, function (err, val) {
           if (err) {
-            console.error(`Error while saving beatmap: ${rawfile.name}`)
+            console.error(`Error while saving beatmap: ${rawfile.name}`);
           }
-        })
+        });
 
-        this.entries = await new zip.ZipReader(new zip.BlobReader(this.rawFile)).getEntries()
+        this.entries = await new zip.ZipReader(
+          new zip.BlobReader(this.rawFile)
+        ).getEntries();
 
         /* for (let i = 0; i < this.entries.length; i++) {
           const data = await this.entries[i].getData(new zip.Writer());
@@ -79,11 +108,11 @@ export default {
           this.readEntries.push(data);
         } */
       } else {
-        alert(`${this.rawFile.name} is not a valid .osz file!`)
+        alert(`${this.rawFile.name} is not a valid .osz file!`);
       }
     },
     dropboxEvents(event) {
-      event.preventDefault()
+      event.preventDefault();
       switch (event.type) {
         case 'dragover':
         case 'mouseover':
@@ -117,11 +146,10 @@ export default {
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>
-
 #parse-container {
   display: flex;
   justify-content: center;
@@ -160,5 +188,4 @@ h1 {
   border-color: green;
   cursor: pointer;
 }
-
 </style>
