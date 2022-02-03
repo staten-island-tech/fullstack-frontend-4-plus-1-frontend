@@ -41,7 +41,8 @@ export default {
       columnWidth: 100, // in px (we change this to rem later)
       canvasHeight: 700, // in px (we change this to rem later)
 
-      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      /* circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'], */
+      circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'],
       radius: 40,
 
       stage: null,
@@ -56,6 +57,7 @@ export default {
 
       beatmapData: {},
       notes: [],
+      beatmapIntro: 0,
     };
   },
 
@@ -284,7 +286,9 @@ export default {
           // Creates the circle "template" for later use to initialize a shape
           // Sets the delay before the notes animate (or before the notes drop)
           createjs.Tween.get(thisCircle, { onComplete: animateCircle }).wait(
-            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
+            note.time -
+              t.beatmapIntro -
+              (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
           function animateCircle() {
             /*
@@ -321,7 +325,9 @@ export default {
           // Creates the slider "template" for later use to initialize a shape
           t.columnContainers[note.columnIndex].addChild(thisSlider);
           createjs.Tween.get(thisSlider, { onComplete: animate }).wait(
-            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
+            note.time -
+              t.beatmapIntro -
+              (6860 * (650 / 700) + 6860) / t.scrollSpeed
           );
 
           function animate() {
