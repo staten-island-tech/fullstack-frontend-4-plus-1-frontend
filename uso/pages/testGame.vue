@@ -10,10 +10,11 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div>
-      <h1 id="score">Score: {{ score }}</h1>
-      <h1 id="combo">Combo: {{ combo }}</h1>
-      <h1 id="speed">Scroll Speed: {{ scrollSpeed }}</h1>
+    <div class="statistics-container">
+      <h1>Score: {{ score }}</h1>
+      <h1>Combo: {{ combo }}</h1>
+      <h1>Scroll Speed: {{ scrollSpeed }}</h1>
+      <h1 :style="lastestHitStyle">{{ latestHit }}</h1>
     </div>
   </div>
 </template>
@@ -57,7 +58,9 @@ export default {
 
       beatmapData: {},
       notes: [],
-      beatmapIntro: 0,
+      beatmapIntro: 25000,
+
+      latestHit: null,
     };
   },
 
@@ -91,6 +94,47 @@ export default {
         (this.scrollSpeed * 1000 * this.canvasHeight) /
         (this.stageFPS * (6860 * (650 / 700) + 6860))
       );
+    },
+    latestHitStyle() {
+      let fontSize, color, background;
+      switch (this.latestHit) {
+        case 'PERFECT':
+          fontSize = '4rem';
+          color = null;
+          background =
+            'linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet, red)';
+          break;
+        case 300:
+          fontSize = '3.5rem';
+          color = '#3CFF00';
+          background = null;
+          break;
+        case 200:
+          fontSize = '3rem';
+          color = '#34CB78';
+          background = null;
+          break;
+        case 100:
+          fontSize = '2rem';
+          color = '##FF8484';
+          background = null;
+          break;
+        case 50:
+          fontSize = '1rem';
+          color = '#FF4E4E';
+          background = null;
+          break;
+        case 'MISS':
+          fontSize = '2rem';
+          color = '#FF0000';
+          background = null;
+          break;
+      }
+      return {
+        'font-size': fontSize,
+        color: color,
+        background: background,
+      };
     },
   },
 
@@ -226,19 +270,29 @@ export default {
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
 
-                if (diffFromTargetCircle >= 0 && diffFromTargetCircle <= 6) {
+                if (diffFromTargetCircle === 0) {
+                  t.latestHit = 'RAINBOW';
+                  t.score += 300 * t.combo;
+                } else if (
+                  diffFromTargetCircle > 0 &&
+                  diffFromTargetCircle <= 6
+                ) {
+                  t.latestHit = 300;
                   t.score += 300 * t.combo;
                 } else if (
                   diffFromTargetCircle >= 6 &&
                   diffFromTargetCircle <= 12
                 ) {
+                  t.latestHit = 200;
                   t.score += 200 * t.combo;
                 } else if (
                   diffFromTargetCircle >= 12 &&
                   diffFromTargetCircle <= 20
                 ) {
+                  t.latestHit = 100;
                   t.score += 100 * t.combo;
                 } else {
+                  t.latestHit = 50;
                   t.score += 50 * t.combo;
                 }
 
@@ -266,9 +320,9 @@ export default {
           .beginFill(t.circleColors[note.columnIndex])
           .drawRoundRectComplex(
             10,
-            -sliderHeight,
+            -(sliderHeight + 2 * t.radius),
             80,
-            sliderHeight,
+            sliderHeight + 2 * t.radius,
             40,
             40,
             40,
@@ -308,10 +362,11 @@ export default {
             if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
               // Remove tweens on the object
               createjs.Tween.removeTweens(thisCircle);
+
               // Reset combo
               t.combo = 0;
+              t.latestHit = 'MISS';
 
-              // $combo.innerHTML = `Combo: ${combo}`;
               // Remove circle from stage
               t.columnContainers[note.columnIndex].removeChild(thisCircle);
             }
@@ -347,7 +402,6 @@ export default {
             // (60 * (6860 * (650 / 700) + 6860))) {
             //   noteType = "hold";
             // }
-            // combo = 0;
             // If it reaches offscreen, dismount the circle
             if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
               t.columnContainers[note.columnIndex].removeChild(thisSlider);
@@ -370,5 +424,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.statistics-container {
+  width: 40%;
 }
 </style>
