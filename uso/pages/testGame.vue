@@ -44,11 +44,11 @@ export default {
       circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
       radius: 40,
 
-      thisCircle: null,
       stage: null,
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
+      stageFPS: 60,
       columnContainers: [],
       loader: null,
       targetCircles: [],
@@ -84,20 +84,30 @@ export default {
     canvasWidth() {
       return this.numColumns * this.columnWidth;
     },
+    dy() {
+      return (
+        (this.scrollSpeed * 1000 * this.canvasHeight) /
+        (this.stageFPS * (6860 * (650 / 700) + 6860))
+      );
+    },
   },
 
   mounted() {},
 
   methods: {
     scriptsLoaded() {
+      // If ANY of the boolean values read false, the all scripts are NOT loaded.
+      // If NO boolean values read false, then all scritps are loaded.
       this.areAllScriptsLoaded = !Object.values(this.areScriptsLoaded).some(
         (bool) => !bool
       );
 
-      if (this.areAllScriptsLoaded) this._fetch();
+      if (this.areAllScriptsLoaded) this.fetchBeatmap();
     },
-    _fetch() {
-      fetch("/DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json")
+    fetchBeatmap(
+      beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
+    ) {
+      fetch(`/${beatmapFileName}`)
         .then((response) => (response = response.json()))
         .then((data) => {
           this.beatmapData = data;
@@ -125,7 +135,7 @@ export default {
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
       // Each tick is run 1/60 times per second
-      createjs.Ticker.framerate = 60;
+      createjs.Ticker.framerate = t.stageFPS;
       // Automatically updates the stage every tick (aka frame)
       createjs.Ticker.addEventListener('tick', t.stage);
 
@@ -151,8 +161,8 @@ export default {
         // Creates a new column container for each column
         t.columnContainers.push(new createjs.Container());
 
-        // Sets the x-offset for each container
-        t.columnContainers[i].x = i * 100;
+        // Sets the x-offset for each container based off the column index and column width
+        t.columnContainers[i].x = i * t.columnWidth;
 
         // "Mounts" the container to the stage
         t.stage.addChild(t.columnContainers[i]);
@@ -200,7 +210,7 @@ export default {
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
-              //console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
+              // console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
 
               const diffFromTargetCircle = Math.abs(circle.y - 700);
 
@@ -244,6 +254,11 @@ export default {
       let sliderHeight;
 
       t.notes.forEach((note) => {
+        const circleGraphic = new createjs.Graphics()
+          .beginStroke('Black')
+          .beginFill(t.circleColors[note.columnIndex])
+          .drawCircle(50, -t.radius, t.radius);
+
         const sliderGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
@@ -258,64 +273,13 @@ export default {
             40
           );
 
-        const circleGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .beginFill(t.circleColors[note.columnIndex])
-          .drawCircle(50, -t.radius, t.radius);
-
-        const thisSlider = new createjs.Shape(sliderGraphic);
         const thisCircle = new createjs.Shape(circleGraphic);
+        const thisSlider = new createjs.Shape(sliderGraphic);
 
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
 
-        // Adds it to the column container which mounts it onto the stage
-
-        if (note.type === 'hold') {
-          sliderHeight =
-            ((note.endTime - note.time) * t.scrollSpeed) /
-            (t.canvasHeight * (6860 * (650 / 700) + 6860));
-
-          console.log(sliderHeight);
-
-          // Creates the circle "template" for later use to initialize a shape
-          t.columnContainers[note.columnIndex].addChild(thisSlider);
-          createjs.Tween.get(thisSlider, { onComplete: animate }).wait(
-            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
-          );
-
-          function animate() {
-            /*
-            useTicks: uses update ticks (60 fps) instead of ms
-            onChange: runs ths function when the position is changed (thus t function is run every tick)
-            onComplete: runs this function when animation is done
-            */
-            createjs.Tween.get(thisSlider, {
-              useTicks: true,
-              onChange: onChange,
-              onComplete: animate,
-            }).to(
-              {
-                y:
-                  thisSlider.y +
-                  (t.scrollSpeed * 1000 * t.canvasHeight) /
-                    (60 * (6860 * (650 / 700) + 6860)),
-              },
-              1
-            );
-          }
-          function onChange() {
-            // while (h / (scrollSpeed * 1000 * canvasHeight) /
-            // (60 * (6860 * (650 / 700) + 6860))) {
-            //   noteType = "hold";
-            // }
-            // combo = 0;
-            // If it reaches offscreen, dismount the circle
-            if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
-              t.columnContainers[note.columnIndex].removeChild(thisSlider);
-            }
-          }
-        } /* ELSEIF NOTE.TYPE === "NOTE" */ else {
+        if (note.type === 'note') {
           t.columnContainers[note.columnIndex].addChild(thisCircle);
           // Creates the circle "template" for later use to initialize a shape
           // Sets the delay before the notes animate (or before the notes drop)
@@ -332,15 +296,7 @@ export default {
               useTicks: true,
               onChange: onChange,
               onComplete: animateCircle,
-            }).to(
-              {
-                y:
-                  thisCircle.y +
-                  (t.scrollSpeed * 1000 * t.canvasHeight) /
-                    (60 * (6860 * (650 / 700) + 6860)),
-              },
-              1
-            );
+            }).to({ y: thisCircle.y + t.dy }, 1);
           }
           function onChange() {
             // noteType = true;
@@ -356,6 +312,43 @@ export default {
               t.columnContainers[note.columnIndex].removeChild(thisCircle);
             }
           }
+        } else if (note.type === 'hold') {
+          sliderHeight =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+
+          console.log(sliderHeight);
+
+          // Creates the slider "template" for later use to initialize a shape
+          t.columnContainers[note.columnIndex].addChild(thisSlider);
+          createjs.Tween.get(thisSlider, { onComplete: animate }).wait(
+            note.time - 25000 - (6860 * (650 / 700) + 6860) / t.scrollSpeed
+          );
+
+          function animate() {
+            /*
+            useTicks: uses update ticks (60 fps) instead of ms
+            onChange: runs ths function when the position is changed (thus t function is run every tick)
+            onComplete: runs this function when animation is done
+            */
+            createjs.Tween.get(thisSlider, {
+              useTicks: true,
+              onChange: onChange,
+              onComplete: animate,
+            }).to({ y: thisSlider.y + t.dy }, 1);
+          }
+          function onChange() {
+            // while (h / (scrollSpeed * 1000 * canvasHeight) /
+            // (60 * (6860 * (650 / 700) + 6860))) {
+            //   noteType = "hold";
+            // }
+            // combo = 0;
+            // If it reaches offscreen, dismount the circle
+            if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
+              t.columnContainers[note.columnIndex].removeChild(thisSlider);
+            }
+          }
+        } else {
+          console.log(`Invalid note type: ${note.type}`);
         }
       });
     },

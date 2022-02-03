@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <nuxt-link to="/"></nuxt-link>!Uso</nuxt-link>
+    <nuxt-link to="/">!Uso</nuxt-link>
     <nav>
       <nuxt-link to="/community">Community</nuxt-link>&nbsp;|
       <nuxt-link to="/play">Songs</nuxt-link> |
