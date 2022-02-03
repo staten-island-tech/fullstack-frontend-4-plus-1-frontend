@@ -1,12 +1,22 @@
 <template>
   <div>
     <section class="landing"></section>
-    <section class="home-main"></section>
+    <section class="home-main">
+      <div class="home-content-container">
+        <feature-song-card />
+        <feature-song-card />
+        <feature-song-card />
+        <feature-song-card />
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-export default {}
+import FeatureSongCard from '../components/homepage/FeatureSongCard.vue'
+export default {
+  components: { FeatureSongCard },
+}
 </script>
 
 <style scoped>
@@ -22,6 +32,21 @@ export default {}
 
 .home-main {
   width: 100%;
-  background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); /* get this to work and continue coding this section */
+  height: 100vh;
+  background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.home-content-container {
+  width: 104rem;
+  padding: 7rem 0;
+  margin: auto;
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 </style>
