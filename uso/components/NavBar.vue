@@ -125,6 +125,8 @@ export default {
 .uso__navbar--body {
   background-image: url("~/assets/images/navigation/nav-bg.png");
   background-size: cover;
+  height: auto;
+  width: 100%;
 }
 
 /* Navigation Leftside */
@@ -138,8 +140,10 @@ export default {
   justify-content: space-evenly;
   align-items: center;
   height: 7rem;
+  padding-top: 0;
   padding-bottom: 0.7rem;
-  padding: 0 25%;
+  padding-left: 25%;
+  padding-right: 25%;
 
   /* background-image: url("~/assets/images/navigation/nav-bg.png"); */
 
@@ -199,13 +203,13 @@ export default {
   font-size: 24px;
   font-weight: 300;
   text-decoration: none;
-  padding: 1.25rem;
+  padding: 1.1rem;
 }
 
 /* Navigation Rightside */
 
 .uso__avatar--container {
-  padding-left: 0 20%;
+  padding-left: 20%;
 }
 
 .uso__avatar {
@@ -278,7 +282,7 @@ export default {
   }
 } */
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
 
   .uso__logo {
     width: 3.8rem;
