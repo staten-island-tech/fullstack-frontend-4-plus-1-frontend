@@ -127,26 +127,6 @@ export default {
   background-size: cover;
   height: auto;
   width: 100%;
-}
-
-/* Navigation Leftside */
-
-.uso__logolinks--container {
-  display: contents;
-}
-
-.uso__navbar {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  height: 7rem;
-  padding-top: 0;
-  padding-bottom: 0.7rem;
-  padding-left: 25%;
-  padding-right: 25%;
-
-  /* background-image: url("~/assets/images/navigation/nav-bg.png"); */
-
   filter: hue-rotate(0deg);
 
   /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
@@ -168,6 +148,24 @@ export default {
       255deg = indigo
       333deg = purple
   */
+  
+}
+
+/* Navigation Leftside */
+
+.uso__logolinks--container {
+  display: contents;
+}
+
+.uso__navbar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 7rem;
+  padding-top: 0;
+  padding-bottom: 0.7rem;
+  padding-left: 25%;
+  padding-right: 25%;
 }
 
 .uso__logo {
@@ -209,7 +207,7 @@ export default {
 /* Navigation Rightside */
 
 .uso__avatar--container {
-  padding-left: 20%;
+  padding-left: 9rem;
 }
 
 .uso__avatar {
@@ -283,6 +281,11 @@ export default {
 } */
 
 @media screen and (max-width: 900px) {
+
+  .uso__logo--hover[data-v-0957edea] {
+  transition: all 0.1s ease-in;
+  width: 5rem;
+}
 
   .uso__logo {
     width: 3.8rem;
