@@ -5,9 +5,9 @@
       alt="Yoru ni Kakeru"
       class="feature-card-img"
     /> -->
-    <h3 class="card-header">
+    <h2 class="card-header">
       {{ cardType }}: {{ cardTitle }} - {{ cardArtist }}
-    </h3>
+    </h2>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
 
 <style scoped>
 .feature-card {
-  width: 48rem;
+  width: 50rem;
   height: 27rem;
   margin: 1rem;
   background: linear-gradient(
@@ -38,11 +38,12 @@ export default {
     url('~/assets/images/yoru-ni-kakeru.jpg');
   border-radius: 1.2rem;
   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem 2rem 1.6rem 2rem;
 }
 .card-header {
-  position: absolute;
-  bottom: 3rem;
-  color: white;
   z-index: 3;
 } /* MAKE THIS SHOW AND WORK ON THE REST OF THE SECTION */
 

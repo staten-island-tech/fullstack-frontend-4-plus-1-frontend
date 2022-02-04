@@ -3,10 +3,14 @@
     <section class="landing"></section>
     <section class="home-main">
       <div class="home-content-container">
-        <feature-song-card />
-        <feature-song-card />
-        <feature-song-card />
-        <feature-song-card />
+        <section class="feature-songs">
+          <feature-song-card />
+          <feature-song-card />
+        </section>
+        <section class="news">
+          <h1 class="news-header">!USO NEWS</h1>
+          <news-card />
+        </section>
       </div>
     </section>
   </div>
@@ -14,8 +18,9 @@
 
 <script>
 import FeatureSongCard from '../components/homepage/FeatureSongCard.vue'
+import NewsCard from '../components/homepage/NewsCard.vue'
 export default {
-  components: { FeatureSongCard },
+  components: { FeatureSongCard, NewsCard },
 }
 </script>
 
@@ -44,9 +49,16 @@ export default {
   width: 104rem;
   padding: 7rem 0;
   margin: auto;
+}
 
+.feature-songs {
+  width: 100%;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.news-header {
+  color: #b7ba91;
 }
 </style>
