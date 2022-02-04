@@ -42,8 +42,8 @@ export default {
       columnWidth: 100, // in px (we change this to rem later)
       canvasHeight: 700, // in px (we change this to rem later)
 
-      /* circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'], */
-      circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'],
+      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
       radius: 40,
 
       stage: null,
@@ -401,8 +401,8 @@ export default {
 
 <style scoped>
 #test-game-index {
-  box-sizing: border-box;
-  margin: 0;
+  width: 100vw;
+  height: 100vh;
 
   display: flex;
   align-items: center;
@@ -412,5 +412,9 @@ export default {
 .statistics-container {
   width: 40%;
   font-size: 1rem;
+}
+
+h1 {
+  color: white;
 }
 </style>
