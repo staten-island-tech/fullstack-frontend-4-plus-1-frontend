@@ -29,17 +29,25 @@ export default {
 </script>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap');
+
 /* html {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
+
 body {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Dongle', sans-serif;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.25;
+  /* background-color: rgb(15, 15, 15); */
+  background-image: url("~/assets/images/backgrounds/background.png");
 }
+
+/*
 #app {
   box-sizing: border-box;
   width: 500px;
