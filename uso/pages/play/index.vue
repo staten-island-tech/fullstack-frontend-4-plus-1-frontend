@@ -14,28 +14,25 @@
         />
         <input class="song-submit-button" type="submit" value="Search" />
       </form>
-
-      <div class="play-beatmap-set-container">
-        <!-- <div class="play-beatmap-set">
-          <img
-            class="beatmap-set-img"
-            src="/songs/476691 DJ OKAWARI - Flower Dance/BG.jpg"
-          />
-          <p class="beatmap-set-title">Flower Dance</p>
-          <p class="beatmap-set-songwriter">DJ OKAWARI</p>
-        </div> -->
-
-        <div
-          v-for="(beatmapSet, key) in beatmapSets"
-          :key="key"
-          class="play-beatmap-set"
-        >
-          <img
-            class="beatmap-set-img"
-            :src="`/songs/${key}/${beatmapSet.bgImageURL}`"
-          />
-          <p class="beatmap-set-title">{{ beatmapSet.title }}</p>
-          <p class="beatmap-set-songwriter">{{ beatmapSet.songwriter }}</p>
+      <div class="play-beatmap-content">
+        <div class="play-beatmap-set-container">
+          <div
+            v-for="(beatmapSet, key) in beatmapSets"
+            :key="key"
+            class="play-beatmap-set"
+          >
+            <img
+              class="beatmap-set-img"
+              :src="`/songs/${key}/${beatmapSet.bgImageURL}`"
+            />
+            <p class="beatmap-set-title">{{ beatmapSet.title }}</p>
+            <p class="beatmap-set-songwriter">{{ beatmapSet.songwriter }}</p>
+          </div>
+        </div>
+        <div class="play-sidebar">
+          <div class="play-sidebar-image-container">
+            <img src="/song/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
+          </div>
         </div>
       </div>
     </div>
@@ -142,11 +139,20 @@ export default {
   height: 3.25rem;
 }
 
-.play-beatmap-set-container {
+.play-beatmap-content {
   width: 60vw;
 
   display: flex;
+}
+
+.play-beatmap-set-container {
+  width: 45vw;
+
+  background: yellow;
+
+  display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .play-beatmap-set {
@@ -155,7 +161,7 @@ export default {
   width: 16rem;
   height: 9rem;
 
-  margin: 2rem;
+  margin: 1rem;
   border: 0.2rem solid white;
 
   display: flex;
@@ -209,5 +215,22 @@ export default {
 
 .beatmap-set-songwriter {
   font-size: 1.5rem;
+}
+
+.play-sidebar {
+  width: 15vw;
+  height: 30rem;
+
+  background-color: blue;
+}
+
+.play-sidebar-image-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.play-sidebar-image-container > img {
+  width: 100%;
+  overflow: hidden;
 }
 </style>
