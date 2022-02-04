@@ -95,46 +95,33 @@ export default {
         (this.stageFPS * (6860 * (650 / 700) + 6860))
       );
     },
-    latestHitStyle() {
-      let fontSize, color, background;
+    lastestHitStyle() {
+      let color = null;
       switch (this.latestHit) {
-        case 'PERFECT':
-          fontSize = '4rem';
-          color = null;
-          background =
-            'linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet, red)';
-          break;
         case 300:
-          fontSize = '3.5rem';
-          color = '#3CFF00';
-          background = null;
+          return {
+            'font-size': '3rem',
+            background:
+              'linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet)',
+            'background-clip': 'text',
+            '-webkit-background-clip': 'text',
+            '-webkit-text-fill-color': 'transparent',
+          };
           break;
         case 200:
-          fontSize = '3rem';
-          color = '#34CB78';
-          background = null;
+          color = '#66c010';
           break;
         case 100:
-          fontSize = '2rem';
-          color = '##FF8484';
-          background = null;
+          color = '#1151a7';
           break;
         case 50:
-          fontSize = '1rem';
-          color = '#FF4E4E';
-          background = null;
+          color = '#707680';
           break;
         case 'MISS':
-          fontSize = '2rem';
-          color = '#FF0000';
-          background = null;
+          color = '#bf342f';
           break;
       }
-      return {
-        'font-size': fontSize,
-        color: color,
-        background: background,
-      };
+      return { color: color };
     },
   },
 
@@ -270,13 +257,7 @@ export default {
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
 
-                if (diffFromTargetCircle === 0) {
-                  t.latestHit = 'RAINBOW';
-                  t.score += 300 * t.combo;
-                } else if (
-                  diffFromTargetCircle > 0 &&
-                  diffFromTargetCircle <= 6
-                ) {
+                if (diffFromTargetCircle > 0 && diffFromTargetCircle <= 6) {
                   t.latestHit = 300;
                   t.score += 300 * t.combo;
                 } else if (
@@ -295,6 +276,8 @@ export default {
                   t.latestHit = 50;
                   t.score += 50 * t.combo;
                 }
+
+                console.log(diffFromTargetCircle);
 
                 t.combo += 1;
               }
@@ -428,5 +411,6 @@ export default {
 
 .statistics-container {
   width: 40%;
+  font-size: 1rem;
 }
 </style>
