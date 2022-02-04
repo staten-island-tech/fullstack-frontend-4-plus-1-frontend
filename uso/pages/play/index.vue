@@ -31,7 +31,7 @@
         </div>
         <div class="play-sidebar">
           <div class="play-sidebar-image-container">
-            <img src="/song/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
+            <img src="/songs/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
           </div>
         </div>
       </div>
