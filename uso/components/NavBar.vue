@@ -123,10 +123,9 @@ export default {
 }
 
 .uso__navbar--body {
-  background-image: url("~/assets/images/navigation/nav-bg.png");
-  background-size: cover;
+  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)), url("~/assets/images/navigation/nav-bg.jpg");
+  /* background-size: cover; */
   height: auto;
-  width: 100%;
   filter: hue-rotate(0deg);
 
   /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
@@ -159,25 +158,24 @@ export default {
 
 .uso__navbar {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  height: 7rem;
-  padding-top: 0;
-  padding-bottom: 0.7rem;
-  padding-left: 25%;
-  padding-right: 25%;
+  height: 6.1rem;
+  padding: 0 25%;
 }
 
 .uso__logo {
   cursor: pointer;
-  width: 5rem;
+  width: 5.1rem;
   display: flex;
   align-items: center;
+  transform: scaleX(-1);
 }
 
 .uso__logo--hover {
   transition: all 0.1s ease-in;
-  width: 5rem;
+  width: 5.1rem;
+  border-radius: 50%;
 }
 
 .uso__logo--hover:hover {
@@ -188,8 +186,8 @@ export default {
 .uso__navbar--links {
   display: flex;
   justify-content: space-around;
-  /* width: 30%;  */
   margin-right: auto;
+  padding-top: 0.5rem;
 }
 
 .uso__navbar--links li {
@@ -198,16 +196,16 @@ export default {
 
 .uso__navbar--links a {
   color: #EDF0F1;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 300;
   text-decoration: none;
-  padding: 1.1rem;
+  padding: 0 1rem;
 }
 
 /* Navigation Rightside */
 
 .uso__avatar--container {
-  padding-left: 9rem;
+  padding-left: 7rem;
 }
 
 .uso__avatar {
@@ -247,8 +245,8 @@ export default {
 
 .uso__login {
   border-radius: 50%;
-  width: 4.2rem;
-  margin: 0.5rem;
+  width: 4.4rem;
+  margin: 0 0.5rem;
 }
 
 /* Navigation Burger Menu */
