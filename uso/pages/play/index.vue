@@ -26,13 +26,32 @@
               :src="`/songs/${key}/${beatmapSet.bgImageURL}`"
             />
             <p class="beatmap-set-title">{{ beatmapSet.title }}</p>
-            <p class="beatmap-set-songwriter">{{ beatmapSet.songwriter }}</p>
+            <p class="beatmap-set-artist">{{ beatmapSet.artist }}</p>
           </div>
         </div>
         <div class="play-sidebar">
           <div class="play-sidebar-image-container">
+            <!-- <img src="/songs/533037 illion - AIWAGUMA/49389130_p0.png" /> -->
             <img src="/songs/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
           </div>
+          <div class="play-sidebar-text-container">
+            <p class="play-sidebar-text-title">Flower Dance</p>
+            <p>Artist: DJ OKAWARI</p>
+            <p>Mapper: Narcissu</p>
+            <nuxt-link to="/leaderboard" class="">Leaderboard</nuxt-link>
+          </div>
+          <table class="play-sidebar-difficulties">
+            <tbody>
+              <tr>
+                <th>CS' Normal</th>
+                <th>Difficulty: 2</th>
+              </tr>
+              <tr>
+                <th>CS' Hard</th>
+                <th>Difficulty: 3</th>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -46,32 +65,32 @@ export default {
       beatmapSets: {
         '134151 Hanatan - Airman ga Taosenai (SOUND HOLIC Ver)': {
           title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
-          songwriter: 'Hanatan',
+          artist: 'Hanatan',
           bgImageURL: 'airmancutebg.jpg',
         },
         '241526 Soleily - Renatus': {
           title: 'Renatus',
-          songwriter: 'Soleily',
+          artist: 'Soleily',
           bgImageURL: 'machinetop_background.jpg',
         },
         '277421 Lindsey Stirling - Senbonzakura': {
           title: 'Senbonzakura',
-          songwriter: 'Lindsey Stirling',
+          artist: 'Lindsey Stirling',
           bgImageURL: '1645085.jpg',
         },
         '356253 ginkiha - Borealis': {
           title: 'Borealis',
-          songwriter: 'ginkiha',
+          artist: 'ginkiha',
           bgImageURL: '1.jpg',
         },
         '476691 DJ OKAWARI - Flower Dance': {
           title: 'Flower Dance',
-          songwriter: 'DJ OKAWARI',
+          artist: 'DJ OKAWARI',
           bgImageURL: 'BG.jpg',
         },
         '533037 illion - AIWAGUMA': {
           title: 'AIWAGUMA',
-          songwriter: 'illion',
+          artist: 'illion',
           bgImageURL: '49389130_p0.png',
         },
       },
@@ -140,19 +159,24 @@ export default {
 }
 
 .play-beatmap-content {
-  width: 60vw;
+  --content-width: 60vw;
+  --beatmap-set-container-width: 45vw;
+  --sidebar: 20rem;
+
+  width: var(--content-width);
 
   display: flex;
+  align-items: flex-start;
 }
 
 .play-beatmap-set-container {
-  width: 45vw;
-
-  background: yellow;
+  width: calc(var(--content-width) - var(--sidebar));
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  /* Gap => Column Gap, Row Gap */
+  gap: 2rem 2rem;
 }
 
 .play-beatmap-set {
@@ -161,7 +185,6 @@ export default {
   width: 16rem;
   height: 9rem;
 
-  margin: 1rem;
   border: 0.2rem solid white;
 
   display: flex;
@@ -213,24 +236,64 @@ export default {
   font-size: 2rem;
 }
 
-.beatmap-set-songwriter {
+.beatmap-set-artist {
   font-size: 1.5rem;
 }
 
 .play-sidebar {
-  width: 15vw;
-  height: 30rem;
+  width: var(--sidebar);
+  min-height: 25rem;
 
-  background-color: blue;
+  border: 0.2rem solid white;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .play-sidebar-image-container {
   width: 100%;
-  aspect-ratio: 16/9;
+
+  aspect-ratio: 16 / 9;
 }
 
 .play-sidebar-image-container > img {
   width: 100%;
+
+  display: block;
+
   overflow: hidden;
+}
+
+.play-sidebar-text-container > * {
+  font-size: 1.5rem;
+
+  margin: 0 0 0 0.5rem;
+
+  color: white;
+}
+
+.play-sidebar-text-title {
+  font-size: 3rem;
+}
+
+.play-sidebar-difficulties {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.play-sidebar-difficulties > tbody > tr:nth-child(even) {
+  background-color: #404040;
+}
+
+.play-sidebar-difficulties > tbody > tr:nth-child(odd) {
+  background-color: #505050;
+}
+
+.play-sidebar-difficulties > tbody > tr > th {
+  color: white;
+
+  font-size: 1.5rem;
 }
 </style>
