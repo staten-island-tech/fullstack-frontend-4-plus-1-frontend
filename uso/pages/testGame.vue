@@ -20,17 +20,18 @@
 </template>
 
 <script>
-/* global createjs */
+/* global createjs:false */
 /* eslint-disable */
 
 export default {
   data() {
     return {
-      areScriptsLoaded: {
+      loaded: {
         createjs: false,
         keydrown: false,
+        beatmap: false,
       },
-      areAllScriptsLoaded: false,
+      areAllLoaded: false,
 
       score: 0,
       combo: 0,
@@ -70,14 +71,14 @@ export default {
         {
           src: '/lib/createjs.min.js',
           callback: () => {
-            this.areScriptsLoaded.createjs = true;
+            this.loaded.createjs = true;
             this.scriptsLoaded();
           },
         },
         {
           src: '/lib/keydrown.min.js',
           callback: () => {
-            this.areScriptsLoaded.keydrown = true;
+            this.loaded.keydrown = true;
             this.scriptsLoaded();
           },
         },
@@ -125,17 +126,17 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.fetchBeatmap();
+  },
 
   methods: {
     scriptsLoaded() {
       // If ANY of the boolean values read false, the all scripts are NOT loaded.
       // If NO boolean values read false, then all scritps are loaded.
-      this.areAllScriptsLoaded = !Object.values(this.areScriptsLoaded).some(
-        (bool) => !bool
-      );
+      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
 
-      if (this.areAllScriptsLoaded) this.fetchBeatmap();
+      if (this.areAllLoaded) this.init();
     },
     fetchBeatmap(
       beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
@@ -145,7 +146,8 @@ export default {
         .then((data) => {
           this.beatmapData = data;
           this.notes = data.hitObjects;
-          this.init();
+          this.loaded.beatmap = true;
+          this.scriptsLoaded();
         });
     },
     init() {

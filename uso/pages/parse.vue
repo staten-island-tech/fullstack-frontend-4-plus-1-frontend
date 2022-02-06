@@ -24,18 +24,18 @@
 </template>
 
 <script>
-/* global zip, localforage */
+/* global zip:false, localforage:false */
 
 export default {
   name: 'ParseTest',
 
   data() {
     return {
-      areScriptsLoaded: {
+      loaded: {
         zip: false,
         localforage: false,
       },
-      areAllScriptsLoaded: false,
+      areAllLoaded: false,
 
       dropboxEventHandlers: {
         dragover: this.dropboxEvents,
@@ -60,14 +60,14 @@ export default {
         {
           src: '/lib/zip.min.js',
           callback: () => {
-            this.areScriptsLoaded.zip = true;
+            this.loaded.zip = true;
             this.scriptsLoaded();
           },
         },
         {
           src: '/lib/localforage.min.js',
           callback: () => {
-            this.areScriptsLoaded.localforage = true;
+            this.loaded.localforage = true;
             this.scriptsLoaded();
           },
         },
@@ -79,11 +79,7 @@ export default {
 
   methods: {
     scriptsLoaded() {
-      this.areAllScriptsLoaded = !Object.values(this.areScriptsLoaded).some(
-        (bool) => !bool
-      );
-
-      if (this.areAllScriptsLoaded) console.log('Scripts loaded!');
+      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
     },
     selectFile(event) {
       this.rawFile = event.target.files[0];

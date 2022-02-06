@@ -15,5 +15,5 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'no-console': 'off',
   },
-  ignorePatterns: ['static/lib/*'],
-}
+  ignorePatterns: ['static/*'],
+};
