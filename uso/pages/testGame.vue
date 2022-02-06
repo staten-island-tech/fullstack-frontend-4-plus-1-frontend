@@ -413,8 +413,4 @@ export default {
   width: 40%;
   font-size: 1rem;
 }
-
-h1 {
-  color: white;
-}
 </style>

@@ -124,8 +124,6 @@ export default {
 .play-title {
   margin: 0.5rem 0rem 0.5rem 1rem;
   font-size: 2.5rem;
-
-  color: white;
 }
 
 .song-search-form {
@@ -138,7 +136,6 @@ export default {
 .song-search-form > input {
   font-size: 1.5rem;
 
-  color: white;
   background-color: black;
 
   border: 0.125rem solid gray;
@@ -220,8 +217,6 @@ export default {
 .play-beatmap-set > p {
   width: 100%;
 
-  color: white;
-
   margin: 0 0 0 0.5rem;
 
   display: inline;
@@ -269,8 +264,6 @@ export default {
   font-size: 1.5rem;
 
   margin: 0 0 0 0.5rem;
-
-  color: white;
 }
 
 .play-sidebar-text-title {
@@ -292,8 +285,6 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  color: white;
-
   font-size: 1.5rem;
 }
 </style>
