@@ -16,7 +16,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@/assets/global.css'],
+  css: ['~/assets/global.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -35,6 +35,11 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
   ],
+
+  server: {
+    host: '0.0.0.0',
+    port: 8090,
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
