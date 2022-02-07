@@ -26,6 +26,12 @@
           <li>
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
+          <li>
+            <nuxt-link to="/testGame" class="uso__links">testGame</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>
+          </li>
         </ul>
       </div>
 
