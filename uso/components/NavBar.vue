@@ -98,12 +98,6 @@ export default {
 </script>
 
 <style scoped>
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-}
-
 /* Keyframes */
 
 @keyframes pulse {
@@ -218,14 +212,14 @@ export default {
 
   /* filter: hue-rotate(255deg) saturate(.6); */
 
-  /* 
+  /*
     -webkit-animation: filterChange 5s infinite ease 0s;;
     -moz-animation: filterChange 5s infinite ease 0s;;
     -o-animation: filterChange 5s infinite ease 0s;;
-     animation: filterChange 5s infinite ease 0s; 
+     animation: filterChange 5s infinite ease 0s;
   */
 
-  /* 
+  /*
     Filter Notes:
       20deg = yellow
       45deg = brown
@@ -262,16 +256,13 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  height: 7rem;
-  padding-top: 0;
-  padding-bottom: 0.7rem;
-  padding-left: 25%;
-  padding-right: 25%;
+  height: 9.5rem;
+  padding: 0.7rem 25%;
 }
 
 .uso__logo {
   cursor: pointer;
-  width: 5.1rem;
+  width: 7.1rem;
   display: flex;
   align-items: center;
   transform: scaleX(-1);
@@ -280,7 +271,7 @@ export default {
 
 .uso__logo--hover {
   transition: all 0.1s ease-in;
-  width: 5.1rem;
+  width: 7.1rem;
   border-radius: 50%;
 }
 
@@ -362,7 +353,7 @@ export default {
 
 .uso__login {
   border-radius: 50%;
-  width: 4.4rem;
+  width: 5.7rem;
   margin: 0 0.5rem;
 }
 
