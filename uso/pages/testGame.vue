@@ -56,7 +56,7 @@ export default {
       loader: null,
       targetCircles: [],
       circles: null,
-
+      firstVal: 0,
       beatmapData: {},
       notes: [],
       beatmapIntro: 25000,
@@ -79,6 +79,13 @@ export default {
           src: '/lib/keydrown.min.js',
           callback: () => {
             this.loaded.keydrown = true;
+            this.scriptsLoaded();
+          },
+        },
+        {
+          src: 'https://code.createjs.com/1.0.0/soundjs.min.js',
+          callback: () => {
+            this.areScriptsLoaded.soundjs = true;
             this.scriptsLoaded();
           },
         },
@@ -153,6 +160,9 @@ export default {
     init() {
       const t = this;
 
+      let firstValY = 0;
+      let lastValY = 0;
+      let scoreMultplier = 1;
       const $canvas = document.querySelector('#canvas');
 
       // Sets the canvas width/height pixels = to canvas display size width/height
@@ -167,6 +177,20 @@ export default {
       /* ===============
           TICKER
           =============== */
+      createjs.Sound.on('fileload', handleLoadComplete);
+      createjs.Sound.alternateExtensions = ['mp3'];
+      createjs.Sound.registerSound({
+        src: '/music_test/file_example_MP3_2MG.mp3',
+        id: 'sound',
+      });
+      function handleLoadComplete(event) {
+        createjs.Sound.play('sound');
+      }
+      // I think we have to add sound when we click the route
+      window.onload = function () {
+        var context = new AudioContext();
+        context.resume();
+      };
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
       // Each tick is run 1/60 times per second
@@ -238,7 +262,90 @@ export default {
 
       /* ===============
             KEY PRESSES
+
+
           =============== */
+
+      kd.D.down(function () {
+        t.columnContainers[0].children.forEach((circle) => {
+          const diffFromTargetCircle = Math.abs(circle.y - 700);
+
+          if (circle.y >= 610 && circle.name === 'thisSlider') {
+            if (t.firstVal === 0) {
+              firstValY = diffFromTargetCircle;
+              console.log(firstValY);
+              t.firstVal = 1;
+            }
+            if (firstValY >= 0 && firstValY <= 6) {
+              scoreMultplier = 300;
+            } else if (firstValY >= 6 && firstValY <= 12) {
+              scoreMultplier = 200;
+            } else if (firstValY >= 12 && firstValY <= 20) {
+              scoreMultplier = 100;
+            } else if (firstValY >= 20 && firstValY <= 30) {
+              scoreMultplier = 50;
+            } else {
+              scoreMultplier = 1;
+            }
+          }
+        });
+
+        //console.log(circle.y);
+      });
+
+      kd.D.up(function () {
+        t.columnContainers[0].children.forEach((circle) => {
+          const diffFromTargetCircle = Math.abs(circle.y - 700);
+          if (circle.y >= 610 && circle.name === 'Slider') {
+            // if (t.firstVal === 1) {
+            //   t.firstVal = 0
+            // }
+            lastValY = diffFromTargetCircle;
+
+            let sliderCombo = (lastValY - t.firstValY) / 10;
+            let sliderScore = sliderCombo * scoreMultplier;
+            console.log(sliderScore);
+            console.log(sliderCombo);
+            console.log(scoreMultplier);
+            this.score += Math.round(sliderScore);
+            this.combo += Math.round(sliderCombo);
+          }
+        });
+
+        //console.log(circle.y);
+      });
+
+      kd.run(function () {
+        kd.tick();
+      });
+
+      // document.addEventListener("keyup", function (sliders) {
+      //   // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
+      //   for (let i = 0; i < numColumns; i++) {
+      //     if (sliders.key === keys[i]) {
+      //       columnContainers[i].children.forEach((circle) => {
+      //         const diffFromTargetCircle = Math.abs(circle.y - 700);
+
+      //         if (circle.y >= 610 && circle.name === "Slider") {
+      //           if (firstVal === 1) {
+      //             firstVal = 0
+      //           }
+      //           lastValY = diffFromTargetCircle;
+
+      //           let sliderCombo = (lastValY - firstValY)/10;
+      //           let sliderScore = sliderCombo * scoreMultplier
+      //           console.log( sliderScore)
+      //           console.log( sliderCombo)
+      //           console.log( scoreMultplier)
+      //           score += Math.round(sliderScore);
+      //           combo += Math.round(sliderCombo);
+      //           $score.innerHTML = `Score: ${score}`;
+      //           $combo.innerHTML = `Combo: ${combo}`;
+      //         }
+      //       });
+      //     }
+      //   }
+      // });
 
       document.addEventListener('keydown', function (e) {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
@@ -360,7 +467,7 @@ export default {
           sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-          console.log(sliderHeight);
+          //console.log(sliderHeight);
 
           // Creates the slider "template" for later use to initialize a shape
           t.columnContainers[note.columnIndex].addChild(thisSlider);
