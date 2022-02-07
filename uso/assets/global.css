@@ -1,21 +1,31 @@
+html,
+body,
 * {
-  box-sizing: border-box;
+  font-size: 62.5%;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  color: white;
 }
 
-body,
-html {
-  height: 100%;
+h1 {
+  font-size: 7rem;
+  line-height: 7rem;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  font-weight: 200;
-  font-size: 62.5;
-  line-height: 1.25;
-  position: static;
-  color: #fff;
-  background-color: #fff;
-  margin: 0;
+h2 {
+  font-size: 3.2rem;
+  line-height: 2.2rem;
 }
+
+p {
+  font-size: 2.8rem;
+  font-weight: 400;
+  line-height: 2.4rem;
+}
+
+/* section {
+  margin-bottom: 5rem;
+} */
+/* MARGIN AFTER EACH SECTION */

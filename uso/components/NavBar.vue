@@ -1,49 +1,67 @@
 <template>
-  <div class="uso-nav">
-    <div class="uso--nav-container">
-      <div class="uso--hb-menu">
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
-        <span class="hb-bar"></span>
-      </div>
-
-      <nuxt-link to="/" class="uso-logo">
-        <img
-          class="uso--logo-hover"
-          src="~/assets/images/navigation/osu-white.svg"
-          alt="logo"
-        />
-      </nuxt-link>
-
-      <nav class="uso--nav-links">
-        <nuxt-link to="/" class="uso-links">home</nuxt-link>
-        <nuxt-link to="/play" class="uso-links">beatmaps</nuxt-link>
-        <nuxt-link to="/leaderboard" class="uso-links">rankings</nuxt-link>
-        <nuxt-link to="/community" class="uso-links">community</nuxt-link>
-        <nuxt-link to="/help" class="uso-links">help</nuxt-link>
-      </nav>
-    </div>
-
-    <div class="uso--avatar-container">
-      <div class="uso-avatar">
-        <div class="uso-circle">
-          <nuxt-link to="/login" class="uso-button"></nuxt-link>
-        </div>
-        <div class="uso-circle">
-          <nuxt-link to="/login" class="uso-button"></nuxt-link>
-        </div>
-        <div class="uso-circle">
-          <nuxt-link to="/login" class="uso-button"></nuxt-link>
-        </div>
-
-        <nuxt-link to="/login" class="uso-avatar">
+  <div class="uso__navbar--body">
+    <nav class="uso__navbar">
+      <div class="uso__logolinks--container">
+        <nuxt-link to="/" class="uso__logo">
           <img
-            src="~/assets/images/navigation/nav-avatar.png"
-            class="uso-login"
+            class="uso__logo--hover"
+            src="~/assets/images/navigation/osu-white.svg"
+            alt="logo"
           />
         </nuxt-link>
+
+        <ul class="uso__navbar--links">
+          <li>
+            <nuxt-link to="/" class="uso__links">home</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/play" class="uso__links">beatmaps</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/leaderboard" class="uso__links">rankings</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/community" class="uso__links">community</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/help" class="uso__links">help</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/testGame" class="uso__links">testGame</nuxt-link>
+          </li>
+          <li>
+            <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>
+          </li>
+        </ul>
       </div>
-    </div>
+
+      <div class="uso__avatar--container">
+        <div class="uso__avatar">
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+          </div>
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+          </div>
+          <div class="uso__circle">
+            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+          </div>
+
+          <nuxt-link to="/login" class="uso__avatar--img">
+            <img
+              src="~/assets/images/navigation/nav-avatar.png"
+              class="uso__login"
+            />
+          </nuxt-link>
+        </div>
+      </div>
+
+      <div class="uso__navburger">
+        <div class="uso__navline1"></div>
+        <div class="uso__navline2"></div>
+        <div class="uso__navline3"></div>
+      </div>
+    </nav>
   </div>
 </template>
 
@@ -52,190 +70,264 @@ export default {
   name: 'NavBar',
 
   mounted() {
-    const hamburger = document.querySelector('.uso--hb-menu')
-    const navMenu = document.querySelector('.uso--nav-links')
+    const animateNav = () => {
+      const navBurger = document.querySelector('.uso__navburger');
+      const navLinks = document.querySelector('.uso__navbar--links');
+      const navbarLinks = document.querySelectorAll('.uso__navbar--links li');
 
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active')
-      navMenu.classList.toggle('active')
-    })
+      navBurger.addEventListener('click', () => {
+        navLinks.classList.toggle('nav-active');
 
-    document.querySelectorAll('.uso--nav-links').forEach((n) =>
-      n.addEventListener('click', () => {
-        hamburger.classList.remove('active')
-        navMenu.classList.remove('active')
-      })
-    )
+        navbarLinks.forEach((link, index) => {
+          if (link.style.animation) {
+            link.style.animation = '';
+          } else {
+            link.style.animation = `navLinkFade 0.5s ease forwards ${
+              index / 7 + 1.5
+            }s`;
+          }
+        });
+
+        navBurger.classList.toggle('toggle');
+      });
+    };
+
+    animateNav();
   },
-}
+};
 </script>
 
 <style scoped>
-/* navigation components, list */
+/* Keyframes */
 
-.uso-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 6.1rem;
-  background-image: url('~/assets/images/navigation/nav-bg.png');
+@keyframes pulse {
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes navLinkFade {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 3;
+    transform: translateY(0px);
+  }
+}
+
+@keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-o-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-moz-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-webkit-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
+/* Body */
+
+.uso__navbar--body {
+  background-image: linear-gradient(
+      rgba(13, 4, 66, 0.7),
+      rgba(39, 15, 112, 0.7)
+    ),
+    url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
-  /* filter: hue-rotate(var(--base-hue-deg)) saturate(.6); */
+
+  /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
+
   /* filter: hue-rotate(255deg) saturate(.6); */
 
-  /* 
-      -webkit-animation: filterChange 5s infinite ease 0s;;
-      -moz-animation: filterChange 5s infinite ease 0s;;
-      -o-animation: filterChange 5s infinite ease 0s;;
-       animation: filterChange 5s infinite ease 0s; 
-    */
+  /*
+    -webkit-animation: filterChange 5s infinite ease 0s;;
+    -moz-animation: filterChange 5s infinite ease 0s;;
+    -o-animation: filterChange 5s infinite ease 0s;;
+     animation: filterChange 5s infinite ease 0s;
+  */
 
-  /* 
-      Filter Notes:
+  /*
+    Filter Notes:
       20deg = yellow
       45deg = brown
       115deg = green
       200deg = blue
       255deg = indigo
       333deg = purple
-    */
+  */
 }
 
-.uso-nav a {
-  display: inline-block;
-  color: #edf0f1;
-  font-weight: 300;
-  text-decoration: none;
+/* Navigation Bar Flex-Setup */
+
+.uso__navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 6.25rem;
+  padding: 0 25%;
 }
 
-.uso-links {
-  font-size: 1.6rem;
+/* Navigation Leftside [logo, links] */
+
+.uso__logolinks--container {
+  display: contents;
 }
 
-.uso-links:hover {
-  text-decoration: underline;
+/* Navigation Leftside */
+
+.uso__logolinks--container {
+  display: contents;
 }
 
-.uso--nav-links {
-  margin-right: auto;
+.uso__navbar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 9.5rem;
+  padding: 0.7rem 25%;
 }
 
-.uso--nav-links .uso-links {
-  display: inline-block;
-  padding: 0px 14px;
-}
-
-/* uso hamburger menu */
-
-.uso--hb-menu {
-  display: none;
+.uso__logo {
   cursor: pointer;
-  position: fixed;
-}
-
-.hb-bar {
-  display: block;
-  width: 25px;
-  height: 3px;
-  margin: 5px auto;
-  transition: all 0.3s ease-in-out;
-  background-color: #fff;
-}
-
-@media (max-width: 992px) {
-  .uso-nav {
-    padding: 0 5%;
-  }
-
-  .uso--hb-menu {
-    display: block;
-    padding-bottom: 1rem;
-    margin-left: auto;
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(2) {
-    opacity: 0;
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-  }
-
-  .uso--hb-menu.active .hb-bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-  }
-
-  .uso--nav-links {
-    position: fixed;
-    left: -100%;
-    top: 10px;
-    gap: 0;
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-    transition: 0.3s;
-  }
-
-  .uso--nav-links.active {
-    left: 0;
-  }
-
-  .uso-links {
-    margin: 16px 0;
-  }
-
-  .uso--logo-hover {
-    display: none;
-  }
-
-  .uso--avatar-container {
-    display: none;
-  }
-}
-
-/* uso logo */
-
-.uso--nav-container {
+  width: 7.1rem;
   display: flex;
   align-items: center;
-  padding-right: 9rem;
+  transform: scaleX(-1);
+  border-radius: 50%;
 }
 
-.uso-logo {
-  margin-right: 0.5rem;
-  transition: all 150ms ease 0s;
+.uso__logo--hover {
+  transition: all 0.1s ease-in;
+  width: 7.1rem;
+  border-radius: 50%;
 }
 
-.uso-logo:hover {
+.uso__logo--hover:hover {
+  background-image: url('~/assets/images/navigation/osu-pink.svg');
   transform: scale(1.07);
 }
 
-.uso--logo-hover {
-  width: 4.8rem;
-  cursor: pointer;
-  transform: scaleX(-1);
+.uso__navbar--links {
+  display: flex;
+  justify-content: space-around;
+  margin-right: auto;
+  padding-top: 0.5rem;
 }
 
-.uso--logo-hover:hover {
-  background-image: url('~/assets/images/navigation/osu-pink.svg');
+.uso__navbar--links li {
+  padding: 0 1rem;
+  list-style: none;
 }
 
-/* avatar container */
+.uso__navbar--links a {
+  color: #e6eaec;
+  font-size: 28px;
+  font-weight: 300;
+  text-decoration: none;
+  transition: all 0.2s;
+}
 
-/* .uso--avatar-container { } */
+.uso__navbar--links a:hover {
+  color: #ffffff;
+  border-bottom: 0.1rem solid #ffffff;
+}
 
-.uso-avatar {
+/* Navigation Rightside [circles, login avatar] */
+
+.uso__avatar--container {
+  padding-left: 22.5%;
+}
+
+.uso__avatar--container {
+  padding-left: 9rem;
+}
+
+.uso__avatar {
   display: flex;
   flex: none;
 }
 
-.uso-circle {
+.uso__circle {
   display: flex;
   align-items: center;
   flex: none;
+  margin-top: 0.5rem;
 }
 
-.uso-button {
+.uso__button {
   outline: none;
   border: none;
   padding: 0;
@@ -250,13 +342,120 @@ export default {
   align-items: center;
   border: 3px solid hsla(0, 0%, 100%, 0.25);
   font-size: 16px;
-  color: #fff;
+  color: #edf0f1;
   margin: 0 3px;
 }
 
-.uso-login {
+.uso__avatar--img {
+  display: flex;
+  align-items: center;
+}
+
+.uso__login {
   border-radius: 50%;
-  width: 4.1rem;
-  margin-left: 0.5rem;
+  width: 5.7rem;
+  margin: 0 0.5rem;
+}
+
+/* Navigation Hamburger Menu */
+
+.uso__navburger {
+  display: none;
+  cursor: pointer;
+}
+
+.uso__navburger div {
+  width: 22.5px;
+  height: 3px;
+  margin: 5px;
+  background-color: #edf0f1;
+  transition: all 0.3s ease-in-out;
+}
+
+.toggle .uso__navline1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.toggle .uso__navline2 {
+  opacity: 0;
+}
+
+.toggle .uso__navline3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Mobile Responsive */
+
+@media screen and (max-width: 900px) {
+  .uso__navbar {
+    background-color: rgb(75, 55, 225);
+    background-image: none;
+    height: 4.5rem;
+    padding: 0 2.5rem;
+  }
+
+  .uso__logo {
+    width: 3.8rem;
+    margin-right: auto;
+    z-index: 9999;
+  }
+
+  .uso__logo--hover {
+    width: 3.8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .uso__navbar--links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    height: 30vh;
+    top: 8vh;
+    background-color: rgb(100, 80, 240);
+    width: 100%;
+    transform: translateY(-130%);
+    /* transition: 0.2s ease-in-out; */
+  }
+
+  .uso__circle {
+    display: none;
+  }
+
+  .uso__button {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #edf0f1;
+  }
+
+  .uso__avatar--img {
+    display: flex;
+    align-items: center;
+    padding-right: 35px;
+  }
+
+  .uso__login {
+    width: 3.25rem;
+    margin-left: 0;
+    z-index: 9999;
+  }
+
+  .nav-active {
+    transform: translateY(-2%);
+  }
+
+  .uso__navburger {
+    display: block;
+    z-index: 9999;
+  }
+
+  .uso__navbar--links a {
+    font-size: 26px;
+  }
+
+  .uso__navbar--links {
+    padding-left: 0;
+  }
 }
 </style>
