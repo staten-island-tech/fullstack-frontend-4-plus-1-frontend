@@ -58,6 +58,11 @@ export default {
 
 .container {
   width: 60vw;
+  height: calc(100vh - 9.5rem);
   margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
