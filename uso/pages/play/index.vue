@@ -17,13 +17,13 @@
       <div class="play-beatmap-content">
         <div class="play-beatmap-set-container">
           <div
-            v-for="(beatmapSet, key) in beatmapSets"
+            v-for="(beatmapSet, key) in beatmapSetsTest"
             :key="key"
             class="play-beatmap-set"
           >
             <img
               class="beatmap-set-img"
-              :src="`/songs/${key}/${beatmapSet.bgImageURL}`"
+              :src="`/beatmaps/${key}/${beatmapSet.bgImageURL}`"
             />
             <p class="beatmap-set-title">{{ beatmapSet.title }}</p>
             <p class="beatmap-set-artist">{{ beatmapSet.artist }}</p>
@@ -62,7 +62,10 @@
 export default {
   data() {
     return {
-      beatmapSets: {
+      loaded: {
+        beatmaps: false,
+      },
+      beatmapSetsTest: {
         '134151 Hanatan - Airman ga Taosenai (SOUND HOLIC Ver)': {
           title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
           artist: 'Hanatan',
@@ -94,7 +97,32 @@ export default {
           bgImageURL: '49389130_p0.png',
         },
       },
+      beatmapSets: {},
     };
+  },
+
+  mounted() {
+    this.fetchBeatmaps();
+  },
+
+  methods: {
+    scriptsLoaded() {
+      // If ANY of the boolean values read false, the all scripts are NOT loaded.
+      // If NO boolean values read false, then all scritps are loaded.
+      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+
+      /* if (this.areAllLoaded) console.log('LOADED!'); */
+    },
+    fetchBeatmaps() {
+      fetch(`/beatmaps/beatmaps.json`)
+        .then((response) => (response = response.json()))
+        .then((data) => {
+          this.beatmapSets = data;
+
+          this.loaded.beatmaps = true;
+          this.scriptsLoaded();
+        });
+    },
   },
 };
 </script>
