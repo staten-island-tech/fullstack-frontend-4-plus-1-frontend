@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <!-- <nav-bar /> -->
+    <nav-bar />
     <nuxt />
   </div>
 </template>
 
 <script>
-/* import NavBar from '~/components/NavBar.vue' */
+import NavBar from '~/components/NavBar.vue';
 
 export default {
   components: {
-    /* NavBar, */
+    NavBar,
   },
   /* head() {
     return {
@@ -25,11 +25,10 @@ export default {
       ],
     }
   }, */
-}
+};
 </script>
 
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap');
 
 /* html {
@@ -44,7 +43,7 @@ body {
   font-size: 16px;
   line-height: 1.25;
   /* background-color: rgb(15, 15, 15); */
-  background-image: url("~/assets/images/backgrounds/background.png");
+  background-image: url('~/assets/images/backgrounds/background.png');
 }
 
 /*
