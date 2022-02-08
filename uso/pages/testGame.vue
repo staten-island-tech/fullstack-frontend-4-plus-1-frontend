@@ -108,7 +108,7 @@ export default {
       switch (this.latestHit) {
         case 300:
           return {
-            'font-size': '3rem',
+            'font-size': '10rem',
             background:
               'linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet)',
             'background-clip': 'text',

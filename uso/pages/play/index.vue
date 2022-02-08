@@ -123,7 +123,7 @@ export default {
 
 .play-title {
   margin: 0.5rem 0rem 0.5rem 1rem;
-  font-size: 2.5rem;
+  font-size: 4rem;
 }
 
 .song-search-form {
@@ -134,7 +134,7 @@ export default {
 }
 
 .song-search-form > input {
-  font-size: 1.5rem;
+  font-size: 2rem;
 
   background-color: black;
 
@@ -144,7 +144,7 @@ export default {
 
 .song-search-bar {
   width: 40vw;
-  height: 3rem;
+  height: 4rem;
 
   padding: 0 0 0 1rem;
 }
@@ -152,13 +152,13 @@ export default {
 .song-submit-button {
   width: 5vw;
   min-width: 4rem;
-  height: 3.25rem;
+  height: 4.25rem;
 }
 
 .play-beatmap-content {
   --content-width: 60vw;
   --beatmap-set-container-width: 45vw;
-  --sidebar: 20rem;
+  --sidebar: 30rem;
 
   width: var(--content-width);
 
@@ -179,8 +179,8 @@ export default {
 .play-beatmap-set {
   position: relative;
 
-  width: 16rem;
-  height: 9rem;
+  width: calc(16rem * 1.6);
+  height: calc(9rem * 1.6);
 
   border: 0.2rem solid white;
 
@@ -228,16 +228,16 @@ export default {
 }
 
 .beatmap-set-title {
-  font-size: 2rem;
+  font-size: 3rem;
 }
 
 .beatmap-set-artist {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
 }
 
 .play-sidebar {
   width: var(--sidebar);
-  min-height: 25rem;
+  min-height: 30rem;
 
   border: 0.2rem solid white;
 
@@ -261,13 +261,13 @@ export default {
 }
 
 .play-sidebar-text-container > * {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
 
   margin: 0 0 0 0.5rem;
 }
 
 .play-sidebar-text-title {
-  font-size: 3rem;
+  font-size: 4rem;
 }
 
 .play-sidebar-difficulties {
@@ -285,6 +285,6 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
 }
 </style>
