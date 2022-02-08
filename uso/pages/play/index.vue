@@ -1,6 +1,5 @@
 <template>
   <div id="play-index">
-    <nav-bar />
     <div class="play-content">
       <div class="play-title-textbox">
         <h1 class="play-title">Beatmaps</h1>
@@ -108,6 +107,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: calc(100vh - 9.5rem);
 }
 
 .play-content > * {
