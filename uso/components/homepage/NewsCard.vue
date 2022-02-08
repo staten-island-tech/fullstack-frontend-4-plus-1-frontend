@@ -21,16 +21,16 @@ export default {
           text: "Based on Miku's image, the Domino's App changes its appearance. A lot of music and illustrations produced by Domino's crew are here. From the menu to the order, it looks very cute, just like Miku. Once your pizza's delivered, have some fun with Miku! It comes with a social camera function and you can take various poses, pictures of Miku, very cool. And last, but not least, the live performance! Start the pizza stage live and point the camera towards the pizza box, and the pizza box will turn into a live dancing venue. A live performance of Luv4Night produced by Domino's crew! Here we go!",
         },
       ],
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped>
 .news-card {
   width: 100%;
   padding: 3.5rem;
-  margin: 3rem 0;
+  /* margin: 3rem 0; */
   background-color: #5b719fbb;
   border-radius: 1.5rem;
 }
