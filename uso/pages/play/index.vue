@@ -108,6 +108,10 @@ export default {
   flex-direction: column;
   align-items: center;
   height: calc(100vh - 9.5rem);
+  background-image: url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-position: center center; */
 }
 
 .play-content > * {
@@ -119,6 +123,7 @@ export default {
 
   border: 0.125rem solid gray;
   box-shadow: 0.4rem 0.4rem rgb(255, 255, 255, 0.5);
+  margin-top: 2rem;
 }
 
 .play-title {
@@ -191,6 +196,7 @@ export default {
   overflow: hidden;
 
   transition: 0.3s all;
+  background-image: url(~/assets/images/navigation/nav-bg.jpg);
 }
 
 .play-beatmap-set:hover {
