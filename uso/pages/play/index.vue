@@ -31,8 +31,8 @@
         </div>
         <div class="play-sidebar">
           <div class="play-sidebar-image-container">
-            <!-- <img src="/songs/533037 illion - AIWAGUMA/49389130_p0.png" /> -->
-            <img src="/songs/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
+            <!-- <img src="/beatmaps/533037 illion - AIWAGUMA/49389130_p0.png" /> -->
+            <img src="/beatmaps/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
           </div>
           <div class="play-sidebar-text-container">
             <p class="play-sidebar-text-title">Flower Dance</p>
@@ -62,9 +62,6 @@
 export default {
   data() {
     return {
-      loaded: {
-        beatmaps: false,
-      },
       beatmapSetsTest: {
         '134151 Hanatan - Airman ga Taosenai (SOUND HOLIC Ver)': {
           title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
@@ -98,29 +95,179 @@ export default {
         },
       },
       beatmapSets: {},
+      beatmapSetsData: {},
     };
   },
 
-  mounted() {
-    this.fetchBeatmaps();
+  async fetch() {
+    const data = await fetch('/beatmaps/beatmaps.json');
+    this.beatmapSets = await data.json();
+
+    Object.keys(this.beatmapSets).forEach((folder) => {
+      this.beatmapSets[folder].forEach((osz) => {
+        this.getBeatmapData(folder, osz);
+      });
+    });
   },
 
+  mounted() {},
+
   methods: {
-    scriptsLoaded() {
-      // If ANY of the boolean values read false, the all scripts are NOT loaded.
-      // If NO boolean values read false, then all scritps are loaded.
-      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+    getBeatmapData(folder, osz) {
+      const beatmap = {
+        general: {},
+        metadata: {},
+        colors: [],
+        events: [],
+        timingPoints: [],
+        hitObjects: [],
+        columns: null,
+      };
 
-      /* if (this.areAllLoaded) console.log('LOADED!'); */
-    },
-    fetchBeatmaps() {
-      fetch(`/beatmaps/beatmaps.json`)
-        .then((response) => (response = response.json()))
-        .then((data) => {
-          this.beatmapSets = data;
+      fetch(`/beatmaps/${folder}/${osz}`)
+        .then((response) => response.text())
+        .then((beatmapData) => {
+          // Split the data by line breaks into an array
+          const lines = beatmapData.replaceAll('\r', '').split('\n');
 
-          this.loaded.beatmaps = true;
-          this.scriptsLoaded();
+          // If it is NOT an osu file
+          if (!lines[0].includes('osu file format')) {
+            console.log('Not an osu file!');
+          } else {
+            // If it is an osu file but not the latest version
+            if (lines[0] !== 'osu file format v14') {
+              console.log(
+                `Carreful: The osu file version is: ${lines[0].match(
+                  '1[0-3]|[1-9]'
+                )}`
+              );
+            }
+
+            let section;
+            const xValues = [];
+
+            for (let i = 0; i < lines.length; i++) {
+              // removes whitespace at beginning/end of line
+              const line = lines[i].trim();
+
+              // "continue" terminates current iteration of for loop and starts new iteration
+              if (line === '') continue;
+              if (line.indexOf('//') === 0) continue;
+              if (line.indexOf('[') === 0) {
+                section = line;
+                continue;
+              }
+
+              let key, value, parts, t, hit, hitSample;
+
+              switch (section) {
+                case '[General]':
+                  key = line.slice(0, line.indexOf(':'));
+                  value = line.slice(line.indexOf(':') + 1).trim();
+                  if (isNaN(value)) {
+                    beatmap.general[key] = value;
+                  } else {
+                    //  the +_ operator converts "value" to a number
+                    beatmap.general[key] = +value;
+                  }
+                  break;
+                case '[Metadata]':
+                  key = line.slice(0, line.indexOf(':'));
+                  value = line.slice(line.indexOf(':') + 1).trim();
+                  beatmap.metadata[key] = value;
+                  break;
+                case '[Events]':
+                  beatmap.events.push(line.split(','));
+                  break;
+                case '[TimingPoints]':
+                  parts = line.split(',');
+                  t = {
+                    time: +parts[0],
+                    millisecondsPerBeat: +parts[1],
+                    beatsPerMeasure: +parts[2],
+                    sampleSet: +parts[3],
+                    sampleIndex: +parts[4],
+                    volume: +parts[5],
+                    uninherited: +parts[6],
+                    kiaiMode: +parts[7],
+                  };
+                  if (t.millisecondsPerBeat < 0) {
+                    t.uninherited = 0;
+                  }
+                  beatmap.timingPoints.push(t);
+                  break;
+                case '[HitObjects]':
+                  parts = line.split(',');
+
+                  // Columns are indexed 0.
+
+                  hit = {
+                    x: +parts[0],
+                    time: +parts[2],
+                    type: +parts[3],
+                    hitSound: +parts[4],
+                  };
+
+                  // Stores all possible x-values in order to calculate numColumns with array.length
+                  if (!xValues.includes(hit.x)) {
+                    xValues.push(hit.x);
+                  }
+
+                  // Decode specific hit object type
+                  switch (hit.type) {
+                    case 1:
+                    case 5:
+                      hit.type = 'note';
+
+                      hitSample = parts[5].split(':');
+
+                      hit.hitSample = {
+                        normalSet: +hitSample[0],
+                        additionSet: +hitSample[1],
+                        index: +hitSample[2],
+                        volume: +hitSample[3],
+                        filename: hitSample[4],
+                      };
+
+                      break;
+                    case 128: // hold
+                      hit.type = 'hold';
+
+                      hitSample = parts[5].split(':');
+
+                      hit.endTime = +hitSample[0];
+                      hit.hitSample = {
+                        normalSet: +hitSample[1],
+                        additionSet: +hitSample[2],
+                        index: +hitSample[3],
+                        volume: +hitSample[4],
+                        filename: hitSample[5],
+                      };
+
+                      break;
+                    default:
+                      // Unknown hit type
+                      console.log(
+                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`
+                      );
+                      break;
+                  }
+
+                  beatmap.hitObjects.push(hit);
+                  break;
+              }
+            }
+
+            // Calculates the number of columns in beatmap with the number of distinct x-values.
+            beatmap.columns = xValues.length;
+
+            // Calculates the column for each hit object
+            beatmap.hitObjects.forEach((hit) => {
+              hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
+            });
+          }
+
+          console.log(beatmap);
         });
     },
   },
