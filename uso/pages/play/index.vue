@@ -63,11 +63,6 @@ export default {
   data() {
     return {
       beatmapSetsTest: {
-        '134151 Hanatan - Airman ga Taosenai (SOUND HOLIC Ver)': {
-          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
-          artist: 'Hanatan',
-          bgImageURL: 'airmancutebg.jpg',
-        },
         '241526 Soleily - Renatus': {
           title: 'Renatus',
           artist: 'Soleily',
@@ -104,8 +99,10 @@ export default {
     this.beatmapSets = await data.json();
 
     Object.keys(this.beatmapSets).forEach((folder) => {
+      this.beatmapSetsData[folder] = [];
+
       this.beatmapSets[folder].forEach((osz) => {
-        this.getBeatmapData(folder, osz);
+        this.beatmapSetsData[folder].push(this.getBeatmapData(folder, osz));
       });
     });
   },
@@ -137,7 +134,7 @@ export default {
             // If it is an osu file but not the latest version
             if (lines[0] !== 'osu file format v14') {
               console.log(
-                `Carreful: The osu file version is: ${lines[0].match(
+                `Careful: The osu file version is ${lines[0].match(
                   '1[0-3]|[1-9]'
                 )}`
               );
@@ -164,12 +161,9 @@ export default {
                 case '[General]':
                   key = line.slice(0, line.indexOf(':'));
                   value = line.slice(line.indexOf(':') + 1).trim();
-                  if (isNaN(value)) {
-                    beatmap.general[key] = value;
-                  } else {
-                    //  the +_ operator converts "value" to a number
-                    beatmap.general[key] = +value;
-                  }
+
+                  //  the +_ operator converts "value" to a number
+                  beatmap.general[key] = isNaN(value) ? value : +value;
                   break;
                 case '[Metadata]':
                   key = line.slice(0, line.indexOf(':'));
@@ -178,6 +172,8 @@ export default {
                   break;
                 case '[Events]':
                   beatmap.events.push(line.split(','));
+                  console.log(line.split(','));
+
                   break;
                 case '[TimingPoints]':
                   parts = line.split(',');
@@ -266,9 +262,9 @@ export default {
               hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
             });
           }
-
-          console.log(beatmap);
         });
+      console.log(beatmap);
+      return beatmap;
     },
   },
 };
