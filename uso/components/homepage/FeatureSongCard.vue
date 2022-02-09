@@ -1,27 +1,48 @@
 <template>
-  <div class="feature-card">
-    <!-- <img
+  <NuxtLink :to="cardRoute">
+    <div
+      class="feature-card"
+      :style="{
+        background: `linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.491594) 24.73%, rgba(0, 0, 0, 0) 100%), url(${cardImg});`,
+      }"
+      <!--
+      GET
+      THIS
+      TO
+      WORK
+      --
+    >
+      >
+      <!-- <img
       src="~/assets/images/yoru-ni-kakeru.jpg"
       alt="Yoru ni Kakeru"
       class="feature-card-img"
     /> -->
-    <h2 class="card-header">
-      {{ cardType }}: {{ cardTitle }} - {{ cardArtist }}
-    </h2>
-  </div>
+      <h2 class="card-header">
+        {{ cardType }}: {{ cardTitle }} - {{ cardArtist }}
+      </h2>
+    </div>
+  </NuxtLink>
 </template>
 
 <script>
 export default {
   name: 'FeatureSongCard',
-  data() {
-    return {
-      cardType: 'Featured Map',
-      cardTitle: 'Yoru ni Kakeru',
-      cardArtist: 'YOASOBI',
-    }
+  props: {
+    cardType: { type: String, default: 'Featured Map' },
+    cardTitle: { type: String, default: '' },
+    cardArtist: { type: String, default: '' },
+    cardRoute: { type: String, default: '/play/song-not-found' },
+    cardImg: {
+      type: String,
+      default:
+        'https://steamuserimages-a.akamaihd.net/ugc/1758061978083459138/795D1B88F10FBF6BA70A54F2477DF95A8D1A36C6/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false',
+    },
   },
-}
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style scoped>
@@ -29,13 +50,13 @@ export default {
   width: 50rem;
   height: 27rem;
   margin: 1rem;
-  background: linear-gradient(
+  /*   background: linear-gradient(
       360deg,
       #000000 0%,
       rgba(0, 0, 0, 0.491594) 24.73%,
       rgba(0, 0, 0, 0) 100%
     ),
-    url('~/assets/images/yoru-ni-kakeru.jpg');
+    url('~/assets/images/yoru-ni-kakeru.jpg'); */
   border-radius: 1.2rem;
   background-size: cover;
   display: flex;
