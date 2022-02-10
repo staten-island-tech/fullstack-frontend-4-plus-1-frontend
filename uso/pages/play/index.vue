@@ -3,7 +3,7 @@
     <nav-bar />
     <div class="play-content">
       <div class="play-title-textbox">
-        <h1 class="play-title">Beatmaps</h1>
+        <h1 class="play-title">{{ hoveredBeatmapSetName }}</h1>
       </div>
 
       <form class="song-search-form">
@@ -20,9 +20,7 @@
             v-for="(oszArray, beatmapSetName) in beatmapSetsData"
             :key="beatmapSetName"
             class="play-beatmap-set"
-            v-on="beatmapEventHandlers"
             @click="hoveredBeatmapSetName = beatmapSetName"
-            @mouseleave="hoveredBeatmapSetName = null"
           >
             <img
               class="beatmap-set-img"
@@ -259,6 +257,10 @@ export default {
     },
     beatmapClickEvents() {
       console.log('HELLO');
+    },
+    test(beat) {
+      this.hoveredBeatmapSetName = beat;
+      console.log(this.hoveredBeatmapSetName);
     },
   },
 };
