@@ -15,23 +15,25 @@
         <input class="song-submit-button" type="submit" value="Search" />
       </form>
       <div class="play-beatmap-content">
-        <div class="play-beatmap-set-container">
+        <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
           <div
-            v-for="(beatmapSet, key) in beatmapSetsTest"
-            :key="key"
+            v-for="(oszArray, beatmapSetName) in beatmapSetsData"
+            :key="beatmapSetName"
             class="play-beatmap-set"
+            v-on="beatmapEventHandlers"
           >
             <img
               class="beatmap-set-img"
-              :src="`/beatmaps/${key}/${beatmapSet.bgImageURL}`"
+              :src="`/beatmaps/${beatmapSetName}/${oszArray[0].events[0][2]}`"
             />
-            <p class="beatmap-set-title">{{ beatmapSet.title }}</p>
-            <p class="beatmap-set-artist">{{ beatmapSet.artist }}</p>
+            <p class="beatmap-set-title">{{ oszArray[0].metadata.Title }}</p>
+            <p class="beatmap-set-artist">
+              {{ oszArray[0].metadata.Artist }}
+            </p>
           </div>
         </div>
         <div class="play-sidebar">
           <div class="play-sidebar-image-container">
-            <!-- <img src="/beatmaps/533037 illion - AIWAGUMA/49389130_p0.png" /> -->
             <img src="/beatmaps/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
           </div>
           <div class="play-sidebar-text-container">
@@ -62,35 +64,14 @@
 export default {
   data() {
     return {
-      beatmapSetsTest: {
-        '241526 Soleily - Renatus': {
-          title: 'Renatus',
-          artist: 'Soleily',
-          bgImageURL: 'machinetop_background.jpg',
-        },
-        '277421 Lindsey Stirling - Senbonzakura': {
-          title: 'Senbonzakura',
-          artist: 'Lindsey Stirling',
-          bgImageURL: '1645085.jpg',
-        },
-        '356253 ginkiha - Borealis': {
-          title: 'Borealis',
-          artist: 'ginkiha',
-          bgImageURL: '1.jpg',
-        },
-        '476691 DJ OKAWARI - Flower Dance': {
-          title: 'Flower Dance',
-          artist: 'DJ OKAWARI',
-          bgImageURL: 'BG.jpg',
-        },
-        '533037 illion - AIWAGUMA': {
-          title: 'AIWAGUMA',
-          artist: 'illion',
-          bgImageURL: '49389130_p0.png',
-        },
-      },
       beatmapSets: {},
       beatmapSetsData: {},
+      beatmapEventHandlers: {
+        mouseover: this.beatmapClickEvents,
+        mouseleave: this.beatmapClickEvents,
+
+        click: this.beatmapClickEvents,
+      },
     };
   },
 
@@ -155,7 +136,7 @@ export default {
                 continue;
               }
 
-              let key, value, parts, t, hit, hitSample;
+              let key, value, array, parts, t, hit, hitSample;
 
               switch (section) {
                 case '[General]':
@@ -171,8 +152,14 @@ export default {
                   beatmap.metadata[key] = value;
                   break;
                 case '[Events]':
-                  beatmap.events.push(line.split(','));
-                  console.log(line.split(','));
+                  array = line
+                    .replaceAll('"', '')
+                    .split(',')
+                    .map((e) => {
+                      return isNaN(e) ? e : +e;
+                    });
+
+                  beatmap.events.push(array);
 
                   break;
                 case '[TimingPoints]':
@@ -263,8 +250,11 @@ export default {
             });
           }
         });
-      console.log(beatmap);
+      // console.log(beatmap);
       return beatmap;
+    },
+    beatmapClickEvents() {
+      console.log('HELLO');
     },
   },
 };
