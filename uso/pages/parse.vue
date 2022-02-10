@@ -137,7 +137,7 @@ export default {
           break;
 
         default:
-          alert(`Dropbox event does not exist: ${event.type}`);
+          alert(`Dropbox event listener does not exist: ${event.type}`);
           break;
       }
     },

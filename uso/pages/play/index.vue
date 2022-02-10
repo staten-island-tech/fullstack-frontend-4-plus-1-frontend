@@ -3,7 +3,7 @@
     <nav-bar />
     <div class="play-content">
       <div class="play-title-textbox">
-        <h1 class="play-title">{{ hoveredBeatmapSetName }}</h1>
+        <h1 class="play-title">Beatmaps</h1>
       </div>
 
       <form class="song-search-form">
@@ -20,7 +20,9 @@
             v-for="(oszArray, beatmapSetName) in beatmapSetsData"
             :key="beatmapSetName"
             class="play-beatmap-set"
-            @click="hoveredBeatmapSetName = beatmapSetName"
+            @mouseover="beatmapClickEvents(beatmapSetName, $event)"
+            @mouseleave="beatmapClickEvents(beatmapSetName, $event)"
+            @click="beatmapClickEvents(beatmapSetName, $event)"
           >
             <img
               class="beatmap-set-img"
@@ -32,18 +34,40 @@
             </p>
           </div>
         </div>
-        <div class="play-sidebar">
+        <div v-if="currentBeatmapSetName" class="play-sidebar">
           <div class="play-sidebar-image-container">
-            <img src="/beatmaps/476691 DJ OKAWARI - Flower Dance/BG.jpg" />
+            <img
+              :src="`/beatmaps/${currentBeatmapSetName}/${
+                beatmapSetsData[`${currentBeatmapSetName}`][0].events[0][2]
+              }`"
+            />
           </div>
           <div class="play-sidebar-text-container">
-            <p class="play-sidebar-text-title">Flower Dance</p>
-            <p>Artist: DJ OKAWARI</p>
-            <p>Mapper: Narcissu</p>
+            <p class="play-sidebar-text-title">
+              {{
+                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Title
+              }}
+            </p>
+            <p>
+              Artist:
+              {{
+                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Artist
+              }}
+            </p>
+            <p>
+              Mapper:
+              {{
+                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Creator
+              }}
+            </p>
             <nuxt-link to="/leaderboard" class="">Leaderboard</nuxt-link>
           </div>
           <table class="play-sidebar-difficulties">
             <tbody>
+              <tr>
+                <th>CS' Normal</th>
+                <th>Difficulty: 2</th>
+              </tr>
               <tr>
                 <th>CS' Normal</th>
                 <th>Difficulty: 2</th>
@@ -66,12 +90,6 @@ export default {
     return {
       beatmapSets: {},
       beatmapSetsData: {},
-      beatmapEventHandlers: {
-        mouseover: this.beatmapClickEvents,
-        mouseleave: this.beatmapClickEvents,
-
-        click: this.beatmapClickEvents,
-      },
       hoveredBeatmapSetName: null,
       clickedBeatmapSetName: null,
     };
@@ -88,6 +106,14 @@ export default {
         this.beatmapSetsData[folder].push(this.getBeatmapData(folder, osz));
       });
     });
+  },
+
+  computed: {
+    currentBeatmapSetName() {
+      return this.hoveredBeatmapSetName
+        ? this.hoveredBeatmapSetName
+        : this.clickedBeatmapSetName;
+    },
   },
 
   mounted() {},
@@ -255,12 +281,25 @@ export default {
       // console.log(beatmap);
       return beatmap;
     },
-    beatmapClickEvents() {
-      console.log('HELLO');
-    },
-    test(beat) {
-      this.hoveredBeatmapSetName = beat;
-      console.log(this.hoveredBeatmapSetName);
+    beatmapClickEvents(beatmapName, event) {
+      switch (event.type) {
+        case 'mouseover':
+          this.hoveredBeatmapSetName = beatmapName;
+          break;
+
+        case 'mouseleave':
+          this.hoveredBeatmapSetName = null;
+
+          break;
+
+        case 'click':
+          this.clickedBeatmapSetName = beatmapName;
+          break;
+
+        default:
+          alert(`Dropbox event listener does not exist: ${event.type}`);
+          break;
+      }
     },
   },
 };
