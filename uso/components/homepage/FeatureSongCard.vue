@@ -3,16 +3,9 @@
     <div
       class="feature-card"
       :style="{
-        background: `linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.491594) 24.73%, rgba(0, 0, 0, 0) 100%), url(${cardImg});`,
+        backgroundImage: featureCardStyle,
       }"
-      <!--
-      GET
-      THIS
-      TO
-      WORK
-      --
     >
-      >
       <!-- <img
       src="~/assets/images/yoru-ni-kakeru.jpg"
       alt="Yoru ni Kakeru"
@@ -41,6 +34,11 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    featureCardStyle() {
+      return `linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.491594) 24.73%, rgba(0, 0, 0, 0) 100%), url(${this.cardImg});`;
+    },
   },
 };
 </script>
