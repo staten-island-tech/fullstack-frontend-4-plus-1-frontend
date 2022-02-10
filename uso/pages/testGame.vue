@@ -82,10 +82,17 @@ export default {
             this.scriptsLoaded();
           },
         },
-        {
-          src: 'https://code.createjs.com/1.0.0/soundjs.min.js',
+        // {
+        //   src: 'https://code.createjs.com/1.0.0/soundjs.min.js',
+        //   callback: () => {
+        //     this.areScriptsLoaded.soundjs = true;
+        //     this.scriptsLoaded();
+        //   },
+        // },
+         {
+          src: 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js',
           callback: () => {
-            this.areScriptsLoaded.soundjs = true;
+            this.areScriptsLoaded.howler = true;
             this.scriptsLoaded();
           },
         },
@@ -177,20 +184,37 @@ export default {
       /* ===============
           TICKER
           =============== */
-      createjs.Sound.on('fileload', handleLoadComplete);
-      createjs.Sound.alternateExtensions = ['mp3'];
-      createjs.Sound.registerSound({
-        src: '/music_test/file_example_MP3_2MG.mp3',
-        id: 'sound',
-      });
-      function handleLoadComplete(event) {
-        createjs.Sound.play('sound');
-      }
+
+
+  var sound = new Howl({
+  src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
+   autoplay: true,
+    volume: 0.3,
+  onplayerror: function() {
+    sound.once('unlock', function() {
+      sound.play();
+      
+    });
+  }
+});
+
+
+// window.onload = function() {
+//     let reloading = sessionStorage.getItem("reloading");
+//     if (reloading) {
+//         sessionStorage.removeItem("reloading");
+//     }
+// }
+
+// function reloadP() {
+//     sessionStorage.setItem("reloading", "true");
+//     sound.stop();
+//  sound.play();
+// }
+
+// reloadP()
       // I think we have to add sound when we click the route
-      window.onload = function () {
-        var context = new AudioContext();
-        context.resume();
-      };
+
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
       // Each tick is run 1/60 times per second
