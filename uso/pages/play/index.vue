@@ -1,4 +1,7 @@
 <template>
+
+<div>
+  <div class="under-nav"></div>
   <div id="play-index">
     <div class="play-content">
       <div class="play-title-textbox">
@@ -55,6 +58,8 @@
       </div>
     </div>
   </div>
+</div>
+
 </template>
 
 <script>
@@ -99,6 +104,11 @@ export default {
 </script>
 
 <style scoped>
+
+.under-nav {
+  height: 9.5rem;
+}
+
 .play-index {
   width: 100vw;
 }

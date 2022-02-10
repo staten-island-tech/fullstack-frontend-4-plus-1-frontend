@@ -201,6 +201,8 @@ export default {
 /* Body */
 
 .uso__navbar--body {
+  position: fixed;
+  width: 100%;
   background-image: linear-gradient(
       rgba(13, 4, 66, 0.7),
       rgba(39, 15, 112, 0.7)
