@@ -21,6 +21,8 @@
             :key="beatmapSetName"
             class="play-beatmap-set"
             v-on="beatmapEventHandlers"
+            @click="hoveredBeatmapSetName = beatmapSetName"
+            @mouseleave="hoveredBeatmapSetName = null"
           >
             <img
               class="beatmap-set-img"
@@ -72,6 +74,8 @@ export default {
 
         click: this.beatmapClickEvents,
       },
+      hoveredBeatmapSetName: null,
+      clickedBeatmapSetName: null,
     };
   },
 
