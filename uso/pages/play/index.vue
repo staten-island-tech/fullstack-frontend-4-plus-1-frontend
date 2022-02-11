@@ -17,16 +17,16 @@
       <div class="play-beatmap-content">
         <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
           <div
-            v-for="(oszArray, beatmapSetName) in beatmapSetsData"
-            :key="beatmapSetName"
+            v-for="(oszArray, bmSetName) in bmSetsData"
+            :key="bmSetName"
             class="play-beatmap-set"
-            @mouseover="beatmapClickEvents(beatmapSetName, $event)"
-            @mouseleave="beatmapClickEvents(beatmapSetName, $event)"
-            @click="beatmapClickEvents(beatmapSetName, $event)"
+            @mouseover="bmClickEvents(bmSetName, $event)"
+            @mouseleave="bmClickEvents(bmSetName, $event)"
+            @click="bmClickEvents(bmSetName, $event)"
           >
             <img
               class="beatmap-set-img"
-              :src="`/beatmaps/${beatmapSetName}/${oszArray[0].events[0][2]}`"
+              :src="`/beatmaps/${bmSetName}/${oszArray[0].events[0][2]}`"
             />
             <p class="beatmap-set-title">{{ oszArray[0].metadata.Title }}</p>
             <p class="beatmap-set-artist">
@@ -34,47 +34,38 @@
             </p>
           </div>
         </div>
-        <div v-if="currentBeatmapSetName" class="play-sidebar">
+        <div v-if="currentBmSetName" class="play-sidebar">
           <div class="play-sidebar-image-container">
             <img
-              :src="`/beatmaps/${currentBeatmapSetName}/${
-                beatmapSetsData[`${currentBeatmapSetName}`][0].events[0][2]
+              :src="`/beatmaps/${currentBmSetName}/${
+                bmSetsData[`${currentBmSetName}`][0].events[0][2]
               }`"
             />
           </div>
           <div class="play-sidebar-text-container">
             <p class="play-sidebar-text-title">
-              {{
-                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Title
-              }}
+              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
             </p>
             <p>
               Artist:
-              {{
-                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Artist
-              }}
+              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
             </p>
             <p>
               Mapper:
-              {{
-                beatmapSetsData[`${currentBeatmapSetName}`][0].metadata.Creator
-              }}
+              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
             </p>
             <nuxt-link to="/leaderboard" class="">Leaderboard</nuxt-link>
           </div>
           <table class="play-sidebar-difficulties">
             <tbody>
-              <tr>
-                <th>CS' Normal</th>
+              <tr
+                v-for="(bmDifficulty, index) in bmSetsData[
+                  `${currentBmSetName}`
+                ]"
+                :key="index"
+              >
+                <th></th>
                 <th>Difficulty: 2</th>
-              </tr>
-              <tr>
-                <th>CS' Normal</th>
-                <th>Difficulty: 2</th>
-              </tr>
-              <tr>
-                <th>CS' Hard</th>
-                <th>Difficulty: 3</th>
               </tr>
             </tbody>
           </table>
@@ -88,38 +79,38 @@
 export default {
   data() {
     return {
-      beatmapSets: {},
-      beatmapSetsData: {},
-      hoveredBeatmapSetName: null,
-      clickedBeatmapSetName: null,
+      bmSets: {},
+      bmSetsData: {},
+      hoveredBmSetName: null,
+      clickedBmSetName: null,
     };
   },
 
   async fetch() {
     const data = await fetch('/beatmaps/beatmaps.json');
-    this.beatmapSets = await data.json();
+    this.bmSets = await data.json();
 
-    Object.keys(this.beatmapSets).forEach((folder) => {
-      this.beatmapSetsData[folder] = [];
+    Object.keys(this.bmSets).forEach((folder) => {
+      this.bmSetsData[folder] = [];
 
-      this.beatmapSets[folder].forEach((osz) => {
-        this.beatmapSetsData[folder].push(this.getBeatmapData(folder, osz));
+      this.bmSets[folder].forEach((osz) => {
+        this.bmSetsData[folder].push(this.getBmData(folder, osz));
       });
     });
   },
 
   computed: {
-    currentBeatmapSetName() {
-      return this.hoveredBeatmapSetName
-        ? this.hoveredBeatmapSetName
-        : this.clickedBeatmapSetName;
+    currentBmSetName() {
+      return this.hoveredBmSetName
+        ? this.hoveredBmSetName
+        : this.clickedBmSetName;
     },
   },
 
   mounted() {},
 
   methods: {
-    getBeatmapData(folder, osz) {
+    getBmData(folder, osz) {
       const beatmap = {
         general: {},
         metadata: {},
@@ -281,19 +272,19 @@ export default {
       // console.log(beatmap);
       return beatmap;
     },
-    beatmapClickEvents(beatmapName, event) {
+    bmClickEvents(bmName, event) {
       switch (event.type) {
         case 'mouseover':
-          this.hoveredBeatmapSetName = beatmapName;
+          this.hoveredBmSetName = bmName;
           break;
 
         case 'mouseleave':
-          this.hoveredBeatmapSetName = null;
+          this.hoveredBmSetName = null;
 
           break;
 
         case 'click':
-          this.clickedBeatmapSetName = beatmapName;
+          this.clickedBmSetName = bmName;
           break;
 
         default:
