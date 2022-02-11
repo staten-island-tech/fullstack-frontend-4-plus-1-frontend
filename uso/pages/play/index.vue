@@ -47,8 +47,7 @@
               {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
             </p>
             <p>
-              Artist:
-              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+              Artist: {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
             </p>
             <p>
               Mapper:
@@ -64,8 +63,8 @@
                 ]"
                 :key="index"
               >
-                <th></th>
-                <th>Difficulty: 2</th>
+                <th>{{ bmDifficulty.metadata.Version }}</th>
+                <th>Difficulty: ???</th>
               </tr>
             </tbody>
           </table>
@@ -83,12 +82,15 @@ export default {
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
+
+      osuClientSecret: process.env.OSU_CLIENT_SECRET,
+      authToken: null,
     };
   },
 
   async fetch() {
-    const data = await fetch('/beatmaps/beatmaps.json');
-    this.bmSets = await data.json();
+    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
+    this.bmSets = await beatmapsData.json();
 
     Object.keys(this.bmSets).forEach((folder) => {
       this.bmSetsData[folder] = [];
@@ -97,6 +99,25 @@ export default {
         this.bmSetsData[folder].push(this.getBmData(folder, osz));
       });
     });
+
+    /* const authToken = await this.$http.$post(
+      'https://osu.ppy.sh/oauth/token',
+      {
+        client_id: 12690,
+        client_secret: this.osuClientSecret,
+        grant_type: 'client_credentials',
+        scope: 'public',
+      },
+      {
+        mode: 'no-cors',
+        headers: JSON.stringify({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      }
+    );
+
+    console.log(authToken); */
   },
 
   computed: {
