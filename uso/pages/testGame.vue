@@ -92,7 +92,7 @@ export default {
          {
           src: 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js',
           callback: () => {
-            this.areScriptsLoaded.howler = true;
+            this.loaded.howler = true;
             this.scriptsLoaded();
           },
         },
@@ -186,33 +186,27 @@ export default {
           =============== */
 
 
+//   var sound = new Howl({
+//   src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
+//    autoplay: true,
+//     volume: 0.3,
+//   onplayerror: function() {
+//     sound.once('unlock', function() {
+     
+      
+//     });
+//   }
+// });
+
   var sound = new Howl({
   src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
    autoplay: true,
     volume: 0.3,
-  onplayerror: function() {
-    sound.once('unlock', function() {
-      sound.play();
-      
-    });
-  }
 });
 
 
-// window.onload = function() {
-//     let reloading = sessionStorage.getItem("reloading");
-//     if (reloading) {
-//         sessionStorage.removeItem("reloading");
-//     }
-// }
 
-// function reloadP() {
-//     sessionStorage.setItem("reloading", "true");
-//     sound.stop();
-//  sound.play();
-// }
 
-// reloadP()
       // I think we have to add sound when we click the route
 
 
