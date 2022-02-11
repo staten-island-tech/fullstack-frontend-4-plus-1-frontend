@@ -44,6 +44,9 @@ import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 export default {
   components: { FeatureSongCard, NewsCard },
+  /*   updated() {
+    this.$forceUpdate();
+  }, */
 };
 </script>
 
