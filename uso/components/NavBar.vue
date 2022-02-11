@@ -209,6 +209,7 @@ export default {
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
+  z-index: 99;
 
   /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
 
