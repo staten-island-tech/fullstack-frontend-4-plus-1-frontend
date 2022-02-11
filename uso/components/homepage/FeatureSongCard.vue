@@ -63,7 +63,7 @@ export default {
   padding: 2rem 2rem 1.6rem 2rem;
 }
 .card-header {
-  z-index: 3;
+  z-index: 0;
 } /* MAKE THIS SHOW AND WORK ON THE REST OF THE SECTION */
 
 /* .feature-card-img {
