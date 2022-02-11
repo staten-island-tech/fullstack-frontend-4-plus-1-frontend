@@ -64,7 +64,7 @@
                 :key="index"
               >
                 <th>{{ bmDifficulty.metadata.Version }}</th>
-                <th>Difficulty: ???</th>
+                <th>??? notes/s</th>
               </tr>
             </tbody>
           </table>
@@ -84,7 +84,6 @@ export default {
       clickedBmSetName: null,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
-      authToken: null,
     };
   },
 
@@ -99,25 +98,6 @@ export default {
         this.bmSetsData[folder].push(this.getBmData(folder, osz));
       });
     });
-
-    /* const authToken = await this.$http.$post(
-      'https://osu.ppy.sh/oauth/token',
-      {
-        client_id: 12690,
-        client_secret: this.osuClientSecret,
-        grant_type: 'client_credentials',
-        scope: 'public',
-      },
-      {
-        mode: 'no-cors',
-        headers: JSON.stringify({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      }
-    );
-
-    console.log(authToken); */
   },
 
   computed: {
@@ -480,6 +460,10 @@ export default {
 
 .play-sidebar-text-container > * {
   font-size: 2.5rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   margin: 0 0 0 0.5rem;
 }

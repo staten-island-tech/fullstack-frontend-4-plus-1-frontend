@@ -29,7 +29,6 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxtjs/dotenv',
-    '@nuxt/http',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
