@@ -12,9 +12,22 @@
             card-img="https://steamuserimages-a.akamaihd.net/ugc/1758061978083459138/795D1B88F10FBF6BA70A54F2477DF95A8D1A36C6/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false"
           />
           <feature-song-card
-            card-title="Yoru ni Kakeru"
-            card-artist="YOASOBI"
-            card-route="/play/YOASOBI-yoru-ni-kakeru"
+            card-title="Unravel"
+            card-artist="Toru Kitajima"
+            card-route="/play/toru-kitajima-unravel"
+            card-img="https://i.pinimg.com/736x/47/50/49/47504980e845df1adc7677e8fa09e44c--kaneki-wallpaper-tokyo-ghoul.jpg"
+          />
+          <feature-song-card
+            card-title="Brave Shine"
+            card-artist="Aimer"
+            card-route="/play/aimer-brave-shine"
+            card-img="https://images5.alphacoders.com/470/thumb-1920-470240.jpg"
+          />
+          <feature-song-card
+            card-title="Dawn Blue"
+            card-artist="Mori Calliope"
+            card-route="/play/mori-calliope-dawn-blue"
+            card-img="https://images.alphacoders.com/111/thumb-1920-1113744.png"
           />
         </section>
         <section class="news home-section">
