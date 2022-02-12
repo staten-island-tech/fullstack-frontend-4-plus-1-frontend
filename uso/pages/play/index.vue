@@ -7,17 +7,34 @@
     <div id="play-index">
       <div class="play-content">
         <div class="play-title-textbox">
-          <h1 class="play-title">Beatmaps</h1>
+          <h1 class="play-title">♪♬ beatmaps listing</h1>
         </div>
 
-        <form class="song-search-form">
+        <!-- <form class="song-search-form">
           <input
             class="song-search-bar"
             type="text"
             placeholder="EPIC SEARCH BAR"
           />
           <input class="song-submit-button" type="submit" value="Search" />
-        </form>
+        </form> -->
+
+        <div class="search-container">
+
+            <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
+              <div class="input">
+                <!-- <input type="text" placeholder="Search..." id="searchText"> -->
+                <input
+                  v-model="searchQuery"
+                  type="text"
+                  class="search-area"
+                  placeholder="Search for your song... fix this garbage search area later lmao"
+                  style="font-size: 3.5rem"
+                />
+              </div>
+              <span class="deleteText" @click="searchQuery = ''"><img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" /></span>
+            </form>
+        </div>
 
         <div class="play-beatmap-content">
           <div class="play-beatmap-set-container">
@@ -75,12 +92,45 @@
 export default {
   data() {
     return {
+      searchQuery: "",
       beatmapSets: {
         '134151 Hanatan - Airman ga Taosenai (SOUND HOLIC Ver)': {
           title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
           artist: 'Hanatan',
           bgImageURL: 'airmancutebg.jpg',
         },
+
+        '1': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        '2': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        '3': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        '4': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        '5': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        '6': {
+          title: 'Airman ga Taosenai (SOUND HOLIC Ver)',
+          artist: 'Hanatan',
+          bgImageURL: 'airmancutebg.jpg',
+        },
+        
         '241526 Soleily - Renatus': {
           title: 'Renatus',
           artist: 'Soleily',
@@ -109,11 +159,23 @@ export default {
       },
     };
   },
+
+  mounted() {}
+
 };
 
 </script>
 
 <style scoped>
+
+*, .beatmaps__content--body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Dongle', sans-serif;
+}
+
+/* Beatmaps Title */
 
 .under-nav {
   height: 9.5rem;
@@ -128,29 +190,90 @@ export default {
   flex-direction: column;
   align-items: center;
   height: calc(100vh - 9.5rem);
-  background-image: linear-gradient(rgba(56, 42, 97, 0.7), rgba(45, 39, 83, 0.7)), url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-image: linear-gradient(rgba(75, 69, 107, 0.7), rgba(45, 39, 83, 0.7)), url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  /* background-position: center center; */
-}
-
-.play-content > * {
-  margin-bottom: 2rem;
 }
 
 .play-title-textbox {
-  width: 60vw;
-  border: 0.125rem solid gray;
-  box-shadow: 0.4rem 0.4rem rgb(255, 255, 255, 0.5);
+  width: 55vw;
   margin-top: 2rem;
+  background-color: rgb(42, 34, 63);
 }
 
 .play-title {
-  margin: 0.5rem 0rem 0.5rem 1rem;
-  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #f6f6f6;
+  height: 5.5rem;
+  margin: 0.5rem 1rem 0.5rem 3.5rem;
+  padding-top: 0.5rem;
 }
 
-.song-search-form {
+/* Search Container */
+
+.search-container {
+  width: 55vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.5rem;
+  background-image: linear-gradient(rgba(49, 45, 58, 0.7), rgba(49, 45, 58, 0.7)), url('~/assets/images/backgrounds/enkanomiya-blurred.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.search-bar {
+  position: relative;
+  color: #f6f6f6;
+  width: 54.5vw;
+  height: 5rem;
+  margin: 0.4rem 0rem;
+  border-radius: 0rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  background-color: rgb(49, 45, 58);
+}
+
+.search-bar .input {
+  position: relative;
+  width: 52vw;
+  height: 3.75rem;
+  left: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar .input input {
+  position: absolute;
+  top: 25%;
+  color: #f6f6f6;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 2.25rem;
+  font-weight: 400;
+  background-color: rgba(49, 45, 58, 0.7);
+}
+
+.deleteText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+}
+
+.search-icon {
+  filter: invert(1);
+  width: 2rem;
+}
+
+/* .song-search-form {
   width: 60vw;
   display: flex;
   justify-content: center;
@@ -159,7 +282,6 @@ export default {
 .song-search-form > input {
   font-size: 1.5rem;
   background-color: black;
-  border: 0.125rem solid gray;
   margin: 0 1rem;
 }
 
@@ -173,15 +295,18 @@ export default {
   width: 5vw;
   min-width: 4rem;
   height: 3.25rem;
-}
+} */
+
+/* Beatmap Content */
 
 .play-beatmap-content {
-  --content-width: 60vw;
+  --content-width: 55vw;
   --beatmap-set-container-width: 45vw;
   --sidebar: 20rem;
   width: var(--content-width);
   display: flex;
   align-items: flex-start;
+  margin-top: 2rem;
 }
 
 .play-beatmap-set-container {
