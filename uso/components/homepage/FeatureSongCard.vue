@@ -32,6 +32,7 @@ export default {
         'https://steamuserimages-a.akamaihd.net/ugc/1758061978083459138/795D1B88F10FBF6BA70A54F2477DF95A8D1A36C6/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false',
     },
   },
+
   data() {
     return {};
   },
@@ -39,6 +40,12 @@ export default {
     featureCardStyle() {
       return `linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.491594) 24.73%, rgba(0, 0, 0, 0) 100%), url(${this.cardImg});`;
     },
+  },
+  watch: {
+    $route() {
+      /* location.reload(); */
+      /* this.$nuxt.refresh(); */
+    } /* USE THIS.ROUTER.PUSH TO TRY TO REFRESH PAGE */,
   },
 };
 </script>
