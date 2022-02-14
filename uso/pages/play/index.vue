@@ -10,20 +10,23 @@
           <h1 class="play-title">♪♬ beatmaps listing</h1>
         </div>
 
-        <!-- <form class="song-search-form">
-          <input
-            class="song-search-bar"
-            type="text"
-            placeholder="EPIC SEARCH BAR"
-          />
-          <input class="song-submit-button" type="submit" value="Search" />
-        </form> -->
-
         <div class="search-container">
 
-            <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
+          <form class="song-search-form" @submit.prevent="getSearchData(searchQuery)">
+            <input
+              v-model="searchQuery"
+              class="song-search-bar"
+              type="text"
+              placeholder="Search for your song... fix this garbage search area later lmao"
+            />
+            <input class="song-submit-button" type="submit" value="" />
+              <span class="deleteText" @click="searchQuery = ''">
+                <img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" />
+              </span>
+          </form>
+
+            <!-- <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
               <div class="input">
-                <!-- <input type="text" placeholder="Search..." id="searchText"> -->
                 <input
                   v-model="searchQuery"
                   type="text"
@@ -33,7 +36,8 @@
                 />
               </div>
               <span class="deleteText" @click="searchQuery = ''"><img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" /></span>
-            </form>
+            </form> -->
+            
         </div>
 
         <div class="play-beatmap-content">
@@ -219,12 +223,60 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3.5rem;
+  padding: 2.5rem;
   background-image: linear-gradient(rgba(49, 45, 58, 0.7), rgba(49, 45, 58, 0.7)), url('~/assets/images/backgrounds/enkanomiya-blurred.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
 }
+
+.deleteText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+}
+
+.search-icon {
+  filter: invert(1);
+  width: 2rem;
+}
+
+.song-search-form {
+  width: 60vw;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.song-search-form > input {
+  font-size: 2.5rem;
+  /* margin: 0 1rem; */
+  height: 5vh;
+
+  overflow: hidden;
+  background-color: rgb(49, 45, 58);
+  border-radius: 0rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+  border: none;
+  outline: none;
+}
+
+.song-search-bar {
+  width: 45vw;
+  height: 3rem;
+  padding: 0.25rem 0 0 1.25rem;
+}
+
+.song-submit-button {
+  width: 5vw;
+  min-width: 4rem;
+  height: 3rem;
+  padding: 1rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+}
+
+/*
 
 .search-bar {
   position: relative;
@@ -259,42 +311,6 @@ export default {
   font-size: 2.25rem;
   font-weight: 400;
   background-color: rgba(49, 45, 58, 0.7);
-}
-
-.deleteText {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 1rem;
-}
-
-.search-icon {
-  filter: invert(1);
-  width: 2rem;
-}
-
-/* .song-search-form {
-  width: 60vw;
-  display: flex;
-  justify-content: center;
-}
-
-.song-search-form > input {
-  font-size: 1.5rem;
-  background-color: black;
-  margin: 0 1rem;
-}
-
-.song-search-bar {
-  width: 40vw;
-  height: 3rem;
-  padding: 0 0 0 1rem;
-}
-
-.song-submit-button {
-  width: 5vw;
-  min-width: 4rem;
-  height: 3.25rem;
 } */
 
 /* Beatmap Content */
