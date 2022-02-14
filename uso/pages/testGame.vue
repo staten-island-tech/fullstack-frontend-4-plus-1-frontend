@@ -1,5 +1,6 @@
 <template>
   <div id="test-game-index">
+    <button @click.once="init" class="button">BUTTTON</button>
     <div
       class="canvas-container"
       :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
@@ -60,7 +61,7 @@ export default {
       beatmapData: {},
       notes: [],
       beatmapIntro: 25000,
-
+oneButtonClick: true,
       latestHit: null,
     };
   },
@@ -82,13 +83,13 @@ export default {
             this.scriptsLoaded();
           },
         },
-        // {
-        //   src: 'https://code.createjs.com/1.0.0/soundjs.min.js',
-        //   callback: () => {
-        //     this.areScriptsLoaded.soundjs = true;
-        //     this.scriptsLoaded();
-        //   },
-        // },
+        {
+          src: 'https://code.createjs.com/1.0.0/easeljs.min.js',
+          callback: () => {
+            this.loaded .easeljs = true;
+            this.scriptsLoaded();
+          },
+        },
          {
           src: 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js',
           callback: () => {
@@ -150,7 +151,7 @@ export default {
       // If NO boolean values read false, then all scritps are loaded.
       this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
 
-      if (this.areAllLoaded) this.init();
+   // if (this.areAllLoaded) // {this.init();}
     },
     fetchBeatmap(
       beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
@@ -161,11 +162,23 @@ export default {
           this.beatmapData = data;
           this.notes = data.hitObjects;
           this.loaded.beatmap = true;
+          //this.src name of song data
           this.scriptsLoaded();
         });
     },
     init() {
-      const t = this;
+
+      //if(this.oneButtonClick === true) {
+          let sound = new Howl({
+  src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
+   autoplay: true,
+    volume: 0.3,
+});
+
+sound.play();
+        const t = this;
+       // t.oneButtonClick = false;
+
 
       let firstValY = 0;
       let lastValY = 0;
@@ -198,11 +211,7 @@ export default {
 //   }
 // });
 
-  var sound = new Howl({
-  src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
-   autoplay: true,
-    volume: 0.3,
-});
+
 
 
 
@@ -423,7 +432,8 @@ export default {
         const circleGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
-          .drawCircle(50, -t.radius, t.radius);
+          .drawCircle(50, -t.radius, t.radius); 
+          
 
         const sliderGraphic = new createjs.Graphics()
           .beginStroke('Black')
@@ -442,19 +452,24 @@ export default {
         const thisCircle = new createjs.Shape(circleGraphic);
         const thisSlider = new createjs.Shape(sliderGraphic);
 
+
+          thisCircle.cache(0, -85, 120, 120); 
+
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
 
-        if (note.type === 'note') {
-          t.columnContainers[note.columnIndex].addChild(thisCircle);
+        if (note.type === 'note') { 
+            setTimeout(() => {t.columnContainers[note.columnIndex].addChild(thisCircle);
+        //  t.columnContainers[note.columnIndex].addChild(thisCircle);
           // Creates the circle "template" for later use to initialize a shape
           // Sets the delay before the notes animate (or before the notes drop)
-          createjs.Tween.get(thisCircle, { onComplete: animateCircle }).wait(
-            note.time -
-              t.beatmapIntro -
-              (6860 * (650 / 700) + 6860) / t.scrollSpeed
-          );
+          createjs.Tween.get(thisCircle, { onComplete: animateCircle })//.wait(
+            //  note.time -
+            //    t.beatmapIntro -
+            //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
+         // );
           function animateCircle() {
+            
             /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus this function is run every tick)
@@ -479,8 +494,12 @@ export default {
 
               // Remove circle from stage
               t.columnContainers[note.columnIndex].removeChild(thisCircle);
+
             }
-          }
+          }},     note.time -
+               t.beatmapIntro -
+              (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+
         } else if (note.type === 'hold') {
           sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
@@ -488,14 +507,10 @@ export default {
           //console.log(sliderHeight);
 
           // Creates the slider "template" for later use to initialize a shape
-          t.columnContainers[note.columnIndex].addChild(thisSlider);
-          createjs.Tween.get(thisSlider, { onComplete: animate }).wait(
-            note.time -
-              t.beatmapIntro -
-              (6860 * (650 / 700) + 6860) / t.scrollSpeed
-          );
+           // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
+           setTimeout(() => { createjs.Tween.get(thisSlider, { onComplete: animate1 })
 
-          function animate() {
+          function animate1() {
             /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus t function is run every tick)
@@ -503,11 +518,11 @@ export default {
             */
             createjs.Tween.get(thisSlider, {
               useTicks: true,
-              onChange: onChange,
-              onComplete: animate,
+              onChange: onChange1,
+              onComplete: animate1,
             }).to({ y: thisSlider.y + t.dy }, 1);
           }
-          function onChange() {
+          function onChange1() {
             // while (h / (scrollSpeed * 1000 * canvasHeight) /
             // (60 * (6860 * (650 / 700) + 6860))) {
             //   noteType = "hold";
@@ -516,21 +531,31 @@ export default {
             if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
               t.columnContainers[note.columnIndex].removeChild(thisSlider);
             }
-          }
+          }},note.time -
+              t.beatmapIntro -
+              (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+        
         } else {
           console.log(`Invalid note type: ${note.type}`);
         }
       });
+   // }
     },
   },
 };
 </script>
 
 <style scoped>
+.button {
+  height: 20vh;
+  width: 20vw;
+  color: black;
+  font-size: 3rem;
+}
 #test-game-index {
   width: 100vw;
   height: 100vh;
-
+background-color: wheat;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
