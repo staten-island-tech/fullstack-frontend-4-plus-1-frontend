@@ -57,7 +57,7 @@ export default {
   /* max-width: 100%; */
 
   height: calc(100vh - 9.5rem);
-  background-image: url('./assets/images/backgrounds/landing-page-background-inazuma.jpg');
+  background-image: url('./assets/images/backgrounds/landing.png');
 
   background-size: cover;
   background-repeat: no-repeat;

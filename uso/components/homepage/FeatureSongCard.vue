@@ -3,7 +3,9 @@
     <div
       class="feature-card"
       :style="{
-        backgroundImage: featureCardStyle,
+        background: 'url(' + cardImg + ')',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
       }"
     >
       <!-- <img
@@ -11,9 +13,11 @@
       alt="Yoru ni Kakeru"
       class="feature-card-img"
     /> -->
-      <h2 class="card-header">
-        {{ cardType }}: {{ cardTitle }} - {{ cardArtist }}
-      </h2>
+      <div class="feature-card-text">
+        <h2 class="card-header">
+          {{ cardType }}: {{ cardTitle }} - {{ cardArtist }}
+        </h2>
+      </div>
     </div>
   </NuxtLink>
 </template>
@@ -37,9 +41,9 @@ export default {
     return {};
   },
   computed: {
-    featureCardStyle() {
+    /* featureCardStyle() {
       return `linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0.491594) 24.73%, rgba(0, 0, 0, 0) 100%), url(${this.cardImg});`;
-    },
+    }, */
   },
   watch: {
     $route() {
@@ -67,11 +71,27 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+}
+
+.feature-card-text {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(
+    360deg,
+    #000000 0%,
+    rgba(0, 0, 0, 0.491594) 24.73%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
+  border-radius: 1.2rem;
   padding: 2rem 2rem 1.6rem 2rem;
 }
 .card-header {
   z-index: 0;
-} /* MAKE THIS SHOW AND WORK ON THE REST OF THE SECTION */
+}
 
 /* .feature-card-img {
   width: 100%;
