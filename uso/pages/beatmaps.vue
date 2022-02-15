@@ -53,7 +53,13 @@
               Mapper:
               {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
             </p>
-            <nuxt-link to="/leaderboard" class="">Leaderboard</nuxt-link>
+            <nuxt-link
+              :to="`/leaderboard/${
+                bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
+              }`"
+              class=""
+              >Leaderboard</nuxt-link
+            >
           </div>
           <table class="play-sidebar-difficulties">
             <tbody>

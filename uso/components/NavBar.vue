@@ -18,7 +18,9 @@
             <nuxt-link to="/beatmaps" class="uso__links">beatmaps</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/leaderboard" class="uso__links">rankings</nuxt-link>
+            <nuxt-link to="/leaderboard" class="uso__links"
+              >leaderboard</nuxt-link
+            >
           </li>
           <li>
             <nuxt-link to="/community" class="uso__links">community</nuxt-link>
