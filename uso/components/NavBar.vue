@@ -213,6 +213,7 @@ export default {
   filter: hue-rotate(0deg);
   z-index: 99;
 
+  z-index: 99;
   /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
 
   /* filter: hue-rotate(255deg) saturate(.6); */

@@ -25,7 +25,19 @@ p {
   line-height: 2.4rem;
 }
 
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* section {
   margin-bottom: 5rem;
 } */
 /* MARGIN AFTER EACH SECTION */
+
+.under-nav {
+  height: 9.5rem;
+}
