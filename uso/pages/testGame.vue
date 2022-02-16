@@ -454,6 +454,7 @@ sound.play();
 
 
           thisCircle.cache(0, -85, 120, 120); 
+        //   thisCircle.cache(0, -85, 120, 120); 
 
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
