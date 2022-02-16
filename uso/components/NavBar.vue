@@ -2,7 +2,7 @@
   <div class="uso__navbar--body">
     <nav class="uso__navbar">
       <div class="uso__logolinks--container">
-        <nuxt-link to="/" class="uso__logo">
+        <nuxt-link to="/home" class="uso__logo">
           <img
             class="uso__logo--hover"
             src="~/assets/images/navigation/osu-white.svg"
@@ -12,7 +12,7 @@
 
         <ul class="uso__navbar--links">
           <li>
-            <nuxt-link to="/" class="uso__links">home</nuxt-link>
+            <nuxt-link to="/home" class="uso__links">home</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/beatmaps" class="uso__links">beatmaps</nuxt-link>
@@ -203,12 +203,15 @@ export default {
 /* Body */
 
 .uso__navbar--body {
+  position: fixed;
+  width: 100%;
   background-image: linear-gradient(
       rgba(13, 4, 66, 0.7),
       rgba(39, 15, 112, 0.7)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
+  z-index: 99;
 
   /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
 
