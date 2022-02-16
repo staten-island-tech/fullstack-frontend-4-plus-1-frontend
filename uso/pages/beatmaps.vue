@@ -1,79 +1,110 @@
 <template>
-  <div id="play-index">
-    <nav-bar />
-    <div class="play-content">
-      <div class="play-title-textbox">
-        <h1 class="play-title">Beatmaps</h1>
-      </div>
+  <div class="beatmaps__content--body">
+    <div class="under-nav"></div>
 
-      <form class="song-search-form">
-        <input
-          class="song-search-bar"
-          type="text"
-          placeholder="EPIC SEARCH BAR"
-        />
-        <input class="song-submit-button" type="submit" value="Search" />
-      </form>
-      <div class="play-beatmap-content">
-        <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
-          <div
-            v-for="(oszArray, bmSetName) in bmSetsData"
-            :key="bmSetName"
-            class="play-beatmap-set"
-            @mouseover="bmClickEvents(bmSetName, $event)"
-            @mouseleave="bmClickEvents(bmSetName, $event)"
-            @click="bmClickEvents(bmSetName, $event)"
-          >
-            <img
-              class="beatmap-set-img"
-              :src="`/beatmaps/${bmSetName}/${oszArray[0].events[0][2]}`"
-            />
-            <p class="beatmap-set-title">{{ oszArray[0].metadata.Title }}</p>
-            <p class="beatmap-set-artist">
-              {{ oszArray[0].metadata.Artist }}
-            </p>
-          </div>
+    <div id="play-index">
+      <div class="play-content">
+        <div class="play-title-textbox">
+          <h1 class="play-title">♪♬ beatmaps listing</h1>
         </div>
-        <div v-if="currentBmSetName" class="play-sidebar">
-          <div class="play-sidebar-image-container">
-            <img
-              :src="`/beatmaps/${currentBmSetName}/${
-                bmSetsData[`${currentBmSetName}`][0].events[0][2]
-              }`"
+
+        <div class="search-container">
+          <form
+            class="song-search-form"
+            @submit.prevent="getSearchData(searchQuery)"
+          >
+            <input
+              v-model="searchQuery"
+              class="song-search-bar"
+              type="text"
+              placeholder="Search for your song... fix this garbage search area later lmao"
             />
-          </div>
-          <div class="play-sidebar-text-container">
-            <p class="play-sidebar-text-title">
-              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
-            </p>
-            <p>
-              Artist: {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
-            </p>
-            <p>
-              Mapper:
-              {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
-            </p>
-            <nuxt-link
-              :to="`/leaderboard/${
-                bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
-              }`"
-              class=""
-              >Leaderboard</nuxt-link
+
+            <span class="deleteText" @click="searchQuery = ''">
+              <img
+                class="search-icon"
+                src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"
+              />
+            </span>
+            <input class="song-submit-button" type="submit" value="" />
+          </form>
+
+          <!-- <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
+              <div class="input">
+                <input
+                  v-model="searchQuery"
+                  type="text"
+                  class="search-area"
+                  placeholder="Search for your song... fix this garbage search area later lmao"
+                  style="font-size: 3.5rem"
+                />
+              </div>
+              <span class="deleteText" @click="searchQuery = ''"><img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" /></span>
+            </form> -->
+        </div>
+
+        <div class="play-beatmap-content">
+          <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
+            <div
+              v-for="(oszArray, bmSetName) in bmSetsData"
+              :key="bmSetName"
+              class="play-beatmap-set"
+              @mouseover="bmClickEvents(bmSetName, $event)"
+              @mouseleave="bmClickEvents(bmSetName, $event)"
+              @click="bmClickEvents(bmSetName, $event)"
             >
+              <img
+                class="beatmap-set-img"
+                :src="`/beatmaps/${bmSetName}/${oszArray[0].events[0][2]}`"
+              />
+              <p class="beatmap-set-title">{{ oszArray[0].metadata.Title }}</p>
+              <p class="beatmap-set-artist">
+                {{ oszArray[0].metadata.Artist }}
+              </p>
+            </div>
           </div>
-          <table class="play-sidebar-difficulties">
-            <tbody>
-              <tr
-                v-for="(bmDifficulty, index) in bmSetsData[
-                  `${currentBmSetName}`
-                ]"
-                :key="index"
+          <div v-if="currentBmSetName" class="play-sidebar">
+            <div class="play-sidebar-image-container">
+              <img
+                :src="`/beatmaps/${currentBmSetName}/${
+                  bmSetsData[`${currentBmSetName}`][0].events[0][2]
+                }`"
+              />
+            </div>
+            <div class="play-sidebar-text-container">
+              <p class="play-sidebar-text-title">
+                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
+              </p>
+              <p>
+                Artist:
+                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+              </p>
+              <p>
+                Mapper:
+                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
+              </p>
+              <nuxt-link
+                :to="`/leaderboard/${
+                  bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
+                }`"
+                class=""
+                >Leaderboard</nuxt-link
               >
-                <th>{{ bmDifficulty.metadata.Version }}</th>
-                <th>??? notes/s</th>
-              </tr>
-            </tbody>
-          </table>
+            </div>
+            <table class="play-sidebar-difficulties">
+              <tbody>
+                <tr
+                  v-for="(bmDifficulty, index) in bmSetsData[
+                    `${currentBmSetName}`
+                  ]"
+                  :key="index"
+                >
+                  <th>{{ bmDifficulty.metadata.Version }}</th>
+                  <th>??? notes/s</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -304,6 +335,17 @@ export default {
 </script>
 
 <style scoped>
+*,
+.beatmaps__content--body {
+  font-family: 'Dongle', sans-serif;
+}
+
+/* Beatmaps Title */
+
+.under-nav {
+  height: 9.5rem;
+}
+
 .play-index {
   width: 100vw;
 }
@@ -312,67 +354,148 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.play-content > * {
-  margin-bottom: 2rem;
+  height: 500vh;
+  background-image: linear-gradient(
+      rgba(75, 69, 107, 0.7),
+      rgba(45, 39, 83, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .play-title-textbox {
-  width: 60vw;
-
-  border: 0.125rem solid gray;
-  box-shadow: 0.4rem 0.4rem rgb(255, 255, 255, 0.5);
+  width: 55vw;
+  margin-top: 2rem;
+  background-color: rgb(42, 34, 63);
 }
 
 .play-title {
-  margin: 0.5rem 0rem 0.5rem 1rem;
-  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #f6f6f6;
+  height: 5.5rem;
+  margin: 0.5rem 1rem 0.5rem 3.5rem;
+  padding-top: 0.5rem;
+}
+
+/* Search Container */
+
+.search-container {
+  width: 55vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem;
+  background-image: linear-gradient(
+      rgba(49, 45, 58, 0.7),
+      rgba(49, 45, 58, 0.7)
+    ),
+    url('~/assets/images/backgrounds/enkanomiya-blurred.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.deleteText {
+  transform: translateY(30%);
+  left: 4%;
+  width: 0;
+  position: relative;
+}
+
+.search-icon {
+  filter: invert(1);
+  width: 2rem;
 }
 
 .song-search-form {
   width: 60vw;
-
   display: flex;
   justify-content: center;
+  padding: 1.5rem;
 }
 
 .song-search-form > input {
-  font-size: 2rem;
+  font-size: 2.5rem;
+  /* margin: 0 1rem; */
+  height: 5vh;
 
-  background-color: black;
-
-  border: 0.125rem solid gray;
-  margin: 0 1rem;
+  overflow: hidden;
+  background-color: rgb(49, 45, 58);
+  border-radius: 0rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+  border: none;
+  outline: none;
 }
 
 .song-search-bar {
-  width: 40vw;
-  height: 4rem;
-
-  padding: 0 0 0 1rem;
+  width: 45vw;
+  height: 3rem;
+  padding: 0.25rem 0 0 1.25rem;
 }
 
 .song-submit-button {
   width: 5vw;
   min-width: 4rem;
-  height: 4.25rem;
+  height: 3rem;
+  padding: 1rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
 }
 
+/*
+
+.search-bar {
+  position: relative;
+  color: #f6f6f6;
+  width: 54.5vw;
+  height: 5rem;
+  margin: 0.4rem 0rem;
+  border-radius: 0rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  background-color: rgb(49, 45, 58);
+}
+
+.search-bar .input {
+  position: relative;
+  width: 52vw;
+  height: 3.75rem;
+  left: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar .input input {
+  position: absolute;
+  top: 25%;
+  color: #f6f6f6;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 2.25rem;
+  font-weight: 400;
+  background-color: rgba(49, 45, 58, 0.7);
+} */
+
+/* Beatmap Content */
+
 .play-beatmap-content {
-  --content-width: 60vw;
+  --content-width: 55vw;
   --beatmap-set-container-width: 45vw;
-  --sidebar: 30rem;
-
+  --sidebar: 25rem;
   width: var(--content-width);
-
   display: flex;
   align-items: flex-start;
+  margin-top: 2rem;
 }
 
 .play-beatmap-set-container {
   width: calc(var(--content-width) - var(--sidebar));
-
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -382,35 +505,27 @@ export default {
 
 .play-beatmap-set {
   position: relative;
-
-  width: calc(16rem * 1.6);
-  height: calc(9rem * 1.6);
-
+  width: 24rem;
+  height: 13.5rem;
   border: 0.2rem solid white;
-
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-
   overflow: hidden;
-
   transition: 0.3s all;
 }
 
 .play-beatmap-set:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .beatmap-set-img {
   position: absolute;
-
   width: 100%;
-
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-
   opacity: 0.8;
 }
 
@@ -420,19 +535,16 @@ export default {
 
 .play-beatmap-set > p {
   width: 100%;
-
   margin: 0 0 0 0.5rem;
-
   display: inline;
   position: relative;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .beatmap-set-title {
-  font-size: 3rem;
+  font-size: 3.25rem;
 }
 
 .beatmap-set-artist {
@@ -441,10 +553,8 @@ export default {
 
 .play-sidebar {
   width: var(--sidebar);
-  min-height: 30rem;
-
+  min-height: 25rem;
   border: 0.2rem solid white;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -452,35 +562,26 @@ export default {
 
 .play-sidebar-image-container {
   width: 100%;
-
   aspect-ratio: 16 / 9;
 }
 
 .play-sidebar-image-container > img {
   width: 100%;
-
   display: block;
-
   overflow: hidden;
 }
 
 .play-sidebar-text-container > * {
-  font-size: 2.5rem;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
+  font-size: 2.25rem;
   margin: 0 0 0 0.5rem;
 }
 
 .play-sidebar-text-title {
-  font-size: 4rem;
+  font-size: 4.5rem;
 }
 
 .play-sidebar-difficulties {
   width: 100%;
-
   border-collapse: collapse;
 }
 
@@ -493,6 +594,6 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
 }
 </style>
