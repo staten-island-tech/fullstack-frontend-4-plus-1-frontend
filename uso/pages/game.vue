@@ -444,8 +444,13 @@ export default {
         const thisCircle = new createjs.Shape(circleGraphic);
         const thisSlider = new createjs.Shape(sliderGraphic);
 
-        thisCircle.cache(0, -85, 120, 120);
-        //   thisCircle.cache(0, -85, 120, 120);
+        thisCircle.cache(
+          50 - t.radius,
+          -2 * t.radius,
+          2 * t.radius + 30,
+          2 * t.radius + 30
+        );
+        //thisCircle.cache(0, -85, 120, 120);
 
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
