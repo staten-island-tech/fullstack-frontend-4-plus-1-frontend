@@ -105,6 +105,9 @@
               </tbody>
             </table>
           </div>
+          <div v-else class="play-sidebar">
+            <p>Hover or Click on a Song</p>
+          </div>
         </div>
       </div>
     </div>

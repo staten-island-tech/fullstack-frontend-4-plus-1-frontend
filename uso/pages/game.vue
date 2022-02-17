@@ -25,6 +25,7 @@
 /* eslint-disable */
 
 export default {
+  layout: 'noNav',
   data() {
     return {
       loaded: {
@@ -61,7 +62,7 @@ export default {
       beatmapData: {},
       notes: [],
       beatmapIntro: 25000,
-oneButtonClick: true,
+      oneButtonClick: true,
       latestHit: null,
     };
   },
@@ -86,11 +87,11 @@ oneButtonClick: true,
         {
           src: 'https://code.createjs.com/1.0.0/easeljs.min.js',
           callback: () => {
-            this.loaded .easeljs = true;
+            this.loaded.easeljs = true;
             this.scriptsLoaded();
           },
         },
-         {
+        {
           src: 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js',
           callback: () => {
             this.loaded.howler = true;
@@ -151,7 +152,7 @@ oneButtonClick: true,
       // If NO boolean values read false, then all scritps are loaded.
       this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
 
-   // if (this.areAllLoaded) // {this.init();}
+      // if (this.areAllLoaded) // {this.init();}
     },
     fetchBeatmap(
       beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
@@ -167,18 +168,18 @@ oneButtonClick: true,
         });
     },
     init() {
-
       //if(this.oneButtonClick === true) {
-          let sound = new Howl({
-  src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
-   autoplay: true,
-    volume: 0.3,
-});
+      let sound = new Howl({
+        src: [
+          '/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3',
+        ],
+        autoplay: true,
+        volume: 0.3,
+      });
 
-sound.play();
-        const t = this;
-       // t.oneButtonClick = false;
-
+      sound.play();
+      const t = this;
+      // t.oneButtonClick = false;
 
       let firstValY = 0;
       let lastValY = 0;
@@ -198,26 +199,18 @@ sound.play();
           TICKER
           =============== */
 
+      //   var sound = new Howl({
+      //   src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
+      //    autoplay: true,
+      //     volume: 0.3,
+      //   onplayerror: function() {
+      //     sound.once('unlock', function() {
 
-//   var sound = new Howl({
-//   src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
-//    autoplay: true,
-//     volume: 0.3,
-//   onplayerror: function() {
-//     sound.once('unlock', function() {
-     
-      
-//     });
-//   }
-// });
-
-
-
-
-
+      //     });
+      //   }
+      // });
 
       // I think we have to add sound when we click the route
-
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
       // Each tick is run 1/60 times per second
@@ -432,8 +425,7 @@ sound.play();
         const circleGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
-          .drawCircle(50, -t.radius, t.radius); 
-          
+          .drawCircle(50, -t.radius, t.radius);
 
         const sliderGraphic = new createjs.Graphics()
           .beginStroke('Black')
@@ -452,55 +444,51 @@ sound.play();
         const thisCircle = new createjs.Shape(circleGraphic);
         const thisSlider = new createjs.Shape(sliderGraphic);
 
-
-          thisCircle.cache(0, -85, 120, 120); 
-        //   thisCircle.cache(0, -85, 120, 120); 
+        thisCircle.cache(0, -85, 120, 120);
+        //   thisCircle.cache(0, -85, 120, 120);
 
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
 
-        if (note.type === 'note') { 
-            setTimeout(() => {t.columnContainers[note.columnIndex].addChild(thisCircle);
-        //  t.columnContainers[note.columnIndex].addChild(thisCircle);
-          // Creates the circle "template" for later use to initialize a shape
-          // Sets the delay before the notes animate (or before the notes drop)
-          createjs.Tween.get(thisCircle, { onComplete: animateCircle })//.wait(
+        if (note.type === 'note') {
+          setTimeout(() => {
+            t.columnContainers[note.columnIndex].addChild(thisCircle);
+            //  t.columnContainers[note.columnIndex].addChild(thisCircle);
+            // Creates the circle "template" for later use to initialize a shape
+            // Sets the delay before the notes animate (or before the notes drop)
+            createjs.Tween.get(thisCircle, { onComplete: animateCircle }); //.wait(
             //  note.time -
             //    t.beatmapIntro -
             //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
-         // );
-          function animateCircle() {
-            
-            /*
+            // );
+            function animateCircle() {
+              /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus this function is run every tick)
             onComplete: runs this function when animation is done
             */
-            createjs.Tween.get(thisCircle, {
-              useTicks: true,
-              onChange: onChange,
-              onComplete: animateCircle,
-            }).to({ y: thisCircle.y + t.dy }, 1);
-          }
-          function onChange() {
-            // noteType = true;
-            // If it reaches offscreen then ...
-            if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
-              // Remove tweens on the object
-              createjs.Tween.removeTweens(thisCircle);
-
-              // Reset combo
-              t.combo = 0;
-              t.latestHit = 'MISS';
-
-              // Remove circle from stage
-              t.columnContainers[note.columnIndex].removeChild(thisCircle);
-
+              createjs.Tween.get(thisCircle, {
+                useTicks: true,
+                onChange: onChange,
+                onComplete: animateCircle,
+              }).to({ y: thisCircle.y + t.dy }, 1);
             }
-          }},     note.time -
-               t.beatmapIntro -
-              (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+            function onChange() {
+              // noteType = true;
+              // If it reaches offscreen then ...
+              if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
+                // Remove tweens on the object
+                createjs.Tween.removeTweens(thisCircle);
 
+                // Reset combo
+                t.combo = 0;
+                t.latestHit = 'MISS';
+
+                // Remove circle from stage
+                t.columnContainers[note.columnIndex].removeChild(thisCircle);
+              }
+            }
+          }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
         } else if (note.type === 'hold') {
           sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
@@ -508,39 +496,38 @@ sound.play();
           //console.log(sliderHeight);
 
           // Creates the slider "template" for later use to initialize a shape
-           // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
-           setTimeout(() => { createjs.Tween.get(thisSlider, { onComplete: animate1 })
+          // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
+          setTimeout(() => {
+            createjs.Tween.get(thisSlider, { onComplete: animate1 });
 
-          function animate1() {
-            /*
+            function animate1() {
+              /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus t function is run every tick)
             onComplete: runs this function when animation is done
             */
-            createjs.Tween.get(thisSlider, {
-              useTicks: true,
-              onChange: onChange1,
-              onComplete: animate1,
-            }).to({ y: thisSlider.y + t.dy }, 1);
-          }
-          function onChange1() {
-            // while (h / (scrollSpeed * 1000 * canvasHeight) /
-            // (60 * (6860 * (650 / 700) + 6860))) {
-            //   noteType = "hold";
-            // }
-            // If it reaches offscreen, dismount the circle
-            if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
-              t.columnContainers[note.columnIndex].removeChild(thisSlider);
+              createjs.Tween.get(thisSlider, {
+                useTicks: true,
+                onChange: onChange1,
+                onComplete: animate1,
+              }).to({ y: thisSlider.y + t.dy }, 1);
             }
-          }},note.time -
-              t.beatmapIntro -
-              (6860 * (650 / 700) + 6860) / t.scrollSpeed);
-        
+            function onChange1() {
+              // while (h / (scrollSpeed * 1000 * canvasHeight) /
+              // (60 * (6860 * (650 / 700) + 6860))) {
+              //   noteType = "hold";
+              // }
+              // If it reaches offscreen, dismount the circle
+              if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
+                t.columnContainers[note.columnIndex].removeChild(thisSlider);
+              }
+            }
+          }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
         } else {
           console.log(`Invalid note type: ${note.type}`);
         }
       });
-   // }
+      // }
     },
   },
 };
@@ -556,7 +543,7 @@ sound.play();
 #test-game-index {
   width: 100vw;
   height: 100vh;
-background-color: wheat;
+  background-color: wheat;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
