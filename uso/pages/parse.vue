@@ -61,26 +61,30 @@ export default {
           src: '/lib/zip.min.js',
           callback: () => {
             this.loaded.zip = true;
-            this.scriptsLoaded();
           },
         },
         {
           src: '/lib/localforage.min.js',
           callback: () => {
             this.loaded.localforage = true;
-            this.scriptsLoaded();
           },
         },
       ],
     };
   },
 
+  watch: {
+    loaded: {
+      handler(newValue, oldValue) {
+        this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+      },
+      deep: true,
+    },
+  },
+
   created() {},
 
   methods: {
-    scriptsLoaded() {
-      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
-    },
     selectFile(event) {
       this.rawFile = event.target.files[0];
       this.readFile(this.rawFile);

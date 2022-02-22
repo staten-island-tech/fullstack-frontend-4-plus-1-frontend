@@ -1,6 +1,6 @@
 <template>
   <div id="test-game-index">
-    <button @click.once="init" class="button">BUTTTON</button>
+    <button class="button" @click.once="init">START</button>
     <div
       class="canvas-container"
       :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-/* global createjs:false */
+/* global createjs:false, kd:false, Howl:false */
 /* eslint-disable */
 
 export default {
@@ -31,6 +31,7 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
+        howler: false,
         beatmap: false,
       },
       areAllLoaded: false,
@@ -54,6 +55,8 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+      music: null,
+
       columnContainers: [],
       loader: null,
       targetCircles: [],
@@ -61,7 +64,7 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 25000,
+      beatmapIntro: 0,
       oneButtonClick: true,
       latestHit: null,
     };
@@ -72,31 +75,15 @@ export default {
       script: [
         {
           src: '/lib/createjs.min.js',
-          callback: () => {
-            this.loaded.createjs = true;
-            this.scriptsLoaded();
-          },
+          callback: () => (this.loaded.createjs = true),
         },
         {
           src: '/lib/keydrown.min.js',
-          callback: () => {
-            this.loaded.keydrown = true;
-            this.scriptsLoaded();
-          },
+          callback: () => (this.loaded.keydrown = true),
         },
         {
-          src: 'https://code.createjs.com/1.0.0/easeljs.min.js',
-          callback: () => {
-            this.loaded.easeljs = true;
-            this.scriptsLoaded();
-          },
-        },
-        {
-          src: 'https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js',
-          callback: () => {
-            this.loaded.howler = true;
-            this.scriptsLoaded();
-          },
+          src: '/lib/howler.min.js',
+          callback: () => (this.loaded.howler = true),
         },
       ],
     };
@@ -124,7 +111,6 @@ export default {
             '-webkit-background-clip': 'text',
             '-webkit-text-fill-color': 'transparent',
           };
-          break;
         case 200:
           color = '#66c010';
           break;
@@ -142,18 +128,30 @@ export default {
     },
   },
 
+  watch: {
+    loaded: {
+      handler(newValue, oldValue) {
+        // If ANY of the boolean values read false, the all scripts are NOT loaded.
+        // If NO boolean values read false, then all scritps are loaded.
+        this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+
+        if (this.areAllLoaded) {
+          this.music = new Howl({
+            src: ['/beatmaps/476691/Flower Dance.mp3'],
+            volume: 0.2,
+          });
+          // this.init();
+        }
+      },
+      deep: true,
+    },
+  },
+
   mounted() {
     this.fetchBeatmap();
   },
 
   methods: {
-    scriptsLoaded() {
-      // If ANY of the boolean values read false, the all scripts are NOT loaded.
-      // If NO boolean values read false, then all scritps are loaded.
-      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
-
-      // if (this.areAllLoaded) // {this.init();}
-    },
     fetchBeatmap(
       beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
     ) {
@@ -163,23 +161,15 @@ export default {
           this.beatmapData = data;
           this.notes = data.hitObjects;
           this.loaded.beatmap = true;
-          //this.src name of song data
-          this.scriptsLoaded();
+          // this.src name of song data
         });
     },
     init() {
-      //if(this.oneButtonClick === true) {
-      let sound = new Howl({
-        src: [
-          '/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3',
-        ],
-        autoplay: true,
-        volume: 0.3,
-      });
-
-      sound.play();
+      // if(this.oneButtonClick === true) {
       const t = this;
       // t.oneButtonClick = false;
+
+      t.music.play();
 
       let firstValY = 0;
       let lastValY = 0;
@@ -282,8 +272,6 @@ export default {
 
       /* ===============
             KEY PRESSES
-
-
           =============== */
 
       kd.D.down(function () {
@@ -310,7 +298,7 @@ export default {
           }
         });
 
-        //console.log(circle.y);
+        // console.log(circle.y);
       });
 
       kd.D.up(function () {
@@ -332,7 +320,7 @@ export default {
           }
         });
 
-        //console.log(circle.y);
+        // console.log(circle.y);
       });
 
       kd.run(function () {
@@ -406,8 +394,6 @@ export default {
                   t.score += 50 * t.combo;
                 }
 
-                console.log(diffFromTargetCircle);
-
                 t.combo += 1;
               }
             });
@@ -444,13 +430,13 @@ export default {
         const thisCircle = new createjs.Shape(circleGraphic);
         const thisSlider = new createjs.Shape(sliderGraphic);
 
-        thisCircle.cache(
+        /* thisCircle.cache(
           50 - t.radius,
           -2 * t.radius,
           2 * t.radius + 30,
           2 * t.radius + 30
-        );
-        //thisCircle.cache(0, -85, 120, 120);
+        ); */
+        // thisCircle.cache(0, -85, 120, 120);
 
         thisCircle.name = 'thisCircle';
         thisSlider.name = 'thisSlider';
@@ -461,7 +447,7 @@ export default {
             //  t.columnContainers[note.columnIndex].addChild(thisCircle);
             // Creates the circle "template" for later use to initialize a shape
             // Sets the delay before the notes animate (or before the notes drop)
-            createjs.Tween.get(thisCircle, { onComplete: animateCircle }); //.wait(
+            createjs.Tween.get(thisCircle, { onComplete: animateCircle }); // .wait(
             //  note.time -
             //    t.beatmapIntro -
             //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
@@ -498,7 +484,7 @@ export default {
           sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-          //console.log(sliderHeight);
+          // console.log(sliderHeight);
 
           // Creates the slider "template" for later use to initialize a shape
           // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
@@ -548,7 +534,6 @@ export default {
 #test-game-index {
   width: 100vw;
   height: 100vh;
-  background-color: wheat;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
