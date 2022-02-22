@@ -414,6 +414,8 @@ export default {
       let sliderHeight;
 
       t.notes.forEach((note) => {
+        sliderHeight = (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+
         const circleGraphic = new createjs.Graphics()
           .beginStroke('Black')
           .beginFill(t.circleColors[note.columnIndex])
@@ -436,12 +438,13 @@ export default {
         const thisCircle = new createjs.Shape(circleGraphic);
         const thisSlider = new createjs.Shape(sliderGraphic);
 
-        /* thisCircle.cache(
+        thisCircle.cache(
           50 - t.radius,
           -2 * t.radius,
           2 * t.radius + 30,
           2 * t.radius + 30
-        ); */
+        );
+
         // thisCircle.cache(0, -85, 120, 120);
 
         thisCircle.name = 'thisCircle';
@@ -464,11 +467,6 @@ export default {
             // );
 
             function animateCircle() {
-              /*
-            useTicks: uses update ticks (60 fps) instead of ms
-            onChange: runs ths function when the position is changed (thus this function is run every tick)
-            onComplete: runs this function when animation is done
-            */
               createjs.Tween.get(thisCircle, {
                 useTicks: true,
                 onChange: onChange,
@@ -492,37 +490,43 @@ export default {
             }
           }, note.time - t.beatmapIntro + t.syncOffset - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
         } else if (note.type === 'hold') {
-          sliderHeight =
-            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
-          // console.log(sliderHeight);
-
-          // Creates the slider "template" for later use to initialize a shape
-          // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
           setTimeout(() => {
-            // createjs.Tween.get(thisSlider, { onComplete: animate1 });
+            t.columnContainers[note.columnIndex].addChild(thisSlider);
 
-            animate();
+            animateSlider();
 
-            function animate() {
+            //  t.columnContainers[note.columnIndex].addChild(thisCircle);
+            // Creates the circle "template" for later use to initialize a shape
+            // Sets the delay before the notes animate (or before the notes drop)
+
+            // createjs.Tween.get(thisSlider, { onComplete: animateSlider }).wait(
+            //  note.time -
+            //    t.beatmapIntro -
+            //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
+            // );
+
+            function animateSlider() {
               /*
             useTicks: uses update ticks (60 fps) instead of ms
-            onChange: runs ths function when the position is changed (thus t function is run every tick)
+            onChange: runs ths function when the position is changed (thus this function is run every tick)
             onComplete: runs this function when animation is done
             */
               createjs.Tween.get(thisSlider, {
                 useTicks: true,
                 onChange: onChange,
-                onComplete: animate,
+                onComplete: animateSlider,
               }).to({ y: thisSlider.y + t.dy }, 1);
             }
             function onChange() {
-              // while (h / (scrollSpeed * 1000 * canvasHeight) /
-              // (60 * (6860 * (650 / 700) + 6860))) {
-              //   noteType = "hold";
-              // }
-              // If it reaches offscreen, dismount the circle
               if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
+                // Remove tweens on the object
+                createjs.Tween.removeTweens(thisSlider);
+
+                // Reset combo
+                t.combo = 0;
+                t.latestHit = 'MISS';
+
+                // Remove circle from stage
                 t.columnContainers[note.columnIndex].removeChild(thisSlider);
               }
             }
