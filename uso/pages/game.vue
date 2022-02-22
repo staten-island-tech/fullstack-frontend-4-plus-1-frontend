@@ -1,6 +1,8 @@
 <template>
-  <div id="test-game-index">
-    <button class="button" @click.once="init">START</button>
+  <div id="game-index">
+    <button v-if="areAllLoaded && !started" class="button" @click="init">
+      START
+    </button>
     <div
       class="canvas-container"
       :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
@@ -35,6 +37,7 @@ export default {
         beatmap: false,
       },
       areAllLoaded: false,
+      started: false,
 
       score: 0,
       combo: 0,
@@ -64,7 +67,8 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 0,
+      beatmapIntro: 23597,
+      syncOffset: 200,
       oneButtonClick: true,
       latestHit: null,
     };
@@ -138,8 +142,9 @@ export default {
         if (this.areAllLoaded) {
           this.music = new Howl({
             src: ['/beatmaps/476691/Flower Dance.mp3'],
-            volume: 0.2,
+            volume: 0.1,
           });
+          this.music.seek(this.beatmapIntro / 1000);
           // this.init();
         }
       },
@@ -169,6 +174,7 @@ export default {
       const t = this;
       // t.oneButtonClick = false;
 
+      t.started = true;
       t.music.play();
 
       let firstValY = 0;
@@ -444,14 +450,19 @@ export default {
         if (note.type === 'note') {
           setTimeout(() => {
             t.columnContainers[note.columnIndex].addChild(thisCircle);
+
+            animateCircle();
+
             //  t.columnContainers[note.columnIndex].addChild(thisCircle);
             // Creates the circle "template" for later use to initialize a shape
             // Sets the delay before the notes animate (or before the notes drop)
-            createjs.Tween.get(thisCircle, { onComplete: animateCircle }); // .wait(
+
+            // createjs.Tween.get(thisCircle, { onComplete: animateCircle }).wait(
             //  note.time -
             //    t.beatmapIntro -
             //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
             // );
+
             function animateCircle() {
               /*
             useTicks: uses update ticks (60 fps) instead of ms
@@ -479,7 +490,7 @@ export default {
                 t.columnContainers[note.columnIndex].removeChild(thisCircle);
               }
             }
-          }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+          }, note.time - t.beatmapIntro + t.syncOffset - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
         } else if (note.type === 'hold') {
           sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
@@ -489,9 +500,11 @@ export default {
           // Creates the slider "template" for later use to initialize a shape
           // setTimeout(() => { t.columnContainers[note.columnIndex].addChild(thisSlider)}, 5000);
           setTimeout(() => {
-            createjs.Tween.get(thisSlider, { onComplete: animate1 });
+            // createjs.Tween.get(thisSlider, { onComplete: animate1 });
 
-            function animate1() {
+            animate();
+
+            function animate() {
               /*
             useTicks: uses update ticks (60 fps) instead of ms
             onChange: runs ths function when the position is changed (thus t function is run every tick)
@@ -499,11 +512,11 @@ export default {
             */
               createjs.Tween.get(thisSlider, {
                 useTicks: true,
-                onChange: onChange1,
-                onComplete: animate1,
+                onChange: onChange,
+                onComplete: animate,
               }).to({ y: thisSlider.y + t.dy }, 1);
             }
-            function onChange1() {
+            function onChange() {
               // while (h / (scrollSpeed * 1000 * canvasHeight) /
               // (60 * (6860 * (650 / 700) + 6860))) {
               //   noteType = "hold";
@@ -513,7 +526,7 @@ export default {
                 t.columnContainers[note.columnIndex].removeChild(thisSlider);
               }
             }
-          }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+          }, note.time - t.beatmapIntro + t.syncOffset - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
         } else {
           console.log(`Invalid note type: ${note.type}`);
         }
@@ -528,10 +541,10 @@ export default {
 .button {
   height: 20vh;
   width: 20vw;
-  color: black;
+  background-color: gray;
   font-size: 3rem;
 }
-#test-game-index {
+#game-index {
   width: 100vw;
   height: 100vh;
   display: flex;
