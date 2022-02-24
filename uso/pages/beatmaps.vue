@@ -9,10 +9,7 @@
         </div>
 
         <div class="search-container">
-          <form
-            class="song-search-form"
-            @submit.prevent="getSearchData(searchQuery)"
-          >
+          <form class="song-search-form" @submit.prevent="">
             <input
               v-model="searchQuery"
               class="song-search-bar"
@@ -98,8 +95,12 @@
                     `${currentBmSetName}`
                   ]"
                   :key="index"
+                  @mouseover="$store.commit('setBeatmap', bmDifficulty)"
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
+                  <th>
+                    <nuxt-link :to="`/game`">Play</nuxt-link>
+                  </th>
                   <th>??? notes/s</th>
                 </tr>
               </tbody>
@@ -122,6 +123,8 @@ export default {
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
+
+      searchQuery: null,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
     };
@@ -155,7 +158,7 @@ export default {
       const beatmap = {
         general: {},
         metadata: {},
-        colors: [],
+        difficulty: {},
         events: [],
         timingPoints: [],
         hitObjects: [],
@@ -218,9 +221,14 @@ export default {
                     .map((e) => {
                       return isNaN(e) ? e : +e;
                     });
-
                   beatmap.events.push(array);
-
+                  break;
+                case '[Difficulty]':
+                  key = line.slice(0, line.indexOf(':'));
+                  if (key === 'HPDrainRate' || key === 'OverallDifficulty') {
+                    value = line.slice(line.indexOf(':') + 1).trim();
+                    beatmap.difficulty[key] = +value;
+                  } else continue;
                   break;
                 case '[TimingPoints]':
                   parts = line.split(',');

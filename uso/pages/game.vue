@@ -1,5 +1,11 @@
 <template>
-  <div id="game-index">
+  <div
+    id="game-index"
+    :style="{
+      'background-image': `url('/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]}`,
+      'background-size': 'cover',
+    }"
+  >
     <button v-if="areAllLoaded && !started" class="button" @click="init">
       START
     </button>
@@ -28,20 +34,20 @@
 
 export default {
   layout: 'noNav',
+
   data() {
     return {
       loaded: {
         createjs: false,
         keydrown: false,
         howler: false,
-        beatmap: false,
       },
       areAllLoaded: false,
       started: false,
 
       score: 0,
       combo: 0,
-      scrollSpeed: 10,
+      scrollSpeed: 15,
 
       keys: ['d', 'f', 'j', 'k'],
 
@@ -67,8 +73,8 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 23597,
-      syncOffset: 200,
+      beatmapIntro: 0,
+      syncOffset: 0,
       oneButtonClick: true,
       latestHit: null,
     };
@@ -140,12 +146,16 @@ export default {
         this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
 
         if (this.areAllLoaded) {
+          this.beatmapData = this.$store.state.beatmapData;
+          this.notes = this.beatmapData.hitObjects;
+
           this.music = new Howl({
-            src: ['/beatmaps/476691/Flower Dance.mp3'],
+            src: [
+              `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
+            ],
             volume: 0.1,
           });
           this.music.seek(this.beatmapIntro / 1000);
-          // this.init();
         }
       },
       deep: true,
@@ -153,14 +163,12 @@ export default {
   },
 
   mounted() {
-    this.fetchBeatmap();
+    /* this.fetchBeatmap('Soleily - Renatus (ExPew) [Hyper].json'); */
   },
 
   methods: {
-    fetchBeatmap(
-      beatmapFileName = "DJ OKAWARI - Flower Dance (Narcissu) [CS' Normal].json"
-    ) {
-      fetch(`/${beatmapFileName}`)
+    /* fetchBeatmap(beatmapFileName) {
+      fetch(`/test-beatmaps/${beatmapFileName}`)
         .then((response) => (response = response.json()))
         .then((data) => {
           this.beatmapData = data;
@@ -168,7 +176,7 @@ export default {
           this.loaded.beatmap = true;
           // this.src name of song data
         });
-    },
+    }, */
     init() {
       // if(this.oneButtonClick === true) {
       const t = this;
@@ -548,6 +556,7 @@ export default {
   background-color: gray;
   font-size: 3rem;
 }
+
 #game-index {
   width: 100vw;
   height: 100vh;
