@@ -51,6 +51,7 @@
               @click="bmClickEvents(bmSetName, $event)"
             >
               <img
+                v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
                 :src="`/beatmaps/${bmSetName}/${oszArray[0].events[0][2]}`"
               />
@@ -182,6 +183,7 @@ export default {
                   '1[0-3]|[1-9]'
                 )}`
               );
+              console.log(folder);
             }
 
             let section;

@@ -1,12 +1,15 @@
 <template>
-  <div
-    id="game-index"
-    :style="{
-      'background-image': `url('/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]}`,
-      'background-size': 'cover',
-    }"
-  >
-    <button v-if="areAllLoaded && !started" class="button" @click="init">
+  <div id="game-index">
+    <div class="game-image-container">
+      <img
+        :src="`/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]}`"
+      />
+    </div>
+    <button
+      v-if="areAllLoaded && !started && songLoaded"
+      class="game-start-button"
+      @click="init"
+    >
       START
     </button>
     <div
@@ -20,9 +23,8 @@
       >
     </div>
     <div class="statistics-container">
-      <h1>Score: {{ score }}</h1>
-      <h1>Combo: {{ combo }}</h1>
-      <h1>Scroll Speed: {{ scrollSpeed }}</h1>
+      <h1>{{ score }}</h1>
+      <h1>x{{ combo }}</h1>
       <h1 :style="lastestHitStyle">{{ latestHit }}</h1>
     </div>
   </div>
@@ -44,6 +46,7 @@ export default {
       },
       areAllLoaded: false,
       started: false,
+      songLoaded: false,
 
       score: 0,
       combo: 0,
@@ -76,7 +79,7 @@ export default {
       beatmapIntro: 0,
       syncOffset: 0,
       oneButtonClick: true,
-      latestHit: null,
+      latestHit: '⠀',
     };
   },
 
@@ -114,7 +117,6 @@ export default {
       switch (this.latestHit) {
         case 300:
           return {
-            'font-size': '10rem',
             background:
               'linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet)',
             'background-clip': 'text',
@@ -141,21 +143,25 @@ export default {
   watch: {
     loaded: {
       handler(newValue, oldValue) {
+        const t = this;
+
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
-        this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+        t.areAllLoaded = !Object.values(t.loaded).some((bool) => !bool);
 
-        if (this.areAllLoaded) {
-          this.beatmapData = this.$store.state.beatmapData;
-          this.notes = this.beatmapData.hitObjects;
+        if (t.areAllLoaded) {
+          t.beatmapData = t.$store.state.beatmapData;
+          t.notes = t.beatmapData.hitObjects;
 
-          this.music = new Howl({
+          t.music = new Howl({
             src: [
-              `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
+              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
             ],
             volume: 0.1,
           });
-          this.music.seek(this.beatmapIntro / 1000);
+          t.music.seek(t.beatmapIntro / 1000);
+
+          setTimeout(() => (t.songLoaded = true), 3000);
         }
       },
       deep: true,
@@ -550,13 +556,6 @@ export default {
 </script>
 
 <style scoped>
-.button {
-  height: 20vh;
-  width: 20vw;
-  background-color: gray;
-  font-size: 3rem;
-}
-
 #game-index {
   width: 100vw;
   height: 100vh;
@@ -565,8 +564,40 @@ export default {
   justify-content: space-evenly;
 }
 
+.game-start-button {
+  height: 20vh;
+  width: 20vw;
+  background-color: gray;
+  font-size: 3rem;
+}
+
+.game-image-container {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  opacity: 0.5;
+
+  z-index: -100;
+}
+
+.game-image-container > img {
+  width: 100%;
+}
+
 .statistics-container {
-  width: 40%;
+  min-width: 35rem;
+  height: 30rem;
   font-size: 1rem;
+
+  padding: 1rem 2rem;
+
+  background-color: rgba(128, 128, 128, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 </style>
