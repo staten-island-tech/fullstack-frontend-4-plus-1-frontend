@@ -4,6 +4,7 @@
     <section class="landing">
       <video
         id="landing-video"
+        class="video-bg"
         autoplay
         muted
         loop
@@ -72,12 +73,6 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center; */
-}
-#landing-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 80%;
 }
 
 .home-main {

@@ -42,3 +42,14 @@ a:active {
   height: 9.5rem;
 }
 /* FIX MARGIN AFTER EACH SECTION */
+
+.video-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 80%;
+}
+.background {
+  width: 100%;
+  height: calc(100vh - 9.5rem);
+}

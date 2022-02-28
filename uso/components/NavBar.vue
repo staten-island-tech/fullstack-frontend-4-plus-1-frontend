@@ -38,13 +38,13 @@
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
 
           <nuxt-link to="/login" class="uso__avatar--img">
