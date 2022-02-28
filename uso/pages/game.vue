@@ -27,6 +27,11 @@
       <h1>x{{ combo }}</h1>
       <h1 :style="lastestHitStyle">{{ latestHit }}</h1>
     </div>
+    <div class="progress-bar-container">
+      <div id="myProgress">
+      <div id="myBar"></div>
+</div>
+    </div>
   </div>
 </template>
 
@@ -166,6 +171,10 @@ export default {
       },
       deep: true,
     },
+    '$route' () {
+    // this.music.stop();
+    this.console.log("hi")
+    }
   },
 
   mounted() {
@@ -185,11 +194,29 @@ export default {
     }, */
     init() {
       // if(this.oneButtonClick === true) {
+        
       const t = this;
       // t.oneButtonClick = false;
 
       t.started = true;
       t.music.play();
+  t.songDuration = t.music.duration();
+    
+     let i= 0
+    
+     let elem = document.getElementById("myBar");
+    
+    function progressBar() {
+       let bar = 0
+let id = setInterval(function(){
+    bar++;
+   elem.style.height = bar + "%"
+    if ( (bar >= 100)){
+        clearInterval(id)
+    }
+}, t.songDuration * 1000 / 100)
+     }
+      progressBar()
 
       let firstValY = 0;
       let lastValY = 0;
@@ -209,17 +236,7 @@ export default {
           TICKER
           =============== */
 
-      //   var sound = new Howl({
-      //   src: ['/songs/241526 Soleily - Renatus/03. Renatus - Soleily 192kbps.mp3'],
-      //    autoplay: true,
-      //     volume: 0.3,
-      //   onplayerror: function() {
-      //     sound.once('unlock', function() {
-
-      //     });
-      //   }
-      // });
-
+ 
       // I think we have to add sound when we click the route
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
@@ -556,6 +573,26 @@ export default {
 </script>
 
 <style scoped>
+
+#myProgress {
+  width: 1vw;
+  height:   95vh;
+  background-color: #ddd;
+}
+
+#myBar {
+  transition: all 0.5s ease-in;
+  width: 100%;
+  height: 1%;
+  background-color: #04AA6D;
+}
+.button {
+  height: 20vh;
+  width: 20vw;
+  background-color: gray;
+  font-size: 3rem;
+}
+
 #game-index {
   width: 100vw;
   height: 100vh;
