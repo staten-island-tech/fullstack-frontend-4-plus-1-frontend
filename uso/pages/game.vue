@@ -29,8 +29,8 @@
     </div>
     <div class="progress-bar-container">
       <div id="myProgress">
-      <div id="myBar"></div>
-</div>
+        <div id="myBar"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -163,18 +163,19 @@ export default {
               `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
             ],
             volume: 0.1,
+            onload: function () {
+              t.songLoaded = true;
+            },
           });
           t.music.seek(t.beatmapIntro / 1000);
-
-          setTimeout(() => (t.songLoaded = true), 3000);
         }
       },
       deep: true,
     },
-    '$route' () {
-    // this.music.stop();
-    this.console.log("hi")
-    }
+    $route() {
+      // this.music.stop();
+      this.console.log('hi');
+    },
   },
 
   mounted() {
@@ -194,29 +195,29 @@ export default {
     }, */
     init() {
       // if(this.oneButtonClick === true) {
-        
+
       const t = this;
       // t.oneButtonClick = false;
 
       t.started = true;
       t.music.play();
-  t.songDuration = t.music.duration();
-    
-     let i= 0
-    
-     let elem = document.getElementById("myBar");
-    
-    function progressBar() {
-       let bar = 0
-let id = setInterval(function(){
-    bar++;
-   elem.style.height = bar + "%"
-    if ( (bar >= 100)){
-        clearInterval(id)
-    }
-}, t.songDuration * 1000 / 100)
-     }
-      progressBar()
+      t.songDuration = t.music.duration();
+
+      let i = 0;
+
+      let elem = document.getElementById('myBar');
+
+      function progressBar() {
+        let bar = 0;
+        let id = setInterval(function () {
+          bar++;
+          elem.style.height = bar + '%';
+          if (bar >= 100) {
+            clearInterval(id);
+          }
+        }, (t.songDuration * 1000) / 100);
+      }
+      progressBar();
 
       let firstValY = 0;
       let lastValY = 0;
@@ -236,7 +237,6 @@ let id = setInterval(function(){
           TICKER
           =============== */
 
- 
       // I think we have to add sound when we click the route
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
@@ -573,10 +573,9 @@ let id = setInterval(function(){
 </script>
 
 <style scoped>
-
 #myProgress {
   width: 1vw;
-  height:   95vh;
+  height: 95vh;
   background-color: #ddd;
 }
 
@@ -584,7 +583,7 @@ let id = setInterval(function(){
   transition: all 0.5s ease-in;
   width: 100%;
   height: 1%;
-  background-color: #04AA6D;
+  background-color: #04aa6d;
 }
 .button {
   height: 20vh;
