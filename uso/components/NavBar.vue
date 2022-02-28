@@ -448,7 +448,7 @@ export default {
   }
 
   .nav-active {
-    transform: translateY(-2%);
+    transform: translateY(-11%);
   }
 
   .uso__navburger {
@@ -462,6 +462,10 @@ export default {
 
   .uso__navbar--links {
     padding-left: 0;
+  }
+
+  .under-nav {
+    height: 0;
   }
 }
 </style>
