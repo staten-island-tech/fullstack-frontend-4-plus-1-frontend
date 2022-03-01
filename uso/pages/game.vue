@@ -178,26 +178,11 @@ export default {
     },
   },
 
-  mounted() {
-    /* this.fetchBeatmap('Soleily - Renatus (ExPew) [Hyper].json'); */
-  },
+  mounted() {},
 
   methods: {
-    /* fetchBeatmap(beatmapFileName) {
-      fetch(`/test-beatmaps/${beatmapFileName}`)
-        .then((response) => (response = response.json()))
-        .then((data) => {
-          this.beatmapData = data;
-          this.notes = data.hitObjects;
-          this.loaded.beatmap = true;
-          // this.src name of song data
-        });
-    }, */
     init() {
-      // if(this.oneButtonClick === true) {
-
       const t = this;
-      // t.oneButtonClick = false;
 
       t.started = true;
       t.music.play();
@@ -205,23 +190,29 @@ export default {
 
       let i = 0;
 
-      let elem = document.getElementById('myBar');
+      /* ===============
+          PROGRESS BAR
+          =============== */
+
+      const $progressBar = document.getElementById('myBar');
 
       function progressBar() {
         let bar = 0;
         let id = setInterval(function () {
           bar++;
-          elem.style.height = bar + '%';
+          $progressBar.style.height = bar + '%';
           if (bar >= 100) {
             clearInterval(id);
           }
         }, (t.songDuration * 1000) / 100);
       }
+
       progressBar();
 
-      let firstValY = 0;
-      let lastValY = 0;
-      let scoreMultplier = 1;
+      /* ===============
+          CANVAS SETUP
+          =============== */
+
       const $canvas = document.querySelector('#canvas');
 
       // Sets the canvas width/height pixels = to canvas display size width/height
@@ -338,13 +329,10 @@ export default {
         // console.log(circle.y);
       });
 
-      kd.D.up(function () {
+      /*       kd.D.up(function () {
         t.columnContainers[0].children.forEach((circle) => {
           const diffFromTargetCircle = Math.abs(circle.y - 700);
           if (circle.y >= 610 && circle.name === 'Slider') {
-            // if (t.firstVal === 1) {
-            //   t.firstVal = 0
-            // }
             lastValY = diffFromTargetCircle;
 
             let sliderCombo = (lastValY - t.firstValY) / 10;
@@ -362,52 +350,16 @@ export default {
 
       kd.run(function () {
         kd.tick();
-      });
-
-      // document.addEventListener("keyup", function (sliders) {
-      //   // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
-      //   for (let i = 0; i < numColumns; i++) {
-      //     if (sliders.key === keys[i]) {
-      //       columnContainers[i].children.forEach((circle) => {
-      //         const diffFromTargetCircle = Math.abs(circle.y - 700);
-
-      //         if (circle.y >= 610 && circle.name === "Slider") {
-      //           if (firstVal === 1) {
-      //             firstVal = 0
-      //           }
-      //           lastValY = diffFromTargetCircle;
-
-      //           let sliderCombo = (lastValY - firstValY)/10;
-      //           let sliderScore = sliderCombo * scoreMultplier
-      //           console.log( sliderScore)
-      //           console.log( sliderCombo)
-      //           console.log( scoreMultplier)
-      //           score += Math.round(sliderScore);
-      //           combo += Math.round(sliderCombo);
-      //           $score.innerHTML = `Score: ${score}`;
-      //           $combo.innerHTML = `Combo: ${combo}`;
-      //         }
-      //       });
-      //     }
-      //   }
-      // });
+      }); */
 
       document.addEventListener('keydown', function (e) {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
-              // console.log(columnContainers[note.columnIndex].getChildByName("thisCircle"))
-
               const diffFromTargetCircle = Math.abs(circle.y - 700);
 
               if (circle.y >= 610 && circle.name === 'thisCircle') {
-                // let arrCircles = Object.values(circles)
-
-                //  arrCircles.forEach(el => {
-                //   const found = el.find(element => element === thisCircle);
-                //   console.log(found)
-                //   });
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
 
@@ -487,16 +439,6 @@ export default {
 
             animateCircle();
 
-            //  t.columnContainers[note.columnIndex].addChild(thisCircle);
-            // Creates the circle "template" for later use to initialize a shape
-            // Sets the delay before the notes animate (or before the notes drop)
-
-            // createjs.Tween.get(thisCircle, { onComplete: animateCircle }).wait(
-            //  note.time -
-            //    t.beatmapIntro -
-            //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
-            // );
-
             function animateCircle() {
               createjs.Tween.get(thisCircle, {
                 useTicks: true,
@@ -526,22 +468,12 @@ export default {
 
             animateSlider();
 
-            //  t.columnContainers[note.columnIndex].addChild(thisCircle);
-            // Creates the circle "template" for later use to initialize a shape
-            // Sets the delay before the notes animate (or before the notes drop)
-
-            // createjs.Tween.get(thisSlider, { onComplete: animateSlider }).wait(
-            //  note.time -
-            //    t.beatmapIntro -
-            //   (6860 * (650 / 700) + 6860) / t.scrollSpeed
-            // );
-
             function animateSlider() {
               /*
-            useTicks: uses update ticks (60 fps) instead of ms
-            onChange: runs ths function when the position is changed (thus this function is run every tick)
-            onComplete: runs this function when animation is done
-            */
+                useTicks: uses update ticks (60 fps) instead of ms
+                onChange: runs ths function when the position is changed (thus this function is run every tick)
+                onComplete: runs this function when animation is done
+              */
               createjs.Tween.get(thisSlider, {
                 useTicks: true,
                 onChange: onChange,
@@ -566,7 +498,6 @@ export default {
           console.log(`Invalid note type: ${note.type}`);
         }
       });
-      // }
     },
   },
 };
@@ -575,14 +506,14 @@ export default {
 <style scoped>
 #myProgress {
   width: 1vw;
-  height: 95vh;
+  height: 100vh;
   background-color: #ddd;
 }
 
 #myBar {
   transition: all 0.5s ease-in;
   width: 100%;
-  height: 1%;
+  height: 0%;
   background-color: #04aa6d;
 }
 .button {
