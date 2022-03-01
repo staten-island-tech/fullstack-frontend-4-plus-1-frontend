@@ -96,6 +96,7 @@
                     `${currentBmSetName}`
                   ]"
                   :key="index"
+                  @click="$store.commit('setBeatmap', bmDifficulty)"
                   @mouseover="$store.commit('setBeatmap', bmDifficulty)"
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
