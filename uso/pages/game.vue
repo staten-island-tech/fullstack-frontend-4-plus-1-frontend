@@ -357,30 +357,30 @@ export default {
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
+              /* const msFromTargetCircle = Math.abs(circle.y - 700) / t.dy; */
               const diffFromTargetCircle = Math.abs(circle.y - 700);
 
               if (circle.y >= 610 && circle.name === 'thisCircle') {
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
 
-                if (diffFromTargetCircle > 0 && diffFromTargetCircle <= 6) {
-                  t.latestHit = 300;
-                  t.score += 300 * t.combo;
-                } else if (
-                  diffFromTargetCircle >= 6 &&
-                  diffFromTargetCircle <= 12
-                ) {
-                  t.latestHit = 200;
-                  t.score += 200 * t.combo;
-                } else if (
-                  diffFromTargetCircle >= 12 &&
-                  diffFromTargetCircle <= 20
-                ) {
-                  t.latestHit = 100;
-                  t.score += 100 * t.combo;
-                } else {
-                  t.latestHit = 50;
-                  t.score += 50 * t.combo;
+                switch (true) {
+                  case diffFromTargetCircle <= 6:
+                    t.latestHit = 300;
+                    t.score += 300 * t.combo;
+                    break;
+                  case diffFromTargetCircle <= 12:
+                    t.latestHit = 200;
+                    t.score += 300 * t.combo;
+                    break;
+                  case diffFromTargetCircle <= 20:
+                    t.latestHit = 100;
+                    t.score += 300 * t.combo;
+                    break;
+                  default:
+                    t.latestHit = 50;
+                    t.score += 300 * t.combo;
+                    break;
                 }
 
                 t.combo += 1;
