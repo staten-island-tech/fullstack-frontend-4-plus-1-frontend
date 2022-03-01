@@ -36,7 +36,7 @@
 </template>
 
 <script>
-/* global createjs:false, kd:false, Howl:false */
+/* global createjs:false, Howl:false */
 /* eslint-disable */
 
 export default {
@@ -81,7 +81,7 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 0,
+      beatmapIntro: 27000,
       syncOffset: 0,
       oneButtonClick: true,
       latestHit: '⠀',
@@ -302,7 +302,7 @@ export default {
             KEY PRESSES
           =============== */
 
-      kd.D.down(function () {
+      /* kd.D.down(function () {
         t.columnContainers[0].children.forEach((circle) => {
           const diffFromTargetCircle = Math.abs(circle.y - 700);
 
@@ -327,7 +327,7 @@ export default {
         });
 
         // console.log(circle.y);
-      });
+      }); */
 
       /*       kd.D.up(function () {
         t.columnContainers[0].children.forEach((circle) => {
@@ -357,32 +357,31 @@ export default {
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
-              /* const msFromTargetCircle = Math.abs(circle.y - 700) / t.dy; */
-              const diffFromTargetCircle = Math.abs(circle.y - 700);
+              const msFromTargetCircle = Math.abs(circle.y - 700) / t.dy;
+              const OD = t.beatmapData.difficulty.OverallDifficulty;
 
-              if (circle.y >= 610 && circle.name === 'thisCircle') {
+              if (/* circle.y >= 610 &&  */ circle.name === 'thisCircle') {
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
 
                 switch (true) {
-                  case diffFromTargetCircle <= 6:
+                  case msFromTargetCircle <= 16.5:
                     t.latestHit = 300;
-                    t.score += 300 * t.combo;
                     break;
-                  case diffFromTargetCircle <= 12:
+                  case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 5:
+                    t.latestHit = 300;
+                    break;
+                  case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
                     t.latestHit = 200;
-                    t.score += 300 * t.combo;
                     break;
-                  case diffFromTargetCircle <= 20:
+                  case msFromTargetCircle <= Math.floor(127 - 3 * OD) + 0.5:
                     t.latestHit = 100;
-                    t.score += 300 * t.combo;
                     break;
-                  default:
+                  case msFromTargetCircle <= Math.floor(151 - 3 * OD) + 0.5:
                     t.latestHit = 50;
-                    t.score += 300 * t.combo;
                     break;
                 }
-
+                console.log(msFromTargetCircle);
                 t.combo += 1;
               }
             });
