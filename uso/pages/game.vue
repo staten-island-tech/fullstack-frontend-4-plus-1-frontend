@@ -357,7 +357,8 @@ export default {
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
-              const msFromTargetCircle = Math.abs(circle.y - 700) / t.dy;
+              const msFromTargetCircle =
+                (Math.abs(circle.y - 700) * 1000) / (t.dy * t.stageFPS);
               const OD = t.beatmapData.difficulty.OverallDifficulty;
 
               if (/* circle.y >= 610 &&  */ circle.name === 'thisCircle') {
@@ -368,7 +369,7 @@ export default {
                   case msFromTargetCircle <= 16.5:
                     t.latestHit = 300;
                     break;
-                  case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 5:
+                  case msFromTargetCircle <= Math.floor(69 - 3 * OD) + 0.5:
                     t.latestHit = 300;
                     break;
                   case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
