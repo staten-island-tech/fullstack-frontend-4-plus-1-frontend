@@ -86,6 +86,7 @@ export default {
       oneButtonClick: true,
 
       latestHit: '⠀',
+      hitBonusValue: null,
       bonus: 100,
     };
   },
@@ -375,25 +376,32 @@ export default {
                 t.columnContainers[i].removeChild(circle);
                 t.combo += 1;
 
+                let hitBonusValue = 0;
+
                 switch (true) {
                   case msFromTargetCircle <= 16.5:
                     t.latestHit = 320;
+                    hitBonusValue = 32;
                     t.bonus += 2;
                     break;
                   case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 0.5:
                     t.latestHit = 300;
+                    hitBonusValue = 32;
                     t.bonus += 1;
                     break;
                   case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
                     t.latestHit = 200;
+                    hitBonusValue = 16;
                     t.bonus -= 8;
                     break;
                   case msFromTargetCircle <= Math.floor(127 - 3 * OD) + 0.5:
                     t.latestHit = 100;
+                    hitBonusValue = 8;
                     t.bonus -= 24;
                     break;
                   case msFromTargetCircle <= Math.floor(151 - 3 * OD) + 0.5:
                     t.latestHit = 50;
+                    hitBonusValue = 4;
                     t.bonus += 44;
                     break;
                   case msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5:
@@ -406,6 +414,12 @@ export default {
 
                 const baseScore =
                   ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+                const bonusScore =
+                  ((1000000 * 0.5) / t.notes.length) *
+                  ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+                t.score += bonusScore + baseScore;
               }
             });
           }
