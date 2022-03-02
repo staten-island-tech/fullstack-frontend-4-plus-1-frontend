@@ -84,7 +84,9 @@ export default {
       beatmapIntro: 27000,
       syncOffset: 0,
       oneButtonClick: true,
+
       latestHit: '⠀',
+      bonus: 100,
     };
   },
 
@@ -171,6 +173,10 @@ export default {
         }
       },
       deep: true,
+    },
+    bonus(newValue, oldValue) {
+      if (newValue > 100) this.bonus = 100;
+      if (newValue < 0) this.bonus = 0;
     },
     $route() {
       // this.music.stop();
@@ -361,29 +367,45 @@ export default {
                 (Math.abs(circle.y - 700) * 1000) / (t.dy * t.stageFPS);
               const OD = t.beatmapData.difficulty.OverallDifficulty;
 
-              if (/* circle.y >= 610 &&  */ circle.name === 'thisCircle') {
+              if (
+                msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5 &&
+                circle.name === 'thisCircle'
+              ) {
                 createjs.Tween.removeTweens(circle);
                 t.columnContainers[i].removeChild(circle);
+                t.combo += 1;
 
                 switch (true) {
                   case msFromTargetCircle <= 16.5:
-                    t.latestHit = 300;
+                    t.latestHit = 320;
+                    t.bonus += 2;
                     break;
-                  case msFromTargetCircle <= Math.floor(69 - 3 * OD) + 0.5:
+                  case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 0.5:
                     t.latestHit = 300;
+                    t.bonus += 1;
                     break;
                   case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
                     t.latestHit = 200;
+                    t.bonus -= 8;
                     break;
                   case msFromTargetCircle <= Math.floor(127 - 3 * OD) + 0.5:
                     t.latestHit = 100;
+                    t.bonus -= 24;
                     break;
                   case msFromTargetCircle <= Math.floor(151 - 3 * OD) + 0.5:
                     t.latestHit = 50;
+                    t.bonus += 44;
+                    break;
+                  case msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5:
+                    t.latestHit = 'MISS';
+                    t.bonus = 0;
+
+                    t.combo = 0;
                     break;
                 }
-                console.log(msFromTargetCircle);
-                t.combo += 1;
+
+                const baseScore =
+                  ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
               }
             });
           }
