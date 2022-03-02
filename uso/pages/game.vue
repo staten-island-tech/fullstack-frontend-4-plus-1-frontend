@@ -81,7 +81,7 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 27000,
+      beatmapIntro: 25000,
       syncOffset: 0,
       oneButtonClick: true,
 
