@@ -25,7 +25,7 @@
     <div class="statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
-      <h1 :style="lastestHitStyle">{{ latestHit }}</h1>
+      <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
     <div class="progress-bar-container">
       <div id="myProgress">
@@ -85,7 +85,7 @@ export default {
       syncOffset: 0,
       oneButtonClick: true,
 
-      latestHit: '⠀',
+      latestHit: null,
       hitBonusValue: null,
       bonus: 100,
     };
@@ -120,17 +120,31 @@ export default {
         (this.stageFPS * (6860 * (650 / 700) + 6860))
       );
     },
+    displayedLatestHit() {
+      switch (this.latestHit) {
+        case 320:
+        case 300:
+          return 300;
+        case 0:
+          return 'MISS';
+        default:
+          return this.latestHit;
+      }
+    },
     lastestHitStyle() {
       let color = null;
       switch (this.latestHit) {
-        case 300:
+        case 320:
           return {
             background:
-              'linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet)',
+              'linear-gradient(to top, red 32%, orange, yellow, green, blue, indigo 75%)',
             'background-clip': 'text',
             '-webkit-background-clip': 'text',
             '-webkit-text-fill-color': 'transparent',
           };
+        case 300:
+          color = '#f7d040';
+          break;
         case 200:
           color = '#66c010';
           break;
@@ -138,9 +152,9 @@ export default {
           color = '#1151a7';
           break;
         case 50:
-          color = '#707680';
+          color = '#6d747e';
           break;
-        case 'MISS':
+        case 0:
           color = '#bf342f';
           break;
       }
@@ -490,7 +504,7 @@ export default {
 
                 // Reset combo
                 t.combo = 0;
-                t.latestHit = 'MISS';
+                t.latestHit = 0;
 
                 // Remove circle from stage
                 t.columnContainers[note.columnIndex].removeChild(thisCircle);
@@ -593,7 +607,6 @@ export default {
 .statistics-container {
   min-width: 35rem;
   height: 30rem;
-  font-size: 1rem;
 
   padding: 1rem 2rem;
 
@@ -602,5 +615,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.statistics-container > h1 {
+  font-size: 7rem;
 }
 </style>
