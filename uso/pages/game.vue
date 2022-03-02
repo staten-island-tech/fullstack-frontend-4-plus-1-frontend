@@ -175,10 +175,6 @@ export default {
       },
       deep: true,
     },
-    bonus(newValue, oldValue) {
-      if (newValue > 100) this.bonus = 100;
-      if (newValue < 0) this.bonus = 0;
-    },
     $route() {
       // this.music.stop();
       this.console.log('hi');
@@ -405,12 +401,15 @@ export default {
                     t.bonus += 44;
                     break;
                   case msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5:
-                    t.latestHit = 'MISS';
+                    t.latestHit = 0;
                     t.bonus = 0;
 
                     t.combo = 0;
                     break;
                 }
+
+                if (t.bonus > 100) t.bonus = 100;
+                if (t.bonus < 0) t.bonus = 0;
 
                 const baseScore =
                   ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
@@ -521,9 +520,10 @@ export default {
                 // Remove tweens on the object
                 createjs.Tween.removeTweens(thisSlider);
 
-                // Reset combo
+                t.latestHit = 0;
+                t.bonus = 0;
+
                 t.combo = 0;
-                t.latestHit = 'MISS';
 
                 // Remove circle from stage
                 t.columnContainers[note.columnIndex].removeChild(thisSlider);
