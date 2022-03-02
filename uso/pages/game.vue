@@ -23,7 +23,7 @@
       >
     </div>
     <div class="statistics-container">
-      <h1>{{ score }}</h1>
+      <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
       <h1 :style="lastestHitStyle">{{ latestHit }}</h1>
     </div>
