@@ -24,14 +24,16 @@
 <script>
 export default {
   components: {},
+  layout: 'nonav',
 };
 </script>
 
 <style scoped>
-.uso__navbar,
+/* .uso__navbar,
 .uso__navbar--body {
   display: none;
-}
+} */
+
 .login-page {
   display: flex;
   flex-direction: column;
@@ -60,22 +62,9 @@ export default {
   /* align-items: center; */
 }
 .login-textbox {
-  height: 4.2rem;
-  width: 100%;
   color: black;
-  outline: 4px #c4a2f2;
-
-  padding: 5px 12px;
-  font-size: 2.8rem;
-  line-height: 20px;
-
-  vertical-align: middle;
-
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  /*  border: 1px solid var(--color-border-default); */
-  border-radius: 4px;
-  outline: none;
+  line-height: 29px;
+  padding: 5px 10px;
 }
 .login-button {
   height: 4.2rem;
