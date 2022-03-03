@@ -15,10 +15,12 @@
             <nuxt-link to="/home" class="uso__links">home</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">beatmaps</nuxt-link>
+            <nuxt-link to="/beatmaps" class="uso__links">beatmaps</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/leaderboard" class="uso__links">rankings</nuxt-link>
+            <nuxt-link to="/leaderboard" class="uso__links"
+              >leaderboard</nuxt-link
+            >
           </li>
           <li>
             <nuxt-link to="/community" class="uso__links">community</nuxt-link>
@@ -27,7 +29,7 @@
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/testGame" class="uso__links">testGame</nuxt-link>
+            <nuxt-link to="/game" class="uso__links">game</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>
@@ -209,6 +211,7 @@ export default {
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
+  z-index: 99;
 
   z-index: 99;
   /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
@@ -445,7 +448,7 @@ export default {
   }
 
   .nav-active {
-    transform: translateY(-2%);
+    transform: translateY(-11%);
   }
 
   .uso__navburger {
@@ -459,6 +462,10 @@ export default {
 
   .uso__navbar--links {
     padding-left: 0;
+  }
+
+  .under-nav {
+    height: 0;
   }
 }
 </style>

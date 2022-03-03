@@ -61,26 +61,30 @@ export default {
           src: '/lib/zip.min.js',
           callback: () => {
             this.loaded.zip = true;
-            this.scriptsLoaded();
           },
         },
         {
           src: '/lib/localforage.min.js',
           callback: () => {
             this.loaded.localforage = true;
-            this.scriptsLoaded();
           },
         },
       ],
     };
   },
 
+  watch: {
+    loaded: {
+      handler(newValue, oldValue) {
+        this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
+      },
+      deep: true,
+    },
+  },
+
   created() {},
 
   methods: {
-    scriptsLoaded() {
-      this.areAllLoaded = !Object.values(this.loaded).some((bool) => !bool);
-    },
     selectFile(event) {
       this.rawFile = event.target.files[0];
       this.readFile(this.rawFile);
@@ -137,7 +141,7 @@ export default {
           break;
 
         default:
-          alert(`Dropbox event does not exist: ${event.type}`);
+          alert(`Dropbox event listener does not exist: ${event.type}`);
           break;
       }
     },
@@ -155,29 +159,33 @@ export default {
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin: 2rem 0rem;
+  font-size: 4rem;
+  margin: 3.2rem 0rem;
 }
 
 .drop-area {
-  margin: 1rem auto;
+  margin: 1.6rem auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 40rem;
-  height: 16rem;
-  border: 0.5rem dashed grey;
-  border-radius: 1.5rem;
+  width: 64rem;
+  height: 25.6rem;
+  border: 0.8rem dashed grey;
+  border-radius: 2.4rem;
 }
 
 .drop-area img {
-  width: 5rem;
+  width: 8rem;
 }
 
 .drop-area p {
-  font-size: 2rem;
-  margin: 1rem;
+  font-size: 3.2rem;
+  margin: 1.6rem;
+}
+
+.drop-area p > * {
+  font-size: 3.2rem;
 }
 
 .hovered {

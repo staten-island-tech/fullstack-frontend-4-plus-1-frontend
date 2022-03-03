@@ -63,6 +63,10 @@ export default {
 </script>
 
 <style scoped>
+.under-nav {
+  height: 9.5rem;
+}
+
 .landing {
   width: 100%;
   /* max-width: 100%; */
@@ -74,14 +78,12 @@ export default {
   background-repeat: no-repeat;
   background-position: center center; */
 }
-
 .home-main {
   width: 100%;
   height: auto;
   padding-bottom: 5rem;
   /* height: calc(100vh - 9.5rem); */
   /*   background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); */
-
   background-image: linear-gradient(
       rgba(18, 47, 96, 0.972),
       rgba(18, 47, 96, 0.6)
@@ -92,24 +94,19 @@ export default {
   background-position: center center; */
   background-attachment: fixed;
 }
-
 .home-content-container {
   width: 104rem;
-
   margin: auto;
 }
-
 .feature-songs {
   width: 100%;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .news-header {
   color: #b7ba91;
 }
-
 .home-section {
   padding: 7rem 0 0 0;
 }
