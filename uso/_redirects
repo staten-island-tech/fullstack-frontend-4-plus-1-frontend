@@ -1,3 +1,2 @@
-[[redirects]]
-  from = "/"
-  to = "/home"
+# original path | new path
+/ /home
