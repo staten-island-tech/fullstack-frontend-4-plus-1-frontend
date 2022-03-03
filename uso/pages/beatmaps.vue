@@ -9,15 +9,14 @@
         </div>
 
         <div class="search-container">
-          <form class="song-search-form" @submit.prevent="">
+          <form class="song-search-form">
             <input
-              v-model="searchQuery"
               class="song-search-bar"
               type="text"
               placeholder="Search for your song... fix this garbage search area later lmao"
             />
 
-            <span class="deleteText" @click="searchQuery = ''">
+            <span class="deleteText">
               <img
                 class="search-icon"
                 src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"
@@ -368,10 +367,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 500vh;
+  height: 200vh;
   background-image: linear-gradient(
-      rgba(75, 69, 107, 0.7),
-      rgba(45, 39, 83, 0.7)
+      rgba(41, 34, 80, 0.7),
+      rgba(33, 26, 77, 0.7)
     ),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
@@ -381,7 +380,7 @@ export default {
 .play-title-textbox {
   width: 55vw;
   margin-top: 2rem;
-  background-color: rgb(42, 34, 63);
+  background-color: rgb(42, 36, 75);
 }
 
 .play-title {
@@ -434,8 +433,9 @@ export default {
 
 .song-search-form > input {
   font-size: 2.5rem;
+  height: initial;
   /* margin: 0 1rem; */
-  height: 5vh;
+  /* height: 5vh; */
 
   overflow: hidden;
   background-color: rgb(49, 45, 58);
@@ -506,13 +506,22 @@ export default {
   display: flex;
   align-items: flex-start;
   margin-top: 2rem;
+  padding: 1.75rem;
+  background-image: linear-gradient(
+      rgba(49, 45, 58, 0.7),
+      rgba(49, 45, 58, 0.7)
+    ),
+    url('~/assets/images/backgrounds/enkanomiya-blurred.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
 .play-beatmap-set-container {
   width: calc(var(--content-width) - var(--sidebar));
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  /* justify-content: center; */
   /* Gap => Column Gap, Row Gap */
   gap: 2rem 2rem;
 }
@@ -521,16 +530,19 @@ export default {
   position: relative;
   width: 24rem;
   height: 13.5rem;
-  border: 0.2rem solid white;
+  border: 0.2rem solid rgb(45, 40, 68);
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
   transition: 0.3s all;
+  cursor: pointer;
+  border-radius: 1rem;
 }
 
 .play-beatmap-set:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .beatmap-set-img {
@@ -540,11 +552,11 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .play-beatmap-set > p {
@@ -567,8 +579,10 @@ export default {
 
 .play-sidebar {
   width: var(--sidebar);
+  min-width: 0;
   min-height: 25rem;
-  border: 0.2rem solid white;
+  border: 0.2rem solid rgb(45, 40, 68);
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 1rem;
