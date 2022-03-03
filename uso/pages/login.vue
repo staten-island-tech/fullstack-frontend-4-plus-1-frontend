@@ -1,5 +1,12 @@
 <template>
   <div class="login-page">
+    <nuxt-link to="/home" class="uso__logo">
+      <img
+        class="uso__logo--hover"
+        src="~/assets/images/navigation/osu-white.svg"
+        alt="logo"
+      />
+    </nuxt-link>
     <video
       id="login-video"
       class="video-bg"
@@ -12,10 +19,14 @@
     ></video>
     <div class="login-box">
       <h1>Login</h1>
-      <p>Username</p>
-      <input class="login-textbox" type="text" />
-      <p>Password</p>
-      <input class="login-textbox" type="text" />
+      <div class="login-group">
+        <p>Username</p>
+        <input class="login-textbox" type="text" />
+      </div>
+      <div class="login-group">
+        <p>Password</p>
+        <input class="login-textbox" type="text" />
+      </div>
       <input type="submit" value="Login" class="login-button" />
     </div>
   </div>
@@ -61,10 +72,16 @@ export default {
   flex-direction: column;
   /* align-items: center; */
 }
+.login-group {
+  width: 100%;
+  margin-bottom: 2rem;
+}
 .login-textbox {
   color: black;
   line-height: 29px;
   padding: 5px 10px;
+  width: 100%;
+  overflow: hidden;
 }
 .login-button {
   height: 4.2rem;
