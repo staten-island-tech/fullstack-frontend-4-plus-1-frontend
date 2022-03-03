@@ -71,6 +71,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+
+  /* box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4); */
+  transition: 0.3s all;
+  opacity: 0.9;
+}
+.feature-card:hover {
+  transform: scale(1.02);
+  opacity: 1;
 }
 
 .feature-card-text {
