@@ -1,7 +1,18 @@
 <template>
   <div>
     <div class="under-nav"></div>
-    <section class="landing"></section>
+    <section class="landing">
+      <video
+        id="landing-video"
+        class="video-bg"
+        autoplay
+        muted
+        loop
+        playsinline
+        src="../assets/images/backgrounds/landing-narukami-shrine-2.mp4"
+        type="video/mp4"
+      ></video>
+    </section>
     <section class="home-main">
       <div class="home-content-container">
         <section class="feature-songs home-section">
@@ -61,11 +72,11 @@ export default {
   /* max-width: 100%; */
 
   height: calc(100vh - 9.5rem);
-  background-image: url('./assets/images/backgrounds/landing.png');
+  /*   background-image: url('./assets/images/backgrounds/landing.png');
 
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center center; */
 }
 .home-main {
   width: 100%;
@@ -74,8 +85,8 @@ export default {
   /* height: calc(100vh - 9.5rem); */
   /*   background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); */
   background-image: linear-gradient(
-      rgba(39, 15, 112, 0.7),
-      rgba(39, 15, 112, 0.6)
+      rgba(18, 47, 96, 0.972),
+      rgba(18, 47, 96, 0.6)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   /*  background-size: cover;

@@ -40,13 +40,13 @@
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/login" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
 
           <nuxt-link to="/login" class="uso__avatar--img">
@@ -207,7 +207,7 @@ export default {
   width: 100%;
   background-image: linear-gradient(
       rgba(13, 4, 66, 0.7),
-      rgba(39, 15, 112, 0.7)
+      rgba(18, 47, 96, 0.972)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
