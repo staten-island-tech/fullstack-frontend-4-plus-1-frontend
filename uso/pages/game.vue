@@ -26,11 +26,7 @@
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
       <h1>
-        {{
-          accuracy
-            ? `${+(Math.round(accuracy + 'e+4') + 'e-4') * 100}%`
-            : '100%'
-        }}
+        {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
