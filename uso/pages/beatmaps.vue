@@ -420,9 +420,9 @@ export default {
 
 .song-search-form > input {
   font-size: 2.5rem;
-  /* margin: 0 1rem; */
-  height: 5vh;
   height: initial;
+  /* margin: 0 1rem; */
+  /* height: 5vh; */
 
   overflow: hidden;
   background-color: rgb(49, 45, 58);
@@ -539,12 +539,12 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
-/* .play-beatmap-set:hover > .beatmap-set-img {
+.play-beatmap-set:hover > .beatmap-set-img {
   opacity: 1;
-} */
+}
 
 .play-beatmap-set > p {
   width: 100%;
