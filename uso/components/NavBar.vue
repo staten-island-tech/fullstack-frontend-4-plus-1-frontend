@@ -29,7 +29,7 @@
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/game" class="uso__links">game</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>

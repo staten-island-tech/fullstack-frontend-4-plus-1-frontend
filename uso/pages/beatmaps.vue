@@ -552,11 +552,11 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
-  opacity: 1;
+  opacity: 0.6;
 }
 
 .play-beatmap-set > p {
@@ -602,10 +602,16 @@ export default {
 .play-sidebar-text-container > * {
   font-size: 2.25rem;
   margin: 0 0 0 0.5rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .play-sidebar-text-title {
   font-size: 4.5rem;
+
+  line-height: 2.7rem;
 }
 
 .play-sidebar-difficulties {
@@ -623,5 +629,10 @@ export default {
 
 .play-sidebar-difficulties > tbody > tr > th {
   font-size: 2.25rem;
+}
+
+.play-sidebar-difficulties > tbody > tr > th > * {
+  font-size: 2rem;
+  color: rgb(143, 194, 236);
 }
 </style>
