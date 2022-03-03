@@ -95,7 +95,7 @@ export default {
       firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 25000,
+      beatmapIntro: 23597,
       syncOffset: 0,
       oneButtonClick: true,
     };
@@ -201,6 +201,7 @@ export default {
         if (t.areAllLoaded) {
           t.beatmapData = t.$store.state.beatmapData;
           t.notes = t.beatmapData.hitObjects;
+          t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
           t.music = new Howl({
             src: [

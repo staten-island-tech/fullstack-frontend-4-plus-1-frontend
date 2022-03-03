@@ -100,7 +100,7 @@
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/game`">Play</nuxt-link>
+                    <nuxt-link :to="`/play`">Play</nuxt-link>
                   </th>
                   <th>??? notes/s</th>
                 </tr>
