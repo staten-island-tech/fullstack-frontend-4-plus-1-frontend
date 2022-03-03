@@ -24,8 +24,11 @@
         <input class="login-textbox" type="text" />
       </div>
       <div class="login-group">
-        <p>Password</p>
-        <input class="login-textbox" type="text" />
+        <div class="password-text">
+          <p>Password</p>
+          <p id="show-password-btn">Show password</p>
+        </div>
+        <input class="login-textbox" type="password" />
       </div>
       <input type="submit" value="Login" class="login-button" />
     </div>
@@ -87,5 +90,14 @@ export default {
   height: 4.2rem;
   width: 100%;
   color: black;
+}
+
+.password-text {
+  display: flex;
+  justify-content: space-between;
+}
+#show-password-btn {
+  font-size: 2.5rem;
+  cursor: pointer;
 }
 </style>

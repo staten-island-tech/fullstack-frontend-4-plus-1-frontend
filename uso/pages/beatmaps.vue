@@ -372,9 +372,11 @@ export default {
       rgba(41, 34, 80, 0.7),
       rgba(33, 26, 77, 0.7)
     ),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
+      url('~/assets/images/backgrounds/landing.png');
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
 }
 
 .play-title-textbox {
