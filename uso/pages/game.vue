@@ -25,6 +25,13 @@
     <div class="statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
+      <h1>
+        {{
+          accuracy
+            ? `${+(Math.round(accuracy + 'e+4') + 'e-4') * 100}%`
+            : '100%'
+        }}
+      </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
     <div class="progress-bar-container">
@@ -56,6 +63,17 @@ export default {
       score: 0,
       combo: 0,
       scrollSpeed: 15,
+      latestHit: null,
+      totalHits: {
+        0: 0,
+        50: 0,
+        100: 0,
+        200: 0,
+        300: 0,
+        320: 0,
+      },
+      hitBonusValue: null,
+      bonus: 100,
 
       keys: ['d', 'f', 'j', 'k'],
 
@@ -84,10 +102,6 @@ export default {
       beatmapIntro: 25000,
       syncOffset: 0,
       oneButtonClick: true,
-
-      latestHit: null,
-      hitBonusValue: null,
-      bonus: 100,
     };
   },
 
@@ -159,6 +173,23 @@ export default {
           break;
       }
       return { color: color };
+    },
+    accuracy() {
+      const total = this.totalHits;
+      const accuracy =
+        (total['50'] * 50 +
+          total['100'] * 100 +
+          total['200'] * 200 +
+          total['300'] * 300 +
+          total['320'] * 300) /
+        ((total['0'] +
+          total['50'] +
+          total['100'] +
+          total['200'] +
+          total['300'] +
+          total['320']) *
+          300);
+      return isNaN(accuracy) ? null : accuracy;
     },
   },
 
@@ -391,31 +422,37 @@ export default {
                 switch (true) {
                   case msFromTargetCircle <= 16.5:
                     t.latestHit = 320;
+                    t.totalHits['320']++;
                     hitBonusValue = 32;
                     t.bonus += 2;
                     break;
                   case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 0.5:
                     t.latestHit = 300;
+                    t.totalHits['300']++;
                     hitBonusValue = 32;
                     t.bonus += 1;
                     break;
                   case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
                     t.latestHit = 200;
+                    t.totalHits['200']++;
                     hitBonusValue = 16;
                     t.bonus -= 8;
                     break;
                   case msFromTargetCircle <= Math.floor(127 - 3 * OD) + 0.5:
                     t.latestHit = 100;
+                    t.totalHits['100']++;
                     hitBonusValue = 8;
                     t.bonus -= 24;
                     break;
                   case msFromTargetCircle <= Math.floor(151 - 3 * OD) + 0.5:
                     t.latestHit = 50;
+                    t.totalHits['50']++;
                     hitBonusValue = 4;
                     t.bonus += 44;
                     break;
                   case msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5:
                     t.latestHit = 0;
+                    t.totalHits['0']++;
                     t.bonus = 0;
 
                     t.combo = 0;
@@ -503,8 +540,11 @@ export default {
                 createjs.Tween.removeTweens(thisCircle);
 
                 // Reset combo
-                t.combo = 0;
                 t.latestHit = 0;
+                t.totalHits['0']++;
+                t.bonus = 0;
+
+                t.combo = 0;
 
                 // Remove circle from stage
                 t.columnContainers[note.columnIndex].removeChild(thisCircle);
