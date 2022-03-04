@@ -488,14 +488,45 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  transition: 0.3s all;
+  transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
+
+
 }
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
 }
+
+.play-beatmap-set:hover::after {
+  content: '';
+  display: block;
+  width: 75px;
+  height: 175%;
+  background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
+  opacity: 0.2;
+  position: absolute;
+  top: -20px;
+  left: 0;
+  animation: shine 200ms linear;
+  transform: translateX(250px) rotate(-25deg);
+}
+
+/* */
+
+@keyframes shine {
+  0% {
+    transform: translateX(-30px) rotate(-25deg);
+  }
+  
+  100% {
+    transform: translateX(250px) rotate(-25deg);
+  }
+}
+
+/* */
 
 .beatmap-set-img {
   position: absolute;
