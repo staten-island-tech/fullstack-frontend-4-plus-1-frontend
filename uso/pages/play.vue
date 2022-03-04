@@ -72,13 +72,13 @@ export default {
       bonus: 100,
 
       keys: ['d', 'f', 'j', 'k'],
+      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
       canvasHeight: 700, // in px (we change this to rem later)
-
-      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
-      /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
+      hitPercent: 650 / 700,
       radius: 40,
 
       stage: null,
@@ -89,7 +89,6 @@ export default {
       music: null,
 
       columnContainers: [],
-      loader: null,
       targetCircles: [],
       circles: null,
       firstVal: 0,
@@ -303,7 +302,7 @@ export default {
         t.columnContainers.push(new createjs.Container());
 
         // Sets the x-offset for each container based off the column index and column width
-        t.columnContainers[i].x = i * t.columnWidth;
+        t.columnContainers[i].x = i * t.stageColWidth;
 
         // "Mounts" the container to the stage
         t.stage.addChild(t.columnContainers[i]);
@@ -332,7 +331,11 @@ export default {
       const circleGraphic = new createjs.Graphics()
         .beginStroke('Black')
         .beginFill('Gray')
-        .drawCircle(50, t.stageHeight - 50, t.radius);
+        .drawCircle(
+          t.stageColWidth / 2,
+          t.hitPercent * t.stageHeight,
+          t.radius
+        );
 
       t.columnContainers.forEach((container) => {
         const targetCircle = new createjs.Shape(circleGraphic);
@@ -402,7 +405,8 @@ export default {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
               const msFromTargetCircle =
-                (Math.abs(circle.y - 700) * 1000) / (t.dy * t.stageFPS);
+                (Math.abs(circle.y - t.stageHeight) * 1000) /
+                (t.dy * t.stageFPS);
               const OD = t.beatmapData.difficulty.OverallDifficulty;
 
               if (
@@ -482,14 +486,14 @@ export default {
             const circleGraphic = new createjs.Graphics()
               .beginStroke('Black')
               .beginFill(t.circleColors[note.columnIndex])
-              .drawCircle(50, -t.radius, t.radius);
+              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
 
             const thisCircle = new createjs.Shape(circleGraphic);
             thisCircle.name = 'thisCircle';
 
             // thisCircle.cache(0, -85, 120, 120);
             thisCircle.cache(
-              50 - t.radius,
+              t.stageColWidth / 2 - t.radius,
               -2 * t.radius,
               2 * t.radius + 30,
               2 * t.radius + 30
@@ -524,7 +528,7 @@ export default {
                   t.columnContainers[note.columnIndex].removeChild(thisCircle);
                 }
               }
-            }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+            }, note.time - t.beatmapIntro - (6860 * t.hitPercent + 6860) / t.scrollSpeed);
 
             break;
           case 'hold':
