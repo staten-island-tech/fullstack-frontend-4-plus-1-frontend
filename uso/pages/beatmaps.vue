@@ -24,19 +24,6 @@
             </span>
             <input class="song-submit-button" type="submit" value="" />
           </form>
-
-          <!-- <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
-              <div class="input">
-                <input
-                  v-model="searchQuery"
-                  type="text"
-                  class="search-area"
-                  placeholder="Search for your song... fix this garbage search area later lmao"
-                  style="font-size: 3.5rem"
-                />
-              </div>
-              <span class="deleteText" @click="searchQuery = ''"><img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" /></span>
-            </form> -->
         </div>
 
         <div class="play-beatmap-content">
@@ -460,43 +447,6 @@ export default {
   padding: 1rem;
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
 }
-
-/*
-
-.search-bar {
-  position: relative;
-  color: #f6f6f6;
-  width: 54.5vw;
-  height: 5rem;
-  margin: 0.4rem 0rem;
-  border-radius: 0rem;
-  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  background-color: rgb(49, 45, 58);
-}
-
-.search-bar .input {
-  position: relative;
-  width: 52vw;
-  height: 3.75rem;
-  left: 1.25rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-bar .input input {
-  position: absolute;
-  top: 25%;
-  color: #f6f6f6;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  font-size: 2.25rem;
-  font-weight: 400;
-  background-color: rgba(49, 45, 58, 0.7);
-} */
 
 /* Beatmap Content */
 

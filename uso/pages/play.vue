@@ -96,7 +96,6 @@ export default {
       beatmapData: {},
       notes: [],
       beatmapIntro: 23597,
-      syncOffset: 0,
       oneButtonClick: true,
     };
   },
@@ -477,112 +476,121 @@ export default {
               NOTES
           =============== */
 
-      let sliderHeight;
-
       t.notes.forEach((note) => {
-        sliderHeight = (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+        switch (note.type) {
+          case 'note':
+            const circleGraphic = new createjs.Graphics()
+              .beginStroke('Black')
+              .beginFill(t.circleColors[note.columnIndex])
+              .drawCircle(50, -t.radius, t.radius);
 
-        const circleGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .beginFill(t.circleColors[note.columnIndex])
-          .drawCircle(50, -t.radius, t.radius);
+            const thisCircle = new createjs.Shape(circleGraphic);
+            thisCircle.name = 'thisCircle';
 
-        const sliderGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .beginFill(t.circleColors[note.columnIndex])
-          .drawRoundRectComplex(
-            10,
-            -(sliderHeight + 2 * t.radius),
-            80,
-            sliderHeight + 2 * t.radius,
-            40,
-            40,
-            40,
-            40
-          );
+            // thisCircle.cache(0, -85, 120, 120);
+            thisCircle.cache(
+              50 - t.radius,
+              -2 * t.radius,
+              2 * t.radius + 30,
+              2 * t.radius + 30
+            );
 
-        const thisCircle = new createjs.Shape(circleGraphic);
-        const thisSlider = new createjs.Shape(sliderGraphic);
+            setTimeout(() => {
+              t.columnContainers[note.columnIndex].addChild(thisCircle);
 
-        thisCircle.cache(
-          50 - t.radius,
-          -2 * t.radius,
-          2 * t.radius + 30,
-          2 * t.radius + 30
-        );
+              animate();
 
-        // thisCircle.cache(0, -85, 120, 120);
-
-        thisCircle.name = 'thisCircle';
-        thisSlider.name = 'thisSlider';
-
-        if (note.type === 'note') {
-          setTimeout(() => {
-            t.columnContainers[note.columnIndex].addChild(thisCircle);
-
-            animateCircle();
-
-            function animateCircle() {
-              createjs.Tween.get(thisCircle, {
-                useTicks: true,
-                onChange: onChange,
-                onComplete: animateCircle,
-              }).to({ y: thisCircle.y + t.dy }, 1);
-            }
-            function onChange() {
-              // noteType = true;
-              // If it reaches offscreen then ...
-              if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
-                // Remove tweens on the object
-                createjs.Tween.removeTweens(thisCircle);
-
-                // Reset combo
-                t.latestHit = 0;
-                t.totalHits['0']++;
-                t.bonus = 0;
-
-                t.combo = 0;
-
-                // Remove circle from stage
-                t.columnContainers[note.columnIndex].removeChild(thisCircle);
+              function animate() {
+                createjs.Tween.get(thisCircle, {
+                  useTicks: true,
+                  onChange: onChange,
+                  onComplete: animate,
+                }).to({ y: thisCircle.y + t.dy }, 1);
               }
-            }
-          }, note.time - t.beatmapIntro + t.syncOffset - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
-        } else if (note.type === 'hold') {
-          setTimeout(() => {
-            t.columnContainers[note.columnIndex].addChild(thisSlider);
+              function onChange() {
+                // If it reaches offscreen then ...
+                if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
+                  // Remove tweens on the object
+                  createjs.Tween.removeTweens(thisCircle);
 
-            animateSlider();
+                  // Reset combo
+                  t.latestHit = 0;
+                  t.totalHits['0']++;
+                  t.bonus = 0;
 
-            function animateSlider() {
-              /*
+                  t.combo = 0;
+
+                  // Remove circle from stage
+                  t.columnContainers[note.columnIndex].removeChild(thisCircle);
+                }
+              }
+            }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+
+            break;
+          case 'hold':
+            const sliderHeight =
+              (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+
+            const sliderGraphic = new createjs.Graphics()
+              .beginStroke('Black')
+              .beginFill(t.circleColors[note.columnIndex])
+              .drawRoundRectComplex(
+                10,
+                -(sliderHeight + 2 * t.radius),
+                80,
+                sliderHeight + 2 * t.radius,
+                40,
+                40,
+                40,
+                40
+              );
+
+            const thisSlider = new createjs.Shape(sliderGraphic);
+            thisSlider.name = 'thisSlider';
+
+            setTimeout(() => {
+              t.columnContainers[note.columnIndex].addChild(thisSlider);
+
+              animate();
+
+              function animate() {
+                /*
                 useTicks: uses update ticks (60 fps) instead of ms
                 onChange: runs ths function when the position is changed (thus this function is run every tick)
                 onComplete: runs this function when animation is done
               */
-              createjs.Tween.get(thisSlider, {
-                useTicks: true,
-                onChange: onChange,
-                onComplete: animateSlider,
-              }).to({ y: thisSlider.y + t.dy }, 1);
-            }
-            function onChange() {
-              if (thisSlider.y - sliderHeight > t.canvasHeight + 2 * t.radius) {
-                // Remove tweens on the object
-                createjs.Tween.removeTweens(thisSlider);
-
-                t.latestHit = 0;
-                t.bonus = 0;
-
-                t.combo = 0;
-
-                // Remove circle from stage
-                t.columnContainers[note.columnIndex].removeChild(thisSlider);
+                createjs.Tween.get(thisSlider, {
+                  useTicks: true,
+                  onChange: onChange,
+                  onComplete: animate,
+                }).to({ y: thisSlider.y + t.dy }, 1);
               }
-            }
-          }, note.time - t.beatmapIntro + t.syncOffset - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
-        } else {
-          console.log(`Invalid note type: ${note.type}`);
+              function onChange() {
+                if (
+                  thisSlider.y - sliderHeight >
+                  t.canvasHeight + 2 * t.radius
+                ) {
+                  // Remove tweens on the object
+                  createjs.Tween.removeTweens(thisSlider);
+
+                  // Reset combo
+                  t.latestHit = 0;
+                  t.totalHits['0']++;
+                  t.bonus = 0;
+
+                  t.combo = 0;
+
+                  // Remove circle from stage
+                  t.columnContainers[note.columnIndex].removeChild(thisSlider);
+                }
+              }
+            }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+
+            break;
+          default:
+            console.log(`Invalid note type: ${note.type}`);
+
+            break;
         }
       });
     },
