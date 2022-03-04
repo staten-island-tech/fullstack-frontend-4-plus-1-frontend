@@ -12,13 +12,8 @@
     >
       START
     </button>
-    <div
-      class="canvas-container"
-      :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
-    >
-      <canvas
-        id="canvas"
-        :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
+    <div class="canvas-container" :style="{ width: canvasWidth + 'px' }">
+      <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
         >Canvas is not supported on your browser.</canvas
       >
     </div>
@@ -43,7 +38,7 @@
 /* eslint-disable */
 
 export default {
-  layout: 'noNav',
+  layout: 'nonav',
 
   data() {
     return {
@@ -58,7 +53,7 @@ export default {
 
       score: 0,
       combo: 0,
-      scrollSpeed: 15,
+      scrollSpeed: 20,
       latestHit: null,
       totalHits: {
         0: 0,
@@ -77,8 +72,8 @@ export default {
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      canvasHeight: 700, // in px (we change this to rem later)
-      hitPercent: 650 / 700,
+      // canvasHeight: 700, // in px (we change this to rem later)
+      hitPercent: 0.8,
       radius: 40,
 
       stage: null,
@@ -124,8 +119,8 @@ export default {
     },
     dy() {
       return (
-        (this.scrollSpeed * 1000 * this.canvasHeight) /
-        (this.stageFPS * (6860 * (650 / 700) + 6860))
+        (this.scrollSpeed * 1000 * this.stageHeight) /
+        (this.stageFPS * (6860 * this.hitPercent + 6860))
       );
     },
     displayedLatestHit() {
@@ -343,6 +338,8 @@ export default {
         t.targetCircles.push(targetCircle);
 
         container.addChild(targetCircle);
+
+        console.log(targetCircle);
       });
 
       /* ===============
@@ -405,7 +402,10 @@ export default {
           if (e.key === t.keys[i]) {
             t.columnContainers[i].children.forEach((circle) => {
               const msFromTargetCircle =
-                (Math.abs(circle.y - t.stageHeight) * 1000) /
+                (Math.abs(
+                  circle.y - (t.stageHeight * t.hitPercent + t.radius)
+                ) *
+                  1000) /
                 (t.dy * t.stageFPS);
               const OD = t.beatmapData.difficulty.OverallDifficulty;
 
@@ -513,7 +513,7 @@ export default {
               }
               function onChange() {
                 // If it reaches offscreen then ...
-                if (thisCircle.y > t.canvasHeight + 2 * t.radius) {
+                if (thisCircle.y > t.stageHeight + 2 * t.radius) {
                   // Remove tweens on the object
                   createjs.Tween.removeTweens(thisCircle);
 
@@ -528,7 +528,7 @@ export default {
                   t.columnContainers[note.columnIndex].removeChild(thisCircle);
                 }
               }
-            }, note.time - t.beatmapIntro - (6860 * t.hitPercent + 6860) / t.scrollSpeed);
+            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
 
             break;
           case 'hold':
@@ -541,12 +541,12 @@ export default {
               .drawRoundRectComplex(
                 10,
                 -(sliderHeight + 2 * t.radius),
-                80,
+                2 * t.radius,
                 sliderHeight + 2 * t.radius,
-                40,
-                40,
-                40,
-                40
+                t.radius,
+                t.radius,
+                t.radius,
+                t.radius
               );
 
             const thisSlider = new createjs.Shape(sliderGraphic);
@@ -572,7 +572,7 @@ export default {
               function onChange() {
                 if (
                   thisSlider.y - sliderHeight >
-                  t.canvasHeight + 2 * t.radius
+                  t.stageHeight + 2 * t.radius
                 ) {
                   // Remove tweens on the object
                   createjs.Tween.removeTweens(thisSlider);
@@ -588,7 +588,7 @@ export default {
                   t.columnContainers[note.columnIndex].removeChild(thisSlider);
                 }
               }
-            }, note.time - t.beatmapIntro - (6860 * (650 / 700) + 6860) / t.scrollSpeed);
+            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
 
             break;
           default:
@@ -603,6 +603,11 @@ export default {
 </script>
 
 <style scoped>
+.canvas-container,
+#canvas {
+  height: 100vh;
+}
+
 #myProgress {
   width: 1vw;
   height: 100vh;

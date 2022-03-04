@@ -33,6 +33,8 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+
+      circle: null,
     };
   },
   head() {
@@ -98,6 +100,17 @@ export default {
 
       // "Mounts" the background to the stage
       t.stage.addChild(background);
+
+      // Test Circle
+
+      const circleGraphic = new createjs.Graphics()
+        .beginStroke('Black')
+        .beginFill('Gray')
+        .drawCircle(100, 100, 50);
+
+      t.circle = new createjs.Shape(circleGraphic);
+
+      t.stage.addChild(t.circle);
     },
   },
 };
