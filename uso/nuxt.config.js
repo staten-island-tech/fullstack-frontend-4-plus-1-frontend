@@ -42,7 +42,7 @@ export default {
     port: 8090,
   },
 
-  serverMiddleware: ['~/middleware/redirects.js'],
+  serverMiddleware: [],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
