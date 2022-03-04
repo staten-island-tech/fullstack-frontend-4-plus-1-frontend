@@ -85,8 +85,8 @@ export default {
   /* height: calc(100vh - 9.5rem); */
   /*   background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); */
   background-image: linear-gradient(
-      rgba(18, 47, 96, 0.972),
-      rgba(18, 47, 96, 0.6)
+      rgba(16, 51, 112, 0.8),
+      rgba(16, 51, 112, 0.7)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   /*  background-size: cover;

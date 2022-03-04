@@ -207,7 +207,7 @@ export default {
   width: 100%;
   background-image: linear-gradient(
       rgba(13, 4, 66, 0.7),
-      rgba(18, 47, 96, 0.972)
+      rgba(16, 51, 112, 0.8)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
   filter: hue-rotate(0deg);
