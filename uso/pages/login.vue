@@ -14,6 +14,7 @@
       muted
       loop
       playsinline
+      disablePictureInPicture
       src="../assets/images/backgrounds/landing-seirai-island.mp4"
       type="video/mp4"
     ></video>

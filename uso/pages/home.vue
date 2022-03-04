@@ -9,6 +9,7 @@
         muted
         loop
         playsinline
+        disablePictureInPicture
         src="../assets/images/backgrounds/landing-narukami-shrine-2.mp4"
         type="video/mp4"
       ></video>
