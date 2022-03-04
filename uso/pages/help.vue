@@ -10,13 +10,32 @@
 <script>
 export default {
   components: {},
+  /*  mounted() {
+    this.lBozo();
+  }, */
   methods: {
-      lBozo: function () {
-          document.getElementById('#l-bozo') {
-/* font size anmation */
-          }
-      },
-  }
+    /*  lBozo() {
+      let time = 10;
+      const lBozoText = document.getElementById('l-bozo');
+      setTimeout(() => {
+        lBozoText.style.transition = '0.8s ease-in';
+        lBozoText.style.fontSize = '50rem';
+        console.log(time);
+      }, time);
+      setTimeout(() => {
+        lBozoText.style.transition = '0.8s ease-out';
+        lBozoText.style.fontSize = '3rem';
+        time = time + 840;
+        console.log(time);
+      }, time);
+      setTimeout(() => {
+        lBozoText.style.transition = '0.8s ease-out';
+        lBozoText.style.fontSize = '50rem';
+        time = time + 840;
+        console.log(time);
+      }, time);
+    }, */
+  },
 };
 </script>
 
@@ -30,7 +49,41 @@ export default {
   align-items: center;
 }
 
-/* #l-bozo {
-  font-size: 50rem;
-} */
+#l-bozo {
+  animation-name: example;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  font-size: 10rem;
+}
+
+@keyframes example {
+  0% {
+    color: red;
+    font-size: 10rem;
+  }
+  12.5% {
+    color: orange;
+  }
+  25% {
+    color: yellow;
+    font-size: 69rem;
+  }
+  37.5% {
+    color: green;
+  }
+  50% {
+    font-size: 10rem;
+    color: blue;
+  }
+  62.5% {
+    color: blue;
+  }
+  75% {
+    color: indigo;
+    font-size: 69rem;
+  }
+  87.5% {
+    color: violet;
+  }
+}
 </style>
