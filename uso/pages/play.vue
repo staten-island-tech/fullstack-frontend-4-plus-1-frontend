@@ -53,7 +53,7 @@ export default {
 
       score: 0,
       combo: 0,
-      scrollSpeed: 20,
+      scrollSpeed: 10,
       latestHit: null,
       totalHits: {
         0: 0,
@@ -72,7 +72,6 @@ export default {
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      // canvasHeight: 700, // in px (we change this to rem later)
       hitPercent: 0.8,
       radius: 40,
 
@@ -83,14 +82,16 @@ export default {
       stageFPS: 60,
       music: null,
 
-      columnContainers: [],
-      targetCircles: [],
+      // Stands for stageSetup
+      ss: {
+        columnContainers: [],
+        columnBorders: [],
+        targetCircles: [],
+      },
       circles: null,
-      firstVal: 0,
       beatmapData: {},
       notes: [],
-      beatmapIntro: 23597,
-      oneButtonClick: true,
+      beatmapIntro: null,
     };
   },
 
@@ -194,7 +195,7 @@ export default {
         if (t.areAllLoaded) {
           t.beatmapData = t.$store.state.beatmapData;
           t.notes = t.beatmapData.hitObjects;
-          t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
+          t.beatmapIntro = t.notes[0].time < 4000 ? 0 : t.notes[0].time - 4000;
 
           t.music = new Howl({
             src: [
@@ -216,8 +217,6 @@ export default {
     },
   },
 
-  mounted() {},
-
   methods: {
     init() {
       const t = this;
@@ -226,8 +225,6 @@ export default {
       t.music.play();
       t.songDuration = t.music.duration();
 
-      let i = 0;
-
       /* ===============
           PROGRESS BAR
           =============== */
@@ -235,7 +232,7 @@ export default {
       const $progressBar = document.getElementById('myBar');
 
       function progressBar() {
-        let bar = 0;
+        let bar = Math.floor((t.beatmapIntro * 100) / (t.songDuration * 1000));
         let id = setInterval(function () {
           bar++;
           $progressBar.style.height = bar + '%';
@@ -285,69 +282,63 @@ export default {
         .beginFill('#D3D3D3')
         .drawRect(0, 0, t.stageWidth, t.stageHeight);
 
+      background.name = 'background';
+
       // "Mounts" the background to the stage
       t.stage.addChild(background);
 
       /* ===============
-          COLUMN CONTAINER
+          STAGE SETUP
           =============== */
 
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
-        t.columnContainers.push(new createjs.Container());
+        t.ss.columnContainers.push(new createjs.Container());
 
         // Sets the x-offset for each container based off the column index and column width
-        t.columnContainers[i].x = i * t.stageColWidth;
+        t.ss.columnContainers[i].x = i * t.stageColWidth;
 
         // "Mounts" the container to the stage
-        t.stage.addChild(t.columnContainers[i]);
-      }
+        t.stage.addChild(t.ss.columnContainers[i]);
 
-      /* ===============
-          COLUMN BORDERS
-          =============== */
+        ////////////////////////////////////////
 
-      // Creates a graphic which is then used as a template for the shape (which we mount onto the canvas)
-      const borderGraphic = new createjs.Graphics()
-        .beginStroke('Black')
-        .drawRect(0, 0, t.stageColWidth, t.stageHeight);
+        const borderGraphic = new createjs.Graphics()
+          .beginStroke('Black')
+          .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
 
-      t.columnContainers.forEach((container) => {
         const columnBorder = new createjs.Shape(borderGraphic);
 
-        // Adds the child to the specific container which automatically "mounts" the border lines to the stage because the columnContainer was already "mounted"
-        container.addChild(columnBorder);
-      });
+        columnBorder.name = `border${i}`;
 
-      /* ===============
-          TARGET CIRCLES
-          =============== */
+        t.ss.columnBorders.push(columnBorder);
+        t.stage.addChild(columnBorder);
 
-      const circleGraphic = new createjs.Graphics()
-        .beginStroke('Black')
-        .beginFill('Gray')
-        .drawCircle(
-          t.stageColWidth / 2,
-          t.hitPercent * t.stageHeight,
-          t.radius
-        );
+        ////////////////////////////////////////
 
-      t.columnContainers.forEach((container) => {
+        const circleGraphic = new createjs.Graphics()
+          .beginStroke('Black')
+          .beginFill('Gray')
+          .drawCircle(
+            i * 100 + t.stageColWidth / 2,
+            t.hitPercent * t.stageHeight,
+            t.radius
+          );
+
         const targetCircle = new createjs.Shape(circleGraphic);
 
-        t.targetCircles.push(targetCircle);
+        targetCircle.name = `targetCircle${i}`;
 
-        container.addChild(targetCircle);
-
-        console.log(targetCircle);
-      });
+        t.ss.targetCircles.push(targetCircle);
+        t.stage.addChild(targetCircle);
+      }
 
       /* ===============
             KEY PRESSES
           =============== */
 
       /* kd.D.down(function () {
-        t.columnContainers[0].children.forEach((circle) => {
+        t.ss.columnContainers[0].children.forEach((circle) => {
           const diffFromTargetCircle = Math.abs(circle.y - 700);
 
           if (circle.y >= 610 && circle.name === 'thisSlider') {
@@ -374,7 +365,7 @@ export default {
       }); */
 
       /*       kd.D.up(function () {
-        t.columnContainers[0].children.forEach((circle) => {
+        t.ss.columnContainers[0].children.forEach((circle) => {
           const diffFromTargetCircle = Math.abs(circle.y - 700);
           if (circle.y >= 610 && circle.name === 'Slider') {
             lastValY = diffFromTargetCircle;
@@ -400,7 +391,7 @@ export default {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         for (let i = 0; i < t.numColumns; i++) {
           if (e.key === t.keys[i]) {
-            t.columnContainers[i].children.forEach((circle) => {
+            t.ss.columnContainers[i].children.forEach((circle) => {
               const msFromTargetCircle =
                 (Math.abs(
                   circle.y - (t.stageHeight * t.hitPercent + t.radius)
@@ -414,7 +405,7 @@ export default {
                 circle.name === 'thisCircle'
               ) {
                 createjs.Tween.removeTweens(circle);
-                t.columnContainers[i].removeChild(circle);
+                t.ss.columnContainers[i].removeChild(circle);
                 t.combo += 1;
 
                 let hitBonusValue = 0;
@@ -500,7 +491,7 @@ export default {
             );
 
             setTimeout(() => {
-              t.columnContainers[note.columnIndex].addChild(thisCircle);
+              t.ss.columnContainers[note.columnIndex].addChild(thisCircle);
 
               animate();
 
@@ -525,7 +516,9 @@ export default {
                   t.combo = 0;
 
                   // Remove circle from stage
-                  t.columnContainers[note.columnIndex].removeChild(thisCircle);
+                  t.ss.columnContainers[note.columnIndex].removeChild(
+                    thisCircle
+                  );
                 }
               }
             }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
@@ -553,7 +546,7 @@ export default {
             thisSlider.name = 'thisSlider';
 
             setTimeout(() => {
-              t.columnContainers[note.columnIndex].addChild(thisSlider);
+              t.ss.columnContainers[note.columnIndex].addChild(thisSlider);
 
               animate();
 
@@ -585,7 +578,9 @@ export default {
                   t.combo = 0;
 
                   // Remove circle from stage
-                  t.columnContainers[note.columnIndex].removeChild(thisSlider);
+                  t.ss.columnContainers[note.columnIndex].removeChild(
+                    thisSlider
+                  );
                 }
               }
             }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
