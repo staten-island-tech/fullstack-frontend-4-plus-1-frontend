@@ -542,16 +542,14 @@ export default {
                   // If ms from targetCircle is less than ...
                   case thisCircle.msFromAbs() <= t.hitJudgement['0'] &&
                     !thisCircle.ready:
-                    if (!thisCircle.ready) {
-                      thisCircle.ready = true;
+                    thisCircle.ready = true;
 
-                      thisCircle.readyIndex =
-                        t.readyNotes[thisCircle.i].push(thisCircle) - 1;
-                    }
+                    thisCircle.readyIndex =
+                      t.readyNotes[thisCircle.i].push(thisCircle) - 1;
                     break;
 
                   // If it reaches offscreen then ...
-                  case thisCircle.msFrom() > t.hitJudgement['0']:
+                  case thisCircle.msFrom() > t.hitJudgement['50']:
                     // Remove tweens on the object
                     createjs.Tween.removeTweens(thisCircle);
 
