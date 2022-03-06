@@ -25,10 +25,17 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
-    <div class="progress-bar-container">
-      <div id="myProgress">
-        <div id="myBar"></div>
-      </div>
+    <div class="pb-cont">
+      <div id="pb"></div>
+      <div id="pbVol" :style="{ opacity: opacity }"></div>
+      <button
+        v-if="areAllLoaded && started && songLoaded"
+        :style="{ opacity: opacity }"
+        class="btn"
+        @click="muteBtn"
+      >
+        MUTE
+      </button>
     </div>
   </div>
 </template>
@@ -46,6 +53,7 @@ export default {
         createjs: false,
         keydrown: false,
         howler: false,
+        progressbar: false,
       },
       areAllLoaded: false,
       started: false,
@@ -91,7 +99,11 @@ export default {
       stageFPS: 60,
       music: null,
       beatmapIntro: null,
-
+      songDuration: 0,
+      volume: 0.1,
+      pbVolProgress: 0.1,
+      scale: 0,
+      opacity: 1,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -120,6 +132,10 @@ export default {
         {
           src: '/lib/howler.min.js',
           callback: () => (this.loaded.howler = true),
+        },
+        {
+          src: '/lib/progressbar.min.js ',
+          callback: () => (this.loaded.progressbar = true),
         },
       ],
     };
@@ -210,7 +226,7 @@ export default {
             src: [
               `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
             ],
-            volume: 0.1,
+            volume: t.volume,
             onload: function () {
               t.songLoaded = true;
             },
@@ -220,22 +236,6 @@ export default {
           /* ===============
               PROGRESS BAR
               =============== */
-
-          const $progressBar = document.getElementById('myBar');
-          t.songDuration = t.music.duration();
-
-          function progressBar() {
-            let bar = 0;
-            let id = setInterval(function () {
-              bar++;
-              $progressBar.style.height = bar + '%';
-              if (bar >= 100) {
-                clearInterval(id);
-              }
-            }, (t.songDuration * 1000) / 100);
-          }
-
-          progressBar();
 
           /* ===============
               CANVAS SETUP
@@ -354,8 +354,86 @@ export default {
       t.started = true;
       t.music.play();
 
+      t.songDuration = t.music.duration();
+
+      let sd = Math.round(t.songDuration) * 1000;
+
+      function setProgressBar() {
+        let progressBar = new ProgressBar.Circle('#pb', {
+          color: '#FCB03C',
+          strokeWidth: 50,
+          trailColor: '#D3D3D3',
+          duration: sd,
+          text: {
+            value: '0',
+          },
+        });
+        progressBar.animate(1);
+      }
+      setProgressBar();
+
+      let progressBarVol = new ProgressBar.Circle('#pbVol', {
+        color: '#FCB03C',
+        // This has to be the same size as the maximum width to
+        // prevent clipping
+        strokeWidth: 7,
+        easing: 'easeInOut',
+        trailColor: '#eee',
+        trailWidth: 7,
+        duration: 1400,
+        text: {
+          style: {
+            position: 'absolute',
+            left: '50%',
+            top: '45%',
+            padding: 0,
+            margin: 0,
+            // You can specify styles which will be browser prefixed
+            transform: {
+              prefix: true,
+              value: 'translate(-50%, -50%)',
+            },
+          },
+        },
+
+        from: { color: '#aaa', width: 8 },
+        to: { color: '#333', width: 8 },
+        // Set default step function for all animate calls
+        step: function (state, circle) {
+          circle.path.setAttribute('stroke', state.color);
+          circle.path.setAttribute('stroke-width', state.width);
+
+          let value = Math.round(circle.value() * 100);
+          if (value === 0) {
+            circle.setText('Volume');
+          } else {
+            circle.setText(value);
+          }
+        },
+      });
+      progressBarVol.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+      progressBarVol.text.style.fontSize = '5rem';
+
+      progressBarVol.animate(t.pbVolProgress);
+
+      function changeVol(event) {
+        event.preventDefault();
+
+        t.scale += event.deltaY * -0.0002;
+        // Restrict scale
+        t.scale = Math.min(Math.max(0, t.scale), 1);
+        // Apply scale transform
+        Howler.volume(t.scale);
+        t.pbVolProgress = Math.round(100 * t.scale) / 100;
+
+        progressBarVol.set(t.pbVolProgress);
+      }
+
+      const $pbVol = document.getElementById('pbVol');
+      $pbVol.addEventListener('wheel', changeVol);
+
       /* ===============
-            KEY PRESSES
+          KEY PRESS
           =============== */
 
       const OD = t.beatmapData.difficulty.OverallDifficulty;
@@ -701,6 +779,16 @@ export default {
         }
       });
     },
+    muteBtn() {
+      if (this.music.mute() === false) {
+        this.music.mute(true);
+        this.opacity = 0.5;
+      } else {
+        this.music.mute(false);
+        this.opacity = 1;
+      }
+      // this.music.mute(true);
+    },
   },
 };
 </script>
@@ -715,6 +803,32 @@ export default {
   width: 1vw;
   height: 100vh;
   background-color: #ddd;
+}
+
+.btn {
+  color: black;
+  height: 5vh;
+  width: 5vw;
+  font-size: 3rem;
+}
+
+.pb-cont {
+  height: 50vh;
+  width: 20vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#pb {
+  height: 20%;
+  width: 20%;
+}
+
+#pbVol {
+  height: 80%;
+  width: 80%;
 }
 
 #myBar {
