@@ -56,15 +56,24 @@ export default {
       scrollSpeed: 10,
       latestHit: null,
       totalHits: {
-        0: 0,
-        50: 0,
-        100: 0,
-        200: 0,
-        300: 0,
         320: 0,
+        300: 0,
+        200: 0,
+        100: 0,
+        50: 0,
+        0: 0,
       },
       hitBonusValue: null,
       bonus: 100,
+
+      hitJudgement: {
+        320: null,
+        300: null,
+        200: null,
+        100: null,
+        50: null,
+        0: null,
+      },
 
       keys: ['d', 'f', 'j', 'k'],
       circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
@@ -81,17 +90,19 @@ export default {
       stageHeight: null,
       stageFPS: 60,
       music: null,
+      beatmapIntro: null,
 
       // Stands for stageSetup
       ss: {
+        setupContainer: null,
         columnContainers: [],
         columnBorders: [],
         targetCircles: [],
       },
-      circles: null,
       beatmapData: {},
       notes: [],
-      beatmapIntro: null,
+      readyNotes: [],
+      readyHolds: [],
     };
   },
 
@@ -190,12 +201,10 @@ export default {
 
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
-        t.areAllLoaded = !Object.values(t.loaded).some((bool) => !bool);
-
-        if (t.areAllLoaded) {
+        if (!Object.values(t.loaded).some((bool) => !bool)) {
           t.beatmapData = t.$store.state.beatmapData;
           t.notes = t.beatmapData.hitObjects;
-          t.beatmapIntro = t.notes[0].time < 4000 ? 0 : t.notes[0].time - 4000;
+          t.beatmapIntro = t.notes[0].time < 2000 ? 0 : t.notes[0].time - 2000;
 
           t.music = new Howl({
             src: [
@@ -207,13 +216,135 @@ export default {
             },
           });
           t.music.seek(t.beatmapIntro / 1000);
+
+          /* ===============
+              PROGRESS BAR
+              =============== */
+
+          const $progressBar = document.getElementById('myBar');
+          t.songDuration = t.music.duration();
+
+          function progressBar() {
+            let bar = 0;
+            let id = setInterval(function () {
+              bar++;
+              $progressBar.style.height = bar + '%';
+              if (bar >= 100) {
+                clearInterval(id);
+              }
+            }, (t.songDuration * 1000) / 100);
+          }
+
+          progressBar();
+
+          /* ===============
+              CANVAS SETUP
+              =============== */
+
+          const $canvas = document.querySelector('#canvas');
+
+          // Sets the canvas width/height pixels = to canvas display size width/height
+          $canvas.width = $canvas.offsetWidth;
+          $canvas.height = $canvas.offsetHeight;
+
+          t.stage = new createjs.Stage('canvas');
+          t.stageWidth = t.stage.canvas.width;
+          t.stageColWidth = t.stageWidth / t.numColumns;
+          t.stageHeight = t.stage.canvas.height;
+
+          /* ===============
+              TICKER
+              =============== */
+
+          // I think we have to add sound when we click the route
+
+          createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+          // Each tick is run 1/60 times per second
+          createjs.Ticker.framerate = t.stageFPS;
+          // Automatically updates the stage every tick (aka frame)
+          createjs.Ticker.addEventListener('tick', t.stage);
+
+          /* ===============
+              SETUP CONTAINER & BACKGROUND
+              =============== */
+
+          t.ss.setupContainer = new createjs.Container();
+          t.ss.setupContainer.name = 'setupContainer';
+
+          t.stage.addChild(t.ss.setupContainer);
+          t.stage.setChildIndex(t.ss.setupContainer, 0);
+
+          const background = new createjs.Shape();
+
+          // Draws the gray background on the canvas
+          background.graphics
+            .beginFill('#D3D3D3')
+            .drawRect(0, 0, t.stageWidth, t.stageHeight);
+
+          background.name = 'background';
+
+          t.ss.setupContainer.addChild(background);
+
+          /* ===============
+              STAGE SETUP
+              =============== */
+
+          for (let i = 0; i < t.numColumns; i++) {
+            // Creates a new column container for each column
+            t.ss.columnContainers.push(new createjs.Container());
+
+            // Sets the x-offset for each container based off the column index and column width
+            t.ss.columnContainers[i].x = i * t.stageColWidth;
+            t.ss.columnContainers[i].name = `columnContainer${i}`;
+
+            // "Mounts" the container to the stage
+            t.stage.addChild(t.ss.columnContainers[i]);
+
+            ////////////////////////////////////////
+
+            const borderGraphic = new createjs.Graphics()
+              .beginStroke('Black')
+              .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
+
+            const columnBorder = new createjs.Shape(borderGraphic);
+
+            columnBorder.name = `border${i}`;
+
+            t.ss.columnBorders.push(columnBorder);
+            t.ss.setupContainer.addChild(columnBorder);
+
+            ////////////////////////////////////////
+
+            const circleGraphic = new createjs.Graphics()
+              .beginStroke('Black')
+              .beginFill('Gray')
+              .drawCircle(
+                i * 100 + t.stageColWidth / 2,
+                t.hitPercent * t.stageHeight,
+                t.radius
+              );
+
+            const targetCircle = new createjs.Shape(circleGraphic);
+
+            targetCircle.name = `targetCircle${i}`;
+
+            t.ss.targetCircles.push(targetCircle);
+            t.ss.setupContainer.addChild(targetCircle);
+
+            ////////////////////////////////////////
+
+            t.readyNotes.push([]);
+            t.readyHolds.push([]);
+          }
+
+          t.areAllLoaded = true;
         }
       },
       deep: true,
     },
     $route() {
       // this.music.stop();
-      this.console.log('hi');
+      // this.console.log('hi');
     },
   },
 
@@ -223,115 +354,6 @@ export default {
 
       t.started = true;
       t.music.play();
-      t.songDuration = t.music.duration();
-
-      /* ===============
-          PROGRESS BAR
-          =============== */
-
-      const $progressBar = document.getElementById('myBar');
-
-      function progressBar() {
-        let bar = Math.floor((t.beatmapIntro * 100) / (t.songDuration * 1000));
-        let id = setInterval(function () {
-          bar++;
-          $progressBar.style.height = bar + '%';
-          if (bar >= 100) {
-            clearInterval(id);
-          }
-        }, (t.songDuration * 1000) / 100);
-      }
-
-      progressBar();
-
-      /* ===============
-          CANVAS SETUP
-          =============== */
-
-      const $canvas = document.querySelector('#canvas');
-
-      // Sets the canvas width/height pixels = to canvas display size width/height
-      $canvas.width = $canvas.offsetWidth;
-      $canvas.height = $canvas.offsetHeight;
-
-      t.stage = new createjs.Stage('canvas');
-      t.stageWidth = t.stage.canvas.width;
-      t.stageColWidth = t.stageWidth / t.numColumns;
-      t.stageHeight = t.stage.canvas.height;
-
-      /* ===============
-          TICKER
-          =============== */
-
-      // I think we have to add sound when we click the route
-
-      createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-      // Each tick is run 1/60 times per second
-      createjs.Ticker.framerate = t.stageFPS;
-      // Automatically updates the stage every tick (aka frame)
-      createjs.Ticker.addEventListener('tick', t.stage);
-
-      /* ===============
-          BACKGROUND
-          =============== */
-
-      const background = new createjs.Shape();
-
-      // Draws the gray background on the canvas
-      background.graphics
-        .beginFill('#D3D3D3')
-        .drawRect(0, 0, t.stageWidth, t.stageHeight);
-
-      background.name = 'background';
-
-      // "Mounts" the background to the stage
-      t.stage.addChild(background);
-
-      /* ===============
-          STAGE SETUP
-          =============== */
-
-      for (let i = 0; i < t.numColumns; i++) {
-        // Creates a new column container for each column
-        t.ss.columnContainers.push(new createjs.Container());
-
-        // Sets the x-offset for each container based off the column index and column width
-        t.ss.columnContainers[i].x = i * t.stageColWidth;
-
-        // "Mounts" the container to the stage
-        t.stage.addChild(t.ss.columnContainers[i]);
-
-        ////////////////////////////////////////
-
-        const borderGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
-
-        const columnBorder = new createjs.Shape(borderGraphic);
-
-        columnBorder.name = `border${i}`;
-
-        t.ss.columnBorders.push(columnBorder);
-        t.stage.addChild(columnBorder);
-
-        ////////////////////////////////////////
-
-        const circleGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .beginFill('Gray')
-          .drawCircle(
-            i * 100 + t.stageColWidth / 2,
-            t.hitPercent * t.stageHeight,
-            t.radius
-          );
-
-        const targetCircle = new createjs.Shape(circleGraphic);
-
-        targetCircle.name = `targetCircle${i}`;
-
-        t.ss.targetCircles.push(targetCircle);
-        t.stage.addChild(targetCircle);
-      }
 
       /* ===============
             KEY PRESSES
@@ -387,84 +409,86 @@ export default {
         kd.tick();
       }); */
 
+      const OD = t.beatmapData.difficulty.OverallDifficulty;
+
+      t.hitJudgement = {
+        320: 16.5,
+        300: Math.floor(64 - 3 * OD) + 0.5,
+        200: Math.floor(97 - 3 * OD) + 0.5,
+        100: Math.floor(127 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,
+        0: Math.floor(170 - 3 * OD) + 0.5,
+      };
+
       document.addEventListener('keydown', function (e) {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
-        for (let i = 0; i < t.numColumns; i++) {
-          if (e.key === t.keys[i]) {
-            t.ss.columnContainers[i].children.forEach((circle) => {
-              const msFromTargetCircle =
-                (Math.abs(
-                  circle.y - (t.stageHeight * t.hitPercent + t.radius)
-                ) *
-                  1000) /
-                (t.dy * t.stageFPS);
-              const OD = t.beatmapData.difficulty.OverallDifficulty;
+        const columnI = t.keys.findIndex((key) => key === e.key);
+        t.readyNotes[columnI].forEach((thisCircle, i) => {
+          if (thisCircle === null) return;
 
-              if (
-                msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5 &&
-                circle.name === 'thisCircle'
-              ) {
-                createjs.Tween.removeTweens(circle);
-                t.ss.columnContainers[i].removeChild(circle);
-                t.combo += 1;
+          if (thisCircle.msFromAbs() <= t.hitJudgement['0']) {
+            let hitBonusValue = 0;
 
-                let hitBonusValue = 0;
+            switch (true) {
+              case thisCircle.msFromAbs() <= t.hitJudgement['320']:
+                t.latestHit = 320;
+                t.totalHits['320']++;
+                hitBonusValue = 32;
+                t.bonus += 2;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['300']:
+                t.latestHit = 300;
+                t.totalHits['300']++;
+                hitBonusValue = 32;
+                t.bonus += 1;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['200']:
+                t.latestHit = 200;
+                t.totalHits['200']++;
+                hitBonusValue = 16;
+                t.bonus -= 8;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['100']:
+                t.latestHit = 100;
+                t.totalHits['100']++;
+                hitBonusValue = 8;
+                t.bonus -= 24;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['50']:
+                t.latestHit = 50;
+                t.totalHits['50']++;
+                hitBonusValue = 4;
+                t.bonus += 44;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['0']:
+                t.latestHit = 0;
+                t.totalHits['0']++;
+                t.bonus = 0;
 
-                switch (true) {
-                  case msFromTargetCircle <= 16.5:
-                    t.latestHit = 320;
-                    t.totalHits['320']++;
-                    hitBonusValue = 32;
-                    t.bonus += 2;
-                    break;
-                  case msFromTargetCircle <= Math.floor(64 - 3 * OD) + 0.5:
-                    t.latestHit = 300;
-                    t.totalHits['300']++;
-                    hitBonusValue = 32;
-                    t.bonus += 1;
-                    break;
-                  case msFromTargetCircle <= Math.floor(97 - 3 * OD) + 0.5:
-                    t.latestHit = 200;
-                    t.totalHits['200']++;
-                    hitBonusValue = 16;
-                    t.bonus -= 8;
-                    break;
-                  case msFromTargetCircle <= Math.floor(127 - 3 * OD) + 0.5:
-                    t.latestHit = 100;
-                    t.totalHits['100']++;
-                    hitBonusValue = 8;
-                    t.bonus -= 24;
-                    break;
-                  case msFromTargetCircle <= Math.floor(151 - 3 * OD) + 0.5:
-                    t.latestHit = 50;
-                    t.totalHits['50']++;
-                    hitBonusValue = 4;
-                    t.bonus += 44;
-                    break;
-                  case msFromTargetCircle <= Math.floor(170 - 3 * OD) + 0.5:
-                    t.latestHit = 0;
-                    t.totalHits['0']++;
-                    t.bonus = 0;
+                t.combo = 0;
+                break;
+            }
 
-                    t.combo = 0;
-                    break;
-                }
+            if (!(t.latestHit === 0)) {
+              if (t.bonus > 100) t.bonus = 100;
+              if (t.bonus < 0) t.bonus = 0;
 
-                if (t.bonus > 100) t.bonus = 100;
-                if (t.bonus < 0) t.bonus = 0;
+              const baseScore =
+                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
 
-                const baseScore =
-                  ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+              const bonusScore =
+                ((1000000 * 0.5) / t.notes.length) *
+                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
 
-                const bonusScore =
-                  ((1000000 * 0.5) / t.notes.length) *
-                  ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+              t.score += bonusScore + baseScore;
+              t.combo += 1;
 
-                t.score += bonusScore + baseScore;
-              }
-            });
+              createjs.Tween.removeTweens(thisCircle);
+              t.ss.columnContainers[columnI].removeChild(thisCircle);
+              t.readyNotes[columnI][i] = null;
+            }
           }
-        }
+        });
       });
 
       /* ===============
@@ -481,6 +505,24 @@ export default {
 
             const thisCircle = new createjs.Shape(circleGraphic);
             thisCircle.name = 'thisCircle';
+            thisCircle.i = note.columnIndex;
+            thisCircle.msFrom = function () {
+              console.log(
+                (this.y - (t.stageHeight * t.hitPercent + t.radius) * 1000) /
+                  (t.dy * t.stageFPS)
+              );
+              return (
+                (this.y - (t.stageHeight * t.hitPercent + t.radius) * 1000) /
+                (t.dy * t.stageFPS)
+              );
+            };
+            thisCircle.msFromAbs = function () {
+              return (
+                (Math.abs(this.y - (t.stageHeight * t.hitPercent + t.radius)) *
+                  1000) /
+                (t.dy * t.stageFPS)
+              );
+            };
 
             // thisCircle.cache(0, -85, 120, 120);
             thisCircle.cache(
@@ -491,7 +533,7 @@ export default {
             );
 
             setTimeout(() => {
-              t.ss.columnContainers[note.columnIndex].addChild(thisCircle);
+              t.ss.columnContainers[thisCircle.i].addChild(thisCircle);
 
               animate();
 
@@ -503,22 +545,43 @@ export default {
                 }).to({ y: thisCircle.y + t.dy }, 1);
               }
               function onChange() {
-                // If it reaches offscreen then ...
-                if (thisCircle.y > t.stageHeight + 2 * t.radius) {
-                  // Remove tweens on the object
-                  createjs.Tween.removeTweens(thisCircle);
+                switch (true) {
+                  // If ms from targetCircle is less than ...
+                  case thisCircle.msFromAbs() <= t.hitJudgement['0'] &&
+                    !thisCircle.ready:
+                    if (!thisCircle.ready) {
+                      thisCircle.ready = true;
 
-                  // Reset combo
-                  t.latestHit = 0;
-                  t.totalHits['0']++;
-                  t.bonus = 0;
+                      thisCircle.readyIndex =
+                        t.readyNotes[thisCircle.i].push(thisCircle) - 1;
+                    }
+                    break;
 
-                  t.combo = 0;
+                  // If it reaches offscreen then ...
+                  case thisCircle.y > t.stageHeight + 2 * t.radius:
+                    // Remove tweens on the object
+                    createjs.Tween.removeTweens(thisCircle);
 
-                  // Remove circle from stage
-                  t.ss.columnContainers[note.columnIndex].removeChild(
-                    thisCircle
-                  );
+                    // Reset everything
+                    t.latestHit = 0;
+                    t.totalHits['0']++;
+                    t.bonus = 0;
+
+                    t.combo = 0;
+
+                    t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
+
+                    // Remove circle from stage
+                    t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
+                    break;
+                }
+
+                if (thisCircle.id === 16) {
+                  console.log(thisCircle.msFrom());
+                }
+
+                if (thisCircle.id === 40) {
+                  console.log(thisCircle.msFromAbs());
                 }
               }
             }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
@@ -570,14 +633,14 @@ export default {
                   // Remove tweens on the object
                   createjs.Tween.removeTweens(thisSlider);
 
-                  // Reset combo
+                  /* // Reset combo
                   t.latestHit = 0;
                   t.totalHits['0']++;
                   t.bonus = 0;
 
-                  t.combo = 0;
+                  t.combo = 0; */
 
-                  // Remove circle from stage
+                  // Remove slider from stage
                   t.ss.columnContainers[note.columnIndex].removeChild(
                     thisSlider
                   );
