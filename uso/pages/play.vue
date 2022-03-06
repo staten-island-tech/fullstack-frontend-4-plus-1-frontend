@@ -34,7 +34,7 @@
 </template>
 
 <script>
-/* global createjs:false, Howl:false */
+/* global createjs:false, Howl:false, kd:false */
 /* eslint-disable */
 
 export default {
@@ -53,7 +53,7 @@ export default {
 
       score: 0,
       combo: 0,
-      scrollSpeed: 10,
+      scrollSpeed: 15,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -75,7 +75,7 @@ export default {
         0: null,
       },
 
-      keys: ['d', 'f', 'j', 'k'],
+      keys: ['D', 'F', 'J', 'K'],
       circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
@@ -102,7 +102,7 @@ export default {
       beatmapData: {},
       notes: [],
       readyNotes: [],
-      readyHolds: [],
+      readySliders: [],
     };
   },
 
@@ -334,7 +334,6 @@ export default {
             ////////////////////////////////////////
 
             t.readyNotes.push([]);
-            t.readyHolds.push([]);
           }
 
           t.areAllLoaded = true;
@@ -359,56 +358,6 @@ export default {
             KEY PRESSES
           =============== */
 
-      /* kd.D.down(function () {
-        t.ss.columnContainers[0].children.forEach((circle) => {
-          const diffFromTargetCircle = Math.abs(circle.y - 700);
-
-          if (circle.y >= 610 && circle.name === 'thisSlider') {
-            if (t.firstVal === 0) {
-              firstValY = diffFromTargetCircle;
-              console.log(firstValY);
-              t.firstVal = 1;
-            }
-            if (firstValY >= 0 && firstValY <= 6) {
-              scoreMultplier = 300;
-            } else if (firstValY >= 6 && firstValY <= 12) {
-              scoreMultplier = 200;
-            } else if (firstValY >= 12 && firstValY <= 20) {
-              scoreMultplier = 100;
-            } else if (firstValY >= 20 && firstValY <= 30) {
-              scoreMultplier = 50;
-            } else {
-              scoreMultplier = 1;
-            }
-          }
-        });
-
-        // console.log(circle.y);
-      }); */
-
-      /*       kd.D.up(function () {
-        t.ss.columnContainers[0].children.forEach((circle) => {
-          const diffFromTargetCircle = Math.abs(circle.y - 700);
-          if (circle.y >= 610 && circle.name === 'Slider') {
-            lastValY = diffFromTargetCircle;
-
-            let sliderCombo = (lastValY - t.firstValY) / 10;
-            let sliderScore = sliderCombo * scoreMultplier;
-            console.log(sliderScore);
-            console.log(sliderCombo);
-            console.log(scoreMultplier);
-            this.score += Math.round(sliderScore);
-            this.combo += Math.round(sliderCombo);
-          }
-        });
-
-        // console.log(circle.y);
-      });
-
-      kd.run(function () {
-        kd.tick();
-      }); */
-
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
       t.hitJudgement = {
@@ -422,53 +371,129 @@ export default {
 
       document.addEventListener('keydown', function (e) {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
-        const columnI = t.keys.findIndex((key) => key === e.key);
-        t.readyNotes[columnI].forEach((thisCircle, i) => {
-          if (thisCircle === null) return;
+        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
+        if (!(columnI === -1)) {
+          t.readyNotes[columnI].forEach((thisCircle, i) => {
+            if (!thisCircle) return;
 
-          let hitBonusValue = 0;
+            let hitBonusValue = 0;
 
-          switch (true) {
-            case thisCircle.msFromAbs() <= t.hitJudgement['320']:
-              t.latestHit = 320;
-              t.totalHits['320']++;
-              hitBonusValue = 32;
-              t.bonus += 2;
-              break;
-            case thisCircle.msFromAbs() <= t.hitJudgement['300']:
-              t.latestHit = 300;
-              t.totalHits['300']++;
-              hitBonusValue = 32;
-              t.bonus += 1;
-              break;
-            case thisCircle.msFromAbs() <= t.hitJudgement['200']:
-              t.latestHit = 200;
-              t.totalHits['200']++;
-              hitBonusValue = 16;
-              t.bonus -= 8;
-              break;
-            case thisCircle.msFromAbs() <= t.hitJudgement['100']:
-              t.latestHit = 100;
-              t.totalHits['100']++;
-              hitBonusValue = 8;
-              t.bonus -= 24;
-              break;
-            case thisCircle.msFromAbs() <= t.hitJudgement['50']:
-              t.latestHit = 50;
-              t.totalHits['50']++;
-              hitBonusValue = 4;
-              t.bonus += 44;
-              break;
-            case thisCircle.msFromAbs() <= t.hitJudgement['0']:
-              t.latestHit = 0;
-              t.totalHits['0']++;
-              t.bonus = 0;
+            switch (true) {
+              case thisCircle.msFromAbs() <= t.hitJudgement['320']:
+                t.latestHit = 320;
+                t.totalHits['320']++;
+                hitBonusValue = 32;
+                t.bonus += 2;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['300']:
+                t.latestHit = 300;
+                t.totalHits['300']++;
+                hitBonusValue = 32;
+                t.bonus += 1;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['200']:
+                t.latestHit = 200;
+                t.totalHits['200']++;
+                hitBonusValue = 16;
+                t.bonus -= 8;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['100']:
+                t.latestHit = 100;
+                t.totalHits['100']++;
+                hitBonusValue = 8;
+                t.bonus -= 24;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['50']:
+                t.latestHit = 50;
+                t.totalHits['50']++;
+                hitBonusValue = 4;
+                t.bonus -= 44;
+                break;
+              case thisCircle.msFromAbs() <= t.hitJudgement['0']:
+                t.latestHit = 0;
+                t.totalHits['0']++;
+                t.bonus = 0;
 
-              t.combo = 0;
-              break;
-          }
+                t.combo = 0;
+                break;
+            }
 
-          if (!(t.latestHit === 0)) {
+            if (!(t.latestHit === 0)) {
+              if (t.bonus > 100) t.bonus = 100;
+              if (t.bonus < 0) t.bonus = 0;
+
+              const baseScore =
+                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+              const bonusScore =
+                ((1000000 * 0.5) / t.notes.length) *
+                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+              t.score += bonusScore + baseScore;
+              t.combo += 1;
+
+              createjs.Tween.removeTweens(thisCircle);
+              t.ss.columnContainers[columnI].removeChild(thisCircle);
+              t.readyNotes[columnI][i] = null;
+            }
+          });
+        }
+      });
+
+      for (let i = 0; i < t.numColumns; i++) {
+        kd[t.keys[i]].down(function () {
+          if (!t.readySliders[i]) return;
+
+          if (!t.readySliders[i].initialMs)
+            t.readySliders[i].initialMs = t.readySliders[i].botMsFromAbs();
+        });
+
+        kd[[t.keys[i]]].up(function () {
+          if (!t.readySliders[i]) return;
+
+          if (t.readySliders[i].topMsFromAbs() <= t.hitJudgement['50']) {
+            t.readySliders[i].finalMs = t.readySliders[i].topMsFromAbs();
+
+            t.readySliders[i].avgMs =
+              (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
+
+            let hitBonusValue = 0;
+
+            switch (true) {
+              case t.readySliders[i].avgMs <= t.hitJudgement['320'] &&
+                !t.readySliders[i].releasedMs:
+                t.latestHit = 320;
+                t.totalHits['320']++;
+                hitBonusValue = 32;
+                t.bonus += 2;
+                break;
+              case t.readySliders[i].avgMs <= t.hitJudgement['300'] &&
+                !t.readySliders[i].releasedMs:
+                t.latestHit = 300;
+                t.totalHits['300']++;
+                hitBonusValue = 32;
+                t.bonus += 1;
+                break;
+              case t.readySliders[i].avgMs <= t.hitJudgement['300']:
+                t.latestHit = 200;
+                t.totalHits['200']++;
+                hitBonusValue = 16;
+                t.bonus -= 8;
+                break;
+              case t.readySliders[i].avgMs <= t.hitJudgement['200']:
+                t.latestHit = 100;
+                t.totalHits['100']++;
+                hitBonusValue = 8;
+                t.bonus -= 24;
+                break;
+              case t.readySliders[i].avgMs <= t.hitJudgement['50']:
+                t.latestHit = 50;
+                t.totalHits['50']++;
+                hitBonusValue = 4;
+                t.bonus -= 44;
+                break;
+            }
+
             if (t.bonus > 100) t.bonus = 100;
             if (t.bonus < 0) t.bonus = 0;
 
@@ -482,11 +507,20 @@ export default {
             t.score += bonusScore + baseScore;
             t.combo += 1;
 
-            createjs.Tween.removeTweens(thisCircle);
-            t.ss.columnContainers[columnI].removeChild(thisCircle);
-            t.readyNotes[columnI][i] = null;
+            createjs.Tween.removeTweens(t.readySliders[i]);
+            t.ss.columnContainers[t.readySliders[i].i].removeChild(
+              t.readySliders[i]
+            );
+            t.readySliders[t.readySliders[i].i] = null;
+          } else {
+            if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
+            else t.readySliders[i].releasedMs = t.readySliders[i].topMsFrom();
           }
         });
+      }
+
+      kd.run(function () {
+        kd.tick();
       });
 
       /* ===============
@@ -504,6 +538,7 @@ export default {
             const thisCircle = new createjs.Shape(circleGraphic);
             thisCircle.name = 'thisCircle';
             thisCircle.i = note.columnIndex;
+
             thisCircle.msFrom = function () {
               return (
                 ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
@@ -513,6 +548,18 @@ export default {
 
             thisCircle.msFromAbs = function () {
               return Math.abs(this.msFrom());
+            };
+
+            thisCircle.miss = function () {
+              t.latestHit = 0;
+              t.totalHits['0']++;
+              t.bonus = 0;
+
+              t.combo = 0;
+
+              createjs.Tween.removeTweens(thisCircle);
+              t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
+              t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
             };
 
             // thisCircle.cache(0, -85, 120, 120);
@@ -548,20 +595,7 @@ export default {
 
                   // If it reaches offscreen then ...
                   case thisCircle.msFrom() > t.hitJudgement['50']:
-                    // Remove tweens on the object
-                    createjs.Tween.removeTweens(thisCircle);
-
-                    // Reset everything
-                    t.latestHit = 0;
-                    t.totalHits['0']++;
-                    t.bonus = 0;
-
-                    t.combo = 0;
-
-                    t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
-
-                    // Remove circle from stage
-                    t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
+                    thisCircle.miss();
                     break;
                 }
               }
@@ -588,6 +622,42 @@ export default {
 
             const thisSlider = new createjs.Shape(sliderGraphic);
             thisSlider.name = 'thisSlider';
+            thisSlider.i = note.columnIndex;
+            thisSlider.botMsFrom = function () {
+              return (
+                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                (t.dy * t.stageFPS)
+              );
+            };
+
+            thisSlider.topMsFrom = function () {
+              return (
+                ((this.y -
+                  (t.stageHeight * t.hitPercent + t.radius + sliderHeight)) *
+                  1000) /
+                (t.dy * t.stageFPS)
+              );
+            };
+
+            thisSlider.botMsFromAbs = function () {
+              return Math.abs(this.botMsFrom());
+            };
+
+            thisSlider.topMsFromAbs = function () {
+              return Math.abs(this.topMsFrom());
+            };
+
+            thisSlider.miss = function () {
+              t.latestHit = 0;
+              t.totalHits['0']++;
+              t.bonus = 0;
+
+              t.combo = 0;
+
+              createjs.Tween.removeTweens(thisSlider);
+              t.ss.columnContainers[thisSlider.i].removeChild(thisSlider);
+              t.readySliders[thisSlider.i] = null;
+            };
 
             setTimeout(() => {
               t.ss.columnContainers[note.columnIndex].addChild(thisSlider);
@@ -607,24 +677,18 @@ export default {
                 }).to({ y: thisSlider.y + t.dy }, 1);
               }
               function onChange() {
-                if (
-                  thisSlider.y - sliderHeight >
-                  t.stageHeight + 2 * t.radius
-                ) {
-                  // Remove tweens on the object
-                  createjs.Tween.removeTweens(thisSlider);
+                switch (true) {
+                  case thisSlider.botMsFromAbs() <= t.hitJudgement['50'] &&
+                    !thisSlider.ready:
+                    thisSlider.ready = true;
 
-                  /* // Reset combo
-                  t.latestHit = 0;
-                  t.totalHits['0']++;
-                  t.bonus = 0;
+                    thisSlider.readyIndex = thisSlider.i;
+                    t.readySliders[thisSlider.i] = thisSlider;
+                    break;
 
-                  t.combo = 0; */
-
-                  // Remove slider from stage
-                  t.ss.columnContainers[note.columnIndex].removeChild(
-                    thisSlider
-                  );
+                  case thisSlider.topMsFrom() > t.hitJudgement['50']:
+                    thisSlider.miss();
+                    break;
                 }
               }
             }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
