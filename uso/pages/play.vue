@@ -53,7 +53,7 @@ export default {
 
       score: 0,
       combo: 0,
-      scrollSpeed: 15,
+      scrollSpeed: 10,
       latestHit: null,
       totalHits: {
         320: 0,
