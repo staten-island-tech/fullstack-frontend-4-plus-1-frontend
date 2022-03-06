@@ -25,12 +25,12 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
-    <div class="progress-bar-container">
-      <div id="myProgress">
-        <div id="myBar"></div>
-      </div>
+    <div class="pb-cont">
+      <div id="pb"></div>
+      <div id="pbVol"></div>
     </div>
   </div>
+  
 </template>
 
 <script>
@@ -91,7 +91,10 @@ export default {
       stageFPS: 60,
       music: null,
       beatmapIntro: null,
-
+      songDuration: 0,
+      volume: 0.1,
+      pbVolProgress: 0.1,
+      scale: 0,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -120,6 +123,10 @@ export default {
         {
           src: '/lib/howler.min.js',
           callback: () => (this.loaded.howler = true),
+        }, 
+        {
+          src: '/lib/progressbar.min.js ',
+          callback: () => (this.loaded.progressbar = true),
         },
       ],
     };
@@ -210,7 +217,7 @@ export default {
             src: [
               `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
             ],
-            volume: 0.1,
+            volume: t.volume,
             onload: function () {
               t.songLoaded = true;
             },
@@ -221,21 +228,7 @@ export default {
               PROGRESS BAR
               =============== */
 
-          const $progressBar = document.getElementById('myBar');
-          t.songDuration = t.music.duration();
-
-          function progressBar() {
-            let bar = 0;
-            let id = setInterval(function () {
-              bar++;
-              $progressBar.style.height = bar + '%';
-              if (bar >= 100) {
-                clearInterval(id);
-              }
-            }, (t.songDuration * 1000) / 100);
-          }
-
-          progressBar();
+       
 
           /* ===============
               CANVAS SETUP
@@ -355,59 +348,96 @@ export default {
       t.started = true;
       t.music.play();
 
-      /* ===============
-            KEY PRESSES
-          =============== */
+   t.songDuration = t.music.duration() 
 
-      /* kd.D.down(function () {
-        t.ss.columnContainers[0].children.forEach((circle) => {
-          const diffFromTargetCircle = Math.abs(circle.y - 700);
-
-          if (circle.y >= 610 && circle.name === 'thisSlider') {
-            if (t.firstVal === 0) {
-              firstValY = diffFromTargetCircle;
-              console.log(firstValY);
-              t.firstVal = 1;
-            }
-            if (firstValY >= 0 && firstValY <= 6) {
-              scoreMultplier = 300;
-            } else if (firstValY >= 6 && firstValY <= 12) {
-              scoreMultplier = 200;
-            } else if (firstValY >= 12 && firstValY <= 20) {
-              scoreMultplier = 100;
-            } else if (firstValY >= 20 && firstValY <= 30) {
-              scoreMultplier = 50;
-            } else {
-              scoreMultplier = 1;
-            }
+          let sd = Math.round(t.songDuration ) * 1000
+         // let pbVolProg = t.pbVolProgress
+          
+    function progressBar1() {
+               let progressBar = new ProgressBar.Circle('#pb', {
+                color: '#FCB03C',
+                strokeWidth: 50,
+                trailColor: '#D3D3D3',
+     // trailWidth: 1,
+     
+                duration:  sd,
+                  text: {
+                      value: '0'
+                  }
+          });
+        progressBar.animate(1);
           }
-        });
+        progressBar1();
 
-        // console.log(circle.y);
-      }); */
+  let progressBarVol = new ProgressBar.Circle('#pbVol', {
+  color: '#FCB03C',
+  // This has to be the same size as the maximum width to
+  // prevent clipping
+  strokeWidth: 7,
+  easing: 'easeInOut',
+    trailColor: '#eee',
+  trailWidth: 7,
+  duration: 1400,
+  text: {
+        style: {
+            position: 'absolute',
+            left: '50%',
+            top: '40%',
+            padding: 0,
+            margin: 0,
+            // You can specify styles which will be browser prefixed
+            transform: {
+                prefix: true,
+                value: 'translate(-50%, -50%)'
+            }
+            
+        },
+  },
 
-      /*       kd.D.up(function () {
-        t.ss.columnContainers[0].children.forEach((circle) => {
-          const diffFromTargetCircle = Math.abs(circle.y - 700);
-          if (circle.y >= 610 && circle.name === 'Slider') {
-            lastValY = diffFromTargetCircle;
+  from: { color: '#aaa', width: 8 },
+  to: { color: '#333', width: 8 },
+  // Set default step function for all animate calls
+  step: function(state, circle) {
+    circle.path.setAttribute('stroke', state.color);
+    circle.path.setAttribute('stroke-width', state.width);
 
-            let sliderCombo = (lastValY - t.firstValY) / 10;
-            let sliderScore = sliderCombo * scoreMultplier;
-            console.log(sliderScore);
-            console.log(sliderCombo);
-            console.log(scoreMultplier);
-            this.score += Math.round(sliderScore);
-            this.combo += Math.round(sliderCombo);
-          }
-        });
+    let value = Math.round(circle.value() * 100);
+    if (value === 0) {
+      circle.setText('vol');
+    } else {
+      circle.setText(value);
+    }
 
-        // console.log(circle.y);
-      });
+  }
+});
+progressBarVol.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+progressBarVol.text.style.fontSize = '5rem';
 
-      kd.run(function () {
-        kd.tick();
-      }); */
+       
+       progressBarVol.animate(t.pbVolProgress); 
+       
+
+        
+        function changeVol(event) {
+  event.preventDefault();
+
+
+  t.scale += event.deltaY * -0.0002;
+  // Restrict scale
+t.scale = Math.min(Math.max(0, t.scale), 1);
+  // Apply scale transform
+Howler.volume(t.scale);
+t.pbVolProgress = Math.round(100*(t.scale))/100
+
+ progressBarVol.set(t.pbVolProgress); 
+
+
+}
+
+const el = document.getElementById('pbVol');
+el.addEventListener('wheel', changeVol);
+        
+       
 
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
@@ -651,6 +681,25 @@ export default {
   width: 1vw;
   height: 100vh;
   background-color: #ddd;
+}
+
+.pb-cont {
+  height: 50vh;
+  width: 20vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#pb {
+  height: 20%;
+  width: 20%;
+}
+
+#pbVol {
+  height: 80%;
+  width: 80%;
 }
 
 #myBar {
