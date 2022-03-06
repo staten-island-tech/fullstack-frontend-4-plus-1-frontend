@@ -507,21 +507,14 @@ export default {
             thisCircle.name = 'thisCircle';
             thisCircle.i = note.columnIndex;
             thisCircle.msFrom = function () {
-              console.log(
-                (this.y - (t.stageHeight * t.hitPercent + t.radius) * 1000) /
-                  (t.dy * t.stageFPS)
-              );
               return (
-                (this.y - (t.stageHeight * t.hitPercent + t.radius) * 1000) /
+                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
                 (t.dy * t.stageFPS)
               );
             };
+
             thisCircle.msFromAbs = function () {
-              return (
-                (Math.abs(this.y - (t.stageHeight * t.hitPercent + t.radius)) *
-                  1000) /
-                (t.dy * t.stageFPS)
-              );
+              return Math.abs(this.msFrom());
             };
 
             // thisCircle.cache(0, -85, 120, 120);
@@ -558,7 +551,7 @@ export default {
                     break;
 
                   // If it reaches offscreen then ...
-                  case thisCircle.y > t.stageHeight + 2 * t.radius:
+                  case thisCircle.msFrom() > t.hitJudgement['0']:
                     // Remove tweens on the object
                     createjs.Tween.removeTweens(thisCircle);
 
@@ -574,14 +567,6 @@ export default {
                     // Remove circle from stage
                     t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
                     break;
-                }
-
-                if (thisCircle.id === 16) {
-                  console.log(thisCircle.msFrom());
-                }
-
-                if (thisCircle.id === 40) {
-                  console.log(thisCircle.msFromAbs());
                 }
               }
             }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
