@@ -426,67 +426,65 @@ export default {
         t.readyNotes[columnI].forEach((thisCircle, i) => {
           if (thisCircle === null) return;
 
-          if (thisCircle.msFromAbs() <= t.hitJudgement['0']) {
-            let hitBonusValue = 0;
+          let hitBonusValue = 0;
 
-            switch (true) {
-              case thisCircle.msFromAbs() <= t.hitJudgement['320']:
-                t.latestHit = 320;
-                t.totalHits['320']++;
-                hitBonusValue = 32;
-                t.bonus += 2;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['300']:
-                t.latestHit = 300;
-                t.totalHits['300']++;
-                hitBonusValue = 32;
-                t.bonus += 1;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['200']:
-                t.latestHit = 200;
-                t.totalHits['200']++;
-                hitBonusValue = 16;
-                t.bonus -= 8;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['100']:
-                t.latestHit = 100;
-                t.totalHits['100']++;
-                hitBonusValue = 8;
-                t.bonus -= 24;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['50']:
-                t.latestHit = 50;
-                t.totalHits['50']++;
-                hitBonusValue = 4;
-                t.bonus += 44;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['0']:
-                t.latestHit = 0;
-                t.totalHits['0']++;
-                t.bonus = 0;
+          switch (true) {
+            case thisCircle.msFromAbs() <= t.hitJudgement['320']:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+              break;
+            case thisCircle.msFromAbs() <= t.hitJudgement['300']:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+              break;
+            case thisCircle.msFromAbs() <= t.hitJudgement['200']:
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+              break;
+            case thisCircle.msFromAbs() <= t.hitJudgement['100']:
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+              break;
+            case thisCircle.msFromAbs() <= t.hitJudgement['50']:
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus += 44;
+              break;
+            case thisCircle.msFromAbs() <= t.hitJudgement['0']:
+              t.latestHit = 0;
+              t.totalHits['0']++;
+              t.bonus = 0;
 
-                t.combo = 0;
-                break;
-            }
+              t.combo = 0;
+              break;
+          }
 
-            if (!(t.latestHit === 0)) {
-              if (t.bonus > 100) t.bonus = 100;
-              if (t.bonus < 0) t.bonus = 0;
+          if (!(t.latestHit === 0)) {
+            if (t.bonus > 100) t.bonus = 100;
+            if (t.bonus < 0) t.bonus = 0;
 
-              const baseScore =
-                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+            const baseScore =
+              ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
 
-              const bonusScore =
-                ((1000000 * 0.5) / t.notes.length) *
-                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+            const bonusScore =
+              ((1000000 * 0.5) / t.notes.length) *
+              ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
 
-              t.score += bonusScore + baseScore;
-              t.combo += 1;
+            t.score += bonusScore + baseScore;
+            t.combo += 1;
 
-              createjs.Tween.removeTweens(thisCircle);
-              t.ss.columnContainers[columnI].removeChild(thisCircle);
-              t.readyNotes[columnI][i] = null;
-            }
+            createjs.Tween.removeTweens(thisCircle);
+            t.ss.columnContainers[columnI].removeChild(thisCircle);
+            t.readyNotes[columnI][i] = null;
           }
         });
       });
