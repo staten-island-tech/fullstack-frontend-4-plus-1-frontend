@@ -27,7 +27,8 @@
     </div>
     <div class="pb-cont">
       <div id="pb"></div>
-      <div id="pbVol"></div>
+      <div id="pbVol" :style="{ opacity: opacity }" ></div>
+      <button v-if="areAllLoaded && started && songLoaded" :style="{ opacity: opacity }" class="btn"  @click="muteBtn" >MUTE</button>
     </div>
   </div>
   
@@ -95,6 +96,7 @@ export default {
       volume: 0.1,
       pbVolProgress: 0.1,
       scale: 0,
+      opacity: 1,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -358,8 +360,6 @@ export default {
                 color: '#FCB03C',
                 strokeWidth: 50,
                 trailColor: '#D3D3D3',
-     // trailWidth: 1,
-     
                 duration:  sd,
                   text: {
                       value: '0'
@@ -382,7 +382,7 @@ export default {
         style: {
             position: 'absolute',
             left: '50%',
-            top: '40%',
+            top: '45%',
             padding: 0,
             margin: 0,
             // You can specify styles which will be browser prefixed
@@ -436,8 +436,7 @@ t.pbVolProgress = Math.round(100*(t.scale))/100
 
 const el = document.getElementById('pbVol');
 el.addEventListener('wheel', changeVol);
-        
-       
+
 
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
@@ -667,6 +666,18 @@ el.addEventListener('wheel', changeVol);
         }
       });
     },
+   muteBtn() {
+      if ( this.music.mute() === false) {    
+           this.music.mute(true);
+           this.opacity = 0.5;
+    }
+
+    else {
+        this.music.mute(false);
+        this.opacity = 1;
+    }
+ // this.music.mute(true);
+}
   },
 };
 </script>
@@ -681,6 +692,13 @@ el.addEventListener('wheel', changeVol);
   width: 1vw;
   height: 100vh;
   background-color: #ddd;
+}
+
+.btn {
+  color: black;
+  height: 5vh;
+  width: 5vw;
+  font-size: 3rem;
 }
 
 .pb-cont {
