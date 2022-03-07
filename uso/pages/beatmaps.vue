@@ -95,7 +95,8 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <p>Hover or Click on a Song</p>
+            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
+            <p class="hover-msg">Hover or Click on a Song</p>
           </div>
         </div>
       </div>
@@ -354,7 +355,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 200vh;
+  height: 100%;
   background-image: linear-gradient(
       rgba(41, 34, 80, 0.7),
       rgba(33, 26, 77, 0.7)
@@ -508,7 +509,7 @@ export default {
   background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
   opacity: 0.2;
   position: absolute;
-  top: -20px;
+  top: -40px;
   left: 0;
   animation: shine 200ms linear;
   transform: translateX(250px) rotate(-25deg);
@@ -569,6 +570,15 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: auto;
+  background-image: linear-gradient(
+      rgba(14, 7, 29, 0.7),
+      rgba(17, 11, 36, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
 .play-sidebar-image-container {
@@ -618,4 +628,22 @@ export default {
   font-size: 2rem;
   color: rgb(143, 194, 236);
 }
+
+.hover-msg {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.img-placeholder {
+  height: 21.5rem;
+  background-image: linear-gradient(
+      rgba(49, 45, 58, 0.7),
+      rgba(49, 45, 58, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
 </style>
