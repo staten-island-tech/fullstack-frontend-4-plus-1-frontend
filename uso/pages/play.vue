@@ -104,6 +104,8 @@ export default {
       pbVolProgress: 0.1,
       scale: 0,
       opacity: 1,
+      pbdur: null,
+      sd: 0,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -236,16 +238,8 @@ export default {
               PROGRESS BAR
               =============== */
 
-          const progressBar = new ProgressBar.Circle('#game-pb', {
-            color: '#FCB03C',
-            strokeWidth: 50,
-            trailColor: '#D3D3D3',
-            duration: Math.ceil(t.songDuration) * 1000,
-            text: {
-              value: '0',
-            },
-          });
-          progressBar.animate(1);
+
+         
 
           const progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
             color: '#FCB03C',
@@ -405,7 +399,23 @@ export default {
       const t = this;
 
       t.started = true;
+      
       t.music.play();
+
+      t.sd =  Math.round(t.music.duration()) * 1000
+
+      t.progressBar = new ProgressBar.Circle('#game-pb', {
+            color: '#FCB03C',
+            strokeWidth: 50,
+            trailColor: '#D3D3D3',
+            duration: t.sd,
+            text: {
+              value: '0',
+            },
+          });
+  
+            t.progressBar.animate(1);
+
 
       /* ===============
           KEY PRESS
