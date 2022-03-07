@@ -220,16 +220,14 @@ export default {
         if (!Object.values(t.loaded).some((bool) => !bool)) {
           t.beatmapData = t.$store.state.beatmapData;
           t.notes = t.beatmapData.hitObjects;
-          t.beatmapIntro = t.notes[0].time < 2000 ? 0 : t.notes[0].time - 2000;
+          t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
 
           t.music = new Howl({
             src: [
               `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
             ],
             volume: t.volume,
-            onload: function () {
-              t.songLoaded = true;
-            },
+            onload: () => (t.songLoaded = true),
           });
           t.music.seek(t.beatmapIntro / 1000);
 
@@ -451,69 +449,8 @@ export default {
         // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
-          t.readyNotes[columnI].forEach((thisCircle, i) => {
-            if (!thisCircle) return;
-
-            let hitBonusValue = 0;
-
-            switch (true) {
-              case thisCircle.msFromAbs() <= t.hitJudgement['320']:
-                t.latestHit = 320;
-                t.totalHits['320']++;
-                hitBonusValue = 32;
-                t.bonus += 2;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['300']:
-                t.latestHit = 300;
-                t.totalHits['300']++;
-                hitBonusValue = 32;
-                t.bonus += 1;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['200']:
-                t.latestHit = 200;
-                t.totalHits['200']++;
-                hitBonusValue = 16;
-                t.bonus -= 8;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['100']:
-                t.latestHit = 100;
-                t.totalHits['100']++;
-                hitBonusValue = 8;
-                t.bonus -= 24;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['50']:
-                t.latestHit = 50;
-                t.totalHits['50']++;
-                hitBonusValue = 4;
-                t.bonus -= 44;
-                break;
-              case thisCircle.msFromAbs() <= t.hitJudgement['0']:
-                t.latestHit = 0;
-                t.totalHits['0']++;
-                t.bonus = 0;
-
-                t.combo = 0;
-                break;
-            }
-
-            if (!(t.latestHit === 0)) {
-              if (t.bonus > 100) t.bonus = 100;
-              if (t.bonus < 0) t.bonus = 0;
-
-              const baseScore =
-                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-              const bonusScore =
-                ((1000000 * 0.5) / t.notes.length) *
-                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-              t.score += bonusScore + baseScore;
-              t.combo += 1;
-
-              createjs.Tween.removeTweens(thisCircle);
-              t.ss.columnContainers[columnI].removeChild(thisCircle);
-              t.readyNotes[columnI][i] = null;
-            }
+          t.readyNotes[columnI].forEach((thisCircle) => {
+            if (thisCircle) thisCircle.hit();
           });
         }
       });
@@ -521,6 +458,7 @@ export default {
       for (let i = 0; i < t.numColumns; i++) {
         kd[t.keys[i]].down(function () {
           if (!t.readySliders[i]) return;
+          t.readySliders[i].held = true;
 
           if (!t.readySliders[i].initialMs)
             t.readySliders[i].initialMs = t.readySliders[i].botMsFromAbs();
@@ -528,6 +466,7 @@ export default {
 
         kd[[t.keys[i]]].up(function () {
           if (!t.readySliders[i]) return;
+          t.readySliders[i].held = false;
 
           if (t.readySliders[i].topMsFromAbs() <= t.hitJudgement['50']) {
             t.readySliders[i].finalMs = t.readySliders[i].topMsFromAbs();
@@ -535,61 +474,7 @@ export default {
             t.readySliders[i].avgMs =
               (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
 
-            let hitBonusValue = 0;
-
-            switch (true) {
-              case t.readySliders[i].avgMs <= t.hitJudgement['320'] &&
-                !t.readySliders[i].releasedMs:
-                t.latestHit = 320;
-                t.totalHits['320']++;
-                hitBonusValue = 32;
-                t.bonus += 2;
-                break;
-              case t.readySliders[i].avgMs <= t.hitJudgement['300'] &&
-                !t.readySliders[i].releasedMs:
-                t.latestHit = 300;
-                t.totalHits['300']++;
-                hitBonusValue = 32;
-                t.bonus += 1;
-                break;
-              case t.readySliders[i].avgMs <= t.hitJudgement['300']:
-                t.latestHit = 200;
-                t.totalHits['200']++;
-                hitBonusValue = 16;
-                t.bonus -= 8;
-                break;
-              case t.readySliders[i].avgMs <= t.hitJudgement['200']:
-                t.latestHit = 100;
-                t.totalHits['100']++;
-                hitBonusValue = 8;
-                t.bonus -= 24;
-                break;
-              case t.readySliders[i].avgMs <= t.hitJudgement['50']:
-                t.latestHit = 50;
-                t.totalHits['50']++;
-                hitBonusValue = 4;
-                t.bonus -= 44;
-                break;
-            }
-
-            if (t.bonus > 100) t.bonus = 100;
-            if (t.bonus < 0) t.bonus = 0;
-
-            const baseScore =
-              ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-            const bonusScore =
-              ((1000000 * 0.5) / t.notes.length) *
-              ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-            t.score += bonusScore + baseScore;
-            t.combo += 1;
-
-            createjs.Tween.removeTweens(t.readySliders[i]);
-            t.ss.columnContainers[t.readySliders[i].i].removeChild(
-              t.readySliders[i]
-            );
-            t.readySliders[t.readySliders[i].i] = null;
+            t.readySliders[i].hit();
           } else {
             if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
             else t.readySliders[i].releasedMs = t.readySliders[i].topMsFrom();
@@ -629,6 +514,9 @@ export default {
             };
 
             thisCircle.miss = function () {
+              if (this.removed) return;
+              this.removed = true;
+
               t.latestHit = 0;
               t.totalHits['0']++;
               t.bonus = 0;
@@ -638,6 +526,72 @@ export default {
               createjs.Tween.removeTweens(thisCircle);
               t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
               t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
+            };
+
+            thisCircle.hit = function () {
+              if (this.removed) return;
+              this.removed = true;
+
+              let hitBonusValue = 0;
+
+              switch (true) {
+                case this.msFromAbs() <= t.hitJudgement['320']:
+                  t.latestHit = 320;
+                  t.totalHits['320']++;
+                  hitBonusValue = 32;
+                  t.bonus += 2;
+                  break;
+                case this.msFromAbs() <= t.hitJudgement['300']:
+                  t.latestHit = 300;
+                  t.totalHits['300']++;
+                  hitBonusValue = 32;
+                  t.bonus += 1;
+                  break;
+                case this.msFromAbs() <= t.hitJudgement['200']:
+                  t.latestHit = 200;
+                  t.totalHits['200']++;
+                  hitBonusValue = 16;
+                  t.bonus -= 8;
+                  break;
+                case this.msFromAbs() <= t.hitJudgement['100']:
+                  t.latestHit = 100;
+                  t.totalHits['100']++;
+                  hitBonusValue = 8;
+                  t.bonus -= 24;
+                  break;
+                case this.msFromAbs() <= t.hitJudgement['50']:
+                  t.latestHit = 50;
+                  t.totalHits['50']++;
+                  hitBonusValue = 4;
+                  t.bonus -= 44;
+                  break;
+                case this.msFromAbs() <= t.hitJudgement['0']:
+                  t.latestHit = 0;
+                  t.totalHits['0']++;
+                  t.bonus = 0;
+
+                  t.combo = 0;
+                  break;
+              }
+
+              if (!(t.latestHit === 0)) {
+                if (t.bonus > 100) t.bonus = 100;
+                if (t.bonus < 0) t.bonus = 0;
+
+                const baseScore =
+                  ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+                const bonusScore =
+                  ((1000000 * 0.5) / t.notes.length) *
+                  ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+                t.score += bonusScore + baseScore;
+                t.combo += 1;
+
+                createjs.Tween.removeTweens(this);
+                t.ss.columnContainers[this.i].removeChild(this);
+                t.readyNotes[this.i][this.readyIndex] = null;
+              }
             };
 
             // thisCircle.cache(0, -85, 120, 120);
@@ -726,6 +680,9 @@ export default {
             };
 
             thisSlider.miss = function () {
+              if (this.removed) return;
+              this.removed = true;
+
               t.latestHit = 0;
               t.totalHits['0']++;
               t.bonus = 0;
@@ -735,6 +692,66 @@ export default {
               createjs.Tween.removeTweens(thisSlider);
               t.ss.columnContainers[thisSlider.i].removeChild(thisSlider);
               t.readySliders[thisSlider.i] = null;
+            };
+
+            thisSlider.hit = function () {
+              if (this.removed) return;
+              this.removed = true;
+
+              let hitBonusValue = 0;
+
+              switch (true) {
+                case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
+                  t.latestHit = 320;
+                  t.totalHits['320']++;
+                  hitBonusValue = 32;
+                  t.bonus += 2;
+                  break;
+                case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
+                  t.latestHit = 300;
+                  t.totalHits['300']++;
+                  hitBonusValue = 32;
+                  t.bonus += 1;
+                  break;
+                case this.avgMs <= t.hitJudgement['300'] ||
+                  (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
+                  t.latestHit = 200;
+                  t.totalHits['200']++;
+                  hitBonusValue = 16;
+                  t.bonus -= 8;
+                  break;
+                case this.avgMs <= t.hitJudgement['200'] ||
+                  (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
+                  t.latestHit = 100;
+                  t.totalHits['100']++;
+                  hitBonusValue = 8;
+                  t.bonus -= 24;
+                  break;
+                case this.avgMs <= t.hitJudgement['50'] ||
+                  (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
+                  t.latestHit = 50;
+                  t.totalHits['50']++;
+                  hitBonusValue = 4;
+                  t.bonus -= 44;
+                  break;
+              }
+
+              if (t.bonus > 100) t.bonus = 100;
+              if (t.bonus < 0) t.bonus = 0;
+
+              const baseScore =
+                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+              const bonusScore =
+                ((1000000 * 0.5) / t.notes.length) *
+                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+              t.score += bonusScore + baseScore;
+              t.combo += 1;
+
+              createjs.Tween.removeTweens(this);
+              t.ss.columnContainers[this.i].removeChild(this);
+              t.readySliders[this.i] = null;
             };
 
             setTimeout(() => {
@@ -762,6 +779,17 @@ export default {
 
                     thisSlider.readyIndex = thisSlider.i;
                     t.readySliders[thisSlider.i] = thisSlider;
+                    break;
+
+                  case thisSlider.botMsFrom() > t.hitJudgement['50'] &&
+                    !thisSlider.initialMs:
+                    thisSlider.miss();
+                    break;
+
+                  case thisSlider.topMsFrom() > t.hitJudgement['50'] &&
+                    thisSlider.held &&
+                    thisSlider.initialMs:
+                    thisSlider.hit();
                     break;
 
                   case thisSlider.topMsFrom() > t.hitJudgement['50']:
