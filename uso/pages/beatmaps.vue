@@ -87,7 +87,7 @@
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/play`">Play</nuxt-link>
+                    <nuxt-link :to="`/play`">PLAY</nuxt-link>
                   </th>
                   <th>??? notes/s</th>
                 </tr>
@@ -95,7 +95,8 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <p>Hover or Click on a Song</p>
+            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
+            <p class="hover-msg">Hover or Click on a Song!</p>
           </div>
         </div>
       </div>
@@ -354,7 +355,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 200vh;
+  height: 100%;
   background-image: linear-gradient(
       rgba(41, 34, 80, 0.7),
       rgba(33, 26, 77, 0.7)
@@ -488,14 +489,45 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  transition: 0.3s all;
+  transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
+
+
 }
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
 }
+
+.play-beatmap-set:hover::after {
+  content: '';
+  display: block;
+  width: 75px;
+  height: 175%;
+  background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
+  opacity: 0.2;
+  position: absolute;
+  top: -40px;
+  left: 0;
+  animation: shine 200ms linear;
+  transform: translateX(250px) rotate(-25deg);
+}
+
+/* */
+
+@keyframes shine {
+  0% {
+    transform: translateX(-30px) rotate(-25deg);
+  }
+  
+  100% {
+    transform: translateX(250px) rotate(-25deg);
+  }
+}
+
+/* */
 
 .beatmap-set-img {
   position: absolute;
@@ -508,7 +540,7 @@ export default {
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .play-beatmap-set > p {
@@ -538,6 +570,15 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: auto;
+  background-image: linear-gradient(
+      rgba(14, 7, 29, 0.7),
+      rgba(17, 11, 36, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
 .play-sidebar-image-container {
@@ -572,11 +613,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(even) {
-  background-color: #404040;
+  background-color: #2d2f50;
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(odd) {
-  background-color: #505050;
+  background-color: #3f405f;
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
@@ -584,7 +625,31 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 2rem;
-  color: rgb(143, 194, 236);
+  font-size: 2.5rem;
+  color: rgb(133, 185, 228);
+  transition: all 100ms ease-in-out;
 }
+
+.play-sidebar-difficulties > tbody > tr > th > *:hover {
+  text-decoration: underline;
+  color: rgb(197, 221, 240);
+}
+
+.hover-msg {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.img-placeholder {
+  height: 21.5rem;
+  background-image: linear-gradient(
+      rgba(49, 45, 58, 0.7),
+      rgba(49, 45, 58, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
 </style>
