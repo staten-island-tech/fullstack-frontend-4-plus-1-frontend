@@ -12,7 +12,7 @@
     >
       START
     </button>
-    <div class="canvas-container" :style="{ width: canvasWidth + 'px' }">
+    <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
         >Canvas is not supported on your browser.</canvas
       >
@@ -25,13 +25,13 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
-    <div class="pb-cont">
-      <div id="pb"></div>
-      <div id="pbVol" :style="{ opacity: opacity }"></div>
+    <div class="game-pb-container">
+      <div id="game-pb"></div>
+      <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
       <button
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
-        class="btn"
+        class="game-mute-button"
         @click="muteBtn"
       >
         MUTE
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-/* global createjs:false, Howl:false, kd:false */
+/* global createjs:false, Howl:false, kd:false, ProgressBar:false */
 /* eslint-disable */
 
 export default {
@@ -236,6 +236,60 @@ export default {
               PROGRESS BAR
               =============== */
 
+          const progressBar = new ProgressBar.Circle('#game-pb', {
+            color: '#FCB03C',
+            strokeWidth: 50,
+            trailColor: '#D3D3D3',
+            duration: Math.ceil(t.songDuration) * 1000,
+            text: {
+              value: '0',
+            },
+          });
+          progressBar.animate(1);
+
+          const progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+            color: '#FCB03C',
+            // This has to be the same size as the maximum width to
+            // prevent clipping
+            strokeWidth: 7,
+            easing: 'easeInOut',
+            trailColor: '#eee',
+            trailWidth: 7,
+            duration: 1400,
+
+            from: { color: '#aaa', width: 8 },
+            to: { color: '#333', width: 8 },
+            // Set default step function for all animate calls
+            step: function (state, circle) {
+              circle.path.setAttribute('stroke', state.color);
+              circle.path.setAttribute('stroke-width', state.width);
+
+              let value = Math.round(circle.value() * 100);
+              if (value === 0) {
+                circle.setText('Volume');
+              } else {
+                circle.setText(value);
+              }
+            },
+          });
+
+          progressBarVol.animate(t.pbVolProgress);
+
+          const $pbVol = document.getElementById('game-pb-vol');
+          $pbVol.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            console.log('SCROLL!');
+
+            t.scale += e.deltaY * -0.0002;
+            // Restrict scale
+            t.scale = Math.min(Math.max(0, t.scale), 1);
+            // Apply scale transform
+            Howler.volume(t.scale);
+            t.pbVolProgress = Math.round(100 * t.scale) / 100;
+
+            progressBarVol.set(t.pbVolProgress);
+          });
+
           /* ===============
               CANVAS SETUP
               =============== */
@@ -352,78 +406,6 @@ export default {
 
       t.started = true;
       t.music.play();
-
-      function setProgressBar() {
-        let progressBar = new ProgressBar.Circle('#pb', {
-          color: '#FCB03C',
-          strokeWidth: 50,
-          trailColor: '#D3D3D3',
-          duration: Math.round(t.songDuration) * 1000,
-          text: {
-            value: '0',
-          },
-        });
-        progressBar.animate(1);
-      }
-      setProgressBar();
-
-      let progressBarVol = new ProgressBar.Circle('#pbVol', {
-        color: '#FCB03C',
-        // This has to be the same size as the maximum width to
-        // prevent clipping
-        strokeWidth: 7,
-        easing: 'easeInOut',
-        trailColor: '#eee',
-        trailWidth: 7,
-        duration: 1400,
-        text: {
-          style: {
-            position: 'absolute',
-            left: '50%',
-            top: '45%',
-            padding: 0,
-            margin: 0,
-            // You can specify styles which will be browser prefixed
-            transform: {
-              prefix: true,
-              value: 'translate(-50%, -50%)',
-            },
-          },
-        },
-
-        from: { color: '#aaa', width: 8 },
-        to: { color: '#333', width: 8 },
-        // Set default step function for all animate calls
-        step: function (state, circle) {
-          circle.path.setAttribute('stroke', state.color);
-          circle.path.setAttribute('stroke-width', state.width);
-
-          let value = Math.round(circle.value() * 100);
-          if (value === 0) {
-            circle.setText('Volume');
-          } else {
-            circle.setText(value);
-          }
-        },
-      });
-      progressBarVol.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-      progressBarVol.text.style.fontSize = '5rem';
-
-      progressBarVol.animate(t.pbVolProgress);
-
-      const $pbVol = document.getElementById('pbVol');
-      $pbVol.addEventListener('wheel', function (e) {
-        e.preventDefault();
-
-        t.scale += e.deltaY * -0.0002;
-        // Restrict scale
-        t.scale = Math.min(Math.max(0, t.scale), 1);
-        // Apply scale transform
-        Howler.volume(t.scale);
-        t.pbVolProgress = Math.round(100 * t.scale) / 100;
-
-        progressBarVol.set(t.pbVolProgress);
-      });
 
       /* ===============
           KEY PRESS
@@ -817,69 +799,12 @@ export default {
 </script>
 
 <style scoped>
-.canvas-container,
-#canvas {
-  height: 100vh;
-}
-
-#myProgress {
-  width: 1vw;
-  height: 100vh;
-  background-color: #ddd;
-}
-
-.btn {
-  color: black;
-  height: 5vh;
-  width: 5vw;
-  font-size: 3rem;
-}
-
-.pb-cont {
-  height: 50vh;
-  width: 20vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-#pb {
-  height: 20%;
-  width: 20%;
-}
-
-#pbVol {
-  height: 80%;
-  width: 80%;
-}
-
-#myBar {
-  transition: all 0.5s ease-in;
-  width: 100%;
-  height: 0%;
-  background-color: #04aa6d;
-}
-.button {
-  height: 20vh;
-  width: 20vw;
-  background-color: gray;
-  font-size: 3rem;
-}
-
 #game-index {
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-}
-
-.game-start-button {
-  height: 20vh;
-  width: 20vw;
-  background-color: gray;
-  font-size: 3rem;
 }
 
 .game-image-container {
@@ -898,6 +823,18 @@ export default {
   width: 100%;
 }
 
+.game-start-button {
+  height: 20vh;
+  width: 20vw;
+  background-color: gray;
+  font-size: 3rem;
+}
+
+.game-canvas-container,
+#canvas {
+  height: 100vh;
+}
+
 .statistics-container {
   min-width: 35rem;
   height: 30rem;
@@ -913,5 +850,44 @@ export default {
 
 .statistics-container > h1 {
   font-size: 7rem;
+}
+
+.game-pb-container {
+  height: 50vh;
+  width: 20vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#game-pb {
+  height: 20%;
+  width: 20%;
+}
+
+#game-pb-vol {
+  position: relative;
+  width: 80%;
+  font-family: 'Raleway', Helvetica, sans-serif;
+  font-size: 5rem;
+}
+
+/* #game-pb-vol > svg {
+  position: relative;
+} */
+
+#game-pb-vol > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.game-mute-button {
+  color: black;
+  height: 5vh;
+  width: 5vw;
+  font-size: 3rem;
 }
 </style>
