@@ -229,6 +229,7 @@ export default {
             volume: t.volume,
             onload: () => (t.songLoaded = true),
           });
+          t.songDuration = t.music.duration();
           t.music.seek(t.beatmapIntro / 1000);
 
           /* ===============
@@ -352,16 +353,12 @@ export default {
       t.started = true;
       t.music.play();
 
-      t.songDuration = t.music.duration();
-
-      let sd = Math.round(t.songDuration) * 1000;
-
       function setProgressBar() {
         let progressBar = new ProgressBar.Circle('#pb', {
           color: '#FCB03C',
           strokeWidth: 50,
           trailColor: '#D3D3D3',
-          duration: sd,
+          duration: Math.round(t.songDuration) * 1000,
           text: {
             value: '0',
           },
@@ -414,10 +411,11 @@ export default {
 
       progressBarVol.animate(t.pbVolProgress);
 
-      function changeVol(event) {
-        event.preventDefault();
+      const $pbVol = document.getElementById('pbVol');
+      $pbVol.addEventListener('wheel', function (e) {
+        e.preventDefault();
 
-        t.scale += event.deltaY * -0.0002;
+        t.scale += e.deltaY * -0.0002;
         // Restrict scale
         t.scale = Math.min(Math.max(0, t.scale), 1);
         // Apply scale transform
@@ -425,10 +423,7 @@ export default {
         t.pbVolProgress = Math.round(100 * t.scale) / 100;
 
         progressBarVol.set(t.pbVolProgress);
-      }
-
-      const $pbVol = document.getElementById('pbVol');
-      $pbVol.addEventListener('wheel', changeVol);
+      });
 
       /* ===============
           KEY PRESS
