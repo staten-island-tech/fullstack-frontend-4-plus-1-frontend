@@ -87,7 +87,7 @@
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/play`">Play</nuxt-link>
+                    <nuxt-link :to="`/play`">PLAY</nuxt-link>
                   </th>
                   <th>??? notes/s</th>
                 </tr>
@@ -96,7 +96,7 @@
           </div>
           <div v-else class="play-sidebar">
             <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
-            <p class="hover-msg">Hover or Click on a Song</p>
+            <p class="hover-msg">Hover or Click on a Song!</p>
           </div>
         </div>
       </div>
@@ -540,7 +540,7 @@ export default {
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .play-beatmap-set > p {
@@ -613,11 +613,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(even) {
-  background-color: #404040;
+  background-color: #2d2f50;
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(odd) {
-  background-color: #505050;
+  background-color: #3f405f;
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
@@ -625,8 +625,14 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 2rem;
-  color: rgb(143, 194, 236);
+  font-size: 2.5rem;
+  color: rgb(133, 185, 228);
+  transition: all 100ms ease-in-out;
+}
+
+.play-sidebar-difficulties > tbody > tr > th > *:hover {
+  text-decoration: underline;
+  color: rgb(197, 221, 240);
 }
 
 .hover-msg {
