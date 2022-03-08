@@ -105,7 +105,7 @@ export default {
       scale: 0,
       opacity: 1,
       pbdur: null,
-      sd: 0,
+      songDuration: 0,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -391,16 +391,14 @@ export default {
       const t = this;
 
       t.started = true;
-
       t.music.play();
-
-      t.sd = Math.round(t.music.duration()) * 1000;
+      t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
         trailColor: '#D3D3D3',
-        duration: t.sd,
+        duration: t.songDuration,
         text: {
           value: '0',
         },
@@ -424,7 +422,6 @@ export default {
       };
 
       document.addEventListener('keydown', function (e) {
-        // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
@@ -467,6 +464,30 @@ export default {
       /* ===============
               NOTES
           =============== */
+
+      class Timer {
+        constructor(callback, delay) {
+          this.callback = callback;
+          this.remainingTime = delay;
+          this.startTime;
+          this.id;
+        }
+
+        pause() {
+          clearTimeout(this.id);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+
+        resume() {
+          this.startTime = new Date();
+          clearTimeout(this.id);
+          this.id = setTimeout(this.callback, this.remainingTime);
+        }
+
+        start() {
+          this.id = setTimeout(this.callback, this.remainingTime);
+        }
+      }
 
       t.notes.forEach((note) => {
         switch (note.type) {
