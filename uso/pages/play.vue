@@ -32,7 +32,7 @@
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
         class="game-mute-button"
-        @click="muteBtn"
+        @click="muteButton"
       >
         MUTE
       </button>
@@ -41,11 +41,11 @@
 </template>
 
 <script>
-/* global createjs:false, Howl:false, kd:false, ProgressBar:false */
+/* global createjs:false, Howl:false, Howler:false, kd:false, ProgressBar:false */
 /* eslint-disable */
 
 export default {
-  layout: 'nonav',
+  layout: 'noNav',
 
   data() {
     return {
@@ -117,6 +117,8 @@ export default {
       notes: [],
       readyNotes: [],
       readySliders: [],
+
+      progressBarVol: null,
     };
   },
 
@@ -141,6 +143,14 @@ export default {
         },
       ],
     };
+  },
+
+  created() {
+    window.addEventListener('wheel', this.onScroll);
+  },
+
+  destroyed() {
+    window.removeEventListener('wheel', this.onScroll);
   },
 
   computed: {
@@ -238,10 +248,7 @@ export default {
               PROGRESS BAR
               =============== */
 
-
-         
-
-          const progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+          this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
             color: '#FCB03C',
             // This has to be the same size as the maximum width to
             // prevent clipping
@@ -258,7 +265,7 @@ export default {
               circle.path.setAttribute('stroke', state.color);
               circle.path.setAttribute('stroke-width', state.width);
 
-              let value = Math.round(circle.value() * 100);
+              const value = Math.round(circle.value() * 100);
               if (value === 0) {
                 circle.setText('Volume');
               } else {
@@ -267,22 +274,7 @@ export default {
             },
           });
 
-          progressBarVol.animate(t.pbVolProgress);
-
-          const $pbVol = document.getElementById('game-pb-vol');
-          $pbVol.addEventListener('wheel', function (e) {
-            e.preventDefault();
-            console.log('SCROLL!');
-
-            t.scale += e.deltaY * -0.0002;
-            // Restrict scale
-            t.scale = Math.min(Math.max(0, t.scale), 1);
-            // Apply scale transform
-            Howler.volume(t.scale);
-            t.pbVolProgress = Math.round(100 * t.scale) / 100;
-
-            progressBarVol.set(t.pbVolProgress);
-          });
+          this.progressBarVol.animate(t.pbVolProgress);
 
           /* ===============
               CANVAS SETUP
@@ -399,23 +391,22 @@ export default {
       const t = this;
 
       t.started = true;
-      
+
       t.music.play();
 
-      t.sd =  Math.round(t.music.duration()) * 1000
+      t.sd = Math.round(t.music.duration()) * 1000;
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
-            color: '#FCB03C',
-            strokeWidth: 50,
-            trailColor: '#D3D3D3',
-            duration: t.sd,
-            text: {
-              value: '0',
-            },
-          });
-  
-            t.progressBar.animate(1);
+        color: '#FCB03C',
+        strokeWidth: 50,
+        trailColor: '#D3D3D3',
+        duration: t.sd,
+        text: {
+          value: '0',
+        },
+      });
 
+      t.progressBar.animate(1);
 
       /* ===============
           KEY PRESS
@@ -794,7 +785,20 @@ export default {
         }
       });
     },
-    muteBtn() {
+    onScroll(e) {
+      console.log(e);
+      e.preventDefault();
+
+      this.scale += e.deltaY * -0.0002;
+      // Restrict scale
+      this.scale = Math.min(Math.max(0, this.scale), 1);
+      // Apply scale transform
+      Howler.volume(this.scale);
+      this.pbVolProgress = Math.round(100 * this.scale) / 100;
+
+      this.progressBarVol.set(this.pbVolProgress);
+    },
+    muteButton() {
       if (this.music.mute() === false) {
         this.music.mute(true);
         this.opacity = 0.5;
@@ -810,7 +814,7 @@ export default {
 
 <style scoped>
 #game-index {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
