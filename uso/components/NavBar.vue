@@ -46,7 +46,9 @@
             <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
+            <nuxt-link to="/shop" class="uso__button"
+              ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
+            /></nuxt-link>
           </div>
 
           <nuxt-link to="/login" class="uso__avatar--img">
@@ -388,6 +390,16 @@ export default {
 
 .toggle .uso__navline3 {
   transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.nav-shop-btns {
+  height: 100%;
+  width: 100%;
+  opacity: 0.8;
+}
+
+.nav-shop-btns:hover {
+  opacity: 1;
 }
 
 /* Mobile Responsive */
