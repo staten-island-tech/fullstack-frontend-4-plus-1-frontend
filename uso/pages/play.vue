@@ -229,7 +229,7 @@ export default {
       handler(newValue, oldValue) {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
-        if (!Object.values(t.loaded).some((bool) => !bool)) this.onLoad();
+        if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
       },
       deep: true,
     },
@@ -242,11 +242,19 @@ export default {
   methods: {
     onLoad() {
       {
+        const t = this;
+
         t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
+
         t.keys = [
-          ...t.allKeys.slice(-6, -((Math.floor(t.beatmapData.numColumns / 2)+6)), t.beatmapData.numColumns % 2 ? t.allKeys[4], ...t.allKeys.slice(5, Math.floor(t.beatmapData.numColumns/2) + 5)),
+          ...t.allKeys.slice(
+            -(Math.floor(t.beatmapData.numColumns / 2) + 5),
+            -5
+          ),
+          ...(t.beatmapData.numColumns % 2 ? [t.allKeys[4]] : []),
+          ...t.allKeys.slice(5, Math.floor(t.beatmapData.numColumns / 2) + 5),
         ];
 
         t.music = new Howl({
