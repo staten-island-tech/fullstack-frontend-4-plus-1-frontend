@@ -249,12 +249,9 @@ export default {
         t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
 
         t.keys = [
-          ...t.allKeys.slice(
-            -(Math.floor(t.beatmapData.numColumns / 2) + 5),
-            -5
-          ),
-          ...(t.beatmapData.numColumns % 2 ? [t.allKeys[4]] : []),
-          ...t.allKeys.slice(5, Math.floor(t.beatmapData.numColumns / 2) + 5),
+          ...t.allKeys.slice(-(Math.floor(t.beatmapData.columns / 2) + 5), -5),
+          ...(t.beatmapData.columns % 2 ? [t.allKeys[4]] : []),
+          ...t.allKeys.slice(5, Math.floor(t.beatmapData.columns / 2) + 5),
         ];
 
         t.music = new Howl({
