@@ -24,19 +24,6 @@
             </span>
             <input class="song-submit-button" type="submit" value="" />
           </form>
-
-          <!-- <form class="search-bar" @submit.prevent="getSearchData(searchQuery)">
-              <div class="input">
-                <input
-                  v-model="searchQuery"
-                  type="text"
-                  class="search-area"
-                  placeholder="Search for your song... fix this garbage search area later lmao"
-                  style="font-size: 3.5rem"
-                />
-              </div>
-              <span class="deleteText" @click="searchQuery = ''"><img class="search-icon" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2Ljk2NiA1Ni45NjYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU2Ljk2NiA1Ni45NjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPHBhdGggZD0iTTU1LjE0Niw1MS44ODdMNDEuNTg4LDM3Ljc4NmMzLjQ4Ni00LjE0NCw1LjM5Ni05LjM1OCw1LjM5Ni0xNC43ODZjMC0xMi42ODItMTAuMzE4LTIzLTIzLTIzcy0yMywxMC4zMTgtMjMsMjMgIHMxMC4zMTgsMjMsMjMsMjNjNC43NjEsMCw5LjI5OC0xLjQzNiwxMy4xNzctNC4xNjJsMTMuNjYxLDE0LjIwOGMwLjU3MSwwLjU5MywxLjMzOSwwLjkyLDIuMTYyLDAuOTIgIGMwLjc3OSwwLDEuNTE4LTAuMjk3LDIuMDc5LTAuODM3QzU2LjI1NSw1NC45ODIsNTYuMjkzLDUzLjA4LDU1LjE0Niw1MS44ODd6IE0yMy45ODQsNmM5LjM3NCwwLDE3LDcuNjI2LDE3LDE3cy03LjYyNiwxNy0xNywxNyAgcy0xNy03LjYyNi0xNy0xN1MxNC42MSw2LDIzLjk4NCw2eiIgZmlsbD0iIzAwMDAwMCIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" /></span>
-            </form> -->
         </div>
 
         <div class="play-beatmap-content">
@@ -100,7 +87,7 @@
                 >
                   <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/game`">Play</nuxt-link>
+                    <nuxt-link :to="`/play`">PLAY</nuxt-link>
                   </th>
                   <th>??? notes/s</th>
                 </tr>
@@ -108,7 +95,8 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <p>Hover or Click on a Song</p>
+            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
+            <p class="hover-msg">Hover or Click on a Song!</p>
           </div>
         </div>
       </div>
@@ -367,7 +355,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 200vh;
+  height: 100%;
   background-image: linear-gradient(
       rgba(41, 34, 80, 0.7),
       rgba(33, 26, 77, 0.7)
@@ -461,43 +449,6 @@ export default {
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
 }
 
-/*
-
-.search-bar {
-  position: relative;
-  color: #f6f6f6;
-  width: 54.5vw;
-  height: 5rem;
-  margin: 0.4rem 0rem;
-  border-radius: 0rem;
-  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  background-color: rgb(49, 45, 58);
-}
-
-.search-bar .input {
-  position: relative;
-  width: 52vw;
-  height: 3.75rem;
-  left: 1.25rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.search-bar .input input {
-  position: absolute;
-  top: 25%;
-  color: #f6f6f6;
-  width: 100%;
-  height: 100%;
-  border: none;
-  outline: none;
-  font-size: 2.25rem;
-  font-weight: 400;
-  background-color: rgba(49, 45, 58, 0.7);
-} */
-
 /* Beatmap Content */
 
 .play-beatmap-content {
@@ -538,14 +489,45 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  transition: 0.3s all;
+  transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
+
+
 }
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
 }
+
+.play-beatmap-set:hover::after {
+  content: '';
+  display: block;
+  width: 75px;
+  height: 175%;
+  background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
+  opacity: 0.2;
+  position: absolute;
+  top: -40px;
+  left: 0;
+  animation: shine 200ms linear;
+  transform: translateX(250px) rotate(-25deg);
+}
+
+/* */
+
+@keyframes shine {
+  0% {
+    transform: translateX(-30px) rotate(-25deg);
+  }
+  
+  100% {
+    transform: translateX(250px) rotate(-25deg);
+  }
+}
+
+/* */
 
 .beatmap-set-img {
   position: absolute;
@@ -554,11 +536,11 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
-  opacity: 1;
+  opacity: 0.5;
 }
 
 .play-beatmap-set > p {
@@ -588,6 +570,15 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: auto;
+  background-image: linear-gradient(
+      rgba(14, 7, 29, 0.7),
+      rgba(17, 11, 36, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 
 .play-sidebar-image-container {
@@ -604,10 +595,16 @@ export default {
 .play-sidebar-text-container > * {
   font-size: 2.25rem;
   margin: 0 0 0 0.5rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .play-sidebar-text-title {
   font-size: 4.5rem;
+
+  line-height: 2.7rem;
 }
 
 .play-sidebar-difficulties {
@@ -616,14 +613,43 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(even) {
-  background-color: #404040;
+  background-color: #2d2f50;
 }
 
 .play-sidebar-difficulties > tbody > tr:nth-child(odd) {
-  background-color: #505050;
+  background-color: #3f405f;
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
   font-size: 2.25rem;
 }
+
+.play-sidebar-difficulties > tbody > tr > th > * {
+  font-size: 2.5rem;
+  color: rgb(133, 185, 228);
+  transition: all 100ms ease-in-out;
+}
+
+.play-sidebar-difficulties > tbody > tr > th > *:hover {
+  text-decoration: underline;
+  color: rgb(197, 221, 240);
+}
+
+.hover-msg {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.img-placeholder {
+  height: 21.5rem;
+  background-image: linear-gradient(
+      rgba(49, 45, 58, 0.7),
+      rgba(49, 45, 58, 0.7)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
 </style>
