@@ -90,7 +90,7 @@ export default {
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      hitPercent: 0.8,
+      hitPercent: 0.85,
       radius: 40,
 
       stage: null,
@@ -340,7 +340,7 @@ export default {
 
         // Draws the gray background on the canvas
         background.graphics
-          .beginFill('#D3D3D3')
+          .beginFill('#181818')
           .drawRect(0, 0, t.stageWidth, t.stageHeight);
 
         background.name = 'background';
