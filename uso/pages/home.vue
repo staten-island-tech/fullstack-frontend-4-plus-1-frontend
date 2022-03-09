@@ -56,11 +56,11 @@ export default {
         console.error(error);
       }
     }, */
-    getFeatureCards: async function fetchSomething() {
+    getFeatureCards: async function getFeatureCards() {
       try {
         /* const data = await this.$axios.$get('data.json'); */
         const data = await fetch('../static/data.json');
-        console.log(data);
+        console.log(data + 'fetched data');
         this.featureSongs = data.json;
         console.log(this.featureSongs);
       } catch (error) {
