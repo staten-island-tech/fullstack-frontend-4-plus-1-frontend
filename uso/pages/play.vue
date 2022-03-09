@@ -85,10 +85,10 @@ export default {
 
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
-      numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
       hitPercent: 0.85,
       radius: 40,
@@ -156,7 +156,7 @@ export default {
 
   computed: {
     canvasWidth() {
-      return this.numColumns * this.columnWidth;
+      return this.beatmapData.columns * this.columnWidth;
     },
     dy() {
       return (
@@ -254,6 +254,17 @@ export default {
           ...t.allKeys.slice(5, Math.floor(t.beatmapData.columns / 2) + 5),
         ];
 
+        t.colors = [
+          ...t.allColors.slice(
+            -(Math.floor(t.beatmapData.columns / 2) + 2),
+            -2
+          ),
+          ...(t.beatmapData.columns % 2 ? [t.allColors[4]] : []),
+          ...t.allColors
+            .slice(-(Math.floor(t.beatmapData.columns / 2) + 2), -2)
+            .reverse(),
+        ];
+
         t.music = new Howl({
           src: [
             `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
@@ -300,16 +311,22 @@ export default {
               CANVAS SETUP
               =============== */
 
-        const $canvas = document.querySelector('#canvas');
+        /* const $canvas = document.querySelector('#canvas');
 
         // Sets the canvas width/height pixels = to canvas display size width/height
         $canvas.width = $canvas.offsetWidth;
         $canvas.height = $canvas.offsetHeight;
-
+ */
         t.stage = new createjs.Stage('canvas');
+
+        t.stage.canvas.width = t.stage.canvas.offsetWidth;
+        t.stage.canvas.height = t.stage.canvas.offsetHeight;
+
         t.stageWidth = t.stage.canvas.width;
-        t.stageColWidth = t.stageWidth / t.numColumns;
+        t.stageColWidth = t.stageWidth / t.beatmapData.columns;
         t.stageHeight = t.stage.canvas.height;
+
+        t.radius = 40;
 
         /* ===============
               TICKER
@@ -348,7 +365,7 @@ export default {
               STAGE SETUP
               =============== */
 
-        for (let i = 0; i < t.numColumns; i++) {
+        for (let i = 0; i < t.beatmapData.columns; i++) {
           // Creates a new column container for each column
           t.ss.columnContainers.push(new createjs.Container());
 
@@ -378,7 +395,7 @@ export default {
             .beginStroke('Black')
             .beginFill('Gray')
             .drawCircle(
-              i * 100 + t.stageColWidth / 2,
+              t.stageColWidth * (i + 0.5),
               t.hitPercent * t.stageHeight,
               t.radius
             );
@@ -441,7 +458,7 @@ export default {
         }
       });
 
-      for (let i = 0; i < t.numColumns; i++) {
+      for (let i = 0; i < t.beatmapData.columns; i++) {
         kd[t.keys[i]].down(function () {
           if (!t.readySliders[i]) return;
           t.readySliders[i].held = true;
@@ -505,7 +522,7 @@ export default {
           case 'note':
             const circleGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
 
             const thisCircle = new createjs.Shape(circleGraphic);
@@ -650,7 +667,7 @@ export default {
 
             const sliderGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawRoundRectComplex(
                 10,
                 -(sliderHeight + 2 * t.radius),
