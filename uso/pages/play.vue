@@ -8,7 +8,7 @@
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
-      @click="init"
+      @click="startGame"
     >
       START
     </button>
@@ -83,7 +83,8 @@ export default {
         0: null,
       },
 
-      keys: ['D', 'F', 'J', 'K'],
+      allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
+      keys: [],
       circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
@@ -206,7 +207,8 @@ export default {
     accuracy() {
       const total = this.totalHits;
       const accuracy =
-        (total['50'] * 50 +
+        (total['0'] * 0 +
+          total['50'] * 50 +
           total['100'] * 100 +
           total['200'] * 200 +
           total['300'] * 300 +
@@ -225,158 +227,9 @@ export default {
   watch: {
     loaded: {
       handler(newValue, oldValue) {
-        const t = this;
-
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
-        if (!Object.values(t.loaded).some((bool) => !bool)) {
-          t.beatmapData = t.$store.state.beatmapData;
-          t.notes = t.beatmapData.hitObjects;
-          t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
-
-          t.music = new Howl({
-            src: [
-              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
-            ],
-            volume: t.volume,
-            onload: () => (t.songLoaded = true),
-          });
-          t.songDuration = t.music.duration();
-          t.music.seek(t.beatmapIntro / 1000);
-
-          /* ===============
-              PROGRESS BAR
-              =============== */
-
-          this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
-            color: '#FCB03C',
-            // This has to be the same size as the maximum width to
-            // prevent clipping
-            strokeWidth: 7,
-            easing: 'easeInOut',
-            trailColor: '#eee',
-            trailWidth: 7,
-            duration: 1400,
-
-            from: { color: '#aaa', width: 8 },
-            to: { color: '#333', width: 8 },
-            // Set default step function for all animate calls
-            step: function (state, circle) {
-              circle.path.setAttribute('stroke', state.color);
-              circle.path.setAttribute('stroke-width', state.width);
-
-              const value = Math.round(circle.value() * 100);
-              if (value === 0) {
-                circle.setText('Volume');
-              } else {
-                circle.setText(value);
-              }
-            },
-          });
-
-          this.progressBarVol.animate(t.pbVolProgress);
-
-          /* ===============
-              CANVAS SETUP
-              =============== */
-
-          const $canvas = document.querySelector('#canvas');
-
-          // Sets the canvas width/height pixels = to canvas display size width/height
-          $canvas.width = $canvas.offsetWidth;
-          $canvas.height = $canvas.offsetHeight;
-
-          t.stage = new createjs.Stage('canvas');
-          t.stageWidth = t.stage.canvas.width;
-          t.stageColWidth = t.stageWidth / t.numColumns;
-          t.stageHeight = t.stage.canvas.height;
-
-          /* ===============
-              TICKER
-              =============== */
-
-          // I think we have to add sound when we click the route
-
-          createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-          // Each tick is run 1/60 times per second
-          createjs.Ticker.framerate = t.stageFPS;
-          // Automatically updates the stage every tick (aka frame)
-          createjs.Ticker.addEventListener('tick', t.stage);
-
-          /* ===============
-              SETUP CONTAINER & BACKGROUND
-              =============== */
-
-          t.ss.setupContainer = new createjs.Container();
-          t.ss.setupContainer.name = 'setupContainer';
-
-          t.stage.addChild(t.ss.setupContainer);
-          t.stage.setChildIndex(t.ss.setupContainer, 0);
-
-          const background = new createjs.Shape();
-
-          // Draws the gray background on the canvas
-          background.graphics
-            .beginFill('#D3D3D3')
-            .drawRect(0, 0, t.stageWidth, t.stageHeight);
-
-          background.name = 'background';
-
-          t.ss.setupContainer.addChild(background);
-
-          /* ===============
-              STAGE SETUP
-              =============== */
-
-          for (let i = 0; i < t.numColumns; i++) {
-            // Creates a new column container for each column
-            t.ss.columnContainers.push(new createjs.Container());
-
-            // Sets the x-offset for each container based off the column index and column width
-            t.ss.columnContainers[i].x = i * t.stageColWidth;
-            t.ss.columnContainers[i].name = `columnContainer${i}`;
-
-            // "Mounts" the container to the stage
-            t.stage.addChild(t.ss.columnContainers[i]);
-
-            ////////////////////////////////////////
-
-            const borderGraphic = new createjs.Graphics()
-              .beginStroke('Black')
-              .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
-
-            const columnBorder = new createjs.Shape(borderGraphic);
-
-            columnBorder.name = `border${i}`;
-
-            t.ss.columnBorders.push(columnBorder);
-            t.ss.setupContainer.addChild(columnBorder);
-
-            ////////////////////////////////////////
-
-            const circleGraphic = new createjs.Graphics()
-              .beginStroke('Black')
-              .beginFill('Gray')
-              .drawCircle(
-                i * 100 + t.stageColWidth / 2,
-                t.hitPercent * t.stageHeight,
-                t.radius
-              );
-
-            const targetCircle = new createjs.Shape(circleGraphic);
-
-            targetCircle.name = `targetCircle${i}`;
-
-            t.ss.targetCircles.push(targetCircle);
-            t.ss.setupContainer.addChild(targetCircle);
-
-            ////////////////////////////////////////
-
-            t.readyNotes.push([]);
-          }
-
-          t.areAllLoaded = true;
-        }
+        if (!Object.values(t.loaded).some((bool) => !bool)) this.onLoad();
       },
       deep: true,
     },
@@ -387,7 +240,160 @@ export default {
   },
 
   methods: {
-    init() {
+    onLoad() {
+      {
+        t.beatmapData = t.$store.state.beatmapData;
+        t.notes = t.beatmapData.hitObjects;
+        t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
+        t.keys = [
+          ...t.allKeys.slice(-6, -((Math.floor(t.beatmapData.numColumns / 2)+6)), t.beatmapData.numColumns % 2 ? t.allKeys[4], ...t.allKeys.slice(5, Math.floor(t.beatmapData.numColumns/2) + 5)),
+        ];
+
+        t.music = new Howl({
+          src: [
+            `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
+          ],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.songDuration = t.music.duration();
+        t.music.seek(t.beatmapIntro / 1000);
+
+        /* ===============
+              PROGRESS BAR
+              =============== */
+
+        this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+          color: '#FCB03C',
+          // This has to be the same size as the maximum width to
+          // prevent clipping
+          strokeWidth: 7,
+          easing: 'easeInOut',
+          trailColor: '#eee',
+          trailWidth: 7,
+          duration: 1400,
+
+          from: { color: '#aaa', width: 8 },
+          to: { color: '#333', width: 8 },
+          // Set default step function for all animate calls
+          step: function (state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+
+            const value = Math.round(circle.value() * 100);
+            if (value === 0) {
+              circle.setText('Volume');
+            } else {
+              circle.setText(value);
+            }
+          },
+        });
+
+        this.progressBarVol.animate(t.pbVolProgress);
+
+        /* ===============
+              CANVAS SETUP
+              =============== */
+
+        const $canvas = document.querySelector('#canvas');
+
+        // Sets the canvas width/height pixels = to canvas display size width/height
+        $canvas.width = $canvas.offsetWidth;
+        $canvas.height = $canvas.offsetHeight;
+
+        t.stage = new createjs.Stage('canvas');
+        t.stageWidth = t.stage.canvas.width;
+        t.stageColWidth = t.stageWidth / t.numColumns;
+        t.stageHeight = t.stage.canvas.height;
+
+        /* ===============
+              TICKER
+              =============== */
+
+        // I think we have to add sound when we click the route
+
+        createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+        // Each tick is run 1/60 times per second
+        createjs.Ticker.framerate = t.stageFPS;
+        // Automatically updates the stage every tick (aka frame)
+        createjs.Ticker.addEventListener('tick', t.stage);
+
+        /* ===============
+              SETUP CONTAINER & BACKGROUND
+              =============== */
+
+        t.ss.setupContainer = new createjs.Container();
+        t.ss.setupContainer.name = 'setupContainer';
+
+        t.stage.addChild(t.ss.setupContainer);
+        t.stage.setChildIndex(t.ss.setupContainer, 0);
+
+        const background = new createjs.Shape();
+
+        // Draws the gray background on the canvas
+        background.graphics
+          .beginFill('#D3D3D3')
+          .drawRect(0, 0, t.stageWidth, t.stageHeight);
+
+        background.name = 'background';
+
+        t.ss.setupContainer.addChild(background);
+
+        /* ===============
+              STAGE SETUP
+              =============== */
+
+        for (let i = 0; i < t.numColumns; i++) {
+          // Creates a new column container for each column
+          t.ss.columnContainers.push(new createjs.Container());
+
+          // Sets the x-offset for each container based off the column index and column width
+          t.ss.columnContainers[i].x = i * t.stageColWidth;
+          t.ss.columnContainers[i].name = `columnContainer${i}`;
+
+          // "Mounts" the container to the stage
+          t.stage.addChild(t.ss.columnContainers[i]);
+
+          ////////////////////////////////////////
+
+          const borderGraphic = new createjs.Graphics()
+            .beginStroke('Black')
+            .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
+
+          const columnBorder = new createjs.Shape(borderGraphic);
+
+          columnBorder.name = `border${i}`;
+
+          t.ss.columnBorders.push(columnBorder);
+          t.ss.setupContainer.addChild(columnBorder);
+
+          ////////////////////////////////////////
+
+          const circleGraphic = new createjs.Graphics()
+            .beginStroke('Black')
+            .beginFill('Gray')
+            .drawCircle(
+              i * 100 + t.stageColWidth / 2,
+              t.hitPercent * t.stageHeight,
+              t.radius
+            );
+
+          const targetCircle = new createjs.Shape(circleGraphic);
+
+          targetCircle.name = `targetCircle${i}`;
+
+          t.ss.targetCircles.push(targetCircle);
+          t.ss.setupContainer.addChild(targetCircle);
+
+          ////////////////////////////////////////
+
+          t.readyNotes.push([]);
+        }
+
+        t.areAllLoaded = true;
+      }
+    },
+    startGame() {
       const t = this;
 
       t.started = true;
