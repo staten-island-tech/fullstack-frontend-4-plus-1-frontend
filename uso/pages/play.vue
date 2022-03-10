@@ -59,6 +59,9 @@ export default {
       started: false,
       songLoaded: false,
 
+      beatmapData: {},
+      notes: [],
+
       score: 0,
       combo: 0,
       scrollSpeed: 10,
@@ -85,19 +88,31 @@ export default {
 
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      hitPercent: 0.85,
-      radius: 40,
 
       stage: null,
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+      // Stands for stageSetup
+      ss: {
+        setupContainer: null,
+        columnContainers: [],
+        columnBorders: [],
+        targetCircles: [],
+      },
+      readyNotes: [],
+      readySliders: [],
+
+      hitPercent: 0.85,
+      radius: 40,
+
       music: null,
       beatmapIntro: null,
       songDuration: 0,
@@ -107,17 +122,6 @@ export default {
       opacity: 1,
       pbdur: null,
       songDuration: 0,
-      // Stands for stageSetup
-      ss: {
-        setupContainer: null,
-        columnContainers: [],
-        columnBorders: [],
-        targetCircles: [],
-      },
-      beatmapData: {},
-      notes: [],
-      readyNotes: [],
-      readySliders: [],
 
       progressBarVol: null,
     };
@@ -249,9 +253,17 @@ export default {
         t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
 
         t.keys = [
-          ...t.allKeys.slice(-(Math.floor(t.beatmapData.columns / 2) + 5), -5),
-          ...(t.beatmapData.columns % 2 ? [t.allKeys[4]] : []),
-          ...t.allKeys.slice(5, Math.floor(t.beatmapData.columns / 2) + 5),
+          ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
+          ...(t.numColumns % 2 ? [t.allKeys[4]] : []),
+          ...t.allKeys.slice(5, Math.floor(t.numColumns / 2) + 5),
+        ];
+
+        t.colors = [
+          ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2),
+          ...(t.numColumns % 2 ? [t.allColors[4]] : []),
+          ...t.allColors
+            .slice(-(Math.floor(t.numColumns / 2) + 2), -2)
+            .reverse(),
         ];
 
         t.music = new Howl({
@@ -378,7 +390,7 @@ export default {
             .beginStroke('Black')
             .beginFill('Gray')
             .drawCircle(
-              i * 100 + t.stageColWidth / 2,
+              t.stageColWidth * (i + 0.5),
               t.hitPercent * t.stageHeight,
               t.radius
             );
@@ -505,7 +517,7 @@ export default {
           case 'note':
             const circleGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
 
             const thisCircle = new createjs.Shape(circleGraphic);
@@ -650,7 +662,7 @@ export default {
 
             const sliderGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawRoundRectComplex(
                 10,
                 -(sliderHeight + 2 * t.radius),
