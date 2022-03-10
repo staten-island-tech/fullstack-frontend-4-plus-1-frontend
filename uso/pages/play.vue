@@ -10,7 +10,7 @@
       class="game-start-button"
       @click="startGame"
     >
-      START
+      START 4 Keys: D, F, H, J
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
@@ -250,7 +250,7 @@ export default {
 
         t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
-        t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
+        t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
         t.keys = [
           ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
