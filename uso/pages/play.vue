@@ -90,19 +90,23 @@ export default {
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
       columnWidth: 100, // in px (we change this to rem later)
-      hitPercent: 0.85,
-      radius: 40,
+      canvasWidth: null,
 
       stage: null,
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+
+      hitPercent: 0.85,
+      radius: 40,
+
       music: null,
       beatmapIntro: null,
       songDuration: 0,
       volume: 0.1,
       pbVolProgress: 0.1,
+      progressBarVol: null,
       scale: 0,
       opacity: 1,
       pbdur: null,
@@ -118,8 +122,6 @@ export default {
       notes: [],
       readyNotes: [],
       readySliders: [],
-
-      progressBarVol: null,
     };
   },
 
@@ -155,9 +157,6 @@ export default {
   },
 
   computed: {
-    canvasWidth() {
-      return this.beatmapData.columns * this.columnWidth;
-    },
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -316,7 +315,10 @@ export default {
         // Sets the canvas width/height pixels = to canvas display size width/height
         $canvas.width = $canvas.offsetWidth;
         $canvas.height = $canvas.offsetHeight;
+
  */
+
+        t.canvasWidth = t.beatmapData.columns * t.columnWidth;
         t.stage = new createjs.Stage('canvas');
 
         t.stage.canvas.width = t.stage.canvas.offsetWidth;
