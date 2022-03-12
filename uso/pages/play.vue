@@ -8,7 +8,7 @@
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
-      @click="init"
+      @click="startGame"
     >
       START
     </button>
@@ -32,7 +32,7 @@
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
         class="game-mute-button"
-        @click="muteBtn"
+        @click="muteButton"
       >
         MUTE
       </button>
@@ -41,11 +41,11 @@
 </template>
 
 <script>
-/* global createjs:false, Howl:false, kd:false, ProgressBar:false */
+/* global createjs:false, Howl:false, Howler:false, kd:false, ProgressBar:false */
 /* eslint-disable */
 
 export default {
-  layout: 'nonav',
+  layout: 'noNav',
 
   data() {
     return {
@@ -83,29 +83,34 @@ export default {
         0: null,
       },
 
-      keys: ['D', 'F', 'J', 'K'],
-      circleColors: ['#FFE6CC', '#E1D5E7', '#DAE8FC', '#F8CECC'],
+      allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
+      keys: [],
+      allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
-      numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      hitPercent: 0.8,
-      radius: 40,
+      canvasWidth: null,
 
       stage: null,
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+
+      hitPercent: 0.85,
+      radius: 40,
+
       music: null,
       beatmapIntro: null,
       songDuration: 0,
       volume: 0.1,
       pbVolProgress: 0.1,
+      progressBarVol: null,
       scale: 0,
       opacity: 1,
       pbdur: null,
-      sd: 0,
+      songDuration: 0,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -143,10 +148,15 @@ export default {
     };
   },
 
+  created() {
+    window.addEventListener('wheel', this.onScroll);
+  },
+
+  destroyed() {
+    window.removeEventListener('wheel', this.onScroll);
+  },
+
   computed: {
-    canvasWidth() {
-      return this.numColumns * this.columnWidth;
-    },
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -196,7 +206,8 @@ export default {
     accuracy() {
       const total = this.totalHits;
       const accuracy =
-        (total['50'] * 50 +
+        (total['0'] * 0 +
+          total['50'] * 50 +
           total['100'] * 100 +
           total['200'] * 200 +
           total['300'] * 300 +
@@ -215,184 +226,9 @@ export default {
   watch: {
     loaded: {
       handler(newValue, oldValue) {
-        const t = this;
-
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
-        if (!Object.values(t.loaded).some((bool) => !bool)) {
-          t.beatmapData = t.$store.state.beatmapData;
-          t.notes = t.beatmapData.hitObjects;
-          t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
-
-          t.music = new Howl({
-            src: [
-              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
-            ],
-            volume: t.volume,
-            onload: () => (t.songLoaded = true),
-          });
-          t.songDuration = t.music.duration();
-          t.music.seek(t.beatmapIntro / 1000);
-
-          
-          t.hitSound = new Howl({
-            src: [
-              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/normal-hitclap.wav`,
-            ],
-            volume: t.volume,
-            onload: () => (t.songLoaded = true),
-          });
-          /* ===============
-              PROGRESS BAR
-              =============== */
-
-
-         
-
-          const progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
-            color: '#FCB03C',
-            // This has to be the same size as the maximum width to
-            // prevent clipping
-            strokeWidth: 7,
-            easing: 'easeInOut',
-            trailColor: '#eee',
-            trailWidth: 7,
-            duration: 1400,
-
-            from: { color: '#aaa', width: 8 },
-            to: { color: '#333', width: 8 },
-            // Set default step function for all animate calls
-            step: function (state, circle) {
-              circle.path.setAttribute('stroke', state.color);
-              circle.path.setAttribute('stroke-width', state.width);
-
-              let value = Math.round(circle.value() * 100);
-              if (value === 0) {
-                circle.setText('Volume');
-              } else {
-                circle.setText(value);
-              }
-            },
-          });
-
-          progressBarVol.animate(t.pbVolProgress);
-
-          const $pbVol = document.getElementById('game-pb-vol');
-          $pbVol.addEventListener('wheel', function (e) {
-            e.preventDefault();
-            console.log('SCROLL!');
-
-            t.scale += e.deltaY * -0.0002;
-            // Restrict scale
-            t.scale = Math.min(Math.max(0, t.scale), 1);
-            // Apply scale transform
-            Howler.volume(t.scale);
-            t.pbVolProgress = Math.round(100 * t.scale) / 100;
-
-            progressBarVol.set(t.pbVolProgress);
-          });
-
-          /* ===============
-              CANVAS SETUP
-              =============== */
-
-          const $canvas = document.querySelector('#canvas');
-
-          // Sets the canvas width/height pixels = to canvas display size width/height
-          $canvas.width = $canvas.offsetWidth;
-          $canvas.height = $canvas.offsetHeight;
-
-          t.stage = new createjs.Stage('canvas');
-          t.stageWidth = t.stage.canvas.width;
-          t.stageColWidth = t.stageWidth / t.numColumns;
-          t.stageHeight = t.stage.canvas.height;
-
-          /* ===============
-              TICKER
-              =============== */
-
-          // I think we have to add sound when we click the route
-
-          createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-          // Each tick is run 1/60 times per second
-          createjs.Ticker.framerate = t.stageFPS;
-          // Automatically updates the stage every tick (aka frame)
-          createjs.Ticker.addEventListener('tick', t.stage);
-
-          /* ===============
-              SETUP CONTAINER & BACKGROUND
-              =============== */
-
-          t.ss.setupContainer = new createjs.Container();
-          t.ss.setupContainer.name = 'setupContainer';
-
-          t.stage.addChild(t.ss.setupContainer);
-          t.stage.setChildIndex(t.ss.setupContainer, 0);
-
-          const background = new createjs.Shape();
-
-          // Draws the gray background on the canvas
-          background.graphics
-            .beginFill('#D3D3D3')
-            .drawRect(0, 0, t.stageWidth, t.stageHeight);
-
-          background.name = 'background';
-
-          t.ss.setupContainer.addChild(background);
-
-          /* ===============
-              STAGE SETUP
-              =============== */
-
-          for (let i = 0; i < t.numColumns; i++) {
-            // Creates a new column container for each column
-            t.ss.columnContainers.push(new createjs.Container());
-
-            // Sets the x-offset for each container based off the column index and column width
-            t.ss.columnContainers[i].x = i * t.stageColWidth;
-            t.ss.columnContainers[i].name = `columnContainer${i}`;
-
-            // "Mounts" the container to the stage
-            t.stage.addChild(t.ss.columnContainers[i]);
-
-            ////////////////////////////////////////
-
-            const borderGraphic = new createjs.Graphics()
-              .beginStroke('Black')
-              .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
-
-            const columnBorder = new createjs.Shape(borderGraphic);
-
-            columnBorder.name = `border${i}`;
-
-            t.ss.columnBorders.push(columnBorder);
-            t.ss.setupContainer.addChild(columnBorder);
-
-            ////////////////////////////////////////
-
-            const circleGraphic = new createjs.Graphics()
-              .beginStroke('Black')
-              .beginFill('Gray')
-              .drawCircle(
-                i * 100 + t.stageColWidth / 2,
-                t.hitPercent * t.stageHeight,
-                t.radius
-              );
-
-            const targetCircle = new createjs.Shape(circleGraphic);
-
-            targetCircle.name = `targetCircle${i}`;
-
-            t.ss.targetCircles.push(targetCircle);
-            t.ss.setupContainer.addChild(targetCircle);
-
-            ////////////////////////////////////////
-
-            t.readyNotes.push([]);
-          }
-
-          t.areAllLoaded = true;
-        }
+        if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
       },
       deep: true,
     },
@@ -403,27 +239,211 @@ export default {
   },
 
   methods: {
-    init() {
+    onLoad() {
+      {
+        const t = this;
+
+        t.beatmapData = t.$store.state.beatmapData;
+        t.notes = t.beatmapData.hitObjects;
+        t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
+
+        t.keys = [
+          ...t.allKeys.slice(-(Math.floor(t.beatmapData.columns / 2) + 5), -5),
+          ...(t.beatmapData.columns % 2 ? [t.allKeys[4]] : []),
+          ...t.allKeys.slice(5, Math.floor(t.beatmapData.columns / 2) + 5),
+        ];
+
+        t.colors = [
+          ...t.allColors.slice(
+            -(Math.floor(t.beatmapData.columns / 2) + 2),
+            -2
+          ),
+          ...(t.beatmapData.columns % 2 ? [t.allColors[4]] : []),
+          ...t.allColors
+            .slice(-(Math.floor(t.beatmapData.columns / 2) + 2), -2)
+            .reverse(),
+        ];
+
+        t.music = new Howl({
+          src: [
+            `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
+          ],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.songDuration = t.music.duration();
+        t.music.seek(t.beatmapIntro / 1000);
+
+          
+          t.hitSound = new Howl({
+            src: [
+              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/normal-hitclap.wav`,
+            ],
+            volume: t.volume,
+            onload: () => (t.songLoaded = true),
+          });
+          /* ===============
+        /* ===============
+              PROGRESS BAR
+              =============== */
+
+        this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+          color: '#FCB03C',
+          // This has to be the same size as the maximum width to
+          // prevent clipping
+          strokeWidth: 7,
+          easing: 'easeInOut',
+          trailColor: '#eee',
+          trailWidth: 7,
+          duration: 1400,
+
+          from: { color: '#aaa', width: 8 },
+          to: { color: '#333', width: 8 },
+          // Set default step function for all animate calls
+          step: function (state, circle) {
+            circle.path.setAttribute('stroke', state.color);
+            circle.path.setAttribute('stroke-width', state.width);
+
+            const value = Math.round(circle.value() * 100);
+            if (value === 0) {
+              circle.setText('Volume');
+            } else {
+              circle.setText(value);
+            }
+          },
+        });
+
+        this.progressBarVol.animate(t.pbVolProgress);
+
+        /* ===============
+              CANVAS SETUP
+              =============== */
+
+        /* const $canvas = document.querySelector('#canvas');
+
+        // Sets the canvas width/height pixels = to canvas display size width/height
+        $canvas.width = $canvas.offsetWidth;
+        $canvas.height = $canvas.offsetHeight;
+
+ */
+
+        t.canvasWidth = t.beatmapData.columns * t.columnWidth;
+        t.stage = new createjs.Stage('canvas');
+
+        t.stage.canvas.width = t.stage.canvas.offsetWidth;
+        t.stage.canvas.height = t.stage.canvas.offsetHeight;
+
+        t.stageWidth = t.stage.canvas.width;
+        t.stageColWidth = t.stageWidth / t.beatmapData.columns;
+        t.stageHeight = t.stage.canvas.height;
+
+        t.radius = 40;
+
+        /* ===============
+              TICKER
+              =============== */
+
+        // I think we have to add sound when we click the route
+
+        createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+        // Each tick is run 1/60 times per second
+        createjs.Ticker.framerate = t.stageFPS;
+        // Automatically updates the stage every tick (aka frame)
+        createjs.Ticker.addEventListener('tick', t.stage);
+
+        /* ===============
+              SETUP CONTAINER & BACKGROUND
+              =============== */
+
+        t.ss.setupContainer = new createjs.Container();
+        t.ss.setupContainer.name = 'setupContainer';
+
+        t.stage.addChild(t.ss.setupContainer);
+        t.stage.setChildIndex(t.ss.setupContainer, 0);
+
+        const background = new createjs.Shape();
+
+        // Draws the gray background on the canvas
+        background.graphics
+          .beginFill('#181818')
+          .drawRect(0, 0, t.stageWidth, t.stageHeight);
+
+        background.name = 'background';
+
+        t.ss.setupContainer.addChild(background);
+
+        /* ===============
+              STAGE SETUP
+              =============== */
+
+        for (let i = 0; i < t.beatmapData.columns; i++) {
+          // Creates a new column container for each column
+          t.ss.columnContainers.push(new createjs.Container());
+
+          // Sets the x-offset for each container based off the column index and column width
+          t.ss.columnContainers[i].x = i * t.stageColWidth;
+          t.ss.columnContainers[i].name = `columnContainer${i}`;
+
+          // "Mounts" the container to the stage
+          t.stage.addChild(t.ss.columnContainers[i]);
+
+          ////////////////////////////////////////
+
+          const borderGraphic = new createjs.Graphics()
+            .beginStroke('Black')
+            .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
+
+          const columnBorder = new createjs.Shape(borderGraphic);
+
+          columnBorder.name = `border${i}`;
+
+          t.ss.columnBorders.push(columnBorder);
+          t.ss.setupContainer.addChild(columnBorder);
+
+          ////////////////////////////////////////
+
+          const circleGraphic = new createjs.Graphics()
+            .beginStroke('Black')
+            .beginFill('Gray')
+            .drawCircle(
+              t.stageColWidth * (i + 0.5),
+              t.hitPercent * t.stageHeight,
+              t.radius
+            );
+
+          const targetCircle = new createjs.Shape(circleGraphic);
+
+          targetCircle.name = `targetCircle${i}`;
+
+          t.ss.targetCircles.push(targetCircle);
+          t.ss.setupContainer.addChild(targetCircle);
+
+          ////////////////////////////////////////
+
+          t.readyNotes.push([]);
+        }
+
+        t.areAllLoaded = true;
+      }
+    },
+    startGame() {
       const t = this;
 
       t.started = true;
-      
       t.music.play();
-
-      t.sd =  Math.round(t.music.duration()) * 1000
+      t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
-            color: '#FCB03C',
-            strokeWidth: 50,
-            trailColor: '#D3D3D3',
-            duration: t.sd,
-            text: {
-              value: '0',
-            },
-          });
-  
-            t.progressBar.animate(1);
+        color: '#FCB03C',
+        strokeWidth: 50,
+        trailColor: '#D3D3D3',
+        duration: t.songDuration,
+        text: {
+          value: '0',
+        },
+      });
 
+      t.progressBar.animate(1);
 
       /* ===============
           KEY PRESS
@@ -441,7 +461,6 @@ export default {
       };
 
       document.addEventListener('keydown', function (e) {
-        // KEYPRESSES FOR NOTES: For each column, if the key press is equal to the key associated with that column, loop through each of the circles. If they are past a certain y-value, remove it from the specific container therefore "dismounting" it from the stage.
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
@@ -450,7 +469,7 @@ export default {
         }
       });
 
-      for (let i = 0; i < t.numColumns; i++) {
+      for (let i = 0; i < t.beatmapData.columns; i++) {
         kd[t.keys[i]].down(function () {
           if (!t.readySliders[i]) return;
           t.readySliders[i].held = true;
@@ -485,12 +504,36 @@ export default {
               NOTES
           =============== */
 
+      class Timer {
+        constructor(callback, delay) {
+          this.callback = callback;
+          this.remainingTime = delay;
+          this.startTime;
+          this.id;
+        }
+
+        pause() {
+          clearTimeout(this.id);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+
+        resume() {
+          this.startTime = new Date();
+          clearTimeout(this.id);
+          this.id = setTimeout(this.callback, this.remainingTime);
+        }
+
+        start() {
+          this.id = setTimeout(this.callback, this.remainingTime);
+        }
+      }
+
       t.notes.forEach((note) => {
         switch (note.type) {
           case 'note':
             const circleGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
 
             const thisCircle = new createjs.Shape(circleGraphic);
@@ -635,7 +678,7 @@ export default {
 
             const sliderGraphic = new createjs.Graphics()
               .beginStroke('Black')
-              .beginFill(t.circleColors[note.columnIndex])
+              .beginFill(t.colors[note.columnIndex])
               .drawRoundRectComplex(
                 10,
                 -(sliderHeight + 2 * t.radius),
@@ -802,7 +845,20 @@ export default {
         }
       });
     },
-    muteBtn() {
+    onScroll(e) {
+      console.log(e);
+      e.preventDefault();
+
+      this.scale += e.deltaY * -0.0002;
+      // Restrict scale
+      this.scale = Math.min(Math.max(0, this.scale), 1);
+      // Apply scale transform
+      Howler.volume(this.scale);
+      this.pbVolProgress = Math.round(100 * this.scale) / 100;
+
+      this.progressBarVol.set(this.pbVolProgress);
+    },
+    muteButton() {
       if (this.music.mute() === false) {
         this.music.mute(true);
         this.opacity = 0.5;
@@ -818,7 +874,7 @@ export default {
 
 <style scoped>
 #game-index {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
