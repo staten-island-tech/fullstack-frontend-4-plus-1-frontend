@@ -234,6 +234,14 @@ export default {
           t.songDuration = t.music.duration();
           t.music.seek(t.beatmapIntro / 1000);
 
+          
+          t.hitSound = new Howl({
+            src: [
+              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/normal-hitclap.wav`,
+            ],
+            volume: t.volume,
+            onload: () => (t.songLoaded = true),
+          });
           /* ===============
               PROGRESS BAR
               =============== */
