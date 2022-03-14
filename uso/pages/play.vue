@@ -447,7 +447,6 @@ export default {
 
       
       const t = this;
-  console.log(t.Page);
 
       t.started = true;
       t.music.play();
