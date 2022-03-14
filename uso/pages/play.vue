@@ -52,7 +52,7 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
-      
+
         progressbar: false,
       },
       areAllLoaded: false,
@@ -141,10 +141,10 @@ export default {
           src: '/lib/keydrown.min.js',
           callback: () => (this.loaded.keydrown = true),
         },
-        // {
-        //   src: '/lib/howler.min.js',
-        //   callback: () => (this.loaded.howler = true),
-        // },
+        {
+          src: '/lib/howler.min.js',
+          callback: () => (this.loaded.howler = true),
+        },
         {
           src: '/lib/progressbar.min.js ',
           callback: () => (this.loaded.progressbar = true),
@@ -241,9 +241,6 @@ export default {
       },
       deep: true,
     },
-
-
-
   },
 
   methods: {
@@ -279,31 +276,23 @@ export default {
         t.songDuration = t.music.duration();
         t.music.seek(t.beatmapIntro / 1000);
 
-        t.defaultHitNormal= new Howl({
-          src: [
-            `/beatmaps/defaultHitSound/normal-hitnormal.wav`,
-          ],
+        t.defaultHitNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
         });
-        t.defaultHitClapNormal= new Howl({
-          src: [
-            `/beatmaps/defaultHitSound/normal-hitclap.wav`,
-          ],
+        t.defaultHitClapNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftNormal = new Howl({
-          src: [
-            `/beatmaps/defaultHitSound/soft-hitnormal.wav`,
-          ],
+          src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
           volume: 0.3,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
-          src: [
-            `/beatmaps/defaultHitSound/soft-hitclap.wav`,
-          ],
+          src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
         });
@@ -354,7 +343,6 @@ export default {
         t.stageWidth = t.stage.canvas.width;
         t.stageColWidth = t.stageWidth / t.numColumns;
         t.stageHeight = t.stage.canvas.height;
-
 
         /* ===============
               TICKER
@@ -444,8 +432,6 @@ export default {
       }
     },
     startGame() {
-
-      
       const t = this;
 
       t.started = true;
@@ -645,22 +631,18 @@ export default {
             t.ss.columnContainers[this.i].removeChild(this);
             t.readyNotes[this.i][this.readyIndex] = null;
 
-           //  this.hitSample = note.hitSample;
-       //  this.hitSound = note.hitSound;
+            //  this.hitSample = note.hitSample;
+            //  this.hitSound = note.hitSound;
 
-       console.log(this.hitSound) 
-       
-    
-       
-       if (this.hitSound === 0 ) {
-            console.log(this.hitSound)
+            console.log(this.hitSound);
+
+            if (this.hitSound === 0) {
+              console.log(this.hitSound);
               //t.defaultHitNormal.play();
-          t.defaultHitSoftNormal.play();
-          } 
-          else {
-             t.defaultHitSoftNormal.play();
-          }
-
+              t.defaultHitSoftNormal.play();
+            } else {
+              t.defaultHitSoftNormal.play();
+            }
           }
         }
 
