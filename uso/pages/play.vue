@@ -110,6 +110,8 @@ export default {
       readyNotes: [],
       readySliders: [],
 
+      timers: [],
+
       hitPercent: 0.85,
       radius: 40,
 
@@ -459,15 +461,15 @@ export default {
           t.readySliders[i].held = true;
 
           if (!t.readySliders[i].initialMs)
-            t.readySliders[i].initialMs = t.readySliders[i].botMsFromAbs();
+            t.readySliders[i].initialMs = t.readySliders[i].msFrom('bot', true);
         });
 
         kd[[t.keys[i]]].up(function () {
           if (!t.readySliders[i]) return;
           t.readySliders[i].held = false;
 
-          if (t.readySliders[i].topMsFromAbs() <= t.hitJudgement['50']) {
-            t.readySliders[i].finalMs = t.readySliders[i].topMsFromAbs();
+          if (t.readySliders[i].msFrom('top', true) <= t.hitJudgement['50']) {
+            t.readySliders[i].finalMs = t.readySliders[i].msFrom('top', true);
 
             t.readySliders[i].avgMs =
               (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
@@ -475,7 +477,7 @@ export default {
             t.readySliders[i].hit();
           } else {
             if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
-            else t.readySliders[i].releasedMs = t.readySliders[i].topMsFrom();
+            else t.readySliders[i].releasedMs = t.readySliders[i].msFrom('top');
           }
         });
       }
@@ -488,349 +490,375 @@ export default {
               NOTES
           =============== */
 
-      class Timer {
-        constructor(callback, delay) {
-          this.callback = callback;
-          this.remainingTime = delay;
-          this.startTime;
-          this.id;
-        }
-
-        pause() {
-          clearTimeout(this.id);
-          this.remainingTime -= new Date() - this.startTime;
-        }
-
-        resume() {
-          this.startTime = new Date();
-          clearTimeout(this.id);
-          this.id = setTimeout(this.callback, this.remainingTime);
-        }
-
-        start() {
-          this.id = setTimeout(this.callback, this.remainingTime);
-        }
-      }
-
-      t.notes.forEach((note) => {
-        switch (note.type) {
-          case 'note':
-            const circleGraphic = new createjs.Graphics()
+      class Note extends createjs.Shape {
+        constructor(note) {
+          super(
+            new createjs.Graphics()
               .beginStroke('Black')
               .beginFill(t.colors[note.columnIndex])
-              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
+              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius)
+          );
 
-            const thisCircle = new createjs.Shape(circleGraphic);
-            thisCircle.name = 'thisCircle';
-            thisCircle.i = note.columnIndex;
+          this.name = 'thisCircle';
+          this.i = note.columnIndex;
+          this.hitSample = note.hitSample;
+          this.hitSound = note.hitSound;
+          this.time = note.time;
 
-            thisCircle.msFrom = function () {
-              return (
+          this.animate = this.animate.bind(this);
+          this.cache(
+            t.stageColWidth / 2 - t.radius,
+            -2 * t.radius,
+            2 * t.radius + 30,
+            2 * t.radius + 30
+          );
+
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+          this.startTime, this.timerID;
+
+          this.resumeTimer();
+        }
+
+        msFrom(isAbs = false) {
+          return isAbs
+            ? Math.abs(
                 ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
+                  (t.dy * t.stageFPS)
+              )
+            : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                (t.dy * t.stageFPS);
+        }
 
-            thisCircle.msFromAbs = function () {
-              return Math.abs(this.msFrom());
-            };
+        miss() {
+          if (this.removed) return;
+          this.removed = true;
 
-            thisCircle.miss = function () {
-              if (this.removed) return;
-              this.removed = true;
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
 
+          t.combo = 0;
+
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i][this.readyIndex] = null;
+        }
+
+        hit() {
+          if (this.removed) return;
+          this.removed = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.msFrom(true) <= t.hitJudgement['320']:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+              break;
+            case this.msFrom(true) <= t.hitJudgement['300']:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+              break;
+            case this.msFrom(true) <= t.hitJudgement['200']:
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+              break;
+            case this.msFrom(true) <= t.hitJudgement['100']:
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+              break;
+            case this.msFrom(true) <= t.hitJudgement['50']:
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+              break;
+            case this.msFrom(true) <= t.hitJudgement['0']:
               t.latestHit = 0;
               t.totalHits['0']++;
               t.bonus = 0;
 
               t.combo = 0;
+              break;
+          }
 
-              createjs.Tween.removeTweens(thisCircle);
-              t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
-              t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
-            };
+          if (!(t.latestHit === 0)) {
+            if (t.bonus > 100) t.bonus = 100;
+            if (t.bonus < 0) t.bonus = 0;
 
-            thisCircle.hit = function () {
-              if (this.removed) return;
-              this.removed = true;
+            const baseScore =
+              ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
 
-              let hitBonusValue = 0;
+            const bonusScore =
+              ((1000000 * 0.5) / t.notes.length) *
+              ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
 
-              switch (true) {
-                case this.msFromAbs() <= t.hitJudgement['320']:
-                  t.latestHit = 320;
-                  t.totalHits['320']++;
-                  hitBonusValue = 32;
-                  t.bonus += 2;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['300']:
-                  t.latestHit = 300;
-                  t.totalHits['300']++;
-                  hitBonusValue = 32;
-                  t.bonus += 1;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['200']:
-                  t.latestHit = 200;
-                  t.totalHits['200']++;
-                  hitBonusValue = 16;
-                  t.bonus -= 8;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['100']:
-                  t.latestHit = 100;
-                  t.totalHits['100']++;
-                  hitBonusValue = 8;
-                  t.bonus -= 24;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['50']:
-                  t.latestHit = 50;
-                  t.totalHits['50']++;
-                  hitBonusValue = 4;
-                  t.bonus -= 44;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['0']:
-                  t.latestHit = 0;
-                  t.totalHits['0']++;
-                  t.bonus = 0;
+            t.score += bonusScore + baseScore;
+            t.combo += 1;
 
-                  t.combo = 0;
-                  break;
-              }
+            createjs.Tween.removeTweens(this);
+            t.ss.columnContainers[this.i].removeChild(this);
+            t.readyNotes[this.i][this.readyIndex] = null;
+          }
+        }
 
-              if (!(t.latestHit === 0)) {
-                if (t.bonus > 100) t.bonus = 100;
-                if (t.bonus < 0) t.bonus = 0;
+        animate() {
+          if (this.removed) return;
 
-                const baseScore =
-                  ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+          const onChange = () => {
+            if (this.removed) return;
 
-                const bonusScore =
-                  ((1000000 * 0.5) / t.notes.length) *
-                  ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+            switch (true) {
+              // If ms from targetCircle is less than ...
+              case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
+                this.ready = true;
 
-                t.score += bonusScore + baseScore;
-                t.combo += 1;
+                this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+                break;
 
-                createjs.Tween.removeTweens(this);
-                t.ss.columnContainers[this.i].removeChild(this);
-                t.readyNotes[this.i][this.readyIndex] = null;
-              }
-            };
+              // If it reaches offscreen then ...
+              case this.msFrom() > t.hitJudgement['50']:
+                this.miss();
+                break;
+            }
+          };
 
-            // thisCircle.cache(0, -85, 120, 120);
-            thisCircle.cache(
-              t.stageColWidth / 2 - t.radius,
-              -2 * t.radius,
-              2 * t.radius + 30,
-              2 * t.radius + 30
-            );
+          createjs.Tween.get(this, {
+            useTicks: true,
+            onChange: onChange,
+            onComplete: this.animate,
+          }).to({ y: this.y + t.dy }, 1);
+        }
 
-            setTimeout(() => {
-              t.ss.columnContainers[thisCircle.i].addChild(thisCircle);
+        resumeTimer() {
+          this.startTime = new Date();
+          clearTimeout(this.timerID);
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            this.animate();
+          }, this.remainingTime);
+        }
 
-              animate();
+        pauseTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+      }
 
-              function animate() {
-                createjs.Tween.get(thisCircle, {
-                  useTicks: true,
-                  onChange: onChange,
-                  onComplete: animate,
-                }).to({ y: thisCircle.y + t.dy }, 1);
-              }
-              function onChange() {
-                switch (true) {
-                  // If ms from targetCircle is less than ...
-                  case thisCircle.msFromAbs() <= t.hitJudgement['0'] &&
-                    !thisCircle.ready:
-                    thisCircle.ready = true;
+      class Slider extends createjs.Shape {
+        constructor(note) {
+          const height =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-                    thisCircle.readyIndex =
-                      t.readyNotes[thisCircle.i].push(thisCircle) - 1;
-                    break;
-
-                  // If it reaches offscreen then ...
-                  case thisCircle.msFrom() > t.hitJudgement['50']:
-                    thisCircle.miss();
-                    break;
-                }
-              }
-            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
-
-            break;
-          case 'hold':
-            const sliderHeight =
-              (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
-            const sliderGraphic = new createjs.Graphics()
+          super(
+            new createjs.Graphics()
               .beginStroke('Black')
               .beginFill(t.colors[note.columnIndex])
               .drawRoundRectComplex(
                 10,
-                -(sliderHeight + 2 * t.radius),
+                -(height + 2 * t.radius),
                 2 * t.radius,
-                sliderHeight + 2 * t.radius,
+                height + 2 * t.radius,
                 t.radius,
                 t.radius,
                 t.radius,
                 t.radius
-              );
+              )
+          );
 
-            const thisSlider = new createjs.Shape(sliderGraphic);
-            thisSlider.name = 'thisSlider';
-            thisSlider.i = note.columnIndex;
-            thisSlider.botMsFrom = function () {
-              return (
-                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
+          this.height = height;
 
-            thisSlider.topMsFrom = function () {
-              return (
-                ((this.y -
-                  (t.stageHeight * t.hitPercent + t.radius + sliderHeight)) *
-                  1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
+          this.name = 'thisSlider';
+          this.i = note.columnIndex;
+          this.hitSample = note.hitSample;
+          this.hitSound = note.hitSound;
+          this.time = note.time;
 
-            thisSlider.botMsFromAbs = function () {
-              return Math.abs(this.botMsFrom());
-            };
+          this.animate = this.animate.bind(this);
+          /* this.cache(
+            t.stageColWidth / 2 - t.radius,
+            -2 * t.radius,
+            2 * t.radius + 30,
+            2 * t.radius + 30
+          ); */
 
-            thisSlider.topMsFromAbs = function () {
-              return Math.abs(this.topMsFrom());
-            };
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+          this.startTime, this.timerID;
 
-            thisSlider.miss = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              t.latestHit = 0;
-              t.totalHits['0']++;
-              t.bonus = 0;
-
-              t.combo = 0;
-
-              createjs.Tween.removeTweens(thisSlider);
-              t.ss.columnContainers[thisSlider.i].removeChild(thisSlider);
-              t.readySliders[thisSlider.i] = null;
-            };
-
-            thisSlider.hit = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              let hitBonusValue = 0;
-
-              switch (true) {
-                case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
-                  t.latestHit = 320;
-                  t.totalHits['320']++;
-                  hitBonusValue = 32;
-                  t.bonus += 2;
-                  break;
-                case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
-                  t.latestHit = 300;
-                  t.totalHits['300']++;
-                  hitBonusValue = 32;
-                  t.bonus += 1;
-                  break;
-                case this.avgMs <= t.hitJudgement['300'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
-                  t.latestHit = 200;
-                  t.totalHits['200']++;
-                  hitBonusValue = 16;
-                  t.bonus -= 8;
-                  break;
-                case this.avgMs <= t.hitJudgement['200'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
-                  t.latestHit = 100;
-                  t.totalHits['100']++;
-                  hitBonusValue = 8;
-                  t.bonus -= 24;
-                  break;
-                case this.avgMs <= t.hitJudgement['50'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
-                  t.latestHit = 50;
-                  t.totalHits['50']++;
-                  hitBonusValue = 4;
-                  t.bonus -= 44;
-                  break;
-              }
-
-              if (t.bonus > 100) t.bonus = 100;
-              if (t.bonus < 0) t.bonus = 0;
-
-              const baseScore =
-                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-              const bonusScore =
-                ((1000000 * 0.5) / t.notes.length) *
-                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-              t.score += bonusScore + baseScore;
-              t.combo += 1;
-
-              createjs.Tween.removeTweens(this);
-              t.ss.columnContainers[this.i].removeChild(this);
-              t.readySliders[this.i] = null;
-            };
-
-            setTimeout(() => {
-              t.ss.columnContainers[note.columnIndex].addChild(thisSlider);
-
-              animate();
-
-              function animate() {
-                /*
-                useTicks: uses update ticks (60 fps) instead of ms
-                onChange: runs ths function when the position is changed (thus this function is run every tick)
-                onComplete: runs this function when animation is done
-              */
-                createjs.Tween.get(thisSlider, {
-                  useTicks: true,
-                  onChange: onChange,
-                  onComplete: animate,
-                }).to({ y: thisSlider.y + t.dy }, 1);
-              }
-              function onChange() {
-                switch (true) {
-                  case thisSlider.botMsFromAbs() <= t.hitJudgement['50'] &&
-                    !thisSlider.ready:
-                    thisSlider.ready = true;
-
-                    thisSlider.readyIndex = thisSlider.i;
-                    t.readySliders[thisSlider.i] = thisSlider;
-                    break;
-
-                  case thisSlider.botMsFrom() > t.hitJudgement['50'] &&
-                    !thisSlider.initialMs:
-                    thisSlider.miss();
-                    break;
-
-                  case thisSlider.topMsFrom() > t.hitJudgement['50'] &&
-                    thisSlider.held &&
-                    thisSlider.initialMs:
-                    thisSlider.hit();
-                    break;
-
-                  case thisSlider.topMsFrom() > t.hitJudgement['50']:
-                    thisSlider.miss();
-                    break;
-                }
-              }
-            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
-
-            break;
-          default:
-            console.log(`Invalid note type: ${note.type}`);
-
-            break;
+          this.resumeTimer();
         }
+
+        msFrom(position, isAbs = false) {
+          if (position === 'bot') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y - (t.stageHeight * t.hitPercent + t.radius)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                  (t.dy * t.stageFPS);
+          } else if (position === 'top') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y -
+                    (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y -
+                  (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                  1000) /
+                  (t.dy * t.stageFPS);
+          } else console.log('Invalid position in slider.msFrom()');
+        }
+
+        miss() {
+          if (this.removed) return;
+          this.removed = true;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+
+          t.combo = 0;
+
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readySliders[this.i] = null;
+        }
+
+        hit() {
+          if (this.removed) return;
+          this.removed = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+              break;
+            case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+              break;
+            case this.avgMs <= t.hitJudgement['300'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+              break;
+            case this.avgMs <= t.hitJudgement['200'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+              break;
+            case this.avgMs <= t.hitJudgement['50'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+              break;
+          }
+
+          if (t.bonus > 100) t.bonus = 100;
+          if (t.bonus < 0) t.bonus = 0;
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readySliders[this.i] = null;
+        }
+
+        animate() {
+          if (this.removed) return;
+
+          const onChange = () => {
+            if (this.removed) return;
+
+            switch (true) {
+              case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
+                !this.ready:
+                this.ready = true;
+
+                this.readyIndex = this.i;
+                t.readySliders[this.i] = this;
+                break;
+
+              case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
+                this.miss();
+                break;
+
+              case this.msFrom('top') > t.hitJudgement['50']:
+                if (this.held && this.initialMs) this.hit();
+                else this.miss();
+                break;
+            }
+          };
+
+          createjs.Tween.get(this, {
+            useTicks: true,
+            onChange: onChange,
+            onComplete: this.animate,
+          }).to({ y: this.y + t.dy }, 1);
+        }
+
+        resumeTimer() {
+          this.startTime = new Date();
+          clearTimeout(this.timerID);
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            this.animate();
+          }, this.remainingTime);
+        }
+
+        pauseTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+      }
+
+      t.notes.forEach((note) => {
+        if (note.type === 'note') new Note(note);
+        else if (note.type === 'hold') new Slider(note);
+        else console.log(`Invalid note type: ${note.type}`);
       });
     },
     onScroll(e) {
-      console.log(e);
       e.preventDefault();
 
       this.scale += e.deltaY * -0.0002;
