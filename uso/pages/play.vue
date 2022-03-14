@@ -52,7 +52,7 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
-        howler: false,
+      
         progressbar: false,
       },
       areAllLoaded: false,
@@ -124,6 +124,7 @@ export default {
       opacity: 1,
       pbdur: null,
       songDuration: 0,
+      Page: this.$route.name,
 
       progressBarVol: null,
     };
@@ -140,10 +141,10 @@ export default {
           src: '/lib/keydrown.min.js',
           callback: () => (this.loaded.keydrown = true),
         },
-        {
-          src: '/lib/howler.min.js',
-          callback: () => (this.loaded.howler = true),
-        },
+        // {
+        //   src: '/lib/howler.min.js',
+        //   callback: () => (this.loaded.howler = true),
+        // },
         {
           src: '/lib/progressbar.min.js ',
           callback: () => (this.loaded.progressbar = true),
@@ -164,6 +165,7 @@ export default {
     canvasWidth() {
       return this.numColumns * this.columnWidth;
     },
+
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -239,10 +241,9 @@ export default {
       },
       deep: true,
     },
-    $route() {
-      // this.music.stop();
-      // this.console.log('hi');
-    },
+
+
+
   },
 
   methods: {
@@ -277,6 +278,35 @@ export default {
         });
         t.songDuration = t.music.duration();
         t.music.seek(t.beatmapIntro / 1000);
+
+        t.defaultHitNormal= new Howl({
+          src: [
+            `/beatmaps/defaultHitSound/normal-hitnormal.wav`,
+          ],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitClapNormal= new Howl({
+          src: [
+            `/beatmaps/defaultHitSound/normal-hitclap.wav`,
+          ],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitSoftNormal = new Howl({
+          src: [
+            `/beatmaps/defaultHitSound/soft-hitnormal.wav`,
+          ],
+          volume: 0.3,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitSoftClapNormal = new Howl({
+          src: [
+            `/beatmaps/defaultHitSound/soft-hitclap.wav`,
+          ],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
 
         /* ===============
               PROGRESS BAR
@@ -324,6 +354,7 @@ export default {
         t.stageWidth = t.stage.canvas.width;
         t.stageColWidth = t.stageWidth / t.numColumns;
         t.stageHeight = t.stage.canvas.height;
+
 
         /* ===============
               TICKER
@@ -413,7 +444,10 @@ export default {
       }
     },
     startGame() {
+
+      
       const t = this;
+  console.log(t.Page);
 
       t.started = true;
       t.music.play();
@@ -612,28 +646,22 @@ export default {
             t.ss.columnContainers[this.i].removeChild(this);
             t.readyNotes[this.i][this.readyIndex] = null;
 
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
-            // HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :) || HARVEY, ADD CODE HERE :)
+           //  this.hitSample = note.hitSample;
+       //  this.hitSound = note.hitSound;
+
+       console.log(this.hitSound) 
+       
+    
+       
+       if (this.hitSound === 0 ) {
+            console.log(this.hitSound)
+              //t.defaultHitNormal.play();
+          t.defaultHitSoftNormal.play();
+          } 
+          else {
+             t.defaultHitSoftNormal.play();
+          }
+
           }
         }
 

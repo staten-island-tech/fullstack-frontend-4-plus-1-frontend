@@ -67,9 +67,47 @@
   </div>
 </template>
 
+
 <script>
 export default {
+  /* eslint-disable */
   name: 'NavBar',
+
+  data() {
+    return {
+      page:  this.$route.name
+    }
+  },
+
+  head() {
+    return {
+      script: [
+
+        {
+          src: '/lib/howler.min.js',
+        },
+
+      ],
+    };
+  },
+
+
+        watch: {
+
+   $route(to, from) {
+      if (to.name !== 'play') {// if you're going to somewhere else than `wallpaper`
+      // the `return` will end the execution and not go further
+       console.log("yes1")
+        Howler.volume(0);
+      }
+      else {
+        console.log("yes refresh yo")
+      
+      }
+    },
+  },
+
+
 
   mounted() {
     const animateNav = () => {
@@ -96,6 +134,10 @@ export default {
 
     animateNav();
   },
+
+  methods: {
+  }
+
 };
 </script>
 
@@ -469,3 +511,5 @@ export default {
   }
 }
 </style>
+
+

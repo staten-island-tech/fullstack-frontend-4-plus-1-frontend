@@ -22259,6 +22259,9 @@ export const state = () => ({
     ],
     columns: 4,
   },
+  pageData: {
+    currentPage: '',
+  },
 });
 
 export const getters = {};
@@ -22268,6 +22271,10 @@ export const actions = {};
 export const mutations = {
   setBeatmap(state, data) {
     state.beatmapData = data;
+  },
+
+  nuxtRoute(state) {
+    state.pageData.currentPage = this.$route.name;
   },
 };
 
