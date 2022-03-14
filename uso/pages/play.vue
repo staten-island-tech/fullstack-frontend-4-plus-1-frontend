@@ -288,7 +288,7 @@ export default {
         });
         t.defaultHitSoftNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-          volume: 0.3,
+          volume: t.volume,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
@@ -296,6 +296,12 @@ export default {
           volume: t.volume,
           onload: () => (t.songLoaded = true),
         });
+        t.softSliderWhistle = new Howl({
+          src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        //
 
         /* ===============
               PROGRESS BAR
@@ -470,6 +476,9 @@ export default {
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
             if (thisCircle) thisCircle.hit();
+            else {
+              t.defaultHitSoftNormal.play();
+            }
           });
         }
       });
@@ -639,9 +648,9 @@ export default {
             if (this.hitSound === 0) {
               console.log(this.hitSound);
               //t.defaultHitNormal.play();
-              t.defaultHitSoftNormal.play();
+              t.defaultHitSoftClapNormal.play();
             } else {
-              t.defaultHitSoftNormal.play();
+              t.softSliderWhistle.play();
             }
           }
         }
