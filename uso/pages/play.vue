@@ -643,10 +643,7 @@ export default {
             //  this.hitSample = note.hitSample;
             //  this.hitSound = note.hitSound;
 
-            console.log(this.hitSound);
-
             if (this.hitSound === 0) {
-              console.log(this.hitSound);
               //t.defaultHitNormal.play();
               t.defaultHitSoftClapNormal.play();
             } else {
