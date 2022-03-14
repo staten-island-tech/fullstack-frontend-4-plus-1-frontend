@@ -613,54 +613,47 @@ export default {
               hitBonusValue = 4;
               t.bonus -= 44;
               break;
-            case this.msFrom(true) <= t.hitJudgement['0']:
-              t.latestHit = 0;
-              t.totalHits['0']++;
-              t.bonus = 0;
-
-              t.combo = 0;
-              break;
           }
 
-          if (!(t.latestHit === 0)) {
-            if (t.bonus > 100) t.bonus = 100;
-            if (t.bonus < 0) t.bonus = 0;
+          if (t.bonus > 100) t.bonus = 100;
+          if (t.bonus < 0) t.bonus = 0;
 
-            const baseScore =
-              ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
 
-            const bonusScore =
-              ((1000000 * 0.5) / t.notes.length) *
-              ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
 
-            t.score += bonusScore + baseScore;
-            t.combo += 1;
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
 
-            createjs.Tween.removeTweens(this);
-            t.ss.columnContainers[this.i].removeChild(this);
-            t.readyNotes[this.i][this.readyIndex] = null;
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i][this.readyIndex] = null;
 
-            //  this.hitSample = note.hitSample;
-            //  this.hitSound = note.hitSound;
+          //  this.hitSample = note.hitSample;
+          //  this.hitSound = note.hitSound;
 
-            if (this.hitSound === 0) {
-              //t.defaultHitNormal.play();
-              t.defaultHitSoftClapNormal.play();
-            } else {
-              t.softSliderWhistle.play();
-            }
+          if (this.hitSound === 0) {
+            //t.defaultHitNormal.play();
+            t.defaultHitSoftClapNormal.play();
+          } else {
+            t.softSliderWhistle.play();
           }
         }
 
         animate() {
           if (this.removed) return;
 
+          console.log(this.readyIndex, this);
+
           const onChange = () => {
             if (this.removed) return;
 
             switch (true) {
               // If ms from targetCircle is less than ...
-              case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
+              case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
                 this.ready = true;
 
                 this.readyIndex = t.readyNotes[this.i].push(this) - 1;
