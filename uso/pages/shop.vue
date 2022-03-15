@@ -58,10 +58,4 @@ export default {
   justify-content: space-between;
   flex-wrap: wrap;
 }
-
-.night-market-card {
-  height: 36rem;
-  width: 25rem;
-  border: 1px solid white;
-}
 </style>
