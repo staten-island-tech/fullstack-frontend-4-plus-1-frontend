@@ -5,74 +5,74 @@
       <!-- <h1>L bozo</h1> -->
       <section id="paimon" class="paimonInfo">
           <div class="section-header">
-            <h1 class="section-heading"><b>L bozo</b></h1>
+            <h1 class="section-heading">L bozo</h1>
             <div class="underline"></div>
           </div>
           <div class="paimonStuffs">
         
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Overview</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                Teyvat is a world comprised of seven different nations: Mondstat,
-                Liyue, Inazuma, Sumeru, Fontaine, Natlan, and Snezhnaya. Each nation
-                has their own respective Archons. Check Archon section below for more!
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div>
 
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Tours</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                As of right now, only three nations are open for touring: Mondstat, Liyue,
-                and Inazuma. Paimon really loves the food in these countries, and treasure! 
-                But, Paimon is kinda scared of Inazuma's Electro Archon.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div>
 
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Cost</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                Paimon will travel with you for free! Of course, the only catch is that
-                you have to supply me with lots of food, and also cover our expenses. But, trust me, 
-                Paimon is the best traveling companion ever!
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div>
 
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Dates</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                Tours are year-round! Just register and Paimon will take care of everything else.
-                Before we go adventuring, Paimon suggests that you learn how to get stronger. Paimon
-                does not like monsters, and wants them gone!
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div>
 
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Recommendations</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                Paimon's personal favorite is Liyue! Liyue has so much awesome food. Also, a lot of Paimon's
-                adventurers seem to enjoy the girls in Liyue. Keqing, Ganyu, Hu Tao, Ningguang, and more! The 
-                list is endless!
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div>
 
             <div class="paimonStuff">
               <div class="paimonStuff-header">
-                <h3>Biography</h3>
+                <h3>L bozo</h3>
               </div>
               <p class="paimonStuff-text">
-                If you are curious about Paimon, here is some stuff about me! Paimon is short, but at least I can fly.
-                Paimon does not know where she came from. Paimon was fished out of a lake by Traveler. Traveler was my first
-                adventurer!
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent 
+                elementum. Ac felis donec et odio pellentesque diam volutpat commodo.
               </p>
             </div> 
 
@@ -98,9 +98,21 @@ export default {
   font-family: 'Dongle', sans-serif;
 }
 
+.help-page {
+  height: 100vh;
+  background-image: linear-gradient(
+      rgba(4, 22, 54, 0.7),
+      rgba(11, 4, 48, 0.7)
+    ),
+    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
+      url('~/assets/images/backgrounds/help-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
 .help-page-container {
   margin: auto;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -112,27 +124,25 @@ export default {
     /* background-color: #f2ffff; */
     /* background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url("../images/amberklee.jpg") no-repeat center; */
     background-size: cover;
-    padding-bottom: 15rem;
   }
   
   .section-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem 0 5rem 0;
+    padding: 5rem 0 5rem 0;
   }
   
   .section-heading {
-    font-size: 10rem;
-    font-weight: 300;
-    color: #4b4b4b;
-    margin-bottom: 5rem;
+    font-size: 9rem;
+    font-weight: 500;
+    color: #fff;
   }
   
   .underline {
-    width: 14rem;
-    height: 0.4rem;
-    background-color: #5c7199;
+    width: 20rem;
+    height: 0.5rem;
+    background-color: #a8c6ff;
   }
   
   .paimonStuffs {
@@ -214,7 +224,7 @@ export default {
     height: auto;
     object-fit: cover;
     opacity: 1;
-    margin-top: -11rem;
+    margin-top: -10rem;
   }
 
   .ehe{
