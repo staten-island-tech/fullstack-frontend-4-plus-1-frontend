@@ -28,28 +28,33 @@
   - Pause when out of focus
   - Add buttons to restart song and back to beatmaps page
 - [ ] Skip intro button [**Wilson**]
-- [ ] Show end game results
-- [ ] Pause when out of focus
+- [ ] Show end game results (Shown below)
+- [ ] Pause when out of focus (Shown below)
 
 ## Site Checklist
 
 ### Pages to Design
 
-- [ ] Game Modals
+- [ ] Game Modals [**Kenny**, **Ethan**]
   - [ ] Pause Screen (With restart and back to beatmaps)
   - [ ] End Game Screen (With restart and back to beatmaps)
-- [ ] Site Pages
+- [ ] Site Pages [**Kenny**, **Ethan**]
   - [ ] Settings
   - [ ] Global Leaderboard
   - [ ] Per Song Leaderboard
   - [ ] User Profile (Show User Stats)
-  - [ ] Help Page [**Kenny**]
+  - [x] Help Page [**Kenny**]
 
 ### Site Functionality
 
 - [ ] User added beatmaps [**Wilson**]
   - Stored locally with localForage
 - [ ] Gacha Game [**Ethan**, **Harvey**]
+
+### Site Final Fixes
+
+- [ ] Change home beatmaps and info
+- [ ] Change help page to help text
 
 ## Backend Checklist
 
