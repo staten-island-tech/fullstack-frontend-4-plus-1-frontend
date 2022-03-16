@@ -1,8 +1,14 @@
 <template>
-  <div class="night-market-card">
+  <div
+    class="night-market-card"
+    :class="{ flipped: flipCard }"
+    @click="flipCard = true"
+  >
     <div class="val-bg" :class="cardBg"></div>
     <div class="card-front">
-      <h1>Name</h1>
+      <p v-for="character in charactersList" :key="character">
+        {{ character.title }}
+      </p>
     </div>
   </div>
 </template>
@@ -13,10 +19,13 @@ export default {
     return {
       cardRarity: null,
       cardBg: null,
+      flipCard: false,
+      charactersList: {},
     };
   },
   created() {
     this.chooseBg();
+    this.fetchData();
   },
   methods: {
     chooseBg() {
@@ -51,6 +60,32 @@ export default {
       this.cardBg = cardBg;
       this.$forceUpdate();
     },
+    async fetchData() {
+      try {
+        const response = await fetch(
+          'https://api.jikan.moe/v3/top/characters/1'
+        );
+
+        const data = await response.json();
+        this.charactersList = data.top;
+      } catch (error) {
+        console.log(error);
+        alert('Error');
+      }
+    },
+    /* getCharacters () {
+async function  () {
+    try {
+fetch('https://api.jikan.moe/v3/top/characters/1')
+    } catch (error) {
+        console.log(error)
+    }
+}
+    }, */
+    /* flipCard() {
+      document.querySelector('.night-market-card').style.transform =
+        'rotateY(180deg)';
+    }, */
   },
 };
 </script>
@@ -83,9 +118,6 @@ button {
   transition: transform 0.8s ease-out;
   transform-style: preserve-3d;
 }
-.night-market-card:active {
-  transform: rotateY(180deg);
-}
 
 .card-front,
 .val-bg {
@@ -103,4 +135,45 @@ button {
   transform: rotateY(180deg);
   background-color: #171717;
 }
+
+.flipped {
+  transform: rotateY(180deg);
+  transition: 0.8s ease-in-out;
+  /*   animation-name: cardFlip;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards; */
+}
+
+/* @keyframes cardFlip {
+  10% {
+  }
+  20% {
+    transform: rotateY(20deg);
+  }
+  30% {
+    transform: rotateY(30deg);
+  }
+  40% {
+    transform: rotateY(40deg);
+  }
+  50% {
+    transform: rotateY(50deg);
+  }
+  60% {
+    transform: rotateY(80deg);
+  }
+  70% {
+    transform: rotateY(100deg);
+  }
+  80% {
+    transform: rotateY(130deg);
+  }
+  90% {
+    transform: rotateY(160deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  
+}*/
 </style>
