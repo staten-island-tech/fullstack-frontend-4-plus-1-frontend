@@ -646,8 +646,6 @@ export default {
         animate() {
           if (this.removed) return;
 
-          console.log(this.readyIndex, this);
-
           const onChange = () => {
             if (this.removed) return;
 
