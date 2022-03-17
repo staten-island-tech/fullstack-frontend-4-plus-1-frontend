@@ -146,7 +146,7 @@ export default {
 
 @keyframes pulse {
   to {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 }
 
@@ -326,6 +326,7 @@ export default {
 .uso__logo--hover:hover {
   background-image: url('~/assets/images/navigation/osu-pink.svg');
   transform: scale(1.07);
+  animation: filterChange 4s infinite ease 0s, pulse 0.2s infinite alternate;
 }
 
 .uso__navbar--links {

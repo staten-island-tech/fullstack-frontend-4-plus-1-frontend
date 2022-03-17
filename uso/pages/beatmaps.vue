@@ -13,7 +13,7 @@
             <input
               class="song-search-bar"
               type="text"
-              placeholder="Search for your song... fix this garbage search area later lmao"
+              placeholder="search for your song..."
             />
 
             <span class="deleteText">
@@ -96,7 +96,7 @@
           </div>
           <div v-else class="play-sidebar">
             <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
-            <p class="hover-msg">Hover or Click on a Song!</p>
+            <p class="hover-msg">hover or click on a song~</p>
           </div>
         </div>
       </div>
@@ -507,7 +507,7 @@ export default {
   height: 175%;
   background: rgb(255,255,255);
   background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
-  opacity: 0.2;
+  opacity: 0.25;
   position: absolute;
   top: -40px;
   left: 0;
