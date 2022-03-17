@@ -44,6 +44,7 @@
   - [ ] Per Song Leaderboard
   - [ ] User Profile (Show User Stats)
   - [x] Help Page [**Kenny**]
+  - [ ] Game Page [**Kenny**]
 
 ### Site Functionality
 
