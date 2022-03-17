@@ -13,7 +13,7 @@
 - [ ] Add Health Bar [**Harvey**]
 
 - [x] Incorporate Music
-- [ ] Hit Sounds [**Harvey**]
+- [ ] Hit Sounds [**Harvey**] (By 3/21)
   - [ ] Hit sound when no note is hit
   - [ ] Hit sound when note is hit
   - [ ] Load custom sounds and use them
@@ -24,7 +24,7 @@
   - [ ] Color in target circle when key is pressed (indicator)
 - [ ] Hit Effects (Out Canvas/CSS) [**Kenny**]
 
-- [ ] Add pausing to the game [**Wilson**]
+- [ ] Add pausing to the game [**Wilson**] (By 3/21)
   - Pause when out of focus
   - Add buttons to restart song and back to beatmaps page
 - [ ] Skip intro button [**Wilson**]
