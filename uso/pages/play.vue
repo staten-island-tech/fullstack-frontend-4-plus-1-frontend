@@ -1,10 +1,11 @@
 <template>
   <div id="game-index">
-    <div class="game-image-container">
-      <img
-        :src="`/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]}`"
-      />
-    </div>
+    <div
+      class="game-image-container"
+      :style="{
+        'background-image': `urL(/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]})`,
+      }"
+    ></div>
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
@@ -17,7 +18,7 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div class="statistics-container">
+    <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
       <h1>
@@ -37,6 +38,7 @@
         MUTE
       </button>
     </div>
+    <div class="game-pause-menu">PAUSE</div>
   </div>
 </template>
 
@@ -86,6 +88,7 @@ export default {
         0: null,
       },
 
+      pauseKey: 'p',
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
       allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
@@ -124,9 +127,9 @@ export default {
       opacity: 1,
       pbdur: null,
       songDuration: 0,
-      Page: this.$route.name,
-
       progressBarVol: null,
+
+      Page: this.$route.name,
     };
   },
 
@@ -927,11 +930,11 @@ export default {
 
   width: 100%;
   height: 100%;
-  overflow: hidden;
 
   opacity: 0.5;
-
   z-index: -100;
+
+  background-size: cover;
 }
 
 .game-image-container > img {
@@ -950,7 +953,7 @@ export default {
   height: 100vh;
 }
 
-.statistics-container {
+.game-statistics-container {
   min-width: 35rem;
   height: 30rem;
 
@@ -963,7 +966,7 @@ export default {
   justify-content: space-evenly;
 }
 
-.statistics-container > h1 {
+.game-statistics-container > h1 {
   font-size: 7rem;
 }
 
@@ -1004,5 +1007,14 @@ export default {
   height: 5vh;
   width: 5vw;
   font-size: 3rem;
+}
+
+.game-pause-menu {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 100;
 }
 </style>
