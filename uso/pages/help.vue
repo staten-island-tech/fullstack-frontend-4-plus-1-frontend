@@ -5,7 +5,7 @@
       <!-- <h1>L bozo</h1> -->
       <section id="paimon" class="paimonInfo">
           <div class="section-header">
-            <h1 class="section-heading">L bozo</h1>
+            <h1 class="section-heading">help urself, bozo</h1>
             <div class="underline"></div>
           </div>
           <div class="paimonStuffs">
