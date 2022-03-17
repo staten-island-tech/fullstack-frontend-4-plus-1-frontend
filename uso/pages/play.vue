@@ -38,7 +38,13 @@
         MUTE
       </button>
     </div>
-    <div class="game-pause-menu">PAUSE</div>
+    <div v-show="paused" class="game-pause-menu">
+      <div class="game-pause-button-container">
+        <button>Continue</button>
+        <button>Retry</button>
+        <button>Return</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,7 +94,8 @@ export default {
         0: null,
       },
 
-      pauseKey: 'p',
+      pauseKey: 'P',
+      paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
       allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
@@ -483,7 +490,7 @@ export default {
               t.defaultHitSoftNormal.play();
             }
           });
-        }
+        } else if (e.key.toUpperCase() === t.pauseKey) t.paused = !t.paused;
       });
 
       for (let i = 0; i < t.numColumns; i++) {
@@ -1011,10 +1018,47 @@ export default {
 
 .game-pause-menu {
   position: absolute;
+  z-index: 100;
 
   width: 100%;
   height: 100%;
 
-  z-index: 100;
+  background-color: rgba(128, 128, 128, 0.4);
+}
+
+.game-pause-button-container {
+  position: absolute;
+
+  width: 40rem;
+  height: 60rem;
+  background-color: black;
+  border-radius: 8rem;
+  border: #30d5c8 solid 0.5rem;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.game-pause-button-container > button {
+  width: 20rem;
+  height: 6rem;
+  background-color: black;
+  border-radius: 3rem;
+  border: #30d5c8 solid 0.5rem;
+
+  font-size: 3rem;
+  color: white;
+
+  transition: 0.3s all;
+}
+
+.game-pause-button-container > button:hover {
+  transform: translate(0, -0.5rem) scale(1.05);
 }
 </style>
