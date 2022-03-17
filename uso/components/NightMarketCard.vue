@@ -94,7 +94,10 @@ export default {
         );
         const response500 = await fetch(
           'https://api.jikan.moe/v3/top/characters/10'
-        ); /*
+        );
+
+        /* TOO MANY REQUESTS: 2 PER SECOND IS THE LIMIT. CONSIDER MAKING A REST API?? */
+        /*
         const response550 = await fetch(
           'https://api.jikan.moe/v3/top/characters/11'
         );
