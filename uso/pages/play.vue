@@ -298,17 +298,17 @@ export default {
         });
         t.defaultHitSoftNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-          volume: t.volume,
+          volume: 0.05,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
-          volume: t.volume,
+          volume: 0.02,
           onload: () => (t.songLoaded = true),
         });
         t.softSliderWhistle = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
-          volume: t.volume,
+          volume: 0.02,
           onload: () => (t.songLoaded = true),
         });
         //
@@ -485,9 +485,9 @@ export default {
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
+            console.log("hit")
             if (thisCircle) thisCircle.hit();
             else {
-              t.defaultHitSoftNormal.play();
             }
           });
         } else if (e.key.toUpperCase() === t.pauseKey) t.paused = !t.paused;
@@ -647,7 +647,7 @@ export default {
 
           if (this.hitSound === 0) {
             //t.defaultHitNormal.play();
-            t.defaultHitSoftClapNormal.play();
+            t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
           }
