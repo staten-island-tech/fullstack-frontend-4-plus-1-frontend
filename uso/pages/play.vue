@@ -40,7 +40,7 @@
     </div>
     <div v-show="paused" class="game-pause-menu">
       <div class="game-pause-button-container">
-        <button>Continue</button>
+        <button @click="onPauseKey()">Continue</button>
         <button>Retry</button>
         <button>Return</button>
       </div>
@@ -117,10 +117,9 @@ export default {
         columnBorders: [],
         targetCircles: [],
       },
+      noteObjectArray: [],
       readyNotes: [],
       readySliders: [],
-
-      timers: [],
 
       hitPercent: 0.85,
       radius: 40,
@@ -286,7 +285,7 @@ export default {
         t.songDuration = t.music.duration();
         t.music.seek(t.beatmapIntro / 1000);
 
-        t.defaultHitNormal = new Howl({
+        /* t.defaultHitNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
@@ -310,7 +309,7 @@ export default {
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
-        });
+        }); */
         //
 
         /* ===============
@@ -486,11 +485,11 @@ export default {
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
             if (thisCircle) thisCircle.hit();
-            else {
+            /* else {
               t.defaultHitSoftNormal.play();
-            }
+            } */
           });
-        } else if (e.key.toUpperCase() === t.pauseKey) t.paused = !t.paused;
+        } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
       for (let i = 0; i < t.numColumns; i++) {
@@ -645,47 +644,42 @@ export default {
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
 
-          if (this.hitSound === 0) {
+          /* if (this.hitSound === 0) {
             //t.defaultHitNormal.play();
             t.defaultHitSoftClapNormal.play();
           } else {
             t.softSliderWhistle.play();
-          }
+          } */
         }
 
         animate() {
-          if (this.removed) return;
-
-          const onChange = () => {
-            if (this.removed) return;
-
-            switch (true) {
-              // If ms from targetCircle is less than ...
-              case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
-                this.ready = true;
-
-                this.readyIndex = t.readyNotes[this.i].push(this) - 1;
-                break;
-
-              // If it reaches offscreen then ...
-              case this.msFrom() > t.hitJudgement['50']:
-                this.miss();
-                break;
-            }
-          };
-
           createjs.Tween.get(this, {
             useTicks: true,
-            onChange: onChange,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            // If ms from targetCircle is less than ...
+            case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
+              this.ready = true;
+
+              this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+              break;
+
+            // If it reaches offscreen then ...
+            case this.msFrom() > t.hitJudgement['50']:
+              this.miss();
+              break;
+          }
         }
 
         resumeTimer() {
           this.startTime = new Date();
-          clearTimeout(this.timerID);
+
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
             this.animate();
           }, this.remainingTime);
         }
@@ -693,6 +687,11 @@ export default {
         pauseTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
+        }
+
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
         }
       }
 
@@ -844,43 +843,38 @@ export default {
         }
 
         animate() {
-          if (this.removed) return;
-
-          const onChange = () => {
-            if (this.removed) return;
-
-            switch (true) {
-              case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
-                !this.ready:
-                this.ready = true;
-
-                this.readyIndex = this.i;
-                t.readySliders[this.i] = this;
-                break;
-
-              case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
-                this.miss();
-                break;
-
-              case this.msFrom('top') > t.hitJudgement['50']:
-                if (this.held && this.initialMs) this.hit();
-                else this.miss();
-                break;
-            }
-          };
-
           createjs.Tween.get(this, {
             useTicks: true,
-            onChange: onChange,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
+              !this.ready:
+              this.ready = true;
+
+              this.readyIndex = this.i;
+              t.readySliders[this.i] = this;
+              break;
+
+            case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
+              this.miss();
+              break;
+
+            case this.msFrom('top') > t.hitJudgement['50']:
+              if (this.held && this.initialMs) this.hit();
+              else this.miss();
+              break;
+          }
         }
 
         resumeTimer() {
           this.startTime = new Date();
-          clearTimeout(this.timerID);
+
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
             this.animate();
           }, this.remainingTime);
         }
@@ -889,6 +883,11 @@ export default {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
+
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
+        }
       }
 
       t.notes.forEach((note) => {
@@ -896,6 +895,18 @@ export default {
         else if (note.type === 'hold') new Slider(note);
         else console.log(`Invalid note type: ${note.type}`);
       });
+    },
+    onPauseKey() {
+      this.paused = !this.paused;
+      if (this.paused) {
+        this.noteObjectArray.forEach((note) => note.pause());
+        createjs.Ticker.paused = true;
+        this.music.pause();
+      } else {
+        this.noteObjectArray.forEach((note) => note.resume());
+        createjs.Ticker.paused = false;
+        this.music.play();
+      }
     },
     onScroll(e) {
       e.preventDefault();
