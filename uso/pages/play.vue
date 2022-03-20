@@ -124,12 +124,12 @@ export default {
 
       hitPercent: 0.85,
       radius: 40,
-
+      noteHitSound: null,
       music: null,
       beatmapIntro: null,
       songDuration: 0,
       volume: 0.1,
-      pbVolProgress: 0.1,
+      pbVolProgress: 1,
       scale: 0,
       opacity: 1,
       pbdur: null,
@@ -257,7 +257,7 @@ export default {
     onLoad() {
       {
         const t = this;
-
+        Howler.volume(1);
         t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -298,17 +298,17 @@ export default {
         });
         t.defaultHitSoftNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-          volume: 0.05,
+          volume: 0.21,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
-          volume: 0.02,
+          volume: 0.08,
           onload: () => (t.songLoaded = true),
         });
         t.softSliderWhistle = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
-          volume: 0.02,
+          volume: 0.1,
           onload: () => (t.songLoaded = true),
         });
         //
@@ -485,7 +485,7 @@ export default {
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
-            console.log("hit")
+            console.log('hit');
             if (thisCircle) thisCircle.hit();
             else {
             }
@@ -587,6 +587,10 @@ export default {
         }
 
         hit() {
+          t.beatmapData.hitObjects.forEach((note) => {
+            t.noteHitSound = note.hitSample.filename;
+          });
+
           if (this.removed) return;
           this.removed = true;
 
@@ -644,9 +648,10 @@ export default {
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-
+          console.log(t.noteHitSound);
           if (this.hitSound === 0) {
-            //t.defaultHitNormal.play();
+            console.log(this.hitSound);
+
             t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
