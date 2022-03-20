@@ -42,7 +42,7 @@
       <div class="game-pause-button-container">
         <button @click="onPauseKey()">Continue</button>
         <button>Retry</button>
-        <button>Return</button>
+        <button @click="$router.push('/beatmaps')">Return</button>
       </div>
     </div>
   </div>
@@ -481,6 +481,8 @@ export default {
       };
 
       document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
@@ -582,7 +584,7 @@ export default {
 
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i][this.readyIndex] = null;
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
         hit() {
@@ -639,7 +641,7 @@ export default {
 
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i][this.readyIndex] = null;
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
@@ -663,7 +665,8 @@ export default {
             case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
               this.ready = true;
 
-              this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+              // this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+              t.readyNotes[this.i].push(this);
               break;
 
             // If it reaches offscreen then ...
@@ -853,7 +856,6 @@ export default {
               !this.ready:
               this.ready = true;
 
-              this.readyIndex = this.i;
               t.readySliders[this.i] = this;
               break;
 
