@@ -36,7 +36,7 @@
 ### Pages to Design
 
 - [ ] Game Modals [**Kenny**, **Ethan**]
-  - [ ] Pause Screen (With restart and back to beatmaps)
+  - [ ] Pause Screen (With restart and back to beatmaps) [**Kenny**]
   - [ ] End Game Screen (With restart and back to beatmaps)
 - [ ] Site Pages [**Kenny**, **Ethan**]
   - [ ] Settings
