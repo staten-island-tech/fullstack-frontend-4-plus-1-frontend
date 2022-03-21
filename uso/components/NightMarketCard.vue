@@ -14,21 +14,26 @@
 </template>
 
 <script>
+import characters from '~/static/characters.json';
+
 export default {
   data() {
     return {
       cardRarity: null,
       cardBg: null,
       flipCard: false,
+      characters,
       charasBest: {},
       charasGreat: {},
       charasGood: {},
       charasBad: {},
+      currentArray: {},
     };
   },
   created() {
     this.chooseBg();
-    this.fetchData();
+    this.loadCharacters();
+    this.chooseCharacter();
   },
   methods: {
     chooseBg() {
@@ -58,136 +63,31 @@ export default {
         cardRarity = 5;
         cardBg = 'great';
       }
-
+      /* switch statement */
       this.cardRarity = cardRarity;
       this.cardBg = cardBg;
-      this.$forceUpdate();
     },
-    async fetchData() {
-      try {
-        const response50 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/1'
-        );
-        const response100 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/2'
-        );
-        const response150 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/3'
-        );
-        const response200 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/4'
-        );
-        const response250 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/5'
-        );
-        const response300 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/6'
-        );
-        const response350 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/7'
-        );
-        const response400 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/8'
-        );
-        const response450 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/9'
-        );
-        const response500 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/10'
-        );
+    loadCharacters() {
+      const characters = this.characters;
+      const charactersBest = characters.slice(0, 100);
+      const charactersGreat = characters.slice(100, 200);
+      const charactersGood = characters.slice(200, 300);
+      const charactersBad = characters.slice(300, 500);
 
-        /* TOO MANY REQUESTS: 2 PER SECOND IS THE LIMIT. CONSIDER MAKING A REST API?? */
-        /*
-        const response550 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/11'
-        );
-        const response600 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/12'
-        );
-        const response650 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/13'
-        );
-        const response700 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/14'
-        );
-        const response750 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/15'
-        );
-        const response800 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/16'
-        );
-        const response850 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/17'
-        );
-        const response900 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/18'
-        );
-        const response950 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/19'
-        );
-        const response1000 = await fetch(
-          'https://api.jikan.moe/v3/top/characters/20'
-        ); */
-
-        const data50 = await response50.json();
-        const data100 = await response100.json();
-        const data150 = await response150.json();
-        const data200 = await response200.json();
-        const data250 = await response250.json();
-        const data300 = await response300.json();
-        const data350 = await response350.json();
-        const data400 = await response400.json();
-        const data450 = await response450.json();
-        const data500 = await response500.json();
-        /* const data550 = await response550.json();
-        const data600 = await response600.json();
-        const data650 = await response650.json();
-        const data700 = await response700.json();
-        const data750 = await response750.json();
-        const data800 = await response800.json();
-        const data850 = await response850.json();
-        const data900 = await response900.json();
-        const data950 = await response950.json();
-        const data1000 = await response1000.json(); */
-
-        this.charasBest = data50.top.concat(data100.top);
-        this.charasGreat = data150.concat(data200);
-        this.charasGood = data250.concat(
-          data300,
-          data350,
-          data400,
-          data450,
-          data500
-        ); /* 
-        this.charasBad = data550.concat(
-          data600,
-          data650,
-          data700,
-          data750,
-          data800,
-          data850,
-          data900,
-          data950,
-          data1000
-        ); */
-      } catch (error) {
-        console.log(error);
-        alert('Error');
+      this.charasBest = charactersBest;
+      this.charasGreat = charactersGreat;
+      this.charasGood = charactersGood;
+      this.charasBad = charactersBad;
+    },
+    chooseCharacter() {
+      cardRarity = this.cardRarity;
+      if (cardRarity = 1) {
+        this.currentArray = this.charasBad
       }
+      if (cardRarity = 2 || cardRarity = 3) {this.currentArray = this.charasGood}
+      if (cardRarity = 4) {this.currentArray = this.charasGreat}
+      if (cardRarity = 5) {this.currentArray = this.charasBest}
     },
-    /* getCharacters () {
-async function  () {
-    try {
-fetch('https://api.jikan.moe/v3/top/characters/1')
-    } catch (error) {
-        console.log(error)
-    }
-}
-    }, */
-    /* flipCard() {
-      document.querySelector('.night-market-card').style.transform =
-        'rotateY(180deg)';
-    }, */
   },
 };
 </script>
