@@ -1,9 +1,10 @@
 <template>
   <div id="game-index">
     <div
+      v-if="beatmapData != {}"
       class="game-image-container"
       :style="{
-        'background-image': `urL(/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]})`,
+        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
       }"
     ></div>
     <button
@@ -19,7 +20,7 @@
       >
     </div>
     <div class="health-bar-cont">
-        <div id="health-bar"></div>
+      <div id="health-bar"></div>
     </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
@@ -167,10 +168,6 @@ export default {
     };
   },
 
-  created() {
-    window.addEventListener('wheel', this.onScroll);
-  },
-
   destroyed() {
     window.removeEventListener('wheel', this.onScroll);
   },
@@ -179,7 +176,6 @@ export default {
     canvasWidth() {
       return this.numColumns * this.columnWidth;
     },
-
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -261,10 +257,15 @@ export default {
     onLoad() {
       {
         const t = this;
+
         Howler.volume(1);
+
         t.beatmapData = t.$store.state.beatmapData;
+        console.log(t.beatmapData);
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
+
+        window.addEventListener('wheel', this.onScroll);
 
         t.keys = [
           ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
@@ -314,14 +315,14 @@ export default {
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
           volume: 0.1,
           onload: () => (t.songLoaded = true),
-        }); 
+        });
         //
 
         /* ===============
               PROGRESS BAR
               =============== */
 
-        this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+        t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
           color: '#FCB03C',
           // This has to be the same size as the maximum width to
           // prevent clipping
@@ -347,7 +348,7 @@ export default {
           },
         });
 
-        this.progressBarVol.animate(t.pbVolProgress);
+        t.progressBarVol.animate(t.pbVolProgress);
 
         /* ===============
               CANVAS SETUP
@@ -459,13 +460,13 @@ export default {
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.healthBar = new ProgressBar.Line('#health-bar', {
-    strokeWidth: 4,
-    easing: 'easeInOut',
-    duration: 1400,
-    color: '#FFEA82',
-    trailColor: '#eee',
-    trailWidth: 4,
-    svgStyle: {width: '100%', height: '100%'}
+        strokeWidth: 4,
+        easing: 'easeInOut',
+        duration: 1400,
+        color: '#FFEA82',
+        trailColor: '#eee',
+        trailWidth: 4,
+        svgStyle: { width: '100%', height: '100%' },
       });
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
@@ -479,10 +480,9 @@ export default {
       });
 
       t.progressBar.animate(1);
-      
-        t.healthBar.animate(1);
-         
- 
+
+      t.healthBar.animate(1);
+
       /* ===============
           KEY PRESS
           =============== */
@@ -625,7 +625,7 @@ export default {
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              t.healthBar.set(0.4)
+              t.healthBar.set(0.4);
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
               t.latestHit = 200;
@@ -666,10 +666,9 @@ export default {
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-   console.log(this.hitSound);
+          console.log(this.hitSound);
 
           if (this.hitSound === 0) {
-           
             t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
@@ -1027,15 +1026,14 @@ export default {
 }
 
 #health-bar-cont {
- height: 100vh;
- width: 5vw;
+  height: 100vh;
+  width: 5vw;
 }
-
 
 #health-bar {
   height: 80%;
   width: 100%;
-transform: rotate(0.75turn);
+  transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
