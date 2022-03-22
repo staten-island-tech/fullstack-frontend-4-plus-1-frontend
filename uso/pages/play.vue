@@ -18,6 +18,9 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
+    <div class="health-bar-cont">
+        <div id="health-bar"></div>
+    </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -26,6 +29,7 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
+
     <div class="game-pb-container">
       <div id="game-pb"></div>
       <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
@@ -134,6 +138,7 @@ export default {
       pbdur: null,
       songDuration: 0,
       progressBarVol: null,
+      health: 100,
 
       Page: this.$route.name,
     };
@@ -285,7 +290,7 @@ export default {
         t.songDuration = t.music.duration();
         t.music.seek(t.beatmapIntro / 1000);
 
-        /* t.defaultHitNormal = new Howl({
+        t.defaultHitNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
           volume: t.volume,
           onload: () => (t.songLoaded = true),
@@ -297,7 +302,7 @@ export default {
         });
         t.defaultHitSoftNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-          volume: 0.21,
+          volume: 0.3,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
@@ -309,7 +314,7 @@ export default {
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
           volume: 0.1,
           onload: () => (t.songLoaded = true),
-        }); */
+        }); 
         //
 
         /* ===============
@@ -453,6 +458,16 @@ export default {
       t.music.play();
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
+      t.healthBar = new ProgressBar.Line('#health-bar', {
+    strokeWidth: 4,
+    easing: 'easeInOut',
+    duration: 1400,
+    color: '#FFEA82',
+    trailColor: '#eee',
+    trailWidth: 4,
+    svgStyle: {width: '100%', height: '100%'}
+      });
+
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
@@ -464,7 +479,10 @@ export default {
       });
 
       t.progressBar.animate(1);
-
+      
+        t.healthBar.animate(1);
+         
+ 
       /* ===============
           KEY PRESS
           =============== */
@@ -607,6 +625,7 @@ export default {
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
+              t.healthBar.set(0.4)
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
               t.latestHit = 200;
@@ -647,10 +666,10 @@ export default {
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-          console.log(t.noteHitSound);
-          if (this.hitSound === 0) {
-            console.log(this.hitSound);
+   console.log(this.hitSound);
 
+          if (this.hitSound === 0) {
+           
             t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
@@ -1005,6 +1024,18 @@ export default {
 #game-pb {
   height: 20%;
   width: 20%;
+}
+
+#health-bar-cont {
+ height: 100vh;
+ width: 5vw;
+}
+
+
+#health-bar {
+  height: 80%;
+  width: 100%;
+transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
