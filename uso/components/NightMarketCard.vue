@@ -6,9 +6,10 @@
   >
     <div class="val-bg" :class="cardBg"></div>
     <div class="card-front">
-      <p v-for="character in charasBest" :key="character">
-        {{ character.title }}
+      <p>
+        {{ activeCharacter.title }}
       </p>
+      <img :src="activeCharacter.image_url" alt="" />
     </div>
   </div>
 </template>
@@ -27,7 +28,8 @@ export default {
       charasGreat: {},
       charasGood: {},
       charasBad: {},
-      currentArray: {},
+      activeArray: {},
+      activeCharacter: {},
     };
   },
   created() {
@@ -69,10 +71,10 @@ export default {
     },
     loadCharacters() {
       const characters = this.characters;
-      const charactersBest = characters.slice(0, 100);
-      const charactersGreat = characters.slice(100, 200);
-      const charactersGood = characters.slice(200, 300);
-      const charactersBad = characters.slice(300, 500);
+      const charactersBest = characters.slice(0, 200);
+      const charactersGreat = characters.slice(200, 400);
+      const charactersGood = characters.slice(400, 600);
+      const charactersBad = characters.slice(600, 1000);
 
       this.charasBest = charactersBest;
       this.charasGreat = charactersGreat;
@@ -80,13 +82,23 @@ export default {
       this.charasBad = charactersBad;
     },
     chooseCharacter() {
-      cardRarity = this.cardRarity;
-      if (cardRarity = 1) {
-        this.currentArray = this.charasBad
+      const cardRarity = this.cardRarity;
+      if (cardRarity === 1) {
+        this.activeArray = this.charasBad;
       }
-      if (cardRarity = 2 || cardRarity = 3) {this.currentArray = this.charasGood}
-      if (cardRarity = 4) {this.currentArray = this.charasGreat}
-      if (cardRarity = 5) {this.currentArray = this.charasBest}
+      if (cardRarity === 2 || cardRarity === 3) {
+        this.activeArray = this.charasGood;
+      }
+      if (cardRarity === 4) {
+        this.activeArray = this.charasGreat;
+      }
+      if (cardRarity === 5) {
+        this.activeArray = this.charasBest;
+      }
+
+      const activeArray = this.activeArray;
+      const charaNumber = Math.floor(Math.random() * activeArray.length);
+      this.activeCharacter = activeArray[charaNumber];
     },
   },
 };
