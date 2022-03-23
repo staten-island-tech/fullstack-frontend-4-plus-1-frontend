@@ -489,12 +489,12 @@ export default {
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
       t.hitJudgement = {
-        320: 16.5,
-        300: Math.floor(64 - 3 * OD) + 0.5,
-        200: Math.floor(97 - 3 * OD) + 0.5,
-        100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(151 - 3 * OD) + 0.5,
-        0: Math.floor(170 - 3 * OD) + 0.5,
+        320: 16,
+        300: Math.floor(64 - 3 * OD),
+        200: Math.floor(97 - 3 * OD),
+        100: Math.floor(127 - 3 * OD),
+        50: Math.floor(151 - 3 * OD),
+        0: Math.floor(188 - 3 * OD),
       };
 
       document.addEventListener('keydown', function (e) {
@@ -644,10 +644,14 @@ export default {
               hitBonusValue = 4;
               t.bonus -= 44;
               break;
+            case this.msFrom(true) <= t.hitJudgement['0']:
+              console.log('HIT MiSSTED');
+              this.miss();
+              return;
           }
 
           if (t.bonus > 100) t.bonus = 100;
-          if (t.bonus < 0) t.bonus = 0;
+          else if (t.bonus < 0) t.bonus = 0;
 
           const baseScore =
             ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
