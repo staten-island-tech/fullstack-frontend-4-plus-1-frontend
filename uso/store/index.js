@@ -22643,7 +22643,7 @@ export const actions = {};
 
 export const mutations = {
   setBeatmap(state, data) {
-    state.beatmapData = data;
+    state.noteBeatmapData = data;
   },
 
   nuxtRoute(state) {

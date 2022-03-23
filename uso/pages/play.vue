@@ -260,7 +260,7 @@ export default {
 
         Howler.volume(1);
 
-        t.beatmapData = t.$store.state.beatmapData;
+        t.beatmapData = t.$store.state.noteBeatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
