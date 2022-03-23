@@ -1,7 +1,7 @@
 <template>
   <div id="game-index">
     <div
-      v-if="beatmapData != {}"
+      v-if="beatmapData.metadata"
       class="game-image-container"
       :style="{
         'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
@@ -261,7 +261,6 @@ export default {
         Howler.volume(1);
 
         t.beatmapData = t.$store.state.beatmapData;
-        console.log(t.beatmapData);
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
