@@ -22519,21 +22519,7 @@ export const state = () => ({
     hitObjects: [
       {
         x: 448,
-        time: 25000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 0,
-      },
-      {
-        x: 448,
-        time: 25500,
+        time: 32000,
         type: 'note',
         hitSound: 0,
         hitSample: {
@@ -22547,49 +22533,7 @@ export const state = () => ({
       },
       {
         x: 448,
-        time: 26000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 2,
-      },
-      {
-        x: 448,
-        time: 26500,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 3,
-      },
-      {
-        x: 448,
-        time: 27000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 0,
-      },
-      {
-        x: 448,
-        time: 27500,
+        time: 34000,
         type: 'note',
         hitSound: 0,
         hitSample: {
@@ -22603,7 +22547,7 @@ export const state = () => ({
       },
       {
         x: 448,
-        time: 28000,
+        time: 36000,
         type: 'note',
         hitSound: 0,
         hitSample: {
@@ -22613,21 +22557,7 @@ export const state = () => ({
           volume: 0,
           filename: '',
         },
-        columnIndex: 2,
-      },
-      {
-        x: 448,
-        time: 28500,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 3,
+        columnIndex: 1,
       },
     ],
     columns: 4,
