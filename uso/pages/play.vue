@@ -1073,17 +1073,26 @@ export default {
   width: 100%;
   height: 100%;
 
-  background-color: rgba(128, 128, 128, 0.4);
+  background-color: rgba(30, 30, 30, 0.9);
 }
 
 .game-pause-button-container {
+  --border-width: 3px;
   position: absolute;
 
   width: 40rem;
-  height: 60rem;
-  background-color: black;
-  border-radius: 8rem;
-  border: #30d5c8 solid 0.5rem;
+  height: 55rem;
+  
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.8),
+      rgba(30, 30, 30, 0.8)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  border-radius: 6rem;
+  border: #777777 solid 0.3rem;
 
   top: 50%;
   left: 50%;
@@ -1093,22 +1102,72 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+
+  box-shadow: 0px 10px 10px 0px #010101;
 }
+
+.game-pause-button-container::after {
+    position: absolute;
+    content: "";
+    top: calc(-1 * var(--border-width));
+    left: calc(-1 * var(--border-width));
+    z-index: -1;
+    width: calc(100% + var(--border-width) * 2);
+    height: calc(100% + var(--border-width) * 2);
+    background: linear-gradient(
+      60deg,
+      hsl(224, 85%, 66%),
+      hsl(269, 85%, 66%),
+      hsl(314, 85%, 66%),
+      hsl(359, 85%, 66%),
+      hsl(44, 85%, 66%),
+      hsl(89, 85%, 66%),
+      hsl(134, 85%, 66%),
+      hsl(179, 85%, 66%)
+    );
+    background-size: 300% 300%;
+    background-position: 0 50%;
+    border-radius: calc(20 * var(--border-width));
+    animation: moveGradient 4s alternate infinite;
+
+    border: #eeeeee solid 0.5rem;
+
+} 
 
 .game-pause-button-container > button {
   width: 20rem;
   height: 6rem;
-  background-color: black;
+  
+  background-image: 
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+
+  background-size: cover;;
+
   border-radius: 3rem;
-  border: #30d5c8 solid 0.5rem;
+  border: #777777 solid 0.3rem;
 
   font-size: 3rem;
-  color: white;
+  color: #f3f3f3;
 
   transition: 0.3s all;
+
+  cursor: pointer;
+
+  box-shadow: 0px 10px 10px 0px #010101;
+
 }
 
 .game-pause-button-container > button:hover {
   transform: translate(0, -0.5rem) scale(1.05);
+  border: #fcfcfc solid 0.5rem;
 }
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+
+
 </style>
