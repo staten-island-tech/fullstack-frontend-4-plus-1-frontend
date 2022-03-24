@@ -260,7 +260,7 @@ export default {
 
         Howler.volume(1);
 
-        t.beatmapData = t.$store.state.noteBeatmapData;
+        t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
@@ -1063,6 +1063,8 @@ export default {
   width: 5vw;
   font-size: 3rem;
 }
+
+/* PAUSE css begins here...*/
 
 .game-pause-menu {
   position: absolute;
