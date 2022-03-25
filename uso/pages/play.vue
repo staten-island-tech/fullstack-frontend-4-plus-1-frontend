@@ -260,7 +260,7 @@ export default {
 
         Howler.volume(1);
 
-        t.beatmapData = t.$store.state.noteBeatmapData;
+        t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
@@ -689,12 +689,16 @@ export default {
             // If ms from targetCircle is less than ...
             case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
               this.ready = true;
-
-              // this.readyIndex = t.readyNotes[this.i].push(this) - 1;
               t.readyNotes[this.i].push(this);
-              break;
 
+              // Start fading out
+              createjs.Tween.get(this, {
+                useTicks: true,
+                onComplete: this.remove,
+              }).to({ alpha: 0, visible: false }, 30);
+              break;
             // If it reaches offscreen then ...
+            // Remove the circle and time it correctly
             case this.msFrom() > t.hitJudgement['50']:
               this.miss();
               break;
