@@ -10,6 +10,11 @@
         {{ activeCharacter.title }}
       </p>
       <img :src="activeCharacter.image_url" alt="" />
+      <img
+        src="`../assets/images/night-market-${cardBg}-rim.png`"
+        alt=""
+        class="card-rim"
+      />
     </div>
   </div>
 </template>
@@ -43,7 +48,6 @@ export default {
       let cardBg = null;
 
       const bgNum = Math.floor(Math.random() * 10);
-      console.log(bgNum);
 
       if (bgNum >= 0 && bgNum < 4) {
         cardRarity = 1;
@@ -148,6 +152,11 @@ button {
 .card-front {
   transform: rotateY(180deg);
   background-color: #171717;
+}
+.card-rim {
+  z-index: 99;
+  height: 40rem;
+  width: 30rem;
 }
 
 .flipped {
