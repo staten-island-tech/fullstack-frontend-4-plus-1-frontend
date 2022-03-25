@@ -12,7 +12,8 @@
       class="game-start-button"
       @click="startGame"
     >
-      START 4 Keys: D, F, H, J
+      START 4 Keys:
+      <br /> D, F, H, J
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
@@ -988,8 +989,27 @@ export default {
 .game-start-button {
   height: 20vh;
   width: 20vw;
-  background-color: gray;
+  outline: none;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.8),
+      rgba(30, 30, 30, 0.8)
+    ),
+    url('~/assets/images/backgrounds/landing-page-background-inazuma.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: all 200ms ease-in-out;
+  box-shadow: 0px 10px 10px 0px #1b1b1b;
+  
   font-size: 3rem;
+}
+
+.game-start-button:hover {
+  transform: scale(0.95);
 }
 
 .game-canvas-container,
@@ -1092,7 +1112,7 @@ export default {
   background-size: cover;
 
   border-radius: 6rem;
-  border: #777777 solid 0.3rem;
+  border: #777777 solid 0.5rem;
 
   top: 50%;
   left: 50%;
@@ -1106,7 +1126,7 @@ export default {
   box-shadow: 0px 10px 10px 0px #010101;
 }
 
-.game-pause-button-container::after {
+/* .game-pause-button-container::after {
     position: absolute;
     content: "";
     top: calc(-1 * var(--border-width));
@@ -1132,19 +1152,22 @@ export default {
 
     border: #eeeeee solid 0.5rem;
 
-} 
+}  */
 
 .game-pause-button-container > button {
   width: 20rem;
   height: 6rem;
   
-  background-image: 
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.6),
+      rgba(30, 30, 30, 0.6)
+    ),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
 
   background-size: cover;;
 
   border-radius: 3rem;
-  border: #777777 solid 0.3rem;
+  border: #777777 solid 0.4rem;
 
   font-size: 3rem;
   color: #f3f3f3;
@@ -1153,13 +1176,13 @@ export default {
 
   cursor: pointer;
 
-  box-shadow: 0px 10px 10px 0px #010101;
+  box-shadow: 0px 10px 10px 0px #1b1b1b;
 
 }
 
 .game-pause-button-container > button:hover {
   transform: translate(0, -0.5rem) scale(1.05);
-  border: #fcfcfc solid 0.5rem;
+  border: #fcfcfc solid 0.4rem;
 }
 
 @keyframes moveGradient {

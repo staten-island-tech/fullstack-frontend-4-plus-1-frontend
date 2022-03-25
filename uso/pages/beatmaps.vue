@@ -509,7 +509,7 @@ export default {
   background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
   opacity: 0.25;
   position: absolute;
-  top: -40px;
+  top: -80px;
   left: 0;
   animation: shine 200ms linear;
   transform: translateX(250px) rotate(-25deg);
