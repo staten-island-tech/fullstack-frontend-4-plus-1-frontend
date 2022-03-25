@@ -386,7 +386,7 @@ export default {
         t.stage.addChild(t.ss.setupContainer);
         t.stage.setChildIndex(t.ss.setupContainer, 0);
 
-        const background = new createjs.Shape();
+        /* const background = new createjs.Shape();
 
         // Draws the gray background on the canvas
         background.graphics
@@ -395,7 +395,7 @@ export default {
 
         background.name = 'background';
 
-        t.ss.setupContainer.addChild(background);
+        t.ss.setupContainer.addChild(background); */
 
         /* ===============
               STAGE SETUP
@@ -563,8 +563,8 @@ export default {
           this.cache(
             t.stageColWidth / 2 - t.radius,
             -2 * t.radius,
-            2 * t.radius + 30,
-            2 * t.radius + 30
+            2 * t.radius,
+            2 * t.radius
           );
 
           this.remainingTime =
@@ -588,18 +588,15 @@ export default {
         }
 
         miss() {
-          if (this.removed) return;
-          this.removed = true;
+          if (this.isRemoved) return;
+          this.isRemoved = true;
 
           t.latestHit = 0;
           t.totalHits['0']++;
           t.bonus = 0;
-
           t.combo = 0;
 
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+          this.remove();
         }
 
         hit() {
@@ -607,8 +604,8 @@ export default {
             t.noteHitSound = note.hitSample.filename;
           });
 
-          if (this.removed) return;
-          this.removed = true;
+          if (this.isRemoved) return;
+          this.isRemoved = true;
 
           let hitBonusValue = 0;
 
@@ -645,7 +642,7 @@ export default {
               t.bonus -= 44;
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
-              console.log('HIT MiSSTED');
+              console.log('HIT MISSED');
               this.miss();
               return;
           }
@@ -663,10 +660,6 @@ export default {
           t.score += bonusScore + baseScore;
           t.combo += 1;
 
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
           console.log(this.hitSound);
@@ -676,6 +669,14 @@ export default {
           } else {
             t.softSliderWhistle.play();
           }
+
+          this.remove();
+        }
+
+        remove() {
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
         animate() {
@@ -686,7 +687,7 @@ export default {
 
           switch (true) {
             // If ms from targetCircle is less than ...
-            case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
+            case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
               this.ready = true;
 
               // this.readyIndex = t.readyNotes[this.i].push(this) - 1;
@@ -795,8 +796,8 @@ export default {
         }
 
         miss() {
-          if (this.removed) return;
-          this.removed = true;
+          if (this.isRemoved) return;
+          this.isRemoved = true;
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -810,8 +811,8 @@ export default {
         }
 
         hit() {
-          if (this.removed) return;
-          this.removed = true;
+          if (this.isRemoved) return;
+          this.isRemoved = true;
 
           let hitBonusValue = 0;
 
@@ -995,6 +996,7 @@ export default {
 .game-canvas-container,
 #canvas {
   height: 100vh;
+  background-color: #181818;
 }
 
 .game-statistics-container {
