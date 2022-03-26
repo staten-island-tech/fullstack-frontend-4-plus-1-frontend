@@ -29,6 +29,7 @@
     <div class="game-pb-container">
       <div id="game-pb"></div>
       <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
+     
       <button
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
@@ -38,6 +39,7 @@
         MUTE
       </button>
     </div>
+     <div id="health-bar"></div>
     <div v-show="paused" class="game-pause-menu">
       <div class="game-pause-button-container">
         <button>Continue</button>
@@ -316,6 +318,15 @@ export default {
         /* ===============
               PROGRESS BAR
               =============== */
+        t.heathBar = new ProgressBar.Line('#health-bar', {
+          strokeWidth: 4,
+          easing: 'easeInOut',
+          duration: 1400,
+          color: '#FFEA82',
+          trailColor: '#eee',
+          trailWidth: 4,
+          svgStyle: {width: '100%', height: '100%'}
+        });
 
         this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
           color: '#FCB03C',
@@ -994,6 +1005,11 @@ export default {
 #game-pb {
   height: 20%;
   width: 20%;
+}
+
+#health-bar {
+  height: 65vh;
+  width: 2vw;
 }
 
 #game-pb-vol {
