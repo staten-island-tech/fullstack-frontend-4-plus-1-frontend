@@ -5,7 +5,8 @@
       :style="{
         'background-image': `urL(/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]})`,
       }"
-    ></div>
+    >
+    </div>
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
@@ -18,9 +19,7 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div class="health-bar-cont">
-        <div id="health-bar"></div>
-    </div>
+ <div id="health-bar"></div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -43,7 +42,7 @@
         MUTE
       </button>
     </div>
-     <div id="health-bar"></div>
+
     <div v-show="paused" class="game-pause-menu">
       <div class="game-pause-button-container">
         <button @click="onPauseKey()">Continue</button>
@@ -140,7 +139,7 @@ export default {
       pbdur: null,
       songDuration: 0,
       progressBarVol: null,
-      health: 100,
+      health: 1,
 
       Page: this.$route.name,
     };
@@ -322,21 +321,12 @@ export default {
         /* ===============
               PROGRESS BAR
               =============== */
-        t.heathBar = new ProgressBar.Line('#health-bar', {
-          strokeWidth: 4,
-          easing: 'easeInOut',
-          duration: 1400,
-          color: '#FFEA82',
-          trailColor: '#eee',
-          trailWidth: 4,
-          svgStyle: {width: '100%', height: '100%'}
-        });
 
         this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
           color: '#FCB03C',
           // This has to be the same size as the maximum width to
           // prevent clipping
-          strokeWidth: 7,
+          strokeWidth: 7, 
           easing: 'easeInOut',
           trailColor: '#eee',
           trailWidth: 7,
@@ -472,7 +462,7 @@ export default {
       t.healthBar = new ProgressBar.Line('#health-bar', {
     strokeWidth: 4,
     easing: 'easeInOut',
-    duration: 1400,
+    duration: 500,
     color: '#FFEA82',
     trailColor: '#eee',
     trailWidth: 4,
@@ -492,7 +482,35 @@ export default {
       t.progressBar.animate(1);
       
         t.healthBar.animate(1);
-         
+        
+      function heathbarFinalVal(currentHealth) {
+        t.healthBar.animate(currentHealth);
+      }
+
+      function heathbarHitGood() {
+        if(t.health < 1) {
+          t.health += 0.1;
+          console.log(  t.health )
+        }
+      }
+
+      function heathbarHitBad() {
+        if(t.health < 1) {
+          t.health += 0.05;
+          console.log(  t.health )
+      }
+      }
+
+      function heathbarMiss() {
+          if(t.health > 0) {
+          t.health -= 0.1
+          console.log(  t.health )
+        }
+        else {
+          t.health = 0;
+          console.log(t.health )
+        }
+      }
  
       /* ===============
           KEY PRESS
@@ -612,10 +630,12 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+          heathbarMiss(); 
+          heathbarFinalVal( t.health );
         }
 
         hit() {
-          t.beatmapData.hitObjects.forEach((note) => {
+          t.beatmapData.hitObjects.forEach((note)   => {
             t.noteHitSound = note.hitSample.filename;
           });
 
@@ -630,31 +650,41 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
+              heathbarHitGood() 
+              heathbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              t.healthBar.set(0.4)
+              heathbarHitGood(); 
+              heathbarFinalVal( t.health );
+
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
               t.latestHit = 200;
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
+                heathbarHitGood(); 
+               heathbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
+              heathbarHitBad(); 
+               heathbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
+              heathbarHitBad(); 
+               heathbarFinalVal( t.health );
               break;
           }
 
@@ -816,6 +846,8 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readySliders[this.i] = null;
+          heathbarMiss(); 
+          heathbarFinalVal( t.health );
         }
 
         hit() {
@@ -830,12 +862,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
+              heathbarHitGood(); 
+              heathbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
+              heathbarHitGood(); 
+              heathbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -843,6 +879,8 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
+               heathbarHitGood(); 
+              heathbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -850,6 +888,8 @@ export default {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
+              heathbarHitBad(); 
+              heathbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -857,6 +897,8 @@ export default {
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
+              heathbarHitBad(); 
+              heathbarFinalVal( t.health );
               break;
           }
 
@@ -971,7 +1013,7 @@ export default {
 
 <style scoped>
 #game-index {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -1037,14 +1079,11 @@ export default {
   width: 20%;
 }
 
-#health-bar-cont {
- height: 100vh;
- width: 5vw;
-}
+
 
 
 #health-bar {
-  height: 80%;
+  height: 3%;
   width: 100%;
 transform: rotate(0.75turn);
 }
