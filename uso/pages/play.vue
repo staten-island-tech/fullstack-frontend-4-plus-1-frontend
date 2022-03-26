@@ -18,6 +18,9 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
+    <div class="health-bar-cont">
+        <div id="health-bar"></div>
+    </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -26,6 +29,7 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
+
     <div class="game-pb-container">
       <div id="game-pb"></div>
       <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
@@ -42,9 +46,9 @@
      <div id="health-bar"></div>
     <div v-show="paused" class="game-pause-menu">
       <div class="game-pause-button-container">
-        <button>Continue</button>
+        <button @click="onPauseKey()">Continue</button>
         <button>Retry</button>
-        <button>Return</button>
+        <button @click="$router.push('/beatmaps')">Return</button>
       </div>
     </div>
   </div>
@@ -119,10 +123,9 @@ export default {
         columnBorders: [],
         targetCircles: [],
       },
+      noteObjectArray: [],
       readyNotes: [],
       readySliders: [],
-
-      timers: [],
 
       hitPercent: 0.85,
       radius: 40,
@@ -137,6 +140,7 @@ export default {
       pbdur: null,
       songDuration: 0,
       progressBarVol: null,
+      health: 100,
 
       Page: this.$route.name,
     };
@@ -300,7 +304,7 @@ export default {
         });
         t.defaultHitSoftNormal = new Howl({
           src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-          volume: 0.21,
+          volume: 0.3,
           onload: () => (t.songLoaded = true),
         });
         t.defaultHitSoftClapNormal = new Howl({
@@ -312,7 +316,7 @@ export default {
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
           volume: 0.1,
           onload: () => (t.songLoaded = true),
-        });
+        }); 
         //
 
         /* ===============
@@ -465,6 +469,16 @@ export default {
       t.music.play();
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
+      t.healthBar = new ProgressBar.Line('#health-bar', {
+    strokeWidth: 4,
+    easing: 'easeInOut',
+    duration: 1400,
+    color: '#FFEA82',
+    trailColor: '#eee',
+    trailWidth: 4,
+    svgStyle: {width: '100%', height: '100%'}
+      });
+
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
@@ -476,7 +490,10 @@ export default {
       });
 
       t.progressBar.animate(1);
-
+      
+        t.healthBar.animate(1);
+         
+ 
       /* ===============
           KEY PRESS
           =============== */
@@ -493,15 +510,15 @@ export default {
       };
 
       document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
             console.log('hit');
             if (thisCircle) thisCircle.hit();
-            else {
-            }
           });
-        } else if (e.key.toUpperCase() === t.pauseKey) t.paused = !t.paused;
+        } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
       for (let i = 0; i < t.numColumns; i++) {
@@ -594,7 +611,7 @@ export default {
 
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i][this.readyIndex] = null;
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
         hit() {
@@ -619,6 +636,7 @@ export default {
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
+              t.healthBar.set(0.4)
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
               t.latestHit = 200;
@@ -655,14 +673,14 @@ export default {
 
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i][this.readyIndex] = null;
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-          console.log(t.noteHitSound);
-          if (this.hitSound === 0) {
-            console.log(this.hitSound);
+   console.log(this.hitSound);
 
+          if (this.hitSound === 0) {
+           
             t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
@@ -670,38 +688,34 @@ export default {
         }
 
         animate() {
-          if (this.removed) return;
-
-          const onChange = () => {
-            if (this.removed) return;
-
-            switch (true) {
-              // If ms from targetCircle is less than ...
-              case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
-                this.ready = true;
-
-                this.readyIndex = t.readyNotes[this.i].push(this) - 1;
-                break;
-
-              // If it reaches offscreen then ...
-              case this.msFrom() > t.hitJudgement['50']:
-                this.miss();
-                break;
-            }
-          };
-
           createjs.Tween.get(this, {
             useTicks: true,
-            onChange: onChange,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            // If ms from targetCircle is less than ...
+            case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
+              this.ready = true;
+
+              // this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+              t.readyNotes[this.i].push(this);
+              break;
+
+            // If it reaches offscreen then ...
+            case this.msFrom() > t.hitJudgement['50']:
+              this.miss();
+              break;
+          }
         }
 
         resumeTimer() {
           this.startTime = new Date();
-          clearTimeout(this.timerID);
+
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
             this.animate();
           }, this.remainingTime);
         }
@@ -709,6 +723,11 @@ export default {
         pauseTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
+        }
+
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
         }
       }
 
@@ -860,43 +879,37 @@ export default {
         }
 
         animate() {
-          if (this.removed) return;
-
-          const onChange = () => {
-            if (this.removed) return;
-
-            switch (true) {
-              case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
-                !this.ready:
-                this.ready = true;
-
-                this.readyIndex = this.i;
-                t.readySliders[this.i] = this;
-                break;
-
-              case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
-                this.miss();
-                break;
-
-              case this.msFrom('top') > t.hitJudgement['50']:
-                if (this.held && this.initialMs) this.hit();
-                else this.miss();
-                break;
-            }
-          };
-
           createjs.Tween.get(this, {
             useTicks: true,
-            onChange: onChange,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
+              !this.ready:
+              this.ready = true;
+
+              t.readySliders[this.i] = this;
+              break;
+
+            case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
+              this.miss();
+              break;
+
+            case this.msFrom('top') > t.hitJudgement['50']:
+              if (this.held && this.initialMs) this.hit();
+              else this.miss();
+              break;
+          }
         }
 
         resumeTimer() {
           this.startTime = new Date();
-          clearTimeout(this.timerID);
+
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
             this.animate();
           }, this.remainingTime);
         }
@@ -905,6 +918,11 @@ export default {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
+
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
+        }
       }
 
       t.notes.forEach((note) => {
@@ -912,6 +930,18 @@ export default {
         else if (note.type === 'hold') new Slider(note);
         else console.log(`Invalid note type: ${note.type}`);
       });
+    },
+    onPauseKey() {
+      this.paused = !this.paused;
+      if (this.paused) {
+        this.noteObjectArray.forEach((note) => note.pause());
+        createjs.Ticker.paused = true;
+        this.music.pause();
+      } else {
+        this.noteObjectArray.forEach((note) => note.resume());
+        createjs.Ticker.paused = false;
+        this.music.play();
+      }
     },
     onScroll(e) {
       e.preventDefault();
@@ -1007,9 +1037,16 @@ export default {
   width: 20%;
 }
 
+#health-bar-cont {
+ height: 100vh;
+ width: 5vw;
+}
+
+
 #health-bar {
-  height: 65vh;
-  width: 2vw;
+  height: 80%;
+  width: 100%;
+transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
