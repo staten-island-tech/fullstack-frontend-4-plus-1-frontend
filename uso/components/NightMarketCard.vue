@@ -6,15 +6,13 @@
   >
     <div class="val-bg" :class="cardBg"></div>
     <div class="card-front">
-      <p>
-        {{ activeCharacter.title }}
-      </p>
-      <img :src="activeCharacter.image_url" alt="" />
-      <img
-        src="`../assets/images/night-market-${cardBg}-rim.png`"
-        alt=""
-        class="card-rim"
-      />
+      <div class="card-gradient">
+        <p class="chara-name">
+          {{ activeCharacter.title }}
+        </p>
+        <img :src="activeCharacter.image_url" alt="" class="chara-img" />
+        <img :src="rimSrc" alt="" class="card-rim" />
+      </div>
     </div>
   </div>
 </template>
@@ -37,11 +35,20 @@ export default {
       activeCharacter: {},
     };
   },
+  computed: {
+    rimSrc() {
+      return require(`../assets/images/night-market-${this.cardBg}-rim.png`);
+
+      /* /_nuxt/assets/images/night-market-bad-rim.png */
+      /* ../assets/images/night-market-bad-rim.png */
+    },
+  },
   created() {
     this.chooseBg();
     this.loadCharacters();
     this.chooseCharacter();
   },
+
   methods: {
     chooseBg() {
       let cardRarity = 0;
@@ -128,7 +135,7 @@ button {
 }
 
 .night-market-card {
-  height: 36.3rem;
+  height: 37.8rem;
   width: 24.3rem;
   background: white;
 
@@ -145,6 +152,9 @@ button {
   -webkit-backface-visibility: hidden; /* Safari */
   backface-visibility: hidden;
 }
+.val-bg {
+  background-size: 99.4% 99.8%;
+}
 .val-bg:hover {
   opacity: 0.97;
 }
@@ -153,10 +163,31 @@ button {
   transform: rotateY(180deg);
   background-color: #171717;
 }
+.card-gradient {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    360deg,
+    #000000 0%,
+    rgba(0, 0, 0, 0.491594) 24.73%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+.chara-name {
+  position: absolute;
+  bottom: 0%;
+}
+.chara-img {
+  width: 100%;
+}
 .card-rim {
   z-index: 99;
-  height: 40rem;
-  width: 30rem;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0%;
+  left: 0%;
 }
 
 .flipped {
@@ -197,6 +228,6 @@ button {
   }
   100% {
     transform: rotateY(180deg);
-  
+
 }*/
 </style>
