@@ -513,7 +513,7 @@ export default {
   );
   opacity: 0.25;
   position: absolute;
-  top: -40px;
+  top: -80px;
   left: 0;
   animation: shine 200ms linear;
   transform: translateX(250px) rotate(-25deg);
