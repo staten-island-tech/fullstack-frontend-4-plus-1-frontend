@@ -13,7 +13,8 @@
       @click="startGame"
     >
       START 4 Keys:
-      <br /> D, F, H, J
+      <br />
+      D, F, H, J
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
@@ -59,7 +60,7 @@
 /* eslint-disable */
 
 export default {
-  layout: 'noNav',
+  layout: 'nonav',
 
   data() {
     return {
@@ -1009,7 +1010,7 @@ export default {
   background-position: center;
   transition: all 200ms ease-in-out;
   box-shadow: 0px 10px 10px 0px #1b1b1b;
-  
+
   font-size: 3rem;
 }
 
@@ -1108,7 +1109,7 @@ export default {
 
   width: 40rem;
   height: 55rem;
-  
+
   background-image: linear-gradient(
       rgba(30, 30, 30, 0.8),
       rgba(30, 30, 30, 0.8)
@@ -1163,14 +1164,14 @@ export default {
 .game-pause-button-container > button {
   width: 20rem;
   height: 6rem;
-  
+
   background-image: linear-gradient(
       rgba(30, 30, 30, 0.6),
       rgba(30, 30, 30, 0.6)
     ),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
 
-  background-size: cover;;
+  background-size: cover;
 
   border-radius: 3rem;
   border: #777777 solid 0.4rem;
@@ -1183,7 +1184,6 @@ export default {
   cursor: pointer;
 
   box-shadow: 0px 10px 10px 0px #1b1b1b;
-
 }
 
 .game-pause-button-container > button:hover {
@@ -1196,7 +1196,4 @@ export default {
     background-position: 100% 50%;
   }
 }
-
-
-
 </style>
