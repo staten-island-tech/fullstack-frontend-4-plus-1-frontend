@@ -18,6 +18,9 @@
 import characters from '~/static/characters.json';
 
 export default {
+  props: {
+    loadRoll: Boolean,
+  },
   data() {
     return {
       cardRarity: null,
@@ -33,6 +36,7 @@ export default {
       charaName: {},
     };
   },
+
   computed: {
     rimSrc() {
       return require(`../assets/images/night-market-${this.cardBg}-rim.png`);

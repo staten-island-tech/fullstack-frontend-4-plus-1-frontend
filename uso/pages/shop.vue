@@ -4,11 +4,11 @@
     <h1>Shop</h1>
     <section class="night-market">
       <div class="night-market-card-container">
-        <night-market-card />
-        <night-market-card />
-        <night-market-card />
-        <night-market-card />
-        <night-market-card />
+        <night-market-card :load-roll="loadRoll" />
+        <night-market-card :load-roll="loadRoll" />
+        <night-market-card :load-roll="loadRoll" />
+        <night-market-card :load-roll="loadRoll" />
+        <night-market-card :load-roll="loadRoll" />
       </div>
     </section>
   </div>
@@ -20,7 +20,8 @@ export default {
   components: { NightMarketCard },
   data() {
     return {
-      skins: [
+      loadRoll: false,
+      /* skins: [
         {
           id: 1,
           name: 'Ganyu',
@@ -42,7 +43,7 @@ export default {
           price: 875,
           url: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fm.facebook.com%2Fpermalink.php%3Fid%3D101202351522824%26story_fbid%3D180410030268722&psig=AOvVaw1cjyAjW584dPMv_qfG6WRu&ust=1647104808924000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCIia8PbEvvYCFQAAAAAdAAAAABAD',
         },
-      ],
+      ], */
     };
   },
 };
