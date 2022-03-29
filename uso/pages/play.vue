@@ -491,24 +491,20 @@ export default {
       function healthbarHitGood() {
         if (t.health < 1) {
           t.health += 0.1;
-          console.log(t.health);
         }
       }
 
       function healthbarHitBad() {
         if (t.health < 1) {
           t.health += 0.05;
-          console.log(t.health);
         }
       }
 
       function healthbarMiss() {
         if (t.health > 0) {
           t.health -= 0.1;
-          console.log(t.health);
         } else {
           t.health = 0;
-          console.log(t.health);
         }
       }
 
@@ -533,8 +529,13 @@ export default {
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
-            console.log('hit');
             if (thisCircle) thisCircle.hit();
+          });
+
+          createjs.Tween.get(t.ss.targetCircles[columnI]).call(function (
+            tween
+          ) {
+            tween.graphics.beginFill.style = 'rgba(0, 0, 255, 0.5)'; // Change to 50% blue
           });
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
@@ -684,7 +685,6 @@ export default {
               healthbarFinalVal(t.health);
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
-              console.log('HIT MISSED');
               this.miss();
               return;
           }
@@ -704,7 +704,6 @@ export default {
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-          console.log(this.hitSound);
 
           if (this.hitSound === 0) {
             t.defaultHitSoftNormal.play();
