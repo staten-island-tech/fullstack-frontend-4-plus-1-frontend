@@ -6,13 +6,10 @@
   >
     <div class="val-bg" :class="cardBg"></div>
     <div class="card-front">
-      <div class="card-gradient">
-        <p class="chara-name">
-          {{ activeCharacter.title }}
-        </p>
-        <img :src="activeCharacter.image_url" alt="" class="chara-img" />
-        <img :src="rimSrc" alt="" class="card-rim" />
-      </div>
+      <div class="card-gradient"></div>
+      <p class="chara-name">{{ charaName }}</p>
+      <img :src="activeCharacter.image_url" alt="" class="chara-img" />
+      <img :src="rimSrc" alt="" class="card-rim" />
     </div>
   </div>
 </template>
@@ -33,6 +30,7 @@ export default {
       charasBad: {},
       activeArray: {},
       activeCharacter: {},
+      charaName: {},
     };
   },
   computed: {
@@ -44,9 +42,7 @@ export default {
     },
   },
   created() {
-    this.chooseBg();
-    this.loadCharacters();
-    this.chooseCharacter();
+    this.getRoll();
   },
 
   methods: {
@@ -110,6 +106,20 @@ export default {
       const activeArray = this.activeArray;
       const charaNumber = Math.floor(Math.random() * activeArray.length);
       this.activeCharacter = activeArray[charaNumber];
+    },
+    getCharaName() {
+      if (this.activeCharacter.title.includes(',')) {
+        const charaName = this.activeCharacter.title.split(', ');
+        this.charaName = charaName[1] + ' ' + charaName[0];
+      } else {
+        this.charaName = this.activeCharacter.title;
+      }
+    },
+    getRoll() {
+      this.chooseBg();
+      this.loadCharacters();
+      this.chooseCharacter();
+      this.getCharaName();
     },
   },
 };
@@ -177,9 +187,12 @@ button {
 .chara-name {
   position: absolute;
   bottom: 0%;
+  font-size: 4rem;
+  padding: 1rem 1.4rem;
 }
 .chara-img {
   width: 100%;
+  z-index: -1;
 }
 .card-rim {
   z-index: 99;
