@@ -19,13 +19,9 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-<<<<<<< Updated upstream
- <div id="health-bar"></div>
-=======
 <div class="health-bar-cont">
         <div id="health-bar"></div>
 </div>
->>>>>>> Stashed changes
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -1098,11 +1094,6 @@ export default {
 
 
 #health-bar {
-<<<<<<< Updated upstream
-  height: 3%;
-  width: 100%;
-=======
->>>>>>> Stashed changes
 transform: rotate(0.75turn);
 }
 
