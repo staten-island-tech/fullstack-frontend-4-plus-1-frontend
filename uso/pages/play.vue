@@ -1,23 +1,30 @@
 <template>
   <div id="game-index">
-    <div class="game-image-container">
-      <img
-        :src="`/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]}`"
-      />
-    </div>
+    <div
+      v-if="beatmapData.metadata"
+      class="game-image-container"
+      :style="{
+        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
+      }"
+    ></div>
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
       @click="startGame"
     >
-      START
+      START 4 Keys:
+      <br />
+      D, F, H, J
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div class="statistics-container">
+    <div class="health-bar-cont">
+      <div id="health-bar"></div>
+    </div>
+    <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
       <h1>
@@ -25,9 +32,11 @@
       </h1>
       <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
     </div>
+
     <div class="game-pb-container">
       <div id="game-pb"></div>
       <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
+
       <button
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
@@ -37,6 +46,14 @@
         MUTE
       </button>
     </div>
+
+    <div v-show="paused" class="game-pause-menu">
+      <div class="game-pause-button-container">
+        <button @click="onPauseKey()">Continue</button>
+        <button>Retry</button>
+        <button @click="$router.push('/beatmaps')">Return</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -45,19 +62,22 @@
 /* eslint-disable */
 
 export default {
-  layout: 'noNav',
+  layout: 'nonav',
 
   data() {
     return {
       loaded: {
         createjs: false,
         keydrown: false,
-        howler: false,
+
         progressbar: false,
       },
       areAllLoaded: false,
       started: false,
       songLoaded: false,
+
+      beatmapData: {},
+      notes: [],
 
       score: 0,
       combo: 0,
@@ -83,34 +103,22 @@ export default {
         0: null,
       },
 
+      pauseKey: 'P',
+      paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
       allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
+      numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      canvasWidth: null,
 
       stage: null,
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
-
-      hitPercent: 0.85,
-      radius: 40,
-
-      music: null,
-      beatmapIntro: null,
-      songDuration: 0,
-      volume: 0.1,
-      pbVolProgress: 0.1,
-      progressBarVol: null,
-      scale: 0,
-      opacity: 1,
-      pbdur: null,
-      songDuration: 0,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -118,10 +126,26 @@ export default {
         columnBorders: [],
         targetCircles: [],
       },
-      beatmapData: {},
-      notes: [],
+      noteObjectArray: [],
       readyNotes: [],
       readySliders: [],
+
+      hitPercent: 0.85,
+      radius: 40,
+      noteHitSound: null,
+      music: null,
+      beatmapIntro: null,
+      songDuration: 0,
+      volume: 0.1,
+      pbVolProgress: 1,
+      scale: 0,
+      opacity: 1,
+      pbdur: null,
+      songDuration: 0,
+      progressBarVol: null,
+      health: 1,
+
+      Page: this.$route.name,
     };
   },
 
@@ -148,15 +172,14 @@ export default {
     };
   },
 
-  created() {
-    window.addEventListener('wheel', this.onScroll);
-  },
-
   destroyed() {
     window.removeEventListener('wheel', this.onScroll);
   },
 
   computed: {
+    canvasWidth() {
+      return this.numColumns * this.columnWidth;
+    },
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -232,10 +255,6 @@ export default {
       },
       deep: true,
     },
-    $route() {
-      // this.music.stop();
-      // this.console.log('hi');
-    },
   },
 
   methods: {
@@ -243,24 +262,25 @@ export default {
       {
         const t = this;
 
+        Howler.volume(1);
+
         t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
-        t.beatmapIntro = t.notes[0].time < 5000 ? 0 : t.notes[0].time - 5000;
+        t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
+
+        window.addEventListener('wheel', this.onScroll);
 
         t.keys = [
-          ...t.allKeys.slice(-(Math.floor(t.beatmapData.columns / 2) + 5), -5),
-          ...(t.beatmapData.columns % 2 ? [t.allKeys[4]] : []),
-          ...t.allKeys.slice(5, Math.floor(t.beatmapData.columns / 2) + 5),
+          ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
+          ...(t.numColumns % 2 ? [t.allKeys[4]] : []),
+          ...t.allKeys.slice(5, Math.floor(t.numColumns / 2) + 5),
         ];
 
         t.colors = [
-          ...t.allColors.slice(
-            -(Math.floor(t.beatmapData.columns / 2) + 2),
-            -2
-          ),
-          ...(t.beatmapData.columns % 2 ? [t.allColors[4]] : []),
+          ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2),
+          ...(t.numColumns % 2 ? [t.allColors[4]] : []),
           ...t.allColors
-            .slice(-(Math.floor(t.beatmapData.columns / 2) + 2), -2)
+            .slice(-(Math.floor(t.numColumns / 2) + 2), -2)
             .reverse(),
         ];
 
@@ -274,20 +294,38 @@ export default {
         t.songDuration = t.music.duration();
         t.music.seek(t.beatmapIntro / 1000);
 
-          
-          t.hitSound = new Howl({
-            src: [
-              `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/normal-hitclap.wav`,
-            ],
-            volume: t.volume,
-            onload: () => (t.songLoaded = true),
-          });
-          /* ===============
+        t.defaultHitNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitClapNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
+          volume: t.volume,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitSoftNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
+          volume: 0.3,
+          onload: () => (t.songLoaded = true),
+        });
+        t.defaultHitSoftClapNormal = new Howl({
+          src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
+          volume: 0.08,
+          onload: () => (t.songLoaded = true),
+        });
+        t.softSliderWhistle = new Howl({
+          src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
+          volume: 0.1,
+          onload: () => (t.songLoaded = true),
+        });
+        //
+
         /* ===============
               PROGRESS BAR
               =============== */
 
-        this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+        t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
           color: '#FCB03C',
           // This has to be the same size as the maximum width to
           // prevent clipping
@@ -313,31 +351,22 @@ export default {
           },
         });
 
-        this.progressBarVol.animate(t.pbVolProgress);
+        t.progressBarVol.animate(t.pbVolProgress);
 
         /* ===============
               CANVAS SETUP
               =============== */
 
-        /* const $canvas = document.querySelector('#canvas');
+        const $canvas = document.querySelector('#canvas');
 
         // Sets the canvas width/height pixels = to canvas display size width/height
         $canvas.width = $canvas.offsetWidth;
         $canvas.height = $canvas.offsetHeight;
 
- */
-
-        t.canvasWidth = t.beatmapData.columns * t.columnWidth;
         t.stage = new createjs.Stage('canvas');
-
-        t.stage.canvas.width = t.stage.canvas.offsetWidth;
-        t.stage.canvas.height = t.stage.canvas.offsetHeight;
-
         t.stageWidth = t.stage.canvas.width;
-        t.stageColWidth = t.stageWidth / t.beatmapData.columns;
+        t.stageColWidth = t.stageWidth / t.numColumns;
         t.stageHeight = t.stage.canvas.height;
-
-        t.radius = 40;
 
         /* ===============
               TICKER
@@ -361,7 +390,7 @@ export default {
         t.stage.addChild(t.ss.setupContainer);
         t.stage.setChildIndex(t.ss.setupContainer, 0);
 
-        const background = new createjs.Shape();
+        /* const background = new createjs.Shape();
 
         // Draws the gray background on the canvas
         background.graphics
@@ -370,13 +399,13 @@ export default {
 
         background.name = 'background';
 
-        t.ss.setupContainer.addChild(background);
+        t.ss.setupContainer.addChild(background); */
 
         /* ===============
               STAGE SETUP
               =============== */
 
-        for (let i = 0; i < t.beatmapData.columns; i++) {
+        for (let i = 0; i < t.numColumns; i++) {
           // Creates a new column container for each column
           t.ss.columnContainers.push(new createjs.Container());
 
@@ -433,6 +462,16 @@ export default {
       t.music.play();
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
+      t.healthBar = new ProgressBar.Line('#health-bar', {
+        strokeWidth: 4,
+        easing: 'easeInOut',
+        duration: 500,
+        color: '#FFEA82',
+        trailColor: '#eee',
+        trailWidth: 4,
+        svgStyle: { width: '80rem', height: '4rem' },
+      });
+
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
@@ -445,6 +484,32 @@ export default {
 
       t.progressBar.animate(1);
 
+      t.healthBar.animate(1);
+
+      function healthbarFinalVal(currentHealth) {
+        t.healthBar.animate(currentHealth);
+      }
+
+      function healthbarHitGood() {
+        if (t.health < 1) {
+          t.health += 0.1;
+        }
+      }
+
+      function healthbarHitBad() {
+        if (t.health < 1) {
+          t.health += 0.05;
+        }
+      }
+
+      function healthbarMiss() {
+        if (t.health > 0) {
+          t.health -= 0.1;
+        } else {
+          t.health = 0;
+        }
+      }
+
       /* ===============
           KEY PRESS
           =============== */
@@ -452,38 +517,46 @@ export default {
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
       t.hitJudgement = {
-        320: 16.5,
-        300: Math.floor(64 - 3 * OD) + 0.5,
-        200: Math.floor(97 - 3 * OD) + 0.5,
-        100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(151 - 3 * OD) + 0.5,
-        0: Math.floor(170 - 3 * OD) + 0.5,
+        320: 16,
+        300: Math.floor(64 - 3 * OD),
+        200: Math.floor(97 - 3 * OD),
+        100: Math.floor(127 - 3 * OD),
+        50: Math.floor(151 - 3 * OD),
+        0: Math.floor(188 - 3 * OD),
       };
 
       document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
             if (thisCircle) thisCircle.hit();
           });
-        }
+
+          createjs.Tween.get(t.ss.targetCircles[columnI]).call(function (
+            tween
+          ) {
+            tween.graphics.beginFill.style = 'rgba(0, 0, 255, 0.5)'; // Change to 50% blue
+          });
+        } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      for (let i = 0; i < t.beatmapData.columns; i++) {
+      for (let i = 0; i < t.numColumns; i++) {
         kd[t.keys[i]].down(function () {
           if (!t.readySliders[i]) return;
           t.readySliders[i].held = true;
 
           if (!t.readySliders[i].initialMs)
-            t.readySliders[i].initialMs = t.readySliders[i].botMsFromAbs();
+            t.readySliders[i].initialMs = t.readySliders[i].msFrom('bot', true);
         });
 
         kd[[t.keys[i]]].up(function () {
           if (!t.readySliders[i]) return;
           t.readySliders[i].held = false;
 
-          if (t.readySliders[i].topMsFromAbs() <= t.hitJudgement['50']) {
-            t.readySliders[i].finalMs = t.readySliders[i].topMsFromAbs();
+          if (t.readySliders[i].msFrom('top', true) <= t.hitJudgement['50']) {
+            t.readySliders[i].finalMs = t.readySliders[i].msFrom('top', true);
 
             t.readySliders[i].avgMs =
               (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
@@ -491,7 +564,7 @@ export default {
             t.readySliders[i].hit();
           } else {
             if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
-            else t.readySliders[i].releasedMs = t.readySliders[i].topMsFrom();
+            else t.readySliders[i].releasedMs = t.readySliders[i].msFrom('top');
           }
         });
       }
@@ -504,349 +577,427 @@ export default {
               NOTES
           =============== */
 
-      class Timer {
-        constructor(callback, delay) {
-          this.callback = callback;
-          this.remainingTime = delay;
-          this.startTime;
-          this.id;
+      class Note extends createjs.Shape {
+        constructor(note) {
+          super(
+            new createjs.Graphics()
+              .beginStroke('Black')
+              .beginFill(t.colors[note.columnIndex])
+              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius)
+          );
+
+          this.name = 'thisCircle';
+          this.i = note.columnIndex;
+          this.hitSample = note.hitSample;
+          this.hitSound = note.hitSound;
+          this.time = note.time;
+
+          this.animate = this.animate.bind(this);
+          this.remove = this.remove.bind(this);
+          this.cache(
+            t.stageColWidth / 2 - t.radius,
+            -2 * t.radius,
+            2 * t.radius,
+            2 * t.radius
+          );
+
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+          this.startTime, this.timerID;
+
+          this.resumeTimer();
         }
 
-        pause() {
-          clearTimeout(this.id);
+        msFrom(isAbs = false) {
+          return isAbs
+            ? Math.abs(
+                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                  (t.dy * t.stageFPS)
+              )
+            : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                (t.dy * t.stageFPS);
+        }
+
+        miss() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.combo = 0;
+
+          healthbarMiss();
+          healthbarFinalVal(t.health);
+        }
+
+        hit() {
+          t.beatmapData.hitObjects.forEach((note) => {
+            t.noteHitSound = note.hitSample.filename;
+          });
+
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.msFrom(true) <= t.hitJudgement['320']:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+              break;
+            case this.msFrom(true) <= t.hitJudgement['300']:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['200']:
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+              break;
+            case this.msFrom(true) <= t.hitJudgement['100']:
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
+              break;
+            case this.msFrom(true) <= t.hitJudgement['50']:
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
+              break;
+            case this.msFrom(true) <= t.hitJudgement['0']:
+              this.miss();
+              return;
+          }
+
+          if (t.bonus > 100) t.bonus = 100;
+          else if (t.bonus < 0) t.bonus = 0;
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+
+          //  this.hitSample = note.hitSample;
+          //  this.hitSound = note.hitSound;
+
+          if (this.hitSound === 0) {
+            t.defaultHitSoftNormal.play();
+          } else {
+            t.softSliderWhistle.play();
+          }
+
+          this.remove();
+        }
+
+        remove() {
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+        }
+
+        animate() {
+          createjs.Tween.get(this, {
+            useTicks: true,
+            onComplete: this.animate,
+          }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            // If ms from targetCircle is less than ...
+            case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
+              this.ready = true;
+              t.readyNotes[this.i].push(this);
+
+              // Start fading out
+              createjs.Tween.get(this, {
+                onComplete: this.remove,
+              }).to(
+                { alpha: 0, visible: false },
+                2 * t.hitJudgement['0'],
+                createjs.Ease.linear
+              );
+              break;
+            // If it reaches offscreen then ...
+            // Remove the circle and time it correctly
+            case this.msFrom() > t.hitJudgement['50']:
+              this.miss();
+              break;
+          }
+        }
+
+        resumeTimer() {
+          this.startTime = new Date();
+
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
+            this.animate();
+          }, this.remainingTime);
+        }
+
+        pauseTimer() {
+          clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
 
-        resume() {
-          this.startTime = new Date();
-          clearTimeout(this.id);
-          this.id = setTimeout(this.callback, this.remainingTime);
-        }
-
-        start() {
-          this.id = setTimeout(this.callback, this.remainingTime);
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
         }
       }
 
-      t.notes.forEach((note) => {
-        switch (note.type) {
-          case 'note':
-            const circleGraphic = new createjs.Graphics()
-              .beginStroke('Black')
-              .beginFill(t.colors[note.columnIndex])
-              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius);
+      class Slider extends createjs.Shape {
+        constructor(note) {
+          const height =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-            const thisCircle = new createjs.Shape(circleGraphic);
-            thisCircle.name = 'thisCircle';
-            thisCircle.i = note.columnIndex;
-
-            thisCircle.msFrom = function () {
-              return (
-                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
-
-            thisCircle.msFromAbs = function () {
-              return Math.abs(this.msFrom());
-            };
-
-            thisCircle.miss = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              t.latestHit = 0;
-              t.totalHits['0']++;
-              t.bonus = 0;
-
-              t.combo = 0;
-
-              createjs.Tween.removeTweens(thisCircle);
-              t.ss.columnContainers[thisCircle.i].removeChild(thisCircle);
-              t.readyNotes[thisCircle.i][thisCircle.readyIndex] = null;
-            };
-
-            thisCircle.hit = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              let hitBonusValue = 0;
-
-              switch (true) {
-                case this.msFromAbs() <= t.hitJudgement['320']:
-                  t.latestHit = 320;
-                  t.totalHits['320']++;
-                  hitBonusValue = 32;
-                  t.bonus += 2;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['300']:
-                  t.latestHit = 300;
-                  t.totalHits['300']++;
-                  hitBonusValue = 32;
-                  t.bonus += 1;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['200']:
-                  t.latestHit = 200;
-                  t.totalHits['200']++;
-                  hitBonusValue = 16;
-                  t.bonus -= 8;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['100']:
-                  t.latestHit = 100;
-                  t.totalHits['100']++;
-                  hitBonusValue = 8;
-                  t.bonus -= 24;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['50']:
-                  t.latestHit = 50;
-                  t.totalHits['50']++;
-                  hitBonusValue = 4;
-                  t.bonus -= 44;
-                  break;
-                case this.msFromAbs() <= t.hitJudgement['0']:
-                  t.latestHit = 0;
-                  t.totalHits['0']++;
-                  t.bonus = 0;
-
-                  t.combo = 0;
-                  break;
-              }
-
-              if (!(t.latestHit === 0)) {
-                if (t.bonus > 100) t.bonus = 100;
-                if (t.bonus < 0) t.bonus = 0;
-
-                const baseScore =
-                  ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-                const bonusScore =
-                  ((1000000 * 0.5) / t.notes.length) *
-                  ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-                t.score += bonusScore + baseScore;
-                t.combo += 1;
-
-                createjs.Tween.removeTweens(this);
-                t.ss.columnContainers[this.i].removeChild(this);
-                t.readyNotes[this.i][this.readyIndex] = null;
-              }
-            };
-
-            // thisCircle.cache(0, -85, 120, 120);
-            thisCircle.cache(
-              t.stageColWidth / 2 - t.radius,
-              -2 * t.radius,
-              2 * t.radius + 30,
-              2 * t.radius + 30
-            );
-
-            setTimeout(() => {
-              t.ss.columnContainers[thisCircle.i].addChild(thisCircle);
-
-              animate();
-
-              function animate() {
-                createjs.Tween.get(thisCircle, {
-                  useTicks: true,
-                  onChange: onChange,
-                  onComplete: animate,
-                }).to({ y: thisCircle.y + t.dy }, 1);
-              }
-              function onChange() {
-                switch (true) {
-                  // If ms from targetCircle is less than ...
-                  case thisCircle.msFromAbs() <= t.hitJudgement['0'] &&
-                    !thisCircle.ready:
-                    thisCircle.ready = true;
-
-                    thisCircle.readyIndex =
-                      t.readyNotes[thisCircle.i].push(thisCircle) - 1;
-                    break;
-
-                  // If it reaches offscreen then ...
-                  case thisCircle.msFrom() > t.hitJudgement['50']:
-                    thisCircle.miss();
-                    break;
-                }
-              }
-            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
-
-            break;
-          case 'hold':
-            const sliderHeight =
-              (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
-            const sliderGraphic = new createjs.Graphics()
+          super(
+            new createjs.Graphics()
               .beginStroke('Black')
               .beginFill(t.colors[note.columnIndex])
               .drawRoundRectComplex(
                 10,
-                -(sliderHeight + 2 * t.radius),
+                -(height + 2 * t.radius),
                 2 * t.radius,
-                sliderHeight + 2 * t.radius,
+                height + 2 * t.radius,
                 t.radius,
                 t.radius,
                 t.radius,
                 t.radius
-              );
+              )
+          );
 
-            const thisSlider = new createjs.Shape(sliderGraphic);
-            thisSlider.name = 'thisSlider';
-            thisSlider.i = note.columnIndex;
-            thisSlider.botMsFrom = function () {
-              return (
-                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
+          this.height = height;
 
-            thisSlider.topMsFrom = function () {
-              return (
-                ((this.y -
-                  (t.stageHeight * t.hitPercent + t.radius + sliderHeight)) *
-                  1000) /
-                (t.dy * t.stageFPS)
-              );
-            };
+          this.name = 'thisSlider';
+          this.i = note.columnIndex;
+          this.hitSample = note.hitSample;
+          this.hitSound = note.hitSound;
+          this.time = note.time;
 
-            thisSlider.botMsFromAbs = function () {
-              return Math.abs(this.botMsFrom());
-            };
+          this.animate = this.animate.bind(this);
+          /* this.cache(
+            t.stageColWidth / 2 - t.radius,
+            -2 * t.radius,
+            2 * t.radius + 30,
+            2 * t.radius + 30
+          ); */
 
-            thisSlider.topMsFromAbs = function () {
-              return Math.abs(this.topMsFrom());
-            };
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+          this.startTime, this.timerID;
 
-            thisSlider.miss = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              t.latestHit = 0;
-              t.totalHits['0']++;
-              t.bonus = 0;
-
-              t.combo = 0;
-
-              createjs.Tween.removeTweens(thisSlider);
-              t.ss.columnContainers[thisSlider.i].removeChild(thisSlider);
-              t.readySliders[thisSlider.i] = null;
-            };
-
-            thisSlider.hit = function () {
-              if (this.removed) return;
-              this.removed = true;
-
-              let hitBonusValue = 0;
-
-              switch (true) {
-                case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
-                  t.latestHit = 320;
-                  t.totalHits['320']++;
-                  hitBonusValue = 32;
-                  t.bonus += 2;
-                  break;
-                case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
-                  t.latestHit = 300;
-                  t.totalHits['300']++;
-                  hitBonusValue = 32;
-                  t.bonus += 1;
-                  break;
-                case this.avgMs <= t.hitJudgement['300'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
-                  t.latestHit = 200;
-                  t.totalHits['200']++;
-                  hitBonusValue = 16;
-                  t.bonus -= 8;
-                  break;
-                case this.avgMs <= t.hitJudgement['200'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
-                  t.latestHit = 100;
-                  t.totalHits['100']++;
-                  hitBonusValue = 8;
-                  t.bonus -= 24;
-                  break;
-                case this.avgMs <= t.hitJudgement['50'] ||
-                  (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
-                  t.latestHit = 50;
-                  t.totalHits['50']++;
-                  hitBonusValue = 4;
-                  t.bonus -= 44;
-                  break;
-              }
-
-              if (t.bonus > 100) t.bonus = 100;
-              if (t.bonus < 0) t.bonus = 0;
-
-              const baseScore =
-                ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-              const bonusScore =
-                ((1000000 * 0.5) / t.notes.length) *
-                ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-              t.score += bonusScore + baseScore;
-              t.combo += 1;
-
-              createjs.Tween.removeTweens(this);
-              t.ss.columnContainers[this.i].removeChild(this);
-              t.readySliders[this.i] = null;
-            };
-
-            setTimeout(() => {
-              t.ss.columnContainers[note.columnIndex].addChild(thisSlider);
-
-              animate();
-
-              function animate() {
-                /*
-                useTicks: uses update ticks (60 fps) instead of ms
-                onChange: runs ths function when the position is changed (thus this function is run every tick)
-                onComplete: runs this function when animation is done
-              */
-                createjs.Tween.get(thisSlider, {
-                  useTicks: true,
-                  onChange: onChange,
-                  onComplete: animate,
-                }).to({ y: thisSlider.y + t.dy }, 1);
-              }
-              function onChange() {
-                switch (true) {
-                  case thisSlider.botMsFromAbs() <= t.hitJudgement['50'] &&
-                    !thisSlider.ready:
-                    thisSlider.ready = true;
-
-                    thisSlider.readyIndex = thisSlider.i;
-                    t.readySliders[thisSlider.i] = thisSlider;
-                    break;
-
-                  case thisSlider.botMsFrom() > t.hitJudgement['50'] &&
-                    !thisSlider.initialMs:
-                    thisSlider.miss();
-                    break;
-
-                  case thisSlider.topMsFrom() > t.hitJudgement['50'] &&
-                    thisSlider.held &&
-                    thisSlider.initialMs:
-                    thisSlider.hit();
-                    break;
-
-                  case thisSlider.topMsFrom() > t.hitJudgement['50']:
-                    thisSlider.miss();
-                    break;
-                }
-              }
-            }, note.time - t.beatmapIntro - (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS));
-
-            break;
-          default:
-            console.log(`Invalid note type: ${note.type}`);
-
-            break;
+          this.resumeTimer();
         }
+
+        msFrom(position, isAbs = false) {
+          if (position === 'bot') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y - (t.stageHeight * t.hitPercent + t.radius)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                  (t.dy * t.stageFPS);
+          } else if (position === 'top') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y -
+                    (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y -
+                  (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                  1000) /
+                  (t.dy * t.stageFPS);
+          } else console.log('Invalid position in slider.msFrom()');
+        }
+
+        miss() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+
+          t.combo = 0;
+
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readySliders[this.i] = null;
+          healthbarMiss();
+          healthbarFinalVal(t.health);
+        }
+
+        hit() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+              break;
+            case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+              break;
+            case this.avgMs <= t.hitJudgement['300'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
+              break;
+            case this.avgMs <= t.hitJudgement['200'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
+              break;
+            case this.avgMs <= t.hitJudgement['50'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
+              break;
+          }
+
+          if (t.bonus > 100) t.bonus = 100;
+          if (t.bonus < 0) t.bonus = 0;
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readySliders[this.i] = null;
+        }
+
+        animate() {
+          createjs.Tween.get(this, {
+            useTicks: true,
+            onComplete: this.animate,
+          }).to({ y: this.y + t.dy }, 1);
+
+          switch (true) {
+            case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
+              !this.ready:
+              this.ready = true;
+
+              t.readySliders[this.i] = this;
+              break;
+
+            case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
+              this.miss();
+              break;
+
+            case this.msFrom('top') > t.hitJudgement['50']:
+              if (this.held && this.initialMs) this.hit();
+              else this.miss();
+              break;
+          }
+        }
+
+        resumeTimer() {
+          this.startTime = new Date();
+
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+
+            this.animate();
+          }, this.remainingTime);
+        }
+
+        pauseTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+
+        startTimer() {
+          this.resumeTimer();
+          t.noteObjectArray.push(this);
+        }
+      }
+
+      t.notes.forEach((note) => {
+        if (note.type === 'note') new Note(note);
+        else if (note.type === 'hold') new Slider(note);
+        else console.log(`Invalid note type: ${note.type}`);
       });
     },
+    onPauseKey() {
+      this.paused = !this.paused;
+      if (this.paused) {
+        this.noteObjectArray.forEach((note) => note.pause());
+        createjs.Ticker.paused = true;
+        this.music.pause();
+      } else {
+        this.noteObjectArray.forEach((note) => note.resume());
+        createjs.Ticker.paused = false;
+        this.music.play();
+      }
+    },
     onScroll(e) {
-      console.log(e);
       e.preventDefault();
 
       this.scale += e.deltaY * -0.0002;
@@ -874,7 +1025,7 @@ export default {
 
 <style scoped>
 #game-index {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -886,11 +1037,11 @@ export default {
 
   width: 100%;
   height: 100%;
-  overflow: hidden;
 
   opacity: 0.5;
-
   z-index: -100;
+
+  background-size: cover;
 }
 
 .game-image-container > img {
@@ -900,16 +1051,36 @@ export default {
 .game-start-button {
   height: 20vh;
   width: 20vw;
-  background-color: gray;
+  outline: none;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.8),
+      rgba(30, 30, 30, 0.8)
+    ),
+    url('~/assets/images/backgrounds/landing-page-background-inazuma.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: all 200ms ease-in-out;
+  box-shadow: 0px 10px 10px 0px #1b1b1b;
+
   font-size: 3rem;
+}
+
+.game-start-button:hover {
+  transform: scale(0.95);
 }
 
 .game-canvas-container,
 #canvas {
   height: 100vh;
+  background-color: #181818;
 }
 
-.statistics-container {
+.game-statistics-container {
   min-width: 35rem;
   height: 30rem;
 
@@ -922,7 +1093,7 @@ export default {
   justify-content: space-evenly;
 }
 
-.statistics-container > h1 {
+.game-statistics-container > h1 {
   font-size: 7rem;
 }
 
@@ -935,9 +1106,22 @@ export default {
   flex-direction: column;
 }
 
+.health-bar-cont {
+  height: 80vh;
+  width: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 #game-pb {
   height: 20%;
   width: 20%;
+}
+
+#health-bar {
+  transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
@@ -963,5 +1147,111 @@ export default {
   height: 5vh;
   width: 5vw;
   font-size: 3rem;
+}
+
+/* PAUSE css begins here...*/
+
+.game-pause-menu {
+  position: absolute;
+  z-index: 100;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.game-pause-button-container {
+  --border-width: 3px;
+  position: absolute;
+
+  width: 40rem;
+  height: 55rem;
+
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.8),
+      rgba(30, 30, 30, 0.8)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  border-radius: 6rem;
+  border: #777777 solid 0.5rem;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  box-shadow: 0px 10px 10px 0px #010101;
+}
+
+/* .game-pause-button-container::after {
+    position: absolute;
+    content: "";
+    top: calc(-1 * var(--border-width));
+    left: calc(-1 * var(--border-width));
+    z-index: -1;
+    width: calc(100% + var(--border-width) * 2);
+    height: calc(100% + var(--border-width) * 2);
+    background: linear-gradient(
+      60deg,
+      hsl(224, 85%, 66%),
+      hsl(269, 85%, 66%),
+      hsl(314, 85%, 66%),
+      hsl(359, 85%, 66%),
+      hsl(44, 85%, 66%),
+      hsl(89, 85%, 66%),
+      hsl(134, 85%, 66%),
+      hsl(179, 85%, 66%)
+    );
+    background-size: 300% 300%;
+    background-position: 0 50%;
+    border-radius: calc(20 * var(--border-width));
+    animation: moveGradient 4s alternate infinite;
+
+    border: #eeeeee solid 0.5rem;
+
+}  */
+
+.game-pause-button-container > button {
+  width: 20rem;
+  height: 6rem;
+
+  background-image: linear-gradient(
+      rgba(30, 30, 30, 0.6),
+      rgba(30, 30, 30, 0.6)
+    ),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+
+  background-size: cover;
+
+  border-radius: 3rem;
+  border: #777777 solid 0.4rem;
+
+  font-size: 3rem;
+  color: #f3f3f3;
+
+  transition: 0.3s all;
+
+  cursor: pointer;
+
+  box-shadow: 0px 10px 10px 0px #1b1b1b;
+}
+
+.game-pause-button-container > button:hover {
+  transform: translate(0, -0.5rem) scale(1.05);
+  border: #fcfcfc solid 0.4rem;
+}
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
+  }
 }
 </style>

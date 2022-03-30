@@ -67,9 +67,47 @@
   </div>
 </template>
 
+
 <script>
 export default {
+  /* eslint-disable */
   name: 'NavBar',
+
+  data() {
+    return {
+      page:  this.$route.name
+    }
+  },
+
+  head() {
+    return {
+      script: [
+
+        {
+          src: '/lib/howler.min.js',
+        },
+
+      ],
+    };
+  },
+
+
+        watch: {
+
+   $route(to, from) {
+      if (to.name !== 'play') {// if you're going to somewhere else than `wallpaper`
+      // the `return` will end the execution and not go further
+       console.log("yes1")
+        Howler.volume(0);
+      }
+      else {
+        console.log("yes refresh yo")
+      
+      }
+    },
+  },
+
+
 
   mounted() {
     const animateNav = () => {
@@ -96,6 +134,10 @@ export default {
 
     animateNav();
   },
+
+  methods: {
+  }
+
 };
 </script>
 
@@ -104,7 +146,7 @@ export default {
 
 @keyframes pulse {
   to {
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 }
 
@@ -284,6 +326,7 @@ export default {
 .uso__logo--hover:hover {
   background-image: url('~/assets/images/navigation/osu-pink.svg');
   transform: scale(1.07);
+  animation: filterChange 4s infinite ease 0s, pulse 0.2s infinite alternate;
 }
 
 .uso__navbar--links {
@@ -469,3 +512,5 @@ export default {
   }
 }
 </style>
+
+

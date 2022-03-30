@@ -15,7 +15,7 @@ export default {
           hid: 'description',
           name: 'description',
           content:
-            'Where you can find all the events taking place in your neighborhood',
+            'Where you can find all the events taking pla`ce in your neighborhood',
         },
       ],
     }
