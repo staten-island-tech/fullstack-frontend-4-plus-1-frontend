@@ -13,6 +13,7 @@ export default {
   /*  mounted() {
     this.lBozo();
   }, */
+
   methods: {
     /*  lBozo() {
       let time = 10;

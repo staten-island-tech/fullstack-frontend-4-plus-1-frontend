@@ -10,6 +10,7 @@
         <night-market-card :load-roll="loadRoll" />
         <night-market-card :load-roll="loadRoll" />
       </div>
+      <button class="roll-button" @click="pressRoll()">Wish</button>
     </section>
   </div>
 </template>
@@ -46,17 +47,44 @@ export default {
       ], */
     };
   },
+  methods: {
+    pressRoll() {
+      this.loadRoll = !this.loadRoll;
+    },
+  },
 };
 </script>
 
 <style scoped>
+.night-market {
+  display: flex;
+  flex-direction: column;
+  /*  justify-content: center; */
+  align-items: center;
+}
+
 .night-market-card-container {
-  margin: auto;
+  margin: 3rem auto;
   width: 80%;
-  height: 80vh;
+  /*   height: 80vh; */
   padding: 0 10rem;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+}
+.roll-button {
+  font-size: 4rem;
+  line-height: 28px;
+  background: red;
+  padding: 1rem 2rem 0.5rem 2rem;
+  border-radius: 1rem;
+  margin: 2rem;
+}
+.roll-button:hover {
+  background: rgb(240, 0, 0);
+}
+.roll-button:active {
+  background: rgb(160, 0, 0);
+  color: rgb(223, 223, 223);
 }
 </style>

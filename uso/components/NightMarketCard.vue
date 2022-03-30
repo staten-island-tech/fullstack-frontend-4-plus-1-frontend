@@ -45,6 +45,14 @@ export default {
       /* ../assets/images/night-market-bad-rim.png */
     },
   },
+  watch: {
+    loadRoll(loadRoll) {
+      this.flipCard = false;
+      setTimeout(() => {
+        this.getRoll();
+      }, 4000);
+    },
+  },
   created() {
     this.getRoll();
   },
