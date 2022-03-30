@@ -21,7 +21,9 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div id="health-bar"></div>
+    <div class="health-bar-cont">
+      <div id="health-bar"></div>
+    </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -467,7 +469,7 @@ export default {
         color: '#FFEA82',
         trailColor: '#eee',
         trailWidth: 4,
-        svgStyle: { width: '100%', height: '100%' },
+        svgStyle: { width: '80rem', height: '4rem' },
       });
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
@@ -1104,14 +1106,21 @@ export default {
   flex-direction: column;
 }
 
+.health-bar-cont {
+  height: 80vh;
+  width: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 #game-pb {
   height: 20%;
   width: 20%;
 }
 
 #health-bar {
-  height: 3%;
-  width: 100%;
   transform: rotate(0.75turn);
 }
 
