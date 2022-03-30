@@ -50,7 +50,7 @@ export default {
       this.flipCard = false;
       setTimeout(() => {
         this.getRoll();
-      }, 4000);
+      }, 500);
     },
   },
   created() {
