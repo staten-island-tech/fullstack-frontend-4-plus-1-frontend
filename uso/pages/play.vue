@@ -125,6 +125,7 @@ export default {
         columnContainers: [],
         columnBorders: [],
         targetCircles: [],
+        targetCirclesGraphics: [],
       },
       noteObjectArray: [],
       readyNotes: [],
@@ -144,6 +145,8 @@ export default {
       songDuration: 0,
       progressBarVol: null,
       health: 1,
+
+      graphic: null,
 
       Page: this.$route.name,
     };
@@ -381,7 +384,7 @@ export default {
         createjs.Ticker.addEventListener('tick', t.stage);
 
         /* ===============
-              SETUP CONTAINER & BACKGROUND
+              SETUP CONTAINER
               =============== */
 
         t.ss.setupContainer = new createjs.Container();
@@ -389,17 +392,6 @@ export default {
 
         t.stage.addChild(t.ss.setupContainer);
         t.stage.setChildIndex(t.ss.setupContainer, 0);
-
-        /* const background = new createjs.Shape();
-
-        // Draws the gray background on the canvas
-        background.graphics
-          .beginFill('#181818')
-          .drawRect(0, 0, t.stageWidth, t.stageHeight);
-
-        background.name = 'background';
-
-        t.ss.setupContainer.addChild(background); */
 
         /* ===============
               STAGE SETUP
@@ -431,20 +423,20 @@ export default {
 
           ////////////////////////////////////////
 
-          const circleGraphic = new createjs.Graphics()
-            .beginStroke('Black')
-            .beginFill('Gray')
-            .drawCircle(
-              t.stageColWidth * (i + 0.5),
-              t.hitPercent * t.stageHeight,
-              t.radius
-            );
-
-          const targetCircle = new createjs.Shape(circleGraphic);
+          const targetCircle = new createjs.Shape(
+            new createjs.Graphics().beginStroke('Black')
+          );
+          const circleGraphic = targetCircle.graphics.beginFill('Gray').command;
+          targetCircle.graphics.drawCircle(
+            t.stageColWidth * (i + 0.5),
+            t.hitPercent * t.stageHeight,
+            t.radius
+          );
 
           targetCircle.name = `targetCircle${i}`;
 
           t.ss.targetCircles.push(targetCircle);
+          t.ss.targetCirclesGraphics.push(circleGraphic);
           t.ss.setupContainer.addChild(targetCircle);
 
           ////////////////////////////////////////
@@ -534,12 +526,15 @@ export default {
             if (thisCircle) thisCircle.hit();
           });
 
-          createjs.Tween.get(t.ss.targetCircles[columnI]).call(function (
-            tween
-          ) {
-            tween.graphics.beginFill.style = 'rgba(0, 0, 255, 0.5)'; // Change to 50% blue
-          });
+          t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+      });
+
+      document.addEventListener('keyup', function (e) {
+        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
+        if (!(columnI === -1)) {
+          t.ss.targetCirclesGraphics[columnI].style = 'gray';
+        }
       });
 
       for (let i = 0; i < t.numColumns; i++) {
