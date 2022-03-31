@@ -27,6 +27,7 @@ export default {
       cardBg: null,
       flipCard: false,
       characters,
+      charasMythical: {},
       charasBest: {},
       charasGreat: {},
       charasGood: {},
@@ -62,26 +63,31 @@ export default {
       let cardRarity = 0;
       let cardBg = null;
 
-      const bgNum = Math.floor(Math.random() * 10);
+      /* const bgNum = Math.floor(Math.random() * 100); */
+      const bgNum = 100;
 
-      if (bgNum >= 0 && bgNum < 4) {
+      if (bgNum >= 0 && bgNum < 40) {
         cardRarity = 1;
         cardBg = 'bad';
       }
-      if (bgNum >= 4 && bgNum < 6) {
+      if (bgNum >= 40 && bgNum < 60) {
         cardRarity = 2;
         cardBg = 'ok';
       }
-      if (bgNum >= 6 && bgNum < 8) {
+      if (bgNum >= 60 && bgNum < 80) {
         cardRarity = 3;
         cardBg = 'ok';
       }
-      if (bgNum >= 8 && bgNum < 9) {
+      if (bgNum >= 80 && bgNum < 90) {
         cardRarity = 4;
         cardBg = 'good';
       }
-      if (bgNum >= 9 && bgNum < 10) {
+      if (bgNum >= 90 && bgNum < 100) {
         cardRarity = 5;
+        cardBg = 'great';
+      }
+      if (bgNum === 100) {
+        cardRarity = 6;
         cardBg = 'great';
       }
       /* switch statement */
@@ -90,11 +96,13 @@ export default {
     },
     loadCharacters() {
       const characters = this.characters;
-      const charactersBest = characters.slice(0, 200);
-      const charactersGreat = characters.slice(200, 400);
-      const charactersGood = characters.slice(400, 600);
-      const charactersBad = characters.slice(600, 1000);
+      const charactersMythical = characters.slice(0, 1);
+      const charactersBest = characters.slice(1, 201);
+      const charactersGreat = characters.slice(201, 401);
+      const charactersGood = characters.slice(401, 601);
+      const charactersBad = characters.slice(601, 1001);
 
+      this.charasMythical = charactersMythical;
       this.charasBest = charactersBest;
       this.charasGreat = charactersGreat;
       this.charasGood = charactersGood;
@@ -113,6 +121,9 @@ export default {
       }
       if (cardRarity === 5) {
         this.activeArray = this.charasBest;
+      }
+      if (cardRarity === 6) {
+        this.activeArray = this.charasMythical;
       }
 
       const activeArray = this.activeArray;
