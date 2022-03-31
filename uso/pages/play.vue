@@ -12,9 +12,11 @@
       class="game-start-button"
       @click="startGame"
     >
-      START 4 Keys:
+      START
       <br />
-      D, F, H, J
+      {{ keys.length }} Keys
+      <br />
+      {{ keys.join(', ') }}
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
