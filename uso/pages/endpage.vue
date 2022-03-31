@@ -1,6 +1,9 @@
 <template>
   <div>
     <h1>endpage</h1>
+
+      
+    
   </div>
 </template>
 
@@ -14,5 +17,7 @@ export default {
 </script>
 
 <style scoped>
+
+
 
 </style>
