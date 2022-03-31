@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <div class="shop-page">
     <div class="under-nav"></div>
-    <h1>Shop</h1>
+    <section class="data-bar">
+      <h1 class="shop-heading">Shop</h1>
+      <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
+    </section>
     <section class="night-market">
       <div class="night-market-card-container">
         <night-market-card :load-roll="loadRoll" />
@@ -22,6 +25,7 @@ export default {
   data() {
     return {
       loadRoll: false,
+      primogemBalance: 1600,
       /* skins: [
         {
           id: 1,
@@ -56,6 +60,29 @@ export default {
 </script>
 
 <style scoped>
+.shop-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.data-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: center;
+  width: 70%;
+}
+.data-bar > p {
+  font-size: 4rem;
+}
+.shop-heading {
+  align-self: center;
+  margin: 3rem auto 0 auto;
+}
+.primogem-balance {
+  position: absolute;
+  right: 16%;
+}
 .night-market {
   display: flex;
   flex-direction: column;
