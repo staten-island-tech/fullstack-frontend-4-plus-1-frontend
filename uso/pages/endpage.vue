@@ -1,8 +1,12 @@
 <template>
-  <div>
-    <h1>endpage</h1>
 
-      
+<!-- transfer over to components -->
+
+  <div>
+
+      <div class="endgame-container"> 
+
+      </div>
     
   </div>
 </template>
