@@ -21,7 +21,9 @@
         >Canvas is not supported on your browser.</canvas
       >
     </div>
-    <div id="health-bar"></div>
+    <div class="health-bar-cont">
+      <div id="health-bar"></div>
+    </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -123,6 +125,7 @@ export default {
         columnContainers: [],
         columnBorders: [],
         targetCircles: [],
+        targetCirclesGraphics: [],
       },
       noteObjectArray: [],
       readyNotes: [],
@@ -142,6 +145,8 @@ export default {
       songDuration: 0,
       progressBarVol: null,
       health: 1,
+
+      graphic: null,
 
       Page: this.$route.name,
     };
@@ -264,6 +269,7 @@ export default {
 
         t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
+        t.numColumns = t.beatmapData.columns;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
         window.addEventListener('wheel', this.onScroll);
@@ -379,7 +385,7 @@ export default {
         createjs.Ticker.addEventListener('tick', t.stage);
 
         /* ===============
-              SETUP CONTAINER & BACKGROUND
+              SETUP CONTAINER
               =============== */
 
         t.ss.setupContainer = new createjs.Container();
@@ -387,17 +393,6 @@ export default {
 
         t.stage.addChild(t.ss.setupContainer);
         t.stage.setChildIndex(t.ss.setupContainer, 0);
-
-        /* const background = new createjs.Shape();
-
-        // Draws the gray background on the canvas
-        background.graphics
-          .beginFill('#181818')
-          .drawRect(0, 0, t.stageWidth, t.stageHeight);
-
-        background.name = 'background';
-
-        t.ss.setupContainer.addChild(background); */
 
         /* ===============
               STAGE SETUP
@@ -429,20 +424,20 @@ export default {
 
           ////////////////////////////////////////
 
-          const circleGraphic = new createjs.Graphics()
-            .beginStroke('Black')
-            .beginFill('Gray')
-            .drawCircle(
-              t.stageColWidth * (i + 0.5),
-              t.hitPercent * t.stageHeight,
-              t.radius
-            );
-
-          const targetCircle = new createjs.Shape(circleGraphic);
+          const targetCircle = new createjs.Shape(
+            new createjs.Graphics().beginStroke('Black')
+          );
+          const circleGraphic = targetCircle.graphics.beginFill('Gray').command;
+          targetCircle.graphics.drawCircle(
+            t.stageColWidth * (i + 0.5),
+            t.hitPercent * t.stageHeight,
+            t.radius
+          );
 
           targetCircle.name = `targetCircle${i}`;
 
           t.ss.targetCircles.push(targetCircle);
+          t.ss.targetCirclesGraphics.push(circleGraphic);
           t.ss.setupContainer.addChild(targetCircle);
 
           ////////////////////////////////////////
@@ -467,7 +462,7 @@ export default {
         color: '#FFEA82',
         trailColor: '#eee',
         trailWidth: 4,
-        svgStyle: { width: '100%', height: '100%' },
+        svgStyle: { width: '80rem', height: '4rem' },
       });
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
@@ -484,31 +479,27 @@ export default {
 
       t.healthBar.animate(1);
 
-      function heathbarFinalVal(currentHealth) {
+      function healthbarFinalVal(currentHealth) {
         t.healthBar.animate(currentHealth);
       }
 
-      function heathbarHitGood() {
+      function healthbarHitGood() {
         if (t.health < 1) {
           t.health += 0.1;
-          console.log(t.health);
         }
       }
 
-      function heathbarHitBad() {
+      function healthbarHitBad() {
         if (t.health < 1) {
           t.health += 0.05;
-          console.log(t.health);
         }
       }
 
-      function heathbarMiss() {
+      function healthbarMiss() {
         if (t.health > 0) {
           t.health -= 0.1;
-          console.log(t.health);
         } else {
           t.health = 0;
-          console.log(t.health);
         }
       }
 
@@ -533,10 +524,18 @@ export default {
         const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
-            console.log('hit');
             if (thisCircle) thisCircle.hit();
           });
+
+          t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+      });
+
+      document.addEventListener('keyup', function (e) {
+        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
+        if (!(columnI === -1)) {
+          t.ss.targetCirclesGraphics[columnI].style = 'gray';
+        }
       });
 
       for (let i = 0; i < t.numColumns; i++) {
@@ -590,6 +589,7 @@ export default {
           this.time = note.time;
 
           this.animate = this.animate.bind(this);
+          this.remove = this.remove.bind(this);
           this.cache(
             t.stageColWidth / 2 - t.radius,
             -2 * t.radius,
@@ -626,11 +626,8 @@ export default {
           t.bonus = 0;
           t.combo = 0;
 
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-          heathbarMiss();
-          heathbarFinalVal(t.health);
+          healthbarMiss();
+          healthbarFinalVal(t.health);
         }
 
         hit() {
@@ -649,16 +646,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
 
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
@@ -666,27 +663,26 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              heathbarHitBad();
-              heathbarFinalVal(t.health);
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              heathbarHitBad();
-              heathbarFinalVal(t.health);
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
-              console.log('HIT MISSED');
               this.miss();
               return;
           }
@@ -706,7 +702,6 @@ export default {
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
-          console.log(this.hitSound);
 
           if (this.hitSound === 0) {
             t.defaultHitSoftNormal.play();
@@ -737,9 +732,12 @@ export default {
 
               // Start fading out
               createjs.Tween.get(this, {
-                useTicks: true,
                 onComplete: this.remove,
-              }).to({ alpha: 0, visible: false }, 30);
+              }).to(
+                { alpha: 0, visible: false },
+                2 * t.hitJudgement['0'],
+                createjs.Ease.linear
+              );
               break;
             // If it reaches offscreen then ...
             // Remove the circle and time it correctly
@@ -856,8 +854,8 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readySliders[this.i] = null;
-          heathbarMiss();
-          heathbarFinalVal(t.health);
+          healthbarMiss();
+          healthbarFinalVal(t.health);
         }
 
         hit() {
@@ -872,16 +870,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -889,8 +887,8 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-              heathbarHitGood();
-              heathbarFinalVal(t.health);
+              healthbarHitGood();
+              healthbarFinalVal(t.health);
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -898,8 +896,8 @@ export default {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              heathbarHitBad();
-              heathbarFinalVal(t.health);
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -907,8 +905,8 @@ export default {
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              heathbarHitBad();
-              heathbarFinalVal(t.health);
+              healthbarHitBad();
+              healthbarFinalVal(t.health);
               break;
           }
 
@@ -1104,14 +1102,21 @@ export default {
   flex-direction: column;
 }
 
+.health-bar-cont {
+  height: 80vh;
+  width: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 #game-pb {
   height: 20%;
   width: 20%;
 }
 
 #health-bar {
-  height: 3%;
-  width: 100%;
   transform: rotate(0.75turn);
 }
 
