@@ -19,9 +19,7 @@
       {{ keys.join(', ') }}
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-      <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
-        >Canvas is not supported on your browser.</canvas
-      >
+      <canvas id="canvas">Canvas is not supported on your browser.</canvas>
     </div>
     <div class="health-bar-cont">
       <div id="health-bar"></div>
@@ -113,8 +111,9 @@ export default {
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
-      numColumns: 4,
+      numColumns: null,
       columnWidth: 100, // in px (we change this to rem later)
+      canvasWidth: null,
 
       stage: null,
       stageWidth: null,
@@ -182,9 +181,6 @@ export default {
   },
 
   computed: {
-    canvasWidth() {
-      return this.numColumns * this.columnWidth;
-    },
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -365,6 +361,8 @@ export default {
 
         const $canvas = document.querySelector('#canvas');
 
+        t.canvasWidth = t.numColumns * t.columnWidth;
+
         // Sets the canvas width/height pixels = to canvas display size width/height
         $canvas.width = $canvas.offsetWidth;
         $canvas.height = $canvas.offsetHeight;
@@ -523,7 +521,10 @@ export default {
       document.addEventListener('keydown', function (e) {
         if (e.repeat) return;
 
-        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
+        const columnI = t.keys.findIndex(
+          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
+        );
+
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
             if (thisCircle) thisCircle.hit();
@@ -534,7 +535,9 @@ export default {
       });
 
       document.addEventListener('keyup', function (e) {
-        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
+        const columnI = t.keys.findIndex(
+          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
+        );
         if (!(columnI === -1)) {
           t.ss.targetCirclesGraphics[columnI].style = 'gray';
         }
@@ -996,8 +999,6 @@ export default {
       }
     },
     onScroll(e) {
-      e.preventDefault();
-
       this.scale += e.deltaY * -0.0002;
       // Restrict scale
       this.scale = Math.min(Math.max(0, this.scale), 1);
@@ -1072,10 +1073,14 @@ export default {
   transform: scale(0.95);
 }
 
-.game-canvas-container,
-#canvas {
+.game-canvas-container {
   height: 100vh;
   background-color: #181818;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .game-statistics-container {
