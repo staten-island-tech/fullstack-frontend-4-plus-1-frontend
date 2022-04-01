@@ -63,8 +63,7 @@ export default {
       let cardRarity = 0;
       let cardBg = null;
 
-      /* const bgNum = Math.floor(Math.random() * 100); */
-      const bgNum = 100;
+      const bgNum = Math.floor(Math.random() * 100);
 
       if (bgNum >= 0 && bgNum < 40) {
         cardRarity = 1;
@@ -82,11 +81,11 @@ export default {
         cardRarity = 4;
         cardBg = 'good';
       }
-      if (bgNum >= 90 && bgNum < 100) {
+      if (bgNum >= 90 && bgNum < 99) {
         cardRarity = 5;
         cardBg = 'great';
       }
-      if (bgNum === 100) {
+      if (bgNum === 99) {
         cardRarity = 6;
         cardBg = 'great';
       }
@@ -215,6 +214,7 @@ button {
 }
 .chara-img {
   width: 100%;
+  height: 100%;
   z-index: -1;
 }
 .card-rim {
