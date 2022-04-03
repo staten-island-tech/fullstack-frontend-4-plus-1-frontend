@@ -60,7 +60,7 @@
 /* eslint-disable */
 
 export default {
-  layout: 'noNav',
+  layout: 'nonav',
 
   data() {
     return {
