@@ -324,7 +324,7 @@ export default {
               PROGRESS BAR
               =============== */
 
-        this.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+        t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
           color: '#FCB03C',
           // This has to be the same size as the maximum width to
           // prevent clipping
@@ -350,7 +350,7 @@ export default {
           },
         });
 
-        this.progressBarVol.animate(t.pbVolProgress);
+        t.progressBarVol.animate(t.pbVolProgress);
 
         /* ===============
               CANVAS SETUP
@@ -485,34 +485,84 @@ export default {
       
         t.healthBar.animate(1);
         
-      function heathbarFinalVal(currentHealth) {
-        t.healthBar.animate(currentHealth);
-      }
+      function healthbarFinalVal(currentHealth) {
+//       switch (currentHealth) {
+//   case t.latestHit === 320:
+//        if(t.health > 0  && t.health < 1) {
+//        t.health += 0.1;  
+//  }
+//     break;
+//   case t.latestHit === 300:
+//       if(t.health > 0  && t.health < 1) {
+//        t.health += 0.1;  
+//  }
+//     break;
+//   case t.latestHit === 200:
+//        if(t.health > 0  && t.health < 1 ) {
+//           t.health += 0.05;
+//      }
+//     break;
+//   case t.latestHit === 100:
+//       if(t.health > 0  && t.health < 1 ) {
+//           t.health += 0.05;
+//      }
+//     break;
+//   case 4:
+//     day = "Thursday";
+//     break;
+//   case 5:
+//     day = "Friday";
+//     break;
+//   case 6:
+//     day = "Saturday";
+// }
 
-      function heathbarHitGood() {
-        if(t.health < 1) {
+       if(t.latestHit === 320 || t.latestHit === 300  && t.health > 0  && t.health < 1) {
           t.health += 0.1;
-          console.log(  t.health )
         }
-      }
-
-      function heathbarHitBad() {
-        if(t.health < 1) {
+          else if (t.latestHit === 200 || t.latestHit === 100 && t.health > 0  && t.health < 1 ) {
           t.health += 0.05;
-          console.log(  t.health )
       }
-      }
-
-      function heathbarMiss() {
-          if(t.health > 0) {
+         else if (t.latestHit === 50 || t.latestHit === 0 && t.health > 0) {
           t.health -= 0.1
-          console.log(  t.health )
         }
         else {
           t.health = 0;
-          console.log(t.health )
+          console.log("0 heath gg!")
         }
+       currentHealth = Math.round(100* t.health)/100;
+        console.log(currentHealth)
+        t.healthBar.animate(currentHealth);
       }
+
+      // function healthbarHitGood() {
+      //   if(t.health > 0  && t.health < 1) {
+      //     t.health += 0.1;
+      //     console.log(  t.health )  
+      //   }
+
+      // }
+
+      // function healthbarHitBad() {
+      //   if(t.health > 0  && t.health < 1 ) {
+      //     t.health += 0.05;
+        
+      // }
+      
+      // }
+
+      // function healthbarMiss() {
+      //     if(t.health > 0) {
+      //     t.health -= 0.1
+
+      //     console.log(  t.health )
+      //   }
+      //   else {
+      //     t.health = 0;
+      //     console.log("0 heath gg!"
+      //      )
+      //   }
+      // }
  
       /* ===============
           KEY PRESS
@@ -632,8 +682,7 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-          heathbarMiss(); 
-          heathbarFinalVal( t.health );
+          healthbarFinalVal( t.health );
         }
 
         hit() {
@@ -652,16 +701,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              heathbarHitGood() 
-              heathbarFinalVal( t.health );
+          
+              healthbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              heathbarHitGood(); 
-              heathbarFinalVal( t.health );
+     
+              healthbarFinalVal( t.health );
 
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
@@ -669,24 +718,24 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-                heathbarHitGood(); 
-               heathbarFinalVal( t.health );
+          
+               healthbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              heathbarHitBad(); 
-               heathbarFinalVal( t.health );
+         
+               healthbarFinalVal( t.health );
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              heathbarHitBad(); 
-               heathbarFinalVal( t.health );
+     
+               healthbarFinalVal( t.health );
               break;
           }
 
@@ -848,8 +897,8 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readySliders[this.i] = null;
-          heathbarMiss(); 
-          heathbarFinalVal( t.health );
+
+          healthbarFinalVal( t.health );
         }
 
         hit() {
@@ -864,16 +913,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              heathbarHitGood(); 
-              heathbarFinalVal( t.health );
+     
+              healthbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              heathbarHitGood(); 
-              heathbarFinalVal( t.health );
+       
+              healthbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -881,8 +930,8 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-               heathbarHitGood(); 
-              heathbarFinalVal( t.health );
+          
+              healthbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -890,8 +939,8 @@ export default {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              heathbarHitBad(); 
-              heathbarFinalVal( t.health );
+    
+              healthbarFinalVal( t.health );
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -899,8 +948,8 @@ export default {
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              heathbarHitBad(); 
-              heathbarFinalVal( t.health );
+    
+              healthbarFinalVal( t.health );
               break;
           }
 
