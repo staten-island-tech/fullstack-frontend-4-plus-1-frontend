@@ -32,7 +32,7 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event)"
+              @mouseover="bmClickEvents(bmSetName, $event), beatmapSoundBit()"
               @mouseleave="bmClickEvents(bmSetName, $event)"
               @click="bmClickEvents(bmSetName, $event)"
             >
@@ -53,7 +53,7 @@
                 :src="`/beatmaps/${currentBmSetName}/${bmSetsData[currentBmSetName][0].events[0][2]}`"
               />
             </div>
-            <div class="play-sidebar-text-container">
+            <div class="play-sidebar-text-container" >
               <p class="play-sidebar-text-title">
                 {{ bmSetsData[currentBmSetName][0].metadata.Title }}
               </p>
@@ -330,6 +330,17 @@ export default {
           break;
       }
     },
+    beatmapSoundBit() {
+      this.musicBeatmap = new Howl({  // eslint-disable-line
+          // src: [
+          //   `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
+          // ],
+          src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+          volume: 0.1,
+        });
+           this.musicBeatmap.play();
+    console.log("hi")
+    }
   },
 };
 </script>
