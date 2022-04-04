@@ -79,17 +79,17 @@ export default {
     }
   },
 
-  head() {
-    return {
-      script: [
+  // head() {
+  //   return {
+  //     script: [
 
-        {
-          src: '/lib/howler.min.js',
-        },
+  //       {
+  //         src: '/lib/howler.min.js',
+  //       },
 
-      ],
-    };
-  },
+  //     ],
+  //   };
+  // },
 
 
         watch: {
