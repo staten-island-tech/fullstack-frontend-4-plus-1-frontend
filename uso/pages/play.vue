@@ -147,7 +147,7 @@ export default {
     };
   },
 
-  head() {
+  head() {  
     return {
       script: [
         {
@@ -163,7 +163,7 @@ export default {
           callback: () => (this.loaded.howler = true),
         },
         {
-          src: '/lib/progressbar.min.js ',
+          src: '/lib/progressbar.min.js',
           callback: () => (this.loaded.progressbar = true),
         },
       ],
@@ -524,53 +524,17 @@ export default {
   
 }
 
-      //  if(t.latestHit === 320 || t.latestHit === 300  && t.health > 0  && t.health < 1) {
-      //     t.health += 0.1;
-      //   }
-      //     else if (t.latestHit === 200 || t.latestHit === 100 && t.health > 0  && t.health < 1 ) {
-      //     t.health += 0.05;
-      // }
-      //    else if (t.latestHit === 50 || t.latestHit === 0 && t.health > 0) {
-      //     t.health -= 0.1
-      //   }
-      //   else {
-      //     t.health = 0;
-      //     console.log("0 heath gg!")
-      //   }
        let currentHealth = Math.round(100* t.health)/100;
-        console.log(t.latestHit)
-        t.healthBar.animate(currentHealth);
+        console.log(currentHealth)
+        if (currentHealth > 0) {
+           t.healthBar.animate(currentHealth);
+        } else {
+           t.healthBar.animate(0);
+        }
+       
       }
 
-      // function healthbarHitGood() {
-      //   if(t.health > 0  && t.health < 1) {
-      //     t.health += 0.1;
-      //     console.log(  t.health )  
-      //   }
 
-      // }
-
-      // function healthbarHitBad() {
-      //   if(t.health > 0  && t.health < 1 ) {
-      //     t.health += 0.05;
-        
-      // }
-      
-      // }
-
-      // function healthbarMiss() {
-      //     if(t.health > 0) {
-      //     t.health -= 0.1
-
-      //     console.log(  t.health )
-      //   }
-      //   else {
-      //     t.health = 0;
-      //     console.log("0 heath gg!"
-      //      )
-      //   }
-      // }
- 
       /* ===============
           KEY PRESS
           =============== */
@@ -579,11 +543,11 @@ export default {
 
       t.hitJudgement = {
         320: 16.5,
-        300: Math.floor(64 - 3 * OD) + 0.5,
-        200: Math.floor(97 - 3 * OD) + 0.5,
-        100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(151 - 3 * OD) + 0.5,
-        0: Math.floor(170 - 3 * OD) + 0.5,
+        // 300: Math.floor(64 - 3 * OD) + 0.5,
+        // 200: Math.floor(97 - 3 * OD) + 0.5,
+        // 100: Math.floor(127 - 3 * OD) + 0.5,
+        // 50: Math.floor(151 - 3 * OD) + 0.5,
+        // 0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
       document.addEventListener('keydown', function (e) {
