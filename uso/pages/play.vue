@@ -1,29 +1,27 @@
 <template>
   <div id="game-index">
     <div
-      v-if="beatmapData.metadata"
       class="game-image-container"
       :style="{
-        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
+        'background-image': `urL(/beatmaps/${$store.state.beatmapData.metadata.BeatmapSetID}/${$store.state.beatmapData.events[0][2]})`,
       }"
-    ></div>
+    >
+    </div>
     <button
       v-if="areAllLoaded && !started && songLoaded"
       class="game-start-button"
       @click="startGame"
     >
-      START
-      <br />
-      {{ keys.length }} Keys
-      <br />
-      {{ keys.join(', ') }}
+      START 4 Keys: D, F, H, J
     </button>
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-      <canvas id="canvas">Canvas is not supported on your browser.</canvas>
+      <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
+        >Canvas is not supported on your browser.</canvas
+      >
     </div>
-    <div class="health-bar-cont">
-      <div id="health-bar"></div>
-    </div>
+<div class="health-bar-cont">
+        <div id="health-bar"></div>
+</div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
       <h1>x{{ combo }}</h1>
@@ -36,7 +34,7 @@
     <div class="game-pb-container">
       <div id="game-pb"></div>
       <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
-
+     
       <button
         v-if="areAllLoaded && started && songLoaded"
         :style="{ opacity: opacity }"
@@ -111,9 +109,8 @@ export default {
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
-      numColumns: null,
+      numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
-      canvasWidth: null,
 
       stage: null,
       stageWidth: null,
@@ -126,7 +123,6 @@ export default {
         columnContainers: [],
         columnBorders: [],
         targetCircles: [],
-        targetCirclesGraphics: [],
       },
       noteObjectArray: [],
       readyNotes: [],
@@ -146,8 +142,6 @@ export default {
       songDuration: 0,
       progressBarVol: null,
       health: 1,
-
-      graphic: null,
 
       Page: this.$route.name,
     };
@@ -176,11 +170,19 @@ export default {
     };
   },
 
+  created() {
+    window.addEventListener('wheel', this.onScroll);
+  },
+
   destroyed() {
     window.removeEventListener('wheel', this.onScroll);
   },
 
   computed: {
+    canvasWidth() {
+      return this.numColumns * this.columnWidth;
+    },
+
     dy() {
       return (
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -262,15 +264,10 @@ export default {
     onLoad() {
       {
         const t = this;
-
         Howler.volume(1);
-
-        t.beatmapData = t.$store.state.moreKeysBeatmapData;
+        t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
-        t.numColumns = t.beatmapData.columns;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
-
-        window.addEventListener('wheel', this.onScroll);
 
         t.keys = [
           ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
@@ -320,7 +317,7 @@ export default {
           src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
           volume: 0.1,
           onload: () => (t.songLoaded = true),
-        });
+        }); 
         //
 
         /* ===============
@@ -331,7 +328,7 @@ export default {
           color: '#FCB03C',
           // This has to be the same size as the maximum width to
           // prevent clipping
-          strokeWidth: 7,
+          strokeWidth: 7, 
           easing: 'easeInOut',
           trailColor: '#eee',
           trailWidth: 7,
@@ -361,8 +358,6 @@ export default {
 
         const $canvas = document.querySelector('#canvas');
 
-        t.canvasWidth = t.numColumns * t.columnWidth;
-
         // Sets the canvas width/height pixels = to canvas display size width/height
         $canvas.width = $canvas.offsetWidth;
         $canvas.height = $canvas.offsetHeight;
@@ -385,7 +380,7 @@ export default {
         createjs.Ticker.addEventListener('tick', t.stage);
 
         /* ===============
-              SETUP CONTAINER
+              SETUP CONTAINER & BACKGROUND
               =============== */
 
         t.ss.setupContainer = new createjs.Container();
@@ -393,6 +388,17 @@ export default {
 
         t.stage.addChild(t.ss.setupContainer);
         t.stage.setChildIndex(t.ss.setupContainer, 0);
+
+        const background = new createjs.Shape();
+
+        // Draws the gray background on the canvas
+        background.graphics
+          .beginFill('#181818')
+          .drawRect(0, 0, t.stageWidth, t.stageHeight);
+
+        background.name = 'background';
+
+        t.ss.setupContainer.addChild(background);
 
         /* ===============
               STAGE SETUP
@@ -424,20 +430,20 @@ export default {
 
           ////////////////////////////////////////
 
-          const targetCircle = new createjs.Shape(
-            new createjs.Graphics().beginStroke('Black')
-          );
-          const circleGraphic = targetCircle.graphics.beginFill('Gray').command;
-          targetCircle.graphics.drawCircle(
-            t.stageColWidth * (i + 0.5),
-            t.hitPercent * t.stageHeight,
-            t.radius
-          );
+          const circleGraphic = new createjs.Graphics()
+            .beginStroke('Black')
+            .beginFill('Gray')
+            .drawCircle(
+              t.stageColWidth * (i + 0.5),
+              t.hitPercent * t.stageHeight,
+              t.radius
+            );
+
+          const targetCircle = new createjs.Shape(circleGraphic);
 
           targetCircle.name = `targetCircle${i}`;
 
           t.ss.targetCircles.push(targetCircle);
-          t.ss.targetCirclesGraphics.push(circleGraphic);
           t.ss.setupContainer.addChild(targetCircle);
 
           ////////////////////////////////////////
@@ -456,13 +462,13 @@ export default {
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.healthBar = new ProgressBar.Line('#health-bar', {
-        strokeWidth: 4,
-        easing: 'easeInOut',
-        duration: 500,
-        color: '#FFEA82',
-        trailColor: '#eee',
-        trailWidth: 4,
-        svgStyle: { width: '80rem', height: '4rem' },
+    strokeWidth: 4,
+    easing: 'easeInOut',
+    duration: 500,
+    color: '#FFEA82',
+    trailColor: '#eee',
+    trailWidth: 4,
+    svgStyle: {width: '80rem', height: '4rem',}
       });
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
@@ -572,37 +578,24 @@ export default {
       const OD = t.beatmapData.difficulty.OverallDifficulty;
 
       t.hitJudgement = {
-        320: 16,
-        300: Math.floor(64 - 3 * OD),
-        200: Math.floor(97 - 3 * OD),
-        100: Math.floor(127 - 3 * OD),
-        50: Math.floor(151 - 3 * OD),
-        0: Math.floor(188 - 3 * OD),
+        320: 16.5,
+        300: Math.floor(64 - 3 * OD) + 0.5,
+        200: Math.floor(97 - 3 * OD) + 0.5,
+        100: Math.floor(127 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,
+        0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
       document.addEventListener('keydown', function (e) {
         if (e.repeat) return;
 
-        const columnI = t.keys.findIndex(
-          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
-        );
-
+        const columnI = t.keys.findIndex((key) => key === e.key.toUpperCase());
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
+            console.log('hit');
             if (thisCircle) thisCircle.hit();
           });
-
-          t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
-      });
-
-      document.addEventListener('keyup', function (e) {
-        const columnI = t.keys.findIndex(
-          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
-        );
-        if (!(columnI === -1)) {
-          t.ss.targetCirclesGraphics[columnI].style = 'gray';
-        }
       });
 
       for (let i = 0; i < t.numColumns; i++) {
@@ -656,12 +649,11 @@ export default {
           this.time = note.time;
 
           this.animate = this.animate.bind(this);
-          this.remove = this.remove.bind(this);
           this.cache(
             t.stageColWidth / 2 - t.radius,
             -2 * t.radius,
-            2 * t.radius,
-            2 * t.radius
+            2 * t.radius + 30,
+            2 * t.radius + 30
           );
 
           this.remainingTime =
@@ -685,12 +677,13 @@ export default {
         }
 
         miss() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.removed) return;
+          this.removed = true;
 
           t.latestHit = 0;
           t.totalHits['0']++;
           t.bonus = 0;
+
           t.combo = 0;
 
           createjs.Tween.removeTweens(this);
@@ -700,12 +693,12 @@ export default {
         }
 
         hit() {
-          t.beatmapData.hitObjects.forEach((note) => {
+          t.beatmapData.hitObjects.forEach((note)   => {
             t.noteHitSound = note.hitSample.filename;
           });
 
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.removed) return;
+          this.removed = true;
 
           let hitBonusValue = 0;
 
@@ -751,13 +744,10 @@ export default {
      
                healthbarFinalVal(t.latestHit);
               break;
-            case this.msFrom(true) <= t.hitJudgement['0']:
-              this.miss();
-              return;
           }
 
           if (t.bonus > 100) t.bonus = 100;
-          else if (t.bonus < 0) t.bonus = 0;
+          if (t.bonus < 0) t.bonus = 0;
 
           const baseScore =
             ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
@@ -769,22 +759,20 @@ export default {
           t.score += bonusScore + baseScore;
           t.combo += 1;
 
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
+   console.log(this.hitSound);
 
           if (this.hitSound === 0) {
+           
             t.defaultHitSoftNormal.play();
           } else {
             t.softSliderWhistle.play();
           }
-
-          this.remove();
-        }
-
-        remove() {
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
         animate() {
@@ -795,21 +783,14 @@ export default {
 
           switch (true) {
             // If ms from targetCircle is less than ...
-            case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
+            case this.msFrom(true) <= t.hitJudgement['50'] && !this.ready:
               this.ready = true;
-              t.readyNotes[this.i].push(this);
 
-              // Start fading out
-              createjs.Tween.get(this, {
-                onComplete: this.remove,
-              }).to(
-                { alpha: 0, visible: false },
-                2 * t.hitJudgement['0'],
-                createjs.Ease.linear
-              );
+              // this.readyIndex = t.readyNotes[this.i].push(this) - 1;
+              t.readyNotes[this.i].push(this);
               break;
+
             // If it reaches offscreen then ...
-            // Remove the circle and time it correctly
             case this.msFrom() > t.hitJudgement['50']:
               this.miss();
               break;
@@ -911,8 +892,8 @@ export default {
         }
 
         miss() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.removed) return;
+          this.removed = true;
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -928,8 +909,8 @@ export default {
         }
 
         hit() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.removed) return;
+          this.removed = true;
 
           let hitBonusValue = 0;
 
@@ -1063,6 +1044,8 @@ export default {
       }
     },
     onScroll(e) {
+      e.preventDefault();
+
       this.scale += e.deltaY * -0.0002;
       // Restrict scale
       this.scale = Math.min(Math.max(0, this.scale), 1);
@@ -1114,37 +1097,13 @@ export default {
 .game-start-button {
   height: 20vh;
   width: 20vw;
-  outline: none;
-
-  border-radius: 10px;
-  cursor: pointer;
-
-  background-image: linear-gradient(
-      rgba(30, 30, 30, 0.8),
-      rgba(30, 30, 30, 0.8)
-    ),
-    url('~/assets/images/backgrounds/landing-page-background-inazuma.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  transition: all 200ms ease-in-out;
-  box-shadow: 0px 10px 10px 0px #1b1b1b;
-
+  background-color: gray;
   font-size: 3rem;
 }
 
-.game-start-button:hover {
-  transform: scale(0.95);
-}
-
-.game-canvas-container {
-  height: 100vh;
-  background-color: #181818;
-}
-
+.game-canvas-container,
 #canvas {
-  width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
 .game-statistics-container {
@@ -1174,7 +1133,7 @@ export default {
 }
 
 .health-bar-cont {
-  height: 80vh;
+    height: 80vh;
   width: 5vw;
   display: flex;
   align-items: center;
@@ -1187,8 +1146,11 @@ export default {
   width: 20%;
 }
 
+
+
+
 #health-bar {
-  transform: rotate(0.75turn);
+transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
@@ -1216,8 +1178,6 @@ export default {
   font-size: 3rem;
 }
 
-/* PAUSE css begins here...*/
-
 .game-pause-menu {
   position: absolute;
   z-index: 100;
@@ -1225,26 +1185,17 @@ export default {
   width: 100%;
   height: 100%;
 
-  background-color: rgba(30, 30, 30, 0.9);
+  background-color: rgba(128, 128, 128, 0.4);
 }
 
 .game-pause-button-container {
-  --border-width: 3px;
   position: absolute;
 
   width: 40rem;
-  height: 55rem;
-
-  background-image: linear-gradient(
-      rgba(30, 30, 30, 0.8),
-      rgba(30, 30, 30, 0.8)
-    ),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  border-radius: 6rem;
-  border: #777777 solid 0.5rem;
+  height: 60rem;
+  background-color: black;
+  border-radius: 8rem;
+  border: #30d5c8 solid 0.5rem;
 
   top: 50%;
   left: 50%;
@@ -1254,71 +1205,22 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-
-  box-shadow: 0px 10px 10px 0px #010101;
 }
-
-/* .game-pause-button-container::after {
-    position: absolute;
-    content: "";
-    top: calc(-1 * var(--border-width));
-    left: calc(-1 * var(--border-width));
-    z-index: -1;
-    width: calc(100% + var(--border-width) * 2);
-    height: calc(100% + var(--border-width) * 2);
-    background: linear-gradient(
-      60deg,
-      hsl(224, 85%, 66%),
-      hsl(269, 85%, 66%),
-      hsl(314, 85%, 66%),
-      hsl(359, 85%, 66%),
-      hsl(44, 85%, 66%),
-      hsl(89, 85%, 66%),
-      hsl(134, 85%, 66%),
-      hsl(179, 85%, 66%)
-    );
-    background-size: 300% 300%;
-    background-position: 0 50%;
-    border-radius: calc(20 * var(--border-width));
-    animation: moveGradient 4s alternate infinite;
-
-    border: #eeeeee solid 0.5rem;
-
-}  */
 
 .game-pause-button-container > button {
   width: 20rem;
   height: 6rem;
-
-  background-image: linear-gradient(
-      rgba(30, 30, 30, 0.6),
-      rgba(30, 30, 30, 0.6)
-    ),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg');
-
-  background-size: cover;
-
+  background-color: black;
   border-radius: 3rem;
-  border: #777777 solid 0.4rem;
+  border: #30d5c8 solid 0.5rem;
 
   font-size: 3rem;
-  color: #f3f3f3;
+  color: white;
 
   transition: 0.3s all;
-
-  cursor: pointer;
-
-  box-shadow: 0px 10px 10px 0px #1b1b1b;
 }
 
 .game-pause-button-container > button:hover {
   transform: translate(0, -0.5rem) scale(1.05);
-  border: #fcfcfc solid 0.4rem;
-}
-
-@keyframes moveGradient {
-  50% {
-    background-position: 100% 50%;
-  }
 }
 </style>
