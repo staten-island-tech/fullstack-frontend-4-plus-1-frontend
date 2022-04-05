@@ -265,7 +265,7 @@ export default {
 
         Howler.volume(1);
 
-        t.beatmapData = t.$store.state.moreKeysBeatmapData;
+        t.beatmapData = t.$store.state.beatmapData;
         t.notes = t.beatmapData.hitObjects;
         t.numColumns = t.beatmapData.columns;
         t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -364,8 +364,8 @@ export default {
         t.canvasWidth = t.numColumns * t.columnWidth;
 
         // Sets the canvas width/height pixels = to canvas display size width/height
-        $canvas.width = $canvas.offsetWidth;
-        $canvas.height = $canvas.offsetHeight;
+        $canvas.width = $canvas.getBoundingClientRect().width;
+        $canvas.height = $canvas.getBoundingClientRect().height;
 
         t.stage = new createjs.Stage('canvas');
         t.stageWidth = t.stage.canvas.width;

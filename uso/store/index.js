@@ -33434,7 +33434,7 @@ export const actions = {};
 
 export const mutations = {
   setBeatmap(state, data) {
-    state.moreKeysBeatmapData = data;
+    state.beatmapData = data;
   },
 
   nuxtRoute(state) {
