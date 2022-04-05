@@ -32,9 +32,9 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event), beatmapSoundBit()"
+              @mouseover="bmClickEvents(bmSetName, $event)"
               @mouseleave="bmClickEvents(bmSetName, $event)"
-              @click="bmClickEvents(bmSetName, $event)"
+              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit()"
             >
               <img
                 v-if="oszArray[0].events[0]"
@@ -333,14 +333,14 @@ export default {
     },
     beatmapSoundBit() {
       this.musicBeatmap = new Howl({  // eslint-disable-line
-          // src: [
-          //   `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
-          // ],
-          src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+          src: [
+            `/beatmaps/${this.hoveredBmSetName}/${this.bmSetsData[this.hoveredBmSetName][0].general.AudioFilename}`,
+          ],
+          //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
           volume: 0.1,
         });
            this.musicBeatmap.play();
-    console.log("hi")
+  //  console.log(this.bmSetsData[this.hoveredBmSetName][0].general.AudioFilename)
     }
   },
 };

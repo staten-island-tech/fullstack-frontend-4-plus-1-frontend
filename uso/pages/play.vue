@@ -547,8 +547,8 @@ export default {
         320: 16.5,
         300: Math.floor(64 - 3 * OD) + 0.5,
         200: Math.floor(97 - 3 * OD) + 0.5,
-        //100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(151 - 3 * OD) + 0.5,
+        100: Math.floor(127 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,  // this is the error 
         0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
