@@ -1,6 +1,17 @@
 <template>
   <div class="shop-page">
     <div class="under-nav"></div>
+    <video
+      id="wish-background"
+      class="video-bg"
+      autoplay
+      muted
+      loop
+      playsinline
+      disablePictureInPicture
+      src="../assets/images/backgrounds/wish-background.mp4"
+      type="video/mp4"
+    ></video>
     <section class="data-bar">
       <h1 class="shop-heading">Shop</h1>
       <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
@@ -60,6 +71,14 @@ export default {
 </script>
 
 <style scoped>
+#wish-background {
+  height: calc(100vh - 9.5rem);
+  /* width: 100%; */
+  z-index: -2;
+  position: absolute;
+  bottom: 0;
+}
+
 .shop-page {
   display: flex;
   flex-direction: column;
