@@ -34,7 +34,7 @@
               class="play-beatmap-set"
               @mouseover="bmClickEvents(bmSetName, $event)"
               @mouseleave="bmClickEvents(bmSetName, $event)"
-              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit()"
+              @click="bmClickEvents(bmSetName, $event)"
             >
               <img
                 v-if="oszArray[0].events[0]"
@@ -50,27 +50,23 @@
           <div v-if="currentBmSetName" class="play-sidebar">
             <div class="play-sidebar-image-container">
               <img
-                :src="`/beatmaps/${currentBmSetName}/${
-                  bmSetsData[`${currentBmSetName}`][0].events[0][2]
-                }`"
+                :src="`/beatmaps/${currentBmSetName}/${bmSetsData[currentBmSetName][0].events[0][2]}`"
               />
             </div>
-            <div class="play-sidebar-text-container" >
+            <div class="play-sidebar-text-container">
               <p class="play-sidebar-text-title">
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
+                {{ bmSetsData[currentBmSetName][0].metadata.Title }}
               </p>
               <p>
                 Artist:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+                {{ bmSetsData[currentBmSetName][0].metadata.Artist }}
               </p>
               <p>
                 Mapper:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
+                {{ bmSetsData[currentBmSetName][0].metadata.Creator }}
               </p>
               <nuxt-link
-                :to="`/leaderboard/${
-                  bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
-                }`"
+                :to="`/leaderboard/${bmSetsData[currentBmSetName][0].metadata.BeatmapSetID}`"
                 class=""
                 >Leaderboard</nuxt-link
               >
@@ -95,7 +91,10 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
+            <img
+              class="img-placeholder"
+              src="~/assets/images/backgrounds/landing.png"
+            />
             <p class="hover-msg">hover or click on a song~</p>
           </div>
         </div>
@@ -331,17 +330,6 @@ export default {
           break;
       }
     },
-    beatmapSoundBit() {
-      this.musicBeatmap = new Howl({  // eslint-disable-line
-          src: [
-            `/beatmaps/${this.hoveredBmSetName}/${this.bmSetsData[this.hoveredBmSetName][0].general.AudioFilename}`,
-          ],
-          //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-          volume: 0.1,
-        });
-           this.musicBeatmap.play();
-  //  console.log(this.bmSetsData[this.hoveredBmSetName][0].general.AudioFilename)
-    }
   },
 };
 </script>
@@ -503,8 +491,6 @@ export default {
   transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
-
-
 }
 
 .play-beatmap-set:hover {
@@ -516,11 +502,18 @@ export default {
   display: block;
   width: 75px;
   height: 175%;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 25%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
   opacity: 0.25;
   position: absolute;
-  top: -40px;
+  top: -80px;
   left: 0;
   animation: shine 200ms linear;
   transform: translateX(250px) rotate(-25deg);
@@ -532,7 +525,7 @@ export default {
   0% {
     transform: translateX(-30px) rotate(-25deg);
   }
-  
+
   100% {
     transform: translateX(250px) rotate(-25deg);
   }
@@ -582,10 +575,7 @@ export default {
   flex-direction: column;
   gap: 1rem;
   height: auto;
-  background-image: linear-gradient(
-      rgba(14, 7, 29, 0.7),
-      rgba(17, 11, 36, 0.7)
-    ),
+  background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -662,5 +652,4 @@ export default {
   background-size: cover;
   background-position: center center;
 }
-
 </style>
