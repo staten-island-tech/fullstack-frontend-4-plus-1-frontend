@@ -539,15 +539,17 @@ export default {
           KEY PRESS
           =============== */
 
-      const OD = t.beatmapData.difficulty.OverallDifficulty;
+     const OD = t.beatmapData.difficulty.OverallDifficulty;
+
+
 
       t.hitJudgement = {
         320: 16.5,
-        // 300: Math.floor(64 - 3 * OD) + 0.5,
-        // 200: Math.floor(97 - 3 * OD) + 0.5,
-        // 100: Math.floor(127 - 3 * OD) + 0.5,
-        // 50: Math.floor(151 - 3 * OD) + 0.5,
-        // 0: Math.floor(170 - 3 * OD) + 0.5,
+        300: Math.floor(64 - 3 * OD) + 0.5,
+        200: Math.floor(97 - 3 * OD) + 0.5,
+        //100: Math.floor(127 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,
+        0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
       document.addEventListener('keydown', function (e) {
