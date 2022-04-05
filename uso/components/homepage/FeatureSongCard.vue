@@ -29,7 +29,7 @@ export default {
     cardType: { type: String, default: 'Featured Map' },
     cardTitle: { type: String, default: '' },
     cardArtist: { type: String, default: '' },
-    cardRoute: { type: String, default: '/play' },
+    cardRoute: { type: String, default: '/play/song-not-found' },
     cardImg: {
       type: String,
       default:
