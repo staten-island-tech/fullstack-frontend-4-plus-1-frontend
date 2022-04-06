@@ -1,61 +1,64 @@
 <template>
   <div id="game-index">
-    <div
-      v-if="beatmapData.metadata"
-      class="game-image-container"
-      :style="{
-        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
-      }"
-    ></div>
-    <button
-      v-if="areAllLoaded && !started && songLoaded"
-      class="game-start-button"
-      @click="startGame"
-    >
-      START
-      <br />
-      {{ keys.length }} Keys
-      <br />
-      {{ keys.join(', ') }}
-    </button>
-    <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-      <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
-        >Canvas is not supported on your browser.</canvas
-      >
-    </div>
-    <div class="health-bar-cont">
-      <div id="health-bar"></div>
-    </div>
-    <div class="game-statistics-container">
-      <h1>{{ Math.floor(score) }}</h1>
-      <h1>x{{ combo }}</h1>
-      <h1>
-        {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
-      </h1>
-      <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
-    </div>
-
-    <div class="game-pb-container">
-      <div id="game-pb"></div>
-      <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
-
+    <div v-if="!gameEnded" id="game-page-container">
+      <div
+        v-if="beatmapData.metadata"
+        class="game-image-container"
+        :style="{
+          'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
+        }"
+      ></div>
       <button
-        v-if="areAllLoaded && started && songLoaded"
-        :style="{ opacity: opacity }"
-        class="game-mute-button"
-        @click="muteButton"
+        v-if="areAllLoaded && !started && songLoaded"
+        class="game-start-button"
+        @click="startGame"
       >
-        MUTE
+        START
+        <br />
+        {{ keys.length }} Keys
+        <br />
+        {{ keys.join(', ') }}
       </button>
-    </div>
+      <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
+        <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
+          >Canvas is not supported on your browser.</canvas
+        >
+      </div>
+      <div class="health-bar-cont">
+        <div id="health-bar"></div>
+      </div>
+      <div class="game-statistics-container">
+        <h1>{{ Math.floor(score) }}</h1>
+        <h1>x{{ combo }}</h1>
+        <h1>
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
+        </h1>
+        <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
+      </div>
 
-    <div v-show="paused" class="game-pause-menu">
-      <div class="game-pause-button-container">
-        <button @click="onPauseKey()">Continue</button>
-        <button>Retry</button>
-        <button @click="$router.push('/beatmaps')">Return</button>
+      <div class="game-pb-container">
+        <div id="game-pb"></div>
+        <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
+
+        <button
+          v-if="areAllLoaded && started && songLoaded"
+          :style="{ opacity: opacity }"
+          class="game-mute-button"
+          @click="muteButton"
+        >
+          MUTE
+        </button>
+      </div>
+
+      <div v-show="paused" class="game-pause-menu">
+        <div class="game-pause-button-container">
+          <button @click="onPauseKey()">Continue</button>
+          <button>Retry</button>
+          <button @click="$router.push('/beatmaps')">Return</button>
+        </div>
       </div>
     </div>
+    <EndGame v-else></EndGame>
   </div>
 </template>
 
@@ -151,6 +154,7 @@ export default {
       graphic: null,
 
       Page: this.$route.name,
+      gameEnded: true,
     };
   },
 
@@ -251,7 +255,7 @@ export default {
     },
   },
 
-  watch: {
+  /* watch: {
     loaded: {
       handler(newValue, oldValue) {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
@@ -260,7 +264,7 @@ export default {
       },
       deep: true,
     },
-  },
+  }, */
 
   methods: {
     onLoad() {
@@ -1025,6 +1029,11 @@ export default {
 #game-index {
   width: 100vw;
   height: 100vh;
+}
+
+#game-page-container {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-evenly;

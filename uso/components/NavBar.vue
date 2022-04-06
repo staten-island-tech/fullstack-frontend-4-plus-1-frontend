@@ -34,9 +34,6 @@
           <li>
             <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>
           </li>
-           <li>
-            <nuxt-link to="/endpage" class="uso__links">endpage</nuxt-link>
-          </li>
         </ul>
       </div>
 
