@@ -5,6 +5,7 @@
   <div>
 
       <div class="endgame-container"> 
+        <div class="under-nav"></div>
 
       </div>
     
@@ -19,6 +20,8 @@ export default {
 };
 
 </script>
+
+
 
 <style scoped>
 
