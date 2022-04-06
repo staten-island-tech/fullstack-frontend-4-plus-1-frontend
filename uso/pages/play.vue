@@ -364,13 +364,12 @@ export default {
         t.canvasWidth = t.numColumns * t.columnWidth;
 
         // Sets the canvas width/height pixels = to canvas display size width/height
-        $canvas.width = $canvas.getBoundingClientRect().width;
-        $canvas.height = $canvas.getBoundingClientRect().height;
+        t.stageWidth = $canvas.width = $canvas.getBoundingClientRect().width;
+        console.log($canvas.getBoundingClientRect().width);
+        t.stageHeight = $canvas.height = $canvas.getBoundingClientRect().height;
 
         t.stage = new createjs.Stage('canvas');
-        t.stageWidth = t.stage.canvas.width;
         t.stageColWidth = t.stageWidth / t.numColumns;
-        t.stageHeight = t.stage.canvas.height;
 
         /* ===============
               TICKER
