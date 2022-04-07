@@ -364,8 +364,7 @@ export default {
         t.canvasWidth = t.numColumns * t.columnWidth;
 
         // Sets the canvas width/height pixels = to canvas display size width/height
-        t.stageWidth = $canvas.width = $canvas.getBoundingClientRect().width;
-        console.log($canvas.getBoundingClientRect().width);
+        t.stageWidth = $canvas.width = t.canvasWidth;
         t.stageHeight = $canvas.height = $canvas.getBoundingClientRect().height;
 
         t.stage = new createjs.Stage('canvas');
