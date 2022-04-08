@@ -103,7 +103,7 @@ export default {
         0: null,
       },
 
-      pauseKey: 'P',
+      pauseKey: 'ESCAPE',
       paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
@@ -530,6 +530,8 @@ export default {
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+
+        console.log(e.key);
       });
 
       document.addEventListener('keyup', function (e) {
@@ -1023,7 +1025,10 @@ export default {
 <style scoped>
 #game-index {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 0.1407rem);
+
+  max-width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -1072,7 +1077,7 @@ export default {
 }
 
 .game-canvas-container {
-  height: 100vh;
+  height: 100%;
   background-color: #181818;
 }
 
