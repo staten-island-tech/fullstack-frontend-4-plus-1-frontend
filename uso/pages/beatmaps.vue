@@ -34,7 +34,7 @@
               class="play-beatmap-set"
               @mouseover="bmClickEvents(bmSetName, $event)"
               @mouseleave="bmClickEvents(bmSetName, $event)"
-              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit()"
+              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit(), changeSound()"
             >
               <img
                 v-if="oszArray[0].events[0]"
@@ -119,6 +119,11 @@ export default {
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
       executed: false,
+      chageExeuted: false,
+      firstBeatmapVal: null,
+      audioId: null,
+      currVal: null,
+      test: 1,
     };
   },
 
@@ -343,8 +348,8 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
-         t.musicBeatmapDuration = Math.round((this.bmSetsData[ this.clickedBmSetName][0].general.PreviewTime))
-         console.log(t.musicBeatmapDuration)
+         t.musicBeatmapDuration = Math.round((this.bmSetsData[ this.clickedBmSetName][0].general.PreviewTime)/1000)
+         
         t.musicBeatmap = new Howl({  // eslint-disable-line
           src: [
             `/beatmaps/${ this.clickedBmSetName}/${this.bmSetsData[ this.clickedBmSetName][0].general.AudioFilename}`,
@@ -355,42 +360,57 @@ export default {
             sprite: {
     prevMusic: [t.musicBeatmapDuration, 10000, false]}
         });
-
-      //  t.musicBeatmap.on('load', function(){});
-    
-           // this.musicBeatmap.play();
-
- // t.musicBeatmap.seek(t.musicBeatmapDuration);
-
-    // if (!t.musicBeatmap.playing()) { }
-        
-//t.musicBeatmap.play('prevMusic');
+   
+  // if (!t.chageExeuted) {
+  //         t.chageExeuted = true;
+  //       }
+ 
 
   if (!t.executed) {
             t.executed = true;
-               t.musicBeatmap.play('prevMusic')
+           t.musicBeatmap.play('prevMusic')
+   
+         
+              t.firstBeatmapVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+          
               //t.executed = false;
         }
-
   
-   t.musicBeatmap.on('end', function(){
+  if (t.test === 1 ) {
+      
+  }
+  else {
+ t.musicBeatmap.stop()
+  }
+
+  t.musicBeatmap.on('end', function(){
   t.executed = false;
 });
-                   
+
+t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename
+
+  
 
 
-
-        
-              
-//          t.musicBeatmap.once('play', function(){
-// });
-
-
-   
-
-      
-       
 // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
+    },
+    changeSound() {
+      const t = this; 
+ if( t.firstBeatmapVal !== t.currVal) {
+
+
+t.musicBeatmap.play('prevMusic')
+t.t
+  setTimeout(() => {  t.musicBeatmap.stop()  }, 3000);
+console.log(t.currVal)
+console.log(t.firstBeatmapVal)
+
+
+//stop();
+
+          }
+
+
     }
   },
 };
