@@ -376,12 +376,6 @@ export default {
               //t.executed = false;
         }
   
-  if (t.test === 1 ) {
-      
-  }
-  else {
- t.musicBeatmap.stop()
-  }
 
   t.musicBeatmap.on('end', function(){
   t.executed = false;
@@ -399,7 +393,7 @@ t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename
  if( t.firstBeatmapVal !== t.currVal) {
 
 
-t.musicBeatmap.play('prevMusic')
+//t.musicBeatmap.play('prevMusic')
 t.t
   setTimeout(() => {  t.musicBeatmap.stop()  }, 3000);
 console.log(t.currVal)

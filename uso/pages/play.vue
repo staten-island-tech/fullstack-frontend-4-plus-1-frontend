@@ -291,9 +291,11 @@ export default {
             `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
           ],
           volume: t.volume,
+            preload: 'metadata',
           onload: () => (t.songLoaded = true),
         });
-        t.songDuration = t.music.duration();
+
+    
         t.music.seek(t.beatmapIntro / 1000);
 
         t.defaultHitNormal = new Howl({
@@ -450,9 +452,13 @@ export default {
       const t = this;
 
       t.started = true;
-      t.music.play();
-      t.songDuration = Math.round(t.music.duration()) * 1000;
 
+   t.songDuration = Math.round(t.music.duration()) * 1000;
+
+      t.music.play();
+
+    
+      console.log(t.songDuration)
       t.healthBar = new ProgressBar.Line('#health-bar', {
         strokeWidth: 4,
         easing: 'easeInOut',
@@ -462,6 +468,7 @@ export default {
         trailWidth: 4,
         svgStyle: { width: '80rem', height: '4rem' },
       });
+
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
@@ -478,48 +485,52 @@ export default {
         t.healthBar.animate(1);
         
       function healthbarFinalVal(currentHealth) {
+        let currentHealthVal = Math.round(100* t.health)/100;
+  
       switch (currentHealth) {
-  case currentHealth === 320:
-       if(t.health > 0  && t.health < 1) {
+  case 320:  
+if(t.health > 0  && t.health < 1) {
        t.health += 0.1;  
-              console.log( t.health)
  }
     break;
-  case currentHealth === 300:
+  case 300:
       if(t.health > 0  && t.health < 1) {
        t.health += 0.1;  
-       console.log( t.health)
  }
     break;
-  case currentHealth === 200:
+  case 200:
        if(t.health > 0  && t.health < 1 ) {
           t.health += 0.05;
+      
      }
     break;
-  case currentHealth === 100:
+  case 100:
       if(t.health > 0  && t.health < 1 ) {
           t.health += 0.05;
      }
       break;
-    case currentHealth === 50:
+    case 50:
       if(t.health > 0 ) {
           t.health -= 0.05;
      }
         break;
-    case currentHealth === 0:
+    case 0:
       if(t.health > 0 ) {
           t.health -= 0.1;
-          console.log("hi")
      }
     break;
       default:
-      console.log(currentHealth)
-     // t.health = 0;
-       console.log("0 heath gg!")
+     // console.log(currentHealth)
+     //t.health = 0;
+ 
       }
-       let currentHealthVal = Math.round(100* t.health)/100;
-        console.log(currentHealthVal)
-        t.healthBar.animate(currentHealthVal);
+        if(t.health < 0 ) {
+          t.health -= 0.1;
+          t.health = 0;
+     }
+
+         console.log(currentHealthVal)
+            t.healthBar.animate(currentHealthVal);
       }
 
       /* ===============
@@ -929,8 +940,6 @@ export default {
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-    
-              healthbarFinalVal( t.latestHit );
               break;
           }
 
