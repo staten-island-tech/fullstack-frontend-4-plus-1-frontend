@@ -476,31 +476,52 @@ export default {
       });
 
       t.progressBar.animate(1);
-
-      t.healthBar.animate(1);
-
+      
+        t.healthBar.animate(1);
+        
       function healthbarFinalVal(currentHealth) {
-        t.healthBar.animate(currentHealth);
-      }
-
-      function healthbarHitGood() {
-        if (t.health < 1) {
-          t.health += 0.1;
-        }
-      }
-
-      function healthbarHitBad() {
-        if (t.health < 1) {
+      switch (currentHealth) {
+  case currentHealth === 320:
+       if(t.health > 0  && t.health < 1) {
+       t.health += 0.1;  
+              console.log( t.health)
+ }
+    break;
+  case currentHealth === 300:
+      if(t.health > 0  && t.health < 1) {
+       t.health += 0.1;  
+       console.log( t.health)
+ }
+    break;
+  case currentHealth === 200:
+       if(t.health > 0  && t.health < 1 ) {
           t.health += 0.05;
-        }
-      }
-
-      function healthbarMiss() {
-        if (t.health > 0) {
+     }
+    break;
+  case currentHealth === 100:
+      if(t.health > 0  && t.health < 1 ) {
+          t.health += 0.05;
+     }
+      break;
+    case currentHealth === 50:
+      if(t.health > 0 ) {
+          t.health -= 0.05;
+     }
+        break;
+    case currentHealth === 0:
+      if(t.health > 0 ) {
           t.health -= 0.1;
-        } else {
-          t.health = 0;
-        }
+          console.log("hi")
+     }
+    break;
+      default:
+      console.log(currentHealth)
+     // t.health = 0;
+       console.log("0 heath gg!")
+      }
+       let currentHealthVal = Math.round(100* t.health)/100;
+        console.log(currentHealthVal)
+        t.healthBar.animate(currentHealthVal);
       }
 
       /* ===============
@@ -513,7 +534,7 @@ export default {
         320: 16.5,
         300: Math.floor(64 - 3 * OD) + 0.5,
         200: Math.floor(97 - 3 * OD) + 0.5,
-        //100: Math.floor(127 - 3 * OD) + 0.5,
+        100: Math.floor(127 - 3 * OD) + 0.5,
         50: Math.floor(151 - 3 * OD) + 0.5,
         0: Math.floor(170 - 3 * OD) + 0.5,
       };
@@ -631,8 +652,10 @@ export default {
           t.bonus = 0;
           t.combo = 0;
 
-          healthbarMiss();
-          healthbarFinalVal(t.health);
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+          healthbarFinalVal( t.latestHit );
         }
 
         hit() {
@@ -651,16 +674,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+          
+              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+     
+              healthbarFinalVal(t.latestHit);
 
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
@@ -668,27 +691,28 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+          
+               healthbarFinalVal( t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              healthbarHitBad();
-              healthbarFinalVal(t.health);
+         
+               healthbarFinalVal( t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              healthbarHitBad();
-              healthbarFinalVal(t.health);
+     
+               healthbarFinalVal( t.latestHit );
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
               this.miss();
+            healthbarFinalVal( t.latestHit );
               return;
           }
 
@@ -856,11 +880,8 @@ export default {
 
           t.combo = 0;
 
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readySliders[this.i] = null;
-          healthbarMiss();
-          healthbarFinalVal(t.health);
+    
+          healthbarFinalVal( t.latestHit );
         }
 
         hit() {
@@ -875,16 +896,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+     
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+       
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -892,8 +913,8 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-              healthbarHitGood();
-              healthbarFinalVal(t.health);
+          
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -901,8 +922,8 @@ export default {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-              healthbarHitBad();
-              healthbarFinalVal(t.health);
+    
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -910,8 +931,8 @@ export default {
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-              healthbarHitBad();
-              healthbarFinalVal(t.health);
+    
+              healthbarFinalVal( t.latestHit );
               break;
           }
 
