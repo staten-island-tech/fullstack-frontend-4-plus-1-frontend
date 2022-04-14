@@ -13,7 +13,7 @@
 - [ ] Add Health Bar [**Harvey**]
 
 - [x] Incorporate Music
-- [ ] Hit Sounds [**Harvey**] (By 3/21)
+- [ ] Hit Sounds [**Harvey**]
   - [ ] Hit sound when no note is hit
   - [ ] Hit sound when note is hit
   - [ ] Load custom sounds and use them
@@ -24,7 +24,7 @@
   - [ ] Color in target circle when key is pressed (indicator)
 - [ ] Hit Effects (Out Canvas/CSS) [**Kenny**]
 
-- [ ] Add pausing to the game [**Wilson**] (By 3/21)
+- [ ] Add pausing to the game [**Wilson**]
   - Pause when out of focus
   - Add buttons to restart song and back to beatmaps page
 - [ ] Skip intro button [**Wilson**]
@@ -65,3 +65,14 @@
   - [ ] Global leaderboard stats
   - [ ] Song leaderboard stats
   - [ ] On song end, upload to MongoDB
+
+## Wilson's Tasklist
+
+1. Determine source of lag coming from pause and attempt to fix it.
+2. Implement skip intro
+  - Show a skip button that only exists at least 5 seconds before the first note spawns
+  - If the button is pressed, subtract time from all the timers (equal to 5 seconds left before first note is supposed to be hit
+  - Else, remove the skip button and continue song normally
+3. Implement restart
+  - Remake the canvas and reset everything
+4. Hit Effects
