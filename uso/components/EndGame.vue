@@ -5,6 +5,7 @@
   <div>
 
       <div class="endgame__page"> 
+
         <div class="endgame__page--container">
 
           <div class="endgame__header">
@@ -18,16 +19,45 @@
             </div>
 
             <div class="header__right">
-              <div id="rightSide">Ranking</div>
+              <div id="rightSide">RANKING</div>
             </div>
 
           </div>
 
-          <div class="endgame__stats">
-            <div id="statsLeft">Content</div>
+          <div class="endgame__stats--container">
+
+            <div class="stats__flow">
+              <h1 class="title">Results</h1>
+              <div class="content-sidebar">
+                <div id="left__col" class="col">
+                  <div class="score">Score:</div>
+                  <div class="stats__results">
+                    <div class="scoreValues">
+                      <div class="stats">300</div>
+                      <div class="stats">200</div>
+                      <div class="stats">100</div>
+                    </div>
+                    <div class="scoreX">
+                      <div class="stats">nx</div>
+                      <div class="stats">nx</div>
+                      <div class="stats">nx</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="right__col" class="col">
+                  <div class="letterRanking">A</div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
+
+        <nuxt-link to="/home" class="home__btnClass">
+          <div id="home__btnId">back</div>
+        </nuxt-link>
+
       </div>
     
   </div>
@@ -55,12 +85,18 @@ export default {
 }
 
 #rightSide {
-  font-size: 8.5rem;
+  font-size: 12.5rem;
   font-weight: 500;
+  padding: 0 15rem 0 0;
 }
 
 #statsLeft {
   font-size: 6rem;
+}
+
+.title {
+  font-size: 10.5rem;
+  font-weight: 400;
 }
 
 /* endgame things */
@@ -81,8 +117,8 @@ export default {
 }
 
 .endgame__header {
-  padding: 10px 25px 10px 25px;
-  opacity: 0.9;
+  padding: 5px 30px 5px 30px;
+  opacity: 0.85;
 
   background: #292a2b;
   color: white;
@@ -94,17 +130,106 @@ export default {
 
 
 .header__left {
-  padding-top: 5px;
   margin-right: auto;
 }
 
 .header__right {
-  padding-top: 5px;
   margin-left: auto;
 }
 
-.endgame__stats {
+.endgame__stats--container {
   padding: 25px;
+}
+
+/* o k */
+
+.content-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  height: 50vh;
+}
+
+.content-sidebar > *:nth-child(1) {
+  flex: 1 1 65%;
+  background: #373738;
+  opacity: 0.8;
+}
+
+.content-sidebar > *:nth-child(2) {
+  flex: 1 1 35%;
+  /* background: #373738;
+  opacity: 0.8; */
+}
+
+#left__col {
+  padding: 2rem;
+}
+
+.stats__results {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* flex-direction: column; */
+  flex-wrap: wrap;
+  padding: 1.5rem;
+}
+
+.stats__results > *:nth-child(1) {
+  flex: 1 1 50%;
+}
+
+.stats__results > *:nth-child(2) {
+  flex: 1 1 50%;
+}
+
+.score {
+  font-size: 10rem;
+  font-weight: 600;
+}
+
+.stats {
+  font-size: 7rem;
+}
+
+#right__col {
+  padding: 2.5rem;
+  height: 0;
+}
+
+.letterRanking {
+  text-align: center;
+  font-size: 50rem;
+  font-weight: 500;
+  margin-top: -8rem;
+}
+
+/* triangle */
+
+.home__btnClass {
+  position: fixed;
+  left: -0.1rem;
+  bottom: -0.1rem;
+  width: 20rem;
+  height: 20rem;
+  /* background-color: #2489c4; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: #fff;
+  /* box-shadow: 0 0.1rem 0.6rem rgb(0 0 0 / 20%); */
+  border-radius: 0.3rem;
+  background: linear-gradient(to bottom left, transparent 0%, transparent 50%, #131313 50%, #131313 100%);
+  /* display: inline-block; */
+}
+
+.home__btnClass:hover {
+  background: linear-gradient(to bottom left, transparent 0%, transparent 50%, #181818 50%, #181818 100%);
+}
+
+#home__btnId {
+  font-size: 8.5rem;
+  transform: translate(-30px, 60px);
 }
 
 
