@@ -382,6 +382,26 @@ export default {
   font-size: 16px;
   color: #edf0f1;
   margin: 0 3px;
+  transition: all 200ms ease-in-out;
+}
+
+.uso__button:hover {
+  outline: none;
+  border: none;
+  padding: 0;
+  background: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid rgba(230, 228, 255, 0.7);
+  font-size: 16px;
+  color: #edf0f1;
+  margin: 0 3px;
 }
 
 .uso__avatar--img {
