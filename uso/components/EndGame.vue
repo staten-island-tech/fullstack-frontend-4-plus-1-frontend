@@ -1,79 +1,66 @@
 <template>
-
-<!-- transfer over to components -->
+  <!-- transfer over to components -->
 
   <div>
-
-      <div class="endgame__page"> 
-
-        <div class="endgame__page--container">
-
-          <div class="endgame__header">
-
-            <div class="header__left">
-              <div id="leftSide">
-                <div id="leftTitle">song // beatmap title</div>
-                <div id="leftTitle"> by... musician // beatmap creator</div>
-                <h3></h3>
-              </div>
+    <div class="endgame__page">
+      <div class="endgame__page--container">
+        <div class="endgame__header">
+          <div class="header__left">
+            <div id="leftSide">
+              <div id="leftTitle">song // beatmap title</div>
+              <div id="leftTitle">by... musician // beatmap creator</div>
+              <h3></h3>
             </div>
-
-            <div class="header__right">
-              <div id="rightSide">RANKING</div>
-            </div>
-
           </div>
 
-          <div class="endgame__stats--container">
-
-            <div class="stats__flow">
-              <h1 class="title">Results</h1>
-              <div class="content-sidebar">
-                <div id="left__col" class="col">
-                  <div class="score">Score:</div>
-                  <div class="stats__results">
-                    <div class="scoreValues">
-                      <div class="stats">300</div>
-                      <div class="stats">200</div>
-                      <div class="stats">100</div>
-                    </div>
-                    <div class="scoreX">
-                      <div class="stats">nx</div>
-                      <div class="stats">nx</div>
-                      <div class="stats">nx</div>
-                    </div>
-                  </div>
-                </div>
-                <div id="right__col" class="col">
-                  <div class="letterRanking">A</div>
-                </div>
-              </div>
-            </div>
-
+          <div class="header__right">
+            <div id="rightSide">RANKING</div>
           </div>
-
         </div>
 
-        <nuxt-link to="/home" class="home__btnClass">
-          <div id="home__btnId">back</div>
-        </nuxt-link>
-
+        <div class="endgame__stats--container">
+          <div class="stats__flow">
+            <h1 class="title">Results</h1>
+            muum
+            <div class="content-sidebar">
+              <div id="left__col" class="col">
+                <div class="score">Score:</div>
+                <div class="stats__results">
+                  <div class="scoreValues">
+                    <div class="stats">300</div>
+                    <div class="stats">300</div>
+                    <div class="stats">200</div>
+                    <div class="stats">100</div>
+                    <div class="stats">50</div>
+                    <div class="stats">X</div>
+                  </div>
+                  <div class="scoreX">
+                    <div class="stats">nx</div>
+                    <div class="stats">nx</div>
+                    <div class="stats">nx</div>
+                  </div>
+                </div>
+              </div>
+              <div id="right__col" class="col">
+                <div class="letterRanking">A</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
+      <nuxt-link to="/beatmaps" class="beatmap__btnClass">
+        <div id="beatmap__btnId">back</div>
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
-
-export default {
-};
-
+export default {};
 </script>
 
-
-
 <style scoped>
-
 /* declarations */
 
 #leftSide {
@@ -127,7 +114,6 @@ export default {
   justify-content: space-around;
   align-items: center;
 }
-
 
 .header__left {
   margin-right: auto;
@@ -205,7 +191,7 @@ export default {
 
 /* triangle */
 
-.home__btnClass {
+.beatmap__btnClass {
   position: fixed;
   left: -0.1rem;
   bottom: -0.1rem;
@@ -219,18 +205,28 @@ export default {
   color: #fff;
   /* box-shadow: 0 0.1rem 0.6rem rgb(0 0 0 / 20%); */
   border-radius: 0.3rem;
-  background: linear-gradient(to bottom left, transparent 0%, transparent 50%, #131313 50%, #131313 100%);
+  background: linear-gradient(
+    to bottom left,
+    transparent 0%,
+    transparent 50%,
+    #131313 50%,
+    #131313 100%
+  );
   /* display: inline-block; */
 }
 
-.home__btnClass:hover {
-  background: linear-gradient(to bottom left, transparent 0%, transparent 50%, #181818 50%, #181818 100%);
+.beatmap__btnClass:hover {
+  background: linear-gradient(
+    to bottom left,
+    transparent 0%,
+    transparent 50%,
+    #181818 50%,
+    #181818 100%
+  );
 }
 
-#home__btnId {
+#beatmap__btnId {
   font-size: 8.5rem;
   transform: translate(-30px, 60px);
 }
-
-
 </style>
