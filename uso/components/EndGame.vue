@@ -21,7 +21,6 @@
         <div class="endgame__stats--container">
           <div class="stats__flow">
             <h1 class="title">Results</h1>
-            muum
             <div class="content-sidebar">
               <div id="left__col" class="col">
                 <div class="score">Score:</div>
@@ -32,9 +31,12 @@
                     <div class="stats">200</div>
                     <div class="stats">100</div>
                     <div class="stats">50</div>
-                    <div class="stats">X</div>
+                    <div class="stats">Miss</div>
                   </div>
                   <div class="scoreX">
+                    <div class="stats">nx</div>
+                    <div class="stats">nx</div>
+                    <div class="stats">nx</div>
                     <div class="stats">nx</div>
                     <div class="stats">nx</div>
                     <div class="stats">nx</div>
@@ -139,6 +141,7 @@ export default {};
   flex: 1 1 65%;
   background: #373738;
   opacity: 0.8;
+  height: 47vh;
 }
 
 .content-sidebar > *:nth-child(2) {
@@ -157,7 +160,7 @@ export default {};
   justify-content: center;
   /* flex-direction: column; */
   flex-wrap: wrap;
-  padding: 1.5rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
 .stats__results > *:nth-child(1) {
@@ -169,12 +172,13 @@ export default {};
 }
 
 .score {
-  font-size: 10rem;
+  font-size: 7rem;
   font-weight: 600;
 }
 
 .stats {
-  font-size: 7rem;
+  font-size: 6rem;
+  height: 5rem;
 }
 
 #right__col {
@@ -187,6 +191,7 @@ export default {};
   font-size: 50rem;
   font-weight: 500;
   margin-top: -8rem;
+  height: 20vh;
 }
 
 /* triangle */
