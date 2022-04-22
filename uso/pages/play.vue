@@ -13,7 +13,7 @@
         class="game-start-button"
         @click="startGame"
       >
-        STARTmumu
+        START
         <br />
         {{ keys.join(', ') }}
       </button>
