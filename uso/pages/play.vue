@@ -153,7 +153,7 @@ export default {
       graphic: null,
 
       Page: this.$route.name,
-      gameEnded: true,
+      gameEnded: false,
     };
   },
 
@@ -251,7 +251,7 @@ export default {
     },
   },
 
-  /* watch: {
+  watch: {
     loaded: {
       handler(newValue, oldValue) {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
@@ -260,7 +260,7 @@ export default {
       },
       deep: true,
     },
-  }, */
+  },
 
   methods: {
     onLoad() {
