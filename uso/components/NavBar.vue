@@ -335,7 +335,7 @@ export default {
   font-size: 28px;
   font-weight: 300;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 200ms ease-in;
 }
 
 .uso__navbar--links a:hover {

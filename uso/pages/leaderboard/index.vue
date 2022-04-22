@@ -250,7 +250,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 90.1vh;
+  min-height: 90.2vh;
   height: 100%;
   background-image: linear-gradient(
       rgba(13, 4, 66, 0.7),
