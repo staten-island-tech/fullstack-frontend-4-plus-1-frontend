@@ -392,15 +392,11 @@ t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename
       const t = this; 
  if( t.firstBeatmapVal !== t.currVal) {
 
+t.firstBeatmapVal = t.currVal
 
-//t.musicBeatmap.play('prevMusic')
-t.t
-  setTimeout(() => {  t.musicBeatmap.stop()  }, 3000);
-console.log(t.currVal)
-console.log(t.firstBeatmapVal)
-
-
-//stop();
+  console.log("work")
+  Howler.stop();
+  t.musicBeatmap.play('prevMusic')  
 
           }
 
