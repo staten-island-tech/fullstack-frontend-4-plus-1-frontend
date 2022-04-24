@@ -32,10 +32,17 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event)"
-              @mouseleave="bmClickEvents(bmSetName, $event)"
-              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit(), changeSound()"
+    
+              @mouseover="bmClickEvents(bmSetName, $event), hovered = true "
+              @mouseleave="bmClickEvents(bmSetName, $event), hovered = false"
+         
+              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit(), changeSound(), toggleAudio() "
+              
             >
+       
+                <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+    
+                <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause"  />
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -113,7 +120,9 @@ export default {
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
-
+      hovered: false,
+      clicked: false,
+      clickBack: false,
       searchQuery: null,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
@@ -357,9 +366,14 @@ export default {
           //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
           volume: 0.1,
           preload: true,
+            html5: true,
             sprite: {
     prevMusic: [t.musicBeatmapDuration, 10000, false]}
         });
+
+
+
+
    
   // if (!t.chageExeuted) {
   //         t.chageExeuted = true;
@@ -401,7 +415,23 @@ t.firstBeatmapVal = t.currVal
           }
 
 
-    }
+    },
+      toggleAudio() {
+        const t= this; 
+        // this.clicked = true
+   
+            if (this.clicked === false) {
+          // t.musicBeatmap.play('prevMusic')
+                this.clicked = true;
+               
+            } else {
+                this.clicked = false;
+               // const sprite1 = t.musicBeatmap.play('prevMusic')
+                 //t.musicBeatmap.pause(sprite1)
+                 
+            }
+                  console.log(this.clicked)
+  },
   },
 };
 </script>
@@ -563,13 +593,18 @@ t.firstBeatmapVal = t.currVal
   transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
-
+  
 
 }
+
+
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
+
 }
+
+
 
 .play-beatmap-set:hover::after {
   content: '';
@@ -585,6 +620,46 @@ t.firstBeatmapVal = t.currVal
   animation: shine 200ms linear;
   transform: translateX(250px) rotate(-25deg);
 }
+
+.button.play {
+opacity: 1 ; 
+  width: 74px;
+  height: 74px;
+  border-style: solid;
+  border-width: 37px 0px 37px 74px;
+  border-color: transparent transparent transparent yellow;
+   /* display: none; */
+}
+
+.fa-play {
+  height: 6rem;
+  width: 6rem;
+      margin-left: auto;
+    margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
+
+}
+
+.fa-pause {
+    height: 6rem;
+  width: 6rem;
+      margin-left: auto;
+    margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
+
+}
+
+.play-btn {
+    height: 6rem;
+  width: 6rem;
+      margin-left: auto;
+    margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
+}
+
 
 /* */
 
@@ -613,6 +688,8 @@ t.firstBeatmapVal = t.currVal
 .play-beatmap-set:hover > .beatmap-set-img {
   opacity: 0.5;
 }
+
+
 
 .play-beatmap-set > p {
   width: 100%;
