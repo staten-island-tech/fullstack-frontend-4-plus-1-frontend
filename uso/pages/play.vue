@@ -1175,9 +1175,10 @@ export default {
 }
 
 #hitValue {
-  line-height: 1.25rem;
+  line-height: 1;
   font-size: 14rem;
   font-weight: 300;
+  height: 15vh;
 }
 
 /* */
