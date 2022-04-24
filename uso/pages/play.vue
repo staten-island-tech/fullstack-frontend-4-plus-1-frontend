@@ -18,6 +18,10 @@
         {{ keys.join(', ') }}
       </button>
       <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
+        <div class="hitCombo__container">
+          <h1 id="combo">x{{ combo }}</h1>
+          <h1 id="hitValue" :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
+        </div>
         <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
           >Canvas is not supported on your browser.</canvas
         >
@@ -25,13 +29,22 @@
       <div class="health-bar-cont">
         <div id="health-bar"></div>
       </div>
-      <div class="game-statistics-container">
+      
+      <!-- <div class="game-statistics-container">
         <h1>{{ Math.floor(score) }}</h1>
         <h1>x{{ combo }}</h1>
         <h1>
           {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
         </h1>
         <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
+      </div> -->
+
+
+      <div class="scorePercentage__container">
+        <h1 id="score">{{ Math.floor(score) }}</h1>
+        <h1 id="percentage">
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
+        </h1>
       </div>
 
       <div class="game-pb-container">
@@ -110,7 +123,8 @@ export default {
       paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#f7a5cf', '#FFE6CC', '#F8CECC'],
+      // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
@@ -1076,6 +1090,7 @@ export default {
   background-position: center;
   transition: all 200ms ease-in-out;
   box-shadow: 0px 10px 10px 0px #1b1b1b;
+  z-index: 100;
 
   font-size: 3rem;
 }
@@ -1111,12 +1126,68 @@ export default {
   font-size: 7rem;
 }
 
+/* score + combo */
+
+.scorePercentage__container {
+  position: fixed;
+  top: -1rem;
+  right: 0;
+  min-width: 30rem;
+  min-height: 17.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  color: #fff;
+  padding: 1rem;
+}
+
+#score {
+  line-height: 1.25rem;
+  font-size: 15rem;
+  font-weight: 500;
+}
+
+#percentage {
+  line-height: 1.25rem;
+  font-size: 7.5rem;
+  font-weight: 300;
+}
+
+.hitCombo__container {
+  position: fixed;
+  left: 16.25%;
+  bottom: 0;
+  min-width: 30rem;
+  min-height: 100rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: #fff;
+}
+
+#combo {
+  line-height: 1.25rem;
+  font-size: 9rem;
+  font-weight: 400;
+}
+
+#hitValue {
+  line-height: 1.25rem;
+  font-size: 14rem;
+  font-weight: 300;
+}
+
+/* */
+
 .game-pb-container {
   height: 50vh;
   width: 20vw;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-direction: column;
 }
 
@@ -1127,6 +1198,8 @@ export default {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  position: relative;
+  transform: translate(-28.75rem, 16rem);
 }
 
 #game-pb {
