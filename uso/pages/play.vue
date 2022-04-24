@@ -17,28 +17,30 @@
         <br />
         {{ keys.join(', ') }}
       </button>
-      <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-        <div class="hitCombo__container">
-          <h1 id="combo">x{{ combo }}</h1>
-          <h1 id="hitValue" :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
-        </div>
-        <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
-          >Canvas is not supported on your browser.</canvas
+      <div
+        class="the-container-to-end-all-containers"
+        :style="{ width: `calc(${canvasWidth}px + 10rem)` }"
+      >
+        <div
+          class="game-canvas-container"
+          :style="{ width: canvasWidth + 'px' }"
         >
-      </div>
-      <div class="health-bar-cont">
+          <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
+            >Canvas is not supported on your browser.</canvas
+          >
+          <div
+            class="hitCombo__container"
+            :style="{ width: canvasWidth + 'px' }"
+          >
+            <h1 id="combo">x{{ combo }}</h1>
+            <h1 id="hitValue" :style="lastestHitStyle">
+              {{ displayedLatestHit }}
+            </h1>
+          </div>
+        </div>
+
         <div id="health-bar"></div>
       </div>
-      
-      <!-- <div class="game-statistics-container">
-        <h1>{{ Math.floor(score) }}</h1>
-        <h1>x{{ combo }}</h1>
-        <h1>
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
-        </h1>
-        <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
-      </div> -->
-
 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
@@ -1099,15 +1101,56 @@ export default {
   transform: scale(0.95);
 }
 
+.the-container-to-end-all-containers {
+  height: 100%;
+
+  display: flex;
+}
+
 .game-canvas-container {
+  height: 100%;
+}
+
+#canvas {
+  position: absolute;
   height: 100%;
   background-color: #181818;
 }
 
-#canvas {
-  width: 100%;
+.hitCombo__container {
+  position: absolute;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #fff;
 }
+
+.hitCombo__container > h1 {
+  line-height: 1;
+  height: 10rem;
+}
+
+#combo {
+  font-size: 9rem;
+  font-weight: 400;
+}
+
+#hitValue {
+  font-size: 14rem;
+  font-weight: 300;
+}
+
+#health-bar {
+  height: 80vh;
+  width: 10rem;
+
+  transform: rotate(-90deg) translate(-100vh, 0);
+  transform-origin: top left;
+}
+
+/* */
 
 .game-statistics-container {
   min-width: 35rem;
@@ -1155,32 +1198,6 @@ export default {
   font-weight: 300;
 }
 
-.hitCombo__container {
-  position: fixed;
-  left: 16.25%;
-  bottom: 0;
-  min-width: 30rem;
-  min-height: 100rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  color: #fff;
-}
-
-#combo {
-  line-height: 1.25rem;
-  font-size: 9rem;
-  font-weight: 400;
-}
-
-#hitValue {
-  line-height: 1;
-  font-size: 14rem;
-  font-weight: 300;
-  height: 15vh;
-}
-
 /* */
 
 .game-pb-container {
@@ -1192,24 +1209,8 @@ export default {
   flex-direction: column;
 }
 
-.health-bar-cont {
-  height: 80vh;
-  width: 5vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
-  transform: translate(-28.75rem, 16rem);
-}
-
 #game-pb {
-  height: 20%;
   width: 20%;
-}
-
-#health-bar {
-  transform: rotate(0.75turn);
 }
 
 #game-pb-vol {
