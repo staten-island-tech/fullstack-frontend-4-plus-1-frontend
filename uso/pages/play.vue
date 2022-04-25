@@ -21,8 +21,8 @@
     <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
       <canvas id="canvas">Canvas is not supported on your browser.</canvas>
     </div>
-    <div class="health-bar-cont">
-      <div id="health-bar"></div>
+    <div class="bar-wrap">
+      <div class="bar" :style="{height: health + '%' }"></div>
     </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
@@ -145,7 +145,7 @@ export default {
       pbdur: null,
       songDuration: 0,
       progressBarVol: null,
-      health: 1,
+      health: 100,
 
       graphic: null,
 
@@ -459,16 +459,6 @@ export default {
 
     
       console.log(t.songDuration)
-      t.healthBar = new ProgressBar.Line('#health-bar', {
-        strokeWidth: 4,
-        easing: 'easeInOut',
-        duration: 500,
-        color: '#FFEA82',
-        trailColor: '#eee',
-        trailWidth: 4,
-        svgStyle: { width: '80rem', height: '4rem' },
-      });
-
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
@@ -482,41 +472,41 @@ export default {
 
       t.progressBar.animate(1);
       
-        t.healthBar.animate(1);
+
         
       function healthbarFinalVal(currentHealth) {
         let currentHealthVal = Math.round(100* t.health)/100;
   
       switch (currentHealth) {
   case 320:  
-if(t.health > 0  && t.health < 1) {
-       t.health += 0.1;  
+if(t.health > 0  && t.health < 100) {
+       t.health += 10;  
  }
     break;
   case 300:
-      if(t.health > 0  && t.health < 1) {
-       t.health += 0.1;  
+      if(t.health > 0  && t.health < 100) {
+       t.health += 10;  
  }
     break;
   case 200:
-       if(t.health > 0  && t.health < 1 ) {
-          t.health += 0.05;
+       if(t.health > 0  && t.health < 100 ) {
+          t.health += 5;
       
      }
     break;
   case 100:
-      if(t.health > 0  && t.health < 1 ) {
-          t.health += 0.05;
+      if(t.health > 0  && t.health < 100 ) {
+          t.health += 5;
      }
       break;
     case 50:
-      if(t.health > 0 ) {
-          t.health -= 0.05;
+      if(t.health > 100 ) {
+          t.health -= 5;
      }
         break;
     case 0:
       if(t.health > 0 ) {
-          t.health -= 0.1;
+          t.health -= 10;
      }
     break;
       default:
@@ -525,12 +515,15 @@ if(t.health > 0  && t.health < 1) {
  
       }
         if(t.health < 0 ) {
-          t.health -= 0.1;
+          t.health -= 10;
           t.health = 0;
      }
+    
 
-         console.log(currentHealthVal)
-            t.healthBar.animate(currentHealthVal);
+         console.log( t.health )
+    
+        
+           
       }
 
       /* ===============
@@ -1146,14 +1139,37 @@ if(t.health > 0  && t.health < 1) {
   flex-direction: column;
 }
 
+.bar-wrap {
+  transform: rotate(-.5turn);
+    height: 80vh;
+  padding: 6px;
+  margin-top: 50px;
+  
+  border-radius: 2rem;
+  
+  background-color: white;
+
+}
+
+.bar {
+
+  height: 0%;
+  width: 15px;
+  
+  transition: height .15s ease-out;
+  
+  background-color: #38b000;
+  border-radius: 100px;
+  box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
+}
+
+
 #game-pb {
   height: 20%;
   width: 20%;
 }
 
-#health-bar {
-  transform: rotate(0.75turn);
-}
+
 
 #game-pb-vol {
   position: relative;

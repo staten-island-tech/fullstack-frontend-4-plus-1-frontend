@@ -124,6 +124,7 @@ export default {
       clicked: false,
       clickBack: false,
       searchQuery: null,
+      id: null,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
@@ -389,7 +390,7 @@ export default {
           
               //t.executed = false;
         }
-  
+  console.log(this.clickedBmSetName)
 
   t.musicBeatmap.on('end', function(){
   t.executed = false;
@@ -421,13 +422,13 @@ t.firstBeatmapVal = t.currVal
         // this.clicked = true
    
             if (this.clicked === false) {
-          // t.musicBeatmap.play('prevMusic')
+          t.musicBeatmap.play('prevMusic')
                 this.clicked = true;
                
             } else {
                 this.clicked = false;
-               // const sprite1 = t.musicBeatmap.play('prevMusic')
-                 //t.musicBeatmap.pause(sprite1)
+              //  const sprite1 = t.musicBeatmap.play('prevMusic')
+                Howler.stop();
                  
             }
                   console.log(this.clicked)
