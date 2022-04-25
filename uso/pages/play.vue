@@ -22,7 +22,7 @@
       <canvas id="canvas">Canvas is not supported on your browser.</canvas>
     </div>
     <div class="bar-wrap">
-      <div class="bar" :style="{height: health + '%' }"></div>
+      <div class="bar" :style="{ height: health + '%' }"></div>
     </div>
     <div class="game-statistics-container">
       <h1>{{ Math.floor(score) }}</h1>
@@ -291,11 +291,10 @@ export default {
             `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
           ],
           volume: t.volume,
-            preload: 'metadata',
+          preload: 'metadata',
           onload: () => (t.songLoaded = true),
         });
 
-    
         t.music.seek(t.beatmapIntro / 1000);
 
         t.defaultHitNormal = new Howl({
@@ -453,12 +452,11 @@ export default {
 
       t.started = true;
 
-   t.songDuration = Math.round(t.music.duration()) * 1000;
+      t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.music.play();
 
-    
-      console.log(t.songDuration)
+      console.log(t.songDuration);
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
@@ -471,59 +469,33 @@ export default {
       });
 
       t.progressBar.animate(1);
-      
 
-        
-      function healthbarFinalVal(currentHealth) {
-        let currentHealthVal = Math.round(100* t.health)/100;
-  
-      switch (currentHealth) {
-  case 320:  
-if(t.health > 0  && t.health < 100) {
-       t.health += 10;  
- }
-    break;
-  case 300:
-      if(t.health > 0  && t.health < 100) {
-       t.health += 10;  
- }
-    break;
-  case 200:
-       if(t.health > 0  && t.health < 100 ) {
-          t.health += 5;
-      
-     }
-    break;
-  case 100:
-      if(t.health > 0  && t.health < 100 ) {
-          t.health += 5;
-     }
-      break;
-    case 50:
-      if(t.health > 100 ) {
-          t.health -= 5;
-     }
-        break;
-    case 0:
-      if(t.health > 0 ) {
-          t.health -= 10;
-     }
-    break;
-      default:
-     // console.log(currentHealth)
-     //t.health = 0;
- 
-      }
-        if(t.health < 0 ) {
-          t.health -= 10;
-          t.health = 0;
-     }
-    
+      function healthbarFinalVal(hitValue) {
+        switch (hitValue) {
+          case 320:
+            t.health += 10;
+            break;
+          case 300:
+            t.health += 10;
+            break;
+          case 200:
+            t.health += 5;
+            break;
+          case 100:
+            t.health += 5;
+            break;
+          case 50:
+            t.health -= 5;
+            break;
+          case 0:
+            t.health -= 10;
+            break;
+        }
 
-         console.log( t.health )
-    
-        
-           
+        if (t.health < 0) t.health = 0;
+        if (t.health > 100) t.health = 100;
+
+        console.log(t.health);
       }
 
       /* ===============
@@ -657,7 +629,7 @@ if(t.health > 0  && t.health < 100) {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-          healthbarFinalVal( t.latestHit );
+          healthbarFinalVal(t.latestHit);
         }
 
         hit() {
@@ -676,7 +648,7 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-          
+
               healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
@@ -684,7 +656,7 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-     
+
               healthbarFinalVal(t.latestHit);
 
               break;
@@ -693,28 +665,28 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-          
-               healthbarFinalVal( t.latestHit);
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-         
-               healthbarFinalVal( t.latestHit);
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-     
-               healthbarFinalVal( t.latestHit );
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
               this.miss();
-            healthbarFinalVal( t.latestHit );
+              healthbarFinalVal(t.latestHit);
               return;
           }
 
@@ -882,8 +854,7 @@ if(t.health > 0  && t.health < 100) {
 
           t.combo = 0;
 
-    
-          healthbarFinalVal( t.latestHit );
+          healthbarFinalVal(t.latestHit);
         }
 
         hit() {
@@ -898,16 +869,16 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-     
-              healthbarFinalVal( t.latestHit );
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-       
-              healthbarFinalVal( t.latestHit );
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -915,8 +886,8 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-          
-              healthbarFinalVal( t.latestHit );
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -924,8 +895,8 @@ if(t.health > 0  && t.health < 100) {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-    
-              healthbarFinalVal( t.latestHit );
+
+              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -1140,36 +1111,31 @@ if(t.health > 0  && t.health < 100) {
 }
 
 .bar-wrap {
-  transform: rotate(-.5turn);
-    height: 80vh;
+  transform: rotate(-0.5turn);
+  height: 80vh;
   padding: 6px;
   margin-top: 50px;
-  
-  border-radius: 2rem;
-  
-  background-color: white;
 
+  border-radius: 2rem;
+
+  background-color: white;
 }
 
 .bar {
-
   height: 0%;
   width: 15px;
-  
-  transition: height .15s ease-out;
-  
+
+  transition: height 0.15s ease-out;
+
   background-color: #38b000;
   border-radius: 100px;
-  box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
+  box-shadow: inset -1px -1px 10px rgb(0 0 0 / 0.5);
 }
-
 
 #game-pb {
   height: 20%;
   width: 20%;
 }
-
-
 
 #game-pb-vol {
   position: relative;

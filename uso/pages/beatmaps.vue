@@ -415,7 +415,7 @@ export default {
 
       if (this.clicked === false) {
         // t.musicBeatmap.play('prevMusic')
-        //       this.clicked = true;
+        this.clicked = true;
       } else {
         this.clicked = false;
         //  const sprite1 = t.musicBeatmap.play('prevMusic')
