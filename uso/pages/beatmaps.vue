@@ -32,17 +32,18 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-    
-              @mouseover="bmClickEvents(bmSetName, $event), hovered = true "
-              @mouseleave="bmClickEvents(bmSetName, $event), hovered = false"
-         
-              @click="bmClickEvents(bmSetName, $event), beatmapSoundBit(), changeSound(), toggleAudio() "
-              
+              @mouseover="bmClickEvents(bmSetName, $event), (hovered = true)"
+              @mouseleave="bmClickEvents(bmSetName, $event), (hovered = false)"
+              @click="
+                bmClickEvents(bmSetName, $event),
+                  beatmapSoundBit(),
+                  changeSound(),
+                  toggleAudio()
+              "
             >
-       
-                <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
-    
-                <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause"  />
+              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+
+              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -62,7 +63,7 @@
                 }`"
               />
             </div>
-            <div class="play-sidebar-text-container" >
+            <div class="play-sidebar-text-container">
               <p class="play-sidebar-text-title">
                 {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
               </p>
@@ -102,7 +103,10 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
+            <img
+              class="img-placeholder"
+              src="~/assets/images/backgrounds/landing.png"
+            />
             <p class="hover-msg">hover or click on a song~</p>
           </div>
         </div>
@@ -112,7 +116,7 @@
 </template>
 
 <script>
-/* eslint-disable */ 
+/* eslint-disable */
 export default {
   data() {
     return {
@@ -162,8 +166,6 @@ export default {
 
   methods: {
     getBmData(folder, osz) {
-
-
       const beatmap = {
         general: {},
         metadata: {},
@@ -329,12 +331,10 @@ export default {
           }
         });
 
-      
       // console.log(beatmap);
       return beatmap;
     },
     bmClickEvents(bmName, event) {
-  
       switch (event.type) {
         case 'mouseover':
           this.hoveredBmSetName = bmName;
@@ -353,86 +353,76 @@ export default {
           alert(`Dropbox event listener does not exist: ${event.type}`);
           break;
       }
-
-
     },
     beatmapSoundBit() {
       const t = this;
-         t.musicBeatmapDuration = Math.round((this.bmSetsData[ this.clickedBmSetName][0].general.PreviewTime)/1000)
-         
-        t.musicBeatmap = new Howl({  // eslint-disable-line
-          src: [
-            `/beatmaps/${ this.clickedBmSetName}/${this.bmSetsData[ this.clickedBmSetName][0].general.AudioFilename}`,
-          ],
-          //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-          volume: 0.1,
-          preload: true,
-            html5: true,
-            sprite: {
-    prevMusic: [t.musicBeatmapDuration, 10000, false]}
-        });
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
+      );
 
+      t.musicBeatmap = new Howl({
+        // eslint-disable-line
+        src: [
+          `/beatmaps/${this.clickedBmSetName}/${
+            this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
+          }`,
+        ],
+        //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+        volume: 0.1,
+        preload: true,
+        html5: true,
+        sprite: {
+          prevMusic: [t.musicBeatmapDuration, 10000, false],
+        },
+      });
 
+      // if (!t.chageExeuted) {
+      //         t.chageExeuted = true;
+      //       }
 
+      if (!t.executed) {
+        t.executed = true;
+        t.musicBeatmap.play('prevMusic');
 
-   
-  // if (!t.chageExeuted) {
-  //         t.chageExeuted = true;
-  //       }
- 
+        t.firstBeatmapVal =
+          t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
 
-  if (!t.executed) {
-            t.executed = true;
-           t.musicBeatmap.play('prevMusic')
-   
-         
-              t.firstBeatmapVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-          
-              //t.executed = false;
-        }
-  console.log(this.clickedBmSetName)
+        //t.executed = false;
+      }
+      console.log(this.clickedBmSetName);
 
-  t.musicBeatmap.on('end', function(){
-  t.executed = false;
-});
+      t.musicBeatmap.on('end', function () {
+        t.executed = false;
+      });
 
-t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename
+      t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
 
-  
-
-
-// console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
+      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
-      const t = this; 
- if( t.firstBeatmapVal !== t.currVal) {
+      const t = this;
+      if (t.firstBeatmapVal !== t.currVal) {
+        t.firstBeatmapVal = t.currVal;
 
-t.firstBeatmapVal = t.currVal
-
-  console.log("work")
-  Howler.stop();
-  t.musicBeatmap.play('prevMusic')  
-
-          }
-
-
+        console.log('work');
+        Howler.stop();
+        t.musicBeatmap.play('prevMusic');
+      }
     },
-      toggleAudio() {
-        const t= this; 
-        // this.clicked = true
-   
-            if (this.clicked === false) {
-          t.musicBeatmap.play('prevMusic')
-                this.clicked = true;
-               
-            } else {
-                this.clicked = false;
-              //  const sprite1 = t.musicBeatmap.play('prevMusic')
-                Howler.stop();
-                 
-            }
-                  console.log(this.clicked)
-  },
+    toggleAudio() {
+      const t = this;
+      // this.clicked = true
+
+      if (this.clicked === false) {
+        // t.musicBeatmap.play('prevMusic')
+        //       this.clicked = true;
+      } else {
+        this.clicked = false;
+        //  const sprite1 = t.musicBeatmap.play('prevMusic')
+        // Howler.stop();
+      }
+      console.log(this.clicked);
+    },
   },
 };
 </script>
@@ -594,26 +584,26 @@ t.firstBeatmapVal = t.currVal
   transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
-  
-
 }
-
-
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
-
 }
-
-
 
 .play-beatmap-set:hover::after {
   content: '';
   display: block;
   width: 75px;
   height: 175%;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 25%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
   opacity: 0.25;
   position: absolute;
   top: -40px;
@@ -623,44 +613,41 @@ t.firstBeatmapVal = t.currVal
 }
 
 .button.play {
-opacity: 1 ; 
+  opacity: 1;
   width: 74px;
   height: 74px;
   border-style: solid;
   border-width: 37px 0px 37px 74px;
   border-color: transparent transparent transparent yellow;
-   /* display: none; */
+  /* display: none; */
 }
 
 .fa-play {
   height: 6rem;
   width: 6rem;
-      margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
-
 }
 
 .fa-pause {
-    height: 6rem;
+  height: 6rem;
   width: 6rem;
-      margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
-
 }
 
 .play-btn {
-    height: 6rem;
+  height: 6rem;
   width: 6rem;
-      margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
 }
-
 
 /* */
 
@@ -668,7 +655,7 @@ opacity: 1 ;
   0% {
     transform: translateX(-30px) rotate(-25deg);
   }
-  
+
   100% {
     transform: translateX(250px) rotate(-25deg);
   }
@@ -689,8 +676,6 @@ opacity: 1 ;
 .play-beatmap-set:hover > .beatmap-set-img {
   opacity: 0.5;
 }
-
-
 
 .play-beatmap-set > p {
   width: 100%;
@@ -720,10 +705,7 @@ opacity: 1 ;
   flex-direction: column;
   gap: 1rem;
   height: auto;
-  background-image: linear-gradient(
-      rgba(14, 7, 29, 0.7),
-      rgba(17, 11, 36, 0.7)
-    ),
+  background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -800,5 +782,4 @@ opacity: 1 ;
   background-size: cover;
   background-position: center center;
 }
-
 </style>
