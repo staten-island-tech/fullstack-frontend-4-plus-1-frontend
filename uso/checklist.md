@@ -1,4 +1,5 @@
 ## Game Checklist
+
 - [x] Scale the canvas and elements inside based off vh and vw.
 
 - [x] Code Notes
@@ -10,10 +11,10 @@
 - [x] Combo
 - [x] Fix Judgements
 - [x] Scoring
-- [ ] Add Health Bar [**Harvey**]
+- [x] Add Health Bar [**Harvey**]
 
 - [x] Incorporate Music
-- [ ] Hit Sounds [**Harvey**] (By 3/21)
+- [x] Hit Sounds [**Harvey**]
   - [ ] Hit sound when no note is hit
   - [ ] Hit sound when note is hit
   - [ ] Load custom sounds and use them
@@ -36,15 +37,15 @@
 ### Pages to Design
 
 - [ ] Game Modals [**Kenny**, **Ethan**]
-  - [ ] Pause Screen (With restart and back to beatmaps) [**Kenny**]
-  - [ ] End Game Screen (With restart and back to beatmaps)
+  - [x] Pause Screen (With restart and back to beatmaps) [**Kenny**]
+  - [x] End Game Screen (With restart and back to beatmaps)
 - [ ] Site Pages [**Kenny**, **Ethan**]
   - [ ] Settings
-  - [ ] Global Leaderboard
+  - [x] Global Leaderboard
   - [ ] Per Song Leaderboard
   - [ ] User Profile (Show User Stats)
   - [x] Help Page [**Kenny**]
-  - [ ] Game Page [**Kenny**]
+  - [x] Game Page [**Kenny**]
 
 ### Site Functionality
 
