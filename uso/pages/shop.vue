@@ -1,7 +1,7 @@
 <template>
   <div class="shop-page">
     <div class="under-nav"></div>
-    <video
+    <!-- <video
       id="wish-background"
       class="video-bg"
       autoplay
@@ -11,7 +11,7 @@
       disablePictureInPicture
       src="../assets/images/backgrounds/wish-background.mp4"
       type="video/mp4"
-    ></video>
+    ></video> -->
     <section class="data-bar">
       <h1 class="shop-heading">Shop</h1>
       <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
