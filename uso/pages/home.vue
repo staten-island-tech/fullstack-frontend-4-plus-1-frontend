@@ -21,6 +21,7 @@
         </section>
         <section class="news home-section">
           <h1 class="news-header">!USO NEWS</h1>
+          
           <news-card />
         </section>
       </div>

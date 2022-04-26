@@ -5,7 +5,7 @@
     <div id="play-index">
       <div class="play-content">
         <div class="play-title-textbox">
-          <h1 class="play-title">♪♬ beatmaps listing</h1>
+          <h1 class="play-title">♪ beatmaps listing</h1>
         </div>
 
         <div class="search-container">
@@ -13,7 +13,7 @@
             <input
               class="song-search-bar"
               type="text"
-              placeholder="Search for your song... fix this garbage search area later lmao"
+              placeholder="search for your song..."
             />
 
             <span class="deleteText">
@@ -32,10 +32,18 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event)"
-              @mouseleave="bmClickEvents(bmSetName, $event)"
-              @click="bmClickEvents(bmSetName, $event)"
+              @mouseover="bmClickEvents(bmSetName, $event), (hovered = true)"
+              @mouseleave="bmClickEvents(bmSetName, $event), (hovered = false)"
+              @click="
+                bmClickEvents(bmSetName, $event),
+                  beatmapSoundBit(),
+                  changeSound(),
+                  toggleAudio()
+              "
             >
+              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+
+              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -95,8 +103,11 @@
             </table>
           </div>
           <div v-else class="play-sidebar">
-            <img class="img-placeholder" src="~/assets/images/backgrounds/landing.png">
-            <p class="hover-msg">Hover or Click on a Song!</p>
+            <img
+              class="img-placeholder"
+              src="~/assets/images/backgrounds/landing.png"
+            />
+            <p class="hover-msg">hover or click on a song~</p>
           </div>
         </div>
       </div>
@@ -105,6 +116,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   data() {
     return {
@@ -112,10 +124,20 @@ export default {
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
-
+      hovered: false,
+      clicked: false,
+      clickBack: false,
       searchQuery: null,
+      id: null,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
+      musicBeatmapDuration: 0,
+      executed: false,
+      chageExeuted: false,
+      firstBeatmapVal: null,
+      audioId: null,
+      currVal: null,
+      test: 1,
     };
   },
 
@@ -308,6 +330,7 @@ export default {
             });
           }
         });
+
       // console.log(beatmap);
       return beatmap;
     },
@@ -331,11 +354,81 @@ export default {
           break;
       }
     },
+    beatmapSoundBit() {
+      const t = this;
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
+      );
+
+      t.musicBeatmap = new Howl({
+        // eslint-disable-line
+        src: [
+          `/beatmaps/${this.clickedBmSetName}/${
+            this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
+          }`,
+        ],
+        //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+        volume: 0.1,
+        preload: true,
+        html5: true,
+        sprite: {
+          prevMusic: [t.musicBeatmapDuration, 10000, false],
+        },
+      });
+
+      // if (!t.chageExeuted) {
+      //         t.chageExeuted = true;
+      //       }
+
+      if (!t.executed) {
+        t.executed = true;
+        t.musicBeatmap.play('prevMusic');
+
+        t.firstBeatmapVal =
+          t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+        //t.executed = false;
+      }
+      console.log(this.clickedBmSetName);
+
+      t.musicBeatmap.on('end', function () {
+        t.executed = false;
+      });
+
+      t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
+    },
+    changeSound() {
+      const t = this;
+      if (t.firstBeatmapVal !== t.currVal) {
+        t.firstBeatmapVal = t.currVal;
+
+        console.log('work');
+        Howler.stop();
+        t.musicBeatmap.play('prevMusic');
+      }
+    },
+    toggleAudio() {
+      const t = this;
+      // this.clicked = true
+
+      if (this.clicked === false) {
+        // t.musicBeatmap.play('prevMusic')
+        this.clicked = true;
+      } else {
+        this.clicked = false;
+        //  const sprite1 = t.musicBeatmap.play('prevMusic')
+        // Howler.stop();
+      }
+      console.log(this.clicked);
+    },
   },
 };
 </script>
 
 <style scoped>
+
 *,
 .beatmaps__content--body {
   font-family: 'Dongle', sans-serif;
@@ -492,8 +585,6 @@ export default {
   transition: all 100ms linear;
   cursor: pointer;
   border-radius: 1rem;
-
-
 }
 
 .play-beatmap-set:hover {
@@ -503,16 +594,60 @@ export default {
 .play-beatmap-set:hover::after {
   content: '';
   display: block;
-  width: 75px;
+  width: 100px;
   height: 175%;
-  background: rgb(255,255,255);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 75%, rgba(255,255,255,0) 100%);
-  opacity: 0.2;
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 25%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.25;
   position: absolute;
-  top: -40px;
+  top: -80px;
   left: 0;
-  animation: shine 200ms linear;
+  animation: shine 250ms linear;
   transform: translateX(250px) rotate(-25deg);
+}
+
+.button.play {
+  opacity: 1;
+  width: 74px;
+  height: 74px;
+  border-style: solid;
+  border-width: 37px 0px 37px 74px;
+  border-color: transparent transparent transparent yellow;
+  /* display: none; */
+}
+
+.fa-play {
+  height: 6rem;
+  width: 6rem;
+  margin-left: auto;
+  margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
+}
+
+.fa-pause {
+  height: 6rem;
+  width: 6rem;
+  margin-left: auto;
+  margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
+}
+
+.play-btn {
+  height: 6rem;
+  width: 6rem;
+  margin-left: auto;
+  margin-right: auto;
+  /* font-size: 6rem; */
+  opacity: 1;
 }
 
 /* */
@@ -521,7 +656,7 @@ export default {
   0% {
     transform: translateX(-30px) rotate(-25deg);
   }
-  
+
   100% {
     transform: translateX(250px) rotate(-25deg);
   }
@@ -571,10 +706,7 @@ export default {
   flex-direction: column;
   gap: 1rem;
   height: auto;
-  background-image: linear-gradient(
-      rgba(14, 7, 29, 0.7),
-      rgba(17, 11, 36, 0.7)
-    ),
+  background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -651,5 +783,4 @@ export default {
   background-size: cover;
   background-position: center center;
 }
-
 </style>
