@@ -485,6 +485,8 @@ export default {
 
       t.progressBar.animate(1);
 
+      const HP = t.beatmapData.difficulty.HPDrainRate;
+
       function healthbarFinalVal(hitValue) {
         switch (hitValue) {
           case 320:
@@ -1033,15 +1035,12 @@ export default {
 
 <style scoped>
 /* CSS DIRECTORY
- *  [ GLOBAL ]
-1. [ GLOBAL ]
-	2. =PRIMARY
-	3. =HEADER
-	4. =SIDEBAR
-	5. =FOOTER
-*/
+ * [ PAGE CONTAINER ]
+ * [ CANVAS CONTAINER ]
+ * [ STATISTICS CONTAINER ]
+ */
 
-/* ===[ GLOBAL ]=== */
+/* ===[ PAGE CONTAINER ]=== */
 
 #game-index {
   width: 100vw;
@@ -1133,7 +1132,7 @@ export default {
   font-weight: 300;
 }
 
-/* */
+/* ===[ STATISTICS CONTAINER ]=== */
 
 .game-statistics-container {
   min-width: 35rem;
@@ -1152,7 +1151,7 @@ export default {
   font-size: 7rem;
 }
 
-/* score + combo */
+/* ===[ PAGE CONTAINER ]=== */
 
 .scorePercentage__container {
   position: fixed;
@@ -1224,10 +1223,6 @@ export default {
   font-family: 'Raleway', Helvetica, sans-serif;
   font-size: 5rem;
 }
-
-/* #game-pb-vol > svg {
-  position: relative;
-} */
 
 #game-pb-vol > div {
   position: absolute;
