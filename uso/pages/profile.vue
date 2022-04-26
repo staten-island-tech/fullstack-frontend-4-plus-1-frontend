@@ -19,7 +19,7 @@
       type="video/mp4"
     ></video>
     <div class="login-box">
-      <h1>Login</h1>
+      <h1>Profile</h1>
       <div class="login-group">
         <p>Username</p>
         <input class="login-textbox" type="text" />

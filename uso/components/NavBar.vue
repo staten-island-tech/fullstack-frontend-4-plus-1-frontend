@@ -48,7 +48,7 @@
             /></nuxt-link>
           </div>
 
-          <nuxt-link to="/login" class="uso__avatar--img">
+          <nuxt-link to="/profile" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
