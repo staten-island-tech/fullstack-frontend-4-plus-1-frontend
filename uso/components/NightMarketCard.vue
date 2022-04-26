@@ -174,6 +174,12 @@ button {
   position: relative;
   transition: transform 0.8s ease-out;
   transform-style: preserve-3d;
+
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
 }
 
 .card-front,
@@ -226,6 +232,14 @@ button {
   top: 0%;
   left: 0%;
   box-shadow: 0 0.7rem 0.7rem rgba(0, 0, 0, 0.5);
+
+  /*  user-drag: none; */
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .flipped {
