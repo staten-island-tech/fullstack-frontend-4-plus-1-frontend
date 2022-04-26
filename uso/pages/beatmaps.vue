@@ -16,6 +16,7 @@
               placeholder="search for your song..."
             />
 
+
             <span class="deleteText">
               <img
                 class="search-icon"
@@ -25,7 +26,12 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
-
+        <div class="my-video-audio" @click="toggleAudio()">
+          <div>
+             <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+          </div>
+        </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
             <div
@@ -37,13 +43,11 @@
               @click="
                 bmClickEvents(bmSetName, $event),
                   beatmapSoundBit(),
-                  changeSound(),
-                  toggleAudio()
+                  changeSound()
               "
             >
-              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
-
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+            <h2>Click for adiuo preview</h2>
+           
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -109,7 +113,11 @@
             />
             <p class="hover-msg">hover or click on a song~</p>
           </div>
+
         </div>
+
+
+
       </div>
     </div>
   </div>
@@ -360,8 +368,8 @@ export default {
         this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
       );
 
-      t.musicBeatmap = new Howl({
-        // eslint-disable-line
+      t.musicBeatmap = new Howl({      // eslint-disable-line
+  
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
@@ -375,10 +383,6 @@ export default {
           prevMusic: [t.musicBeatmapDuration, 10000, false],
         },
       });
-
-      // if (!t.chageExeuted) {
-      //         t.chageExeuted = true;
-      //       }
 
       if (!t.executed) {
         t.executed = true;
@@ -432,6 +436,11 @@ export default {
 *,
 .beatmaps__content--body {
   font-family: 'Dongle', sans-serif;
+}
+
+
+.my-video-audio{
+	width: 100%;
 }
 
 /* Beatmaps Title */
