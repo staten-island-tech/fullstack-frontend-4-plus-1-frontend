@@ -5,7 +5,7 @@
     <div id="play-index">
       <div class="play-content">
         <div class="play-title-textbox">
-          <h1 class="play-title">♪♬ beatmaps listing</h1>
+          <h1 class="play-title">♪ beatmaps listing</h1>
         </div>
 
         <div class="search-container">
@@ -428,6 +428,7 @@ export default {
 </script>
 
 <style scoped>
+
 *,
 .beatmaps__content--body {
   font-family: 'Dongle', sans-serif;
@@ -593,7 +594,7 @@ export default {
 .play-beatmap-set:hover::after {
   content: '';
   display: block;
-  width: 75px;
+  width: 100px;
   height: 175%;
   background: rgb(255, 255, 255);
   background: linear-gradient(
@@ -606,9 +607,9 @@ export default {
   );
   opacity: 0.25;
   position: absolute;
-  top: -40px;
+  top: -80px;
   left: 0;
-  animation: shine 200ms linear;
+  animation: shine 250ms linear;
   transform: translateX(250px) rotate(-25deg);
 }
 

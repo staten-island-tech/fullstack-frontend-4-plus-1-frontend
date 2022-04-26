@@ -186,6 +186,7 @@ button {
 }
 .val-bg {
   background-size: 99.4% 99.8%;
+  box-shadow: 0 0.7rem 0.7rem rgba(0, 0, 0, 0.5);
 }
 .val-bg:hover {
   opacity: 0.97;
@@ -224,6 +225,7 @@ button {
   position: absolute;
   top: 0%;
   left: 0%;
+  box-shadow: 0 0.7rem 0.7rem rgba(0, 0, 0, 0.5);
 }
 
 .flipped {

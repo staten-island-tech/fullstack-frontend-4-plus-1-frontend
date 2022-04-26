@@ -1,59 +1,66 @@
 <template>
   <div id="game-index">
-    <div
-      v-if="beatmapData.metadata"
-      class="game-image-container"
-      :style="{
-        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
-      }"
-    ></div>
-    <button
-      v-if="areAllLoaded && !started && songLoaded"
-      class="game-start-button"
-      @click="startGame"
-    >
-      START
-      <br />
-      {{ keys.length }} Keys
-      <br />
-      {{ keys.join(', ') }}
-    </button>
-    <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-      <canvas id="canvas">Canvas is not supported on your browser.</canvas>
-    </div>
-    <div class="bar-wrap">
-      <div class="bar" :style="{ height: health + '%' }"></div>
-    </div>
-    <div class="game-statistics-container">
-      <h1>{{ Math.floor(score) }}</h1>
-      <h1>x{{ combo }}</h1>
-      <h1>
-        {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
-      </h1>
-      <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
-    </div>
-
-    <div class="game-pb-container">
-      <div id="game-pb"></div>
-      <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
-
+    <div v-if="!gameEnded" id="game-page-container">
+      <div
+        v-if="beatmapData.metadata"
+        class="game-image-container"
+        :style="{
+          'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
+        }"
+      ></div>
       <button
-        v-if="areAllLoaded && started && songLoaded"
-        :style="{ opacity: opacity }"
-        class="game-mute-button"
-        @click="muteButton"
+        v-if="areAllLoaded && !started && songLoaded"
+        class="game-start-button"
+        @click="startGame"
       >
-        MUTE
+        START
+        <br />
+        {{ keys.length }} Keys
+        <br />
+        {{ keys.join(', ') }}
       </button>
-    </div>
+      <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
+        <canvas id="canvas" :style="{ width: canvasWidth + 'px' }"
+          >Canvas is not supported on your browser.</canvas
+        >
+      </div>
 
-    <div v-show="paused" class="game-pause-menu">
-      <div class="game-pause-button-container">
-        <button @click="onPauseKey()">Continue</button>
-        <button>Retry</button>
-        <button @click="$router.push('/beatmaps')">Return</button>
+      <div class="bar-wrap">
+        <div class="bar" :style="{ height: health + '%' }"></div>
+      </div>
+
+      <div class="game-statistics-container">
+        <h1>{{ Math.floor(score) }}</h1>
+        <h1>x{{ combo }}</h1>
+        <h1>
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
+        </h1>
+        <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
+      </div>
+
+      <div class="game-pb-container">
+        <div id="game-pb"></div>
+        <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
+
+        <button
+          v-if="areAllLoaded && started && songLoaded"
+          :style="{ opacity: opacity }"
+          class="game-mute-button"
+          @click="muteButton"
+        >
+          MUTE
+        </button>
+      </div>
+
+      <div v-show="paused" class="game-pause-menu">
+        <div class="game-pause-button-container">
+          <button @click="onPauseKey()">Continue</button>
+          <button>Retry</button>
+          <button @click="$router.push('/beatmaps')">Return</button>
+        </div>
       </div>
     </div>
+    <EndGame v-else></EndGame>
   </div>
 </template>
 
@@ -103,7 +110,7 @@ export default {
         0: null,
       },
 
-      pauseKey: 'P',
+      pauseKey: 'ESCAPE',
       paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
@@ -150,6 +157,7 @@ export default {
       graphic: null,
 
       Page: this.$route.name,
+      gameEnded: false,
     };
   },
 
@@ -527,6 +535,8 @@ export default {
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+
+        console.log(e.key);
       });
 
       document.addEventListener('keyup', function (e) {
@@ -1018,9 +1028,16 @@ export default {
 #game-index {
   width: 100vw;
   height: 100vh;
+}
+
+#game-page-container {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+
+  overflow: hidden;
 }
 
 .game-image-container {
@@ -1066,7 +1083,7 @@ export default {
 }
 
 .game-canvas-container {
-  height: 100vh;
+  height: 100%;
   background-color: #181818;
 }
 

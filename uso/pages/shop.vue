@@ -1,32 +1,39 @@
 <template>
+
   <div class="shop-page">
     <div class="under-nav"></div>
-    <video
-      id="wish-background"
-      class="video-bg"
-      autoplay
-      muted
-      loop
-      playsinline
-      disablePictureInPicture
-      src="../assets/images/backgrounds/wish-background.mp4"
-      type="video/mp4"
-    ></video>
-    <section class="data-bar">
-      <h1 class="shop-heading">Shop</h1>
-      <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
-    </section>
-    <section class="night-market">
-      <div class="night-market-card-container">
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-      </div>
-      <button class="roll-button" @click="pressRoll()">Wish</button>
-    </section>
+      <div class="wish__container">
+        <div class="wishCards">
+          <!-- <video
+            id="wish-background"
+            class="video-bg"
+            autoplay
+            muted
+            loop
+            playsinline
+            disablePictureInPicture
+            src="../assets/images/backgrounds/wish-background.mp4"
+            type="video/mp4"
+          ></video> -->
+          <section class="data-bar">
+            <h1 class="shop-heading">what does freedom really mean, when demanded of you by a god...?</h1>
+            <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
+          </section>
+          <section class="night-market">
+            <div class="night-market-card-container">
+              <night-market-card :load-roll="loadRoll" />
+              <night-market-card :load-roll="loadRoll" />
+              <night-market-card :load-roll="loadRoll" />
+              <night-market-card :load-roll="loadRoll" />
+              <night-market-card :load-roll="loadRoll" />
+            </div>
+            <button class="roll-button" @click="pressRoll()">wish!</button>
+          </section>
+        </div>
+
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -84,24 +91,56 @@ export default {
   flex-direction: column;
   justify-content: center;
 }
+
+.wish__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-height: 90.2vh;
+  height: 100%;
+  background-image: linear-gradient(
+      rgba(20, 14, 54, 0.7),
+      rgba(20, 14, 54, 0.7)
+    ), url('~/assets/images/backgrounds/wishBg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
+  /* linear-gradient(
+      rgba(13, 4, 66, 0.7),
+      rgba(16, 51, 112, 0.8)
+    ), */
+}
+
+.wishCards {
+  padding: 0 0 8.5rem 0;
+}
+
 .data-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-self: center;
-  width: 70%;
+  /* width: 70%; */
 }
+
 .data-bar > p {
   font-size: 4rem;
 }
+
 .shop-heading {
   align-self: center;
   margin: 3rem auto 0 auto;
+  font-weight: 400;
+  font-size: 6.5rem;
 }
+
 .primogem-balance {
   position: absolute;
   right: 16%;
 }
+
 .night-market {
   display: flex;
   flex-direction: column;
@@ -111,26 +150,88 @@ export default {
 
 .night-market-card-container {
   margin: 3rem auto;
-  width: 80%;
+  width: 85vw;
   /*   height: 80vh; */
   padding: 0 10rem;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
 .roll-button {
   font-size: 4rem;
+  width: 15rem;
+  height: 6rem;
   line-height: 28px;
-  background: red;
+  background: rgb(23, 23, 107);
   padding: 1rem 2rem 0.5rem 2rem;
   border-radius: 1rem;
   margin: 2rem;
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
 }
+
 .roll-button:hover {
-  background: rgb(240, 0, 0);
+  background: rgb(101, 101, 236);
+  transform: scale(1.05);
 }
+
 .roll-button:active {
-  background: rgb(160, 0, 0);
-  color: rgb(223, 223, 223);
+  background: rgb(177, 236, 238);
+  color: rgb(23, 23, 107);
+  transform: scale(0.85);
 }
+
+@media screen and (max-width: 1700px) {
+  .night-market-card-container {
+    width: 100vw;
+  }
+
+  .night-market-card {
+    height: 35.8rem;
+    width: 23.3rem;
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .night-market-card-container {
+    width: 100vw;
+  }
+
+}
+
+@media screen and (max-width: 1500px) {
+  .night-market-card-container {
+    width: 100vw;
+  }
+
+  .night-market-card {
+    height: 33.3rem;
+    width: 21.8rem;
+  }
+
+  .shop-heading {
+    font-size: 5.5rem;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .night-market-card-container {
+    width: 100vw;
+  }
+
+  .night-market-card {
+    height: 30.8rem;
+    width: 19.3rem;
+  }
+
+  .shop-heading {
+    font-size: 4.5rem;
+  }
+}
+
+
+/* height: 37.8rem;
+    width: 24.3rem; */
+
 </style>

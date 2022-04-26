@@ -31,9 +31,6 @@
           <li>
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
-          <li>
-            <nuxt-link to="/parse" class="uso__links">parse</nuxt-link>
-          </li>
         </ul>
       </div>
 
@@ -69,7 +66,6 @@
   </div>
 </template>
 
-
 <script>
 export default {
   /* eslint-disable */
@@ -77,39 +73,32 @@ export default {
 
   data() {
     return {
-      page:  this.$route.name
-    }
+      page: this.$route.name,
+    };
   },
 
   head() {
     return {
       script: [
-
         {
           src: '/lib/howler.min.js',
         },
-
       ],
     };
   },
 
-
-        watch: {
-
-   $route(to, from) {
-      if (to.name !== 'play') {// if you're going to somewhere else than `wallpaper`
-      // the `return` will end the execution and not go further
-       console.log("yes1")
+  watch: {
+    $route(to, from) {
+      if (to.name !== 'play') {
+        // if you're going to somewhere else than `wallpaper`
+        // the `return` will end the execution and not go further
+        console.log('yes1');
         Howler.volume(0);
-      }
-      else {
-        console.log("yes refresh yo")
-      
+      } else {
+        console.log('yes refresh yo');
       }
     },
   },
-
-
 
   mounted() {
     const animateNav = () => {
@@ -137,9 +126,7 @@ export default {
     animateNav();
   },
 
-  methods: {
-  }
-
+  methods: {},
 };
 </script>
 
@@ -348,7 +335,7 @@ export default {
   font-size: 28px;
   font-weight: 300;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 200ms ease-in;
 }
 
 .uso__navbar--links a:hover {
@@ -392,6 +379,26 @@ export default {
   justify-content: center;
   align-items: center;
   border: 3px solid hsla(0, 0%, 100%, 0.25);
+  font-size: 16px;
+  color: #edf0f1;
+  margin: 0 3px;
+  transition: all 200ms ease-in-out;
+}
+
+.uso__button:hover {
+  outline: none;
+  border: none;
+  padding: 0;
+  background: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid rgba(230, 228, 255, 0.7);
   font-size: 16px;
   color: #edf0f1;
   margin: 0 3px;
@@ -524,5 +531,3 @@ export default {
   }
 }
 </style>
-
-

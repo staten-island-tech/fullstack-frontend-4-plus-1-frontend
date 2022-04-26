@@ -102,7 +102,8 @@ export default {
 }
 
 .help-page {
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   background-image: linear-gradient(rgba(4, 22, 54, 0.7), rgba(11, 4, 48, 0.7)),
     /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
       url('~/assets/images/backgrounds/help-bg.jpg');
