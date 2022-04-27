@@ -27,7 +27,7 @@
           </form>
         </div>
         <div class="my-video-audio" @click="toggleAudio()">
-          <div>
+          <div class="aduio-cntrl-cont">
              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
               <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
           </div>
@@ -379,15 +379,15 @@ export default {
         volume: 0.1,
         preload: true,
         html5: true,
-        sprite: {
-          prevMusic: [t.musicBeatmapDuration, 10000, false],
-        },
+        // sprite: {
+        //   prevMusic: [t.musicBeatmapDuration, 10000, false],
+        // },
       });
 
       if (!t.executed) {
         t.executed = true;
-        t.musicBeatmap.play('prevMusic');
-
+        // t.musicBeatmap.play('prevMusic');
+  t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
 
@@ -410,7 +410,7 @@ export default {
 
         console.log('work');
         Howler.stop();
-        t.musicBeatmap.play('prevMusic');
+        t.musicBeatmap.play();
       }
     },
     toggleAudio() {
@@ -423,9 +423,10 @@ export default {
       } else {
         this.clicked = false;
         //  const sprite1 = t.musicBeatmap.play('prevMusic')
-        // Howler.stop();
+       Howler.stop();
+      //  t.musicBeatmap.pause();
       }
-      console.log(this.clicked);
+
     },
   },
 };
@@ -440,7 +441,17 @@ export default {
 
 
 .my-video-audio{
-	width: 100%;
+  height: 20%;
+	width: 30%;
+  display: flex;
+  flex-direction: row;
+    border: solid;
+}
+
+.aduio-cntrl-cont {
+    height: 100%;
+	width: 10%;
+  border: solid;
 }
 
 /* Beatmaps Title */
