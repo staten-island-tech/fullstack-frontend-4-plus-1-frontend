@@ -20,12 +20,12 @@
         {{ keys.join(', ') }}
       </button>
 
+      <GameCanvas :beatmap-data="beatmapData"></GameCanvas>
+
       <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
         <canvas id="canvas" :style="{ width: canvasWidth + 'px' }">
           Canvas is not supported on your browser.
         </canvas>
-
-        <GameCanvas :beatmap-data="beatmapData"></GameCanvas>
 
         <div class="hitCombo__container" :style="{ width: canvasWidth + 'px' }">
           <h1 id="combo">x{{ combo }}</h1>
