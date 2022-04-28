@@ -22,7 +22,7 @@
 
       <GameCanvas :beatmap-data="beatmapData"></GameCanvas>
 
-      <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
+      <!-- <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
         <canvas id="canvas" :style="{ width: canvasWidth + 'px' }">
           Canvas is not supported on your browser.
         </canvas>
@@ -33,11 +33,11 @@
             {{ displayedLatestHit }}
           </h1>
         </div>
-      </div>
 
-      <div class="bar-wrap">
-        <div class="bar" :style="{ height: health + '%' }"></div>
-      </div>
+        <div class="bar-wrap">
+          <div class="bar" :style="{ height: health + '%' }"></div>
+        </div>
+      </div> -->
 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
@@ -1096,42 +1096,6 @@ export default {
   transform: scale(0.95);
 }
 
-.game-canvas-container {
-  height: 100%;
-}
-
-.game-canvas-container > * {
-  position: absolute;
-  height: 100%;
-}
-
-#canvas {
-  background-color: #181818;
-}
-
-.hitCombo__container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  color: #fff;
-}
-
-.hitCombo__container > h1 {
-  line-height: 1;
-  height: 10rem;
-}
-
-#combo {
-  font-size: 9rem;
-  font-weight: 400;
-}
-
-#hitValue {
-  font-size: 14rem;
-  font-weight: 300;
-}
-
 /* ===[ STATISTICS CONTAINER ]=== */
 
 .game-statistics-container {
@@ -1163,7 +1127,6 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: flex-end;
-  /* font-size: 2rem; */
   color: #fff;
   padding: 1rem;
 }
@@ -1189,28 +1152,6 @@ export default {
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-}
-
-.bar-wrap {
-  transform: rotate(-0.5turn);
-  height: 80vh;
-  padding: 6px;
-  margin-top: 50px;
-
-  border-radius: 2rem;
-
-  background-color: white;
-}
-
-.bar {
-  height: 0%;
-  width: 15px;
-
-  transition: height 0.15s ease-out;
-
-  background-color: #38b000;
-  border-radius: 100px;
-  box-shadow: inset -1px -1px 10px rgb(0 0 0 / 0.5);
 }
 
 #game-pb {
