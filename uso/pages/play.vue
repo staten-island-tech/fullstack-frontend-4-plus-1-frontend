@@ -25,6 +25,8 @@
           Canvas is not supported on your browser.
         </canvas>
 
+        <GameCanvas :beatmap-data="beatmapData"></GameCanvas>
+
         <div class="hitCombo__container" :style="{ width: canvasWidth + 'px' }">
           <h1 id="combo">x{{ combo }}</h1>
           <h1 id="hitValue" :style="lastestHitStyle">
@@ -74,7 +76,10 @@
 /* global createjs:false, Howl:false, Howler:false, kd:false, ProgressBar:false */
 /* eslint-disable */
 
+import GameCanvas from '../components/GameCanvas.vue';
+
 export default {
+  components: { GameCanvas },
   layout: 'nonav',
 
   data() {
@@ -471,8 +476,6 @@ export default {
 
       t.music.play();
 
-      console.log(t.songDuration);
-
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
@@ -511,8 +514,6 @@ export default {
 
         if (t.health < 0) t.health = 0;
         if (t.health > 100) t.health = 100;
-
-        console.log(t.health);
       }
 
       /* ===============
@@ -544,8 +545,6 @@ export default {
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
-
-        console.log(e.key);
       });
 
       document.addEventListener('keyup', function (e) {
@@ -764,6 +763,7 @@ export default {
             // If it reaches offscreen then ...
             // Remove the circle and time it correctly
             case this.msFrom() > t.hitJudgement['50']:
+              console.log(this.msFrom());
               this.miss();
               break;
           }
