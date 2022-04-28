@@ -82,6 +82,7 @@ export default {
       script: [
         {
           src: '/lib/howler.min.js',
+          src: '/lib/progressbar.min.js',
         },
       ],
     };

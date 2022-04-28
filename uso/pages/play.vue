@@ -1,72 +1,59 @@
 <template>
   <div id="game-index">
-    <div v-if="!gameEnded" id="game-page-container">
-      <div
-        v-if="beatmapData.metadata"
-        class="game-image-container"
-        :style="{
-          'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
-        }"
-      ></div>
+    <div
+      v-if="beatmapData.metadata"
+      class="game-image-container"
+      :style="{
+        'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
+      }"
+    ></div>
+    <button
+      v-if="areAllLoaded && !started && songLoaded"
+      class="game-start-button"
+      @click="startGame"
+    >
+      START
+      <br />
+      {{ keys.length }} Keys
+      <br />
+      {{ keys.join(', ') }}
+    </button>
+    <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
+      <canvas id="canvas">Canvas is not supported on your browser.</canvas>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar" :style="{height: health + '%' }"></div>
+    </div>
+    <div class="game-statistics-container">
+      <h1>{{ Math.floor(score) }}</h1>
+      <h1>x{{ combo }}</h1>
+      <h1>
+        {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
+      </h1>
+      <h1 :style="lastestHitStyle">{{ displayedLatestHit }}</h1>
+    </div>
+
+    <div class="game-pb-container">
+      <div id="game-pb"></div>
+      <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
+
       <button
-        v-if="areAllLoaded && !started && songLoaded"
-        class="game-start-button"
-        @click="startGame"
+        v-if="areAllLoaded && started && songLoaded"
+        :style="{ opacity: opacity }"
+        class="game-mute-button"
+        @click="muteButton"
       >
-        START
-        <br />
-        {{ keys.length }} Keys
-        <br />
-        {{ keys.join(', ') }}
+        MUTE
       </button>
+    </div>
 
-      <div class="game-canvas-container" :style="{ width: canvasWidth + 'px' }">
-        <canvas id="canvas" :style="{ width: canvasWidth + 'px' }">
-          Canvas is not supported on your browser.
-        </canvas>
-
-        <div class="hitCombo__container" :style="{ width: canvasWidth + 'px' }">
-          <h1 id="combo">x{{ combo }}</h1>
-          <h1 id="hitValue" :style="lastestHitStyle">
-            {{ displayedLatestHit }}
-          </h1>
-        </div>
-      </div>
-
-      <div class="bar-wrap">
-        <div class="bar" :style="{ height: health + '%' }"></div>
-      </div>
-
-      <div class="scorePercentage__container">
-        <h1 id="score">{{ Math.floor(score) }}</h1>
-        <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
-        </h1>
-      </div>
-
-      <div class="game-pb-container">
-        <div id="game-pb"></div>
-        <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
-
-        <button
-          v-if="areAllLoaded && started && songLoaded"
-          :style="{ opacity: opacity }"
-          class="game-mute-button"
-          @click="muteButton"
-        >
-          MUTE
-        </button>
-      </div>
-
-      <div v-show="paused" class="game-pause-menu">
-        <div class="game-pause-button-container">
-          <button @click="onPauseKey()">Continue</button>
-          <button>Retry</button>
-          <button @click="$router.push('/beatmaps')">Return</button>
-        </div>
+    <div v-show="paused" class="game-pause-menu">
+      <div class="game-pause-button-container">
+        <button @click="onPauseKey()">Continue</button>
+        <button>Retry</button>
+        <button @click="$router.push('/beatmaps')">Return</button>
       </div>
     </div>
-    <EndGame v-else></EndGame>
   </div>
 </template>
 
@@ -116,12 +103,11 @@ export default {
         0: null,
       },
 
-      pauseKey: 'ESCAPE',
+      pauseKey: 'P',
       paused: false,
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      allColors: ['#E1D5E7', '#DAE8FC', '#f7a5cf', '#FFE6CC', '#F8CECC'],
-      // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
@@ -164,7 +150,6 @@ export default {
       graphic: null,
 
       Page: this.$route.name,
-      gameEnded: false,
     };
   },
 
@@ -306,10 +291,11 @@ export default {
             `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
           ],
           volume: t.volume,
-          preload: 'metadata',
+            preload: 'metadata',
           onload: () => (t.songLoaded = true),
         });
 
+    
         t.music.seek(t.beatmapIntro / 1000);
 
         t.defaultHitNormal = new Howl({
@@ -467,11 +453,12 @@ export default {
 
       t.started = true;
 
-      t.songDuration = Math.round(t.music.duration()) * 1000;
+   t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.music.play();
 
-      console.log(t.songDuration);
+    
+      console.log(t.songDuration)
 
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
@@ -484,35 +471,59 @@ export default {
       });
 
       t.progressBar.animate(1);
+      
 
-      const HP = t.beatmapData.difficulty.HPDrainRate;
+        
+      function healthbarFinalVal(currentHealth) {
+        let currentHealthVal = Math.round(100* t.health)/100;
+  
+      switch (currentHealth) {
+  case 320:  
+if(t.health > 0  && t.health < 100) {
+       t.health += 10;  
+ }
+    break;
+  case 300:
+      if(t.health > 0  && t.health < 100) {
+       t.health += 10;  
+ }
+    break;
+  case 200:
+       if(t.health > 0  && t.health < 100 ) {
+          t.health += 5;
+      
+     }
+    break;
+  case 100:
+      if(t.health > 0  && t.health < 100 ) {
+          t.health += 5;
+     }
+      break;
+    case 50:
+      if(t.health > 100 ) {
+          t.health -= 5;
+     }
+        break;
+    case 0:
+      if(t.health > 0 ) {
+          t.health -= 10;
+     }
+    break;
+      default:
+     // console.log(currentHealth)
+     //t.health = 0;
+ 
+      }
+        if(t.health < 0 ) {
+          t.health -= 10;
+          t.health = 0;
+     }
+    
 
-      function healthbarFinalVal(hitValue) {
-        switch (hitValue) {
-          case 320:
-            t.health += 10;
-            break;
-          case 300:
-            t.health += 10;
-            break;
-          case 200:
-            t.health += 5;
-            break;
-          case 100:
-            t.health += 5;
-            break;
-          case 50:
-            t.health -= 5;
-            break;
-          case 0:
-            t.health -= 10;
-            break;
-        }
-
-        if (t.health < 0) t.health = 0;
-        if (t.health > 100) t.health = 100;
-
-        console.log(t.health);
+         console.log( t.health )
+    
+        
+           
       }
 
       /* ===============
@@ -544,8 +555,6 @@ export default {
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
-
-        console.log(e.key);
       });
 
       document.addEventListener('keyup', function (e) {
@@ -648,7 +657,7 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-          healthbarFinalVal(t.latestHit);
+          healthbarFinalVal( t.latestHit );
         }
 
         hit() {
@@ -667,7 +676,7 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-
+          
               healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
@@ -675,7 +684,7 @@ export default {
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-
+     
               healthbarFinalVal(t.latestHit);
 
               break;
@@ -684,28 +693,28 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-
-              healthbarFinalVal(t.latestHit);
+          
+               healthbarFinalVal( t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-
-              healthbarFinalVal(t.latestHit);
+         
+               healthbarFinalVal( t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
               t.totalHits['50']++;
               hitBonusValue = 4;
               t.bonus -= 44;
-
-              healthbarFinalVal(t.latestHit);
+     
+               healthbarFinalVal( t.latestHit );
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
               this.miss();
-              healthbarFinalVal(t.latestHit);
+            healthbarFinalVal( t.latestHit );
               return;
           }
 
@@ -873,7 +882,8 @@ export default {
 
           t.combo = 0;
 
-          healthbarFinalVal(t.latestHit);
+    
+          healthbarFinalVal( t.latestHit );
         }
 
         hit() {
@@ -888,16 +898,16 @@ export default {
               t.totalHits['320']++;
               hitBonusValue = 32;
               t.bonus += 2;
-
-              healthbarFinalVal(t.latestHit);
+     
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-
-              healthbarFinalVal(t.latestHit);
+       
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -905,8 +915,8 @@ export default {
               t.totalHits['200']++;
               hitBonusValue = 16;
               t.bonus -= 8;
-
-              healthbarFinalVal(t.latestHit);
+          
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -914,8 +924,8 @@ export default {
               t.totalHits['100']++;
               hitBonusValue = 8;
               t.bonus -= 24;
-
-              healthbarFinalVal(t.latestHit);
+    
+              healthbarFinalVal( t.latestHit );
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -1034,27 +1044,12 @@ export default {
 </script>
 
 <style scoped>
-/* CSS DIRECTORY
- * [ PAGE CONTAINER ]
- * [ CANVAS CONTAINER ]
- * [ STATISTICS CONTAINER ]
- */
-
-/* ===[ PAGE CONTAINER ]=== */
-
 #game-index {
   width: 100vw;
   height: 100vh;
-}
-
-#game-page-container {
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-
-  overflow: hidden;
 }
 
 .game-image-container {
@@ -1067,6 +1062,10 @@ export default {
   z-index: -100;
 
   background-size: cover;
+}
+
+.game-image-container > img {
+  width: 100%;
 }
 
 .game-start-button {
@@ -1087,7 +1086,6 @@ export default {
   background-position: center;
   transition: all 200ms ease-in-out;
   box-shadow: 0px 10px 10px 0px #1b1b1b;
-  z-index: 100;
 
   font-size: 3rem;
 }
@@ -1097,42 +1095,14 @@ export default {
 }
 
 .game-canvas-container {
-  height: 100%;
-}
-
-.game-canvas-container > * {
-  position: absolute;
-  height: 100%;
-}
-
-#canvas {
+  height: 100vh;
   background-color: #181818;
 }
 
-.hitCombo__container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  color: #fff;
+#canvas {
+  width: 100%;
+  height: 100%;
 }
-
-.hitCombo__container > h1 {
-  line-height: 1;
-  height: 10rem;
-}
-
-#combo {
-  font-size: 9rem;
-  font-weight: 400;
-}
-
-#hitValue {
-  font-size: 14rem;
-  font-weight: 300;
-}
-
-/* ===[ STATISTICS CONTAINER ]=== */
 
 .game-statistics-container {
   min-width: 35rem;
@@ -1151,71 +1121,55 @@ export default {
   font-size: 7rem;
 }
 
-/* ===[ PAGE CONTAINER ]=== */
-
-.scorePercentage__container {
-  position: fixed;
-  top: -1rem;
-  right: 0;
-  min-width: 30rem;
-  min-height: 17.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: flex-end;
-  /* font-size: 2rem; */
-  color: #fff;
-  padding: 1rem;
-}
-
-#score {
-  line-height: 1.25rem;
-  font-size: 15rem;
-  font-weight: 500;
-}
-
-#percentage {
-  line-height: 1.25rem;
-  font-size: 7.5rem;
-  font-weight: 300;
-}
-
-/* */
-
 .game-pb-container {
   height: 50vh;
   width: 20vw;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.health-bar-cont {
+  height: 80vh;
+  width: 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
 }
 
 .bar-wrap {
-  transform: rotate(-0.5turn);
-  height: 80vh;
+  transform: rotate(-.5turn);
+    height: 80vh;
   padding: 6px;
   margin-top: 50px;
-
+  
   border-radius: 2rem;
-
+  
   background-color: white;
+
 }
 
 .bar {
+
   height: 0%;
   width: 15px;
-
-  transition: height 0.15s ease-out;
-
+  
+  transition: height .15s ease-out;
+  
   background-color: #38b000;
   border-radius: 100px;
-  box-shadow: inset -1px -1px 10px rgb(0 0 0 / 0.5);
+  box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
 }
 
+
 #game-pb {
+  height: 20%;
   width: 20%;
 }
+
+
 
 #game-pb-vol {
   position: relative;
@@ -1223,6 +1177,10 @@ export default {
   font-family: 'Raleway', Helvetica, sans-serif;
   font-size: 5rem;
 }
+
+/* #game-pb-vol > svg {
+  position: relative;
+} */
 
 #game-pb-vol > div {
   position: absolute;

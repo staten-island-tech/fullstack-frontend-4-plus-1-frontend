@@ -31,6 +31,7 @@
              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
               <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
           </div>
+            <div id="SoundPrevBar"></div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -126,6 +127,9 @@
 <script>
 /* eslint-disable */
 export default {
+
+
+
   data() {
     return {
       bmSets: {},
@@ -146,8 +150,10 @@ export default {
       audioId: null,
       currVal: null,
       test: 1,
+      songProgress: 20,
     };
   },
+
 
   async fetch() {
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
@@ -162,6 +168,8 @@ export default {
     });
   },
 
+
+
   computed: {
     currentBmSetName() {
       return this.hoveredBmSetName
@@ -170,10 +178,22 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+  this.SoundPrevBar = new ProgressBar.Line( SoundPrevBar, {
+  strokeWidth: 5,
+  easing: 'easeInOut',
+  duration: 1400,
+  color: '#FFEA82',
+  trailColor: '#eee',
+  trailWidth: 5,
+
+});
+  this.SoundPrevBar.animate(1.0);
+  },
 
   methods: {
     getBmData(folder, osz) {
+
       const beatmap = {
         general: {},
         metadata: {},
@@ -327,6 +347,7 @@ export default {
                   beatmap.hitObjects.push(hit);
                   break;
               }
+                  
             }
 
             // Calculates the number of columns in beatmap with the number of distinct x-values.
@@ -337,6 +358,8 @@ export default {
               hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
             });
           }
+
+
         });
 
       // console.log(beatmap);
@@ -450,7 +473,7 @@ export default {
 
 .aduio-cntrl-cont {
     height: 100%;
-	width: 10%;
+	width: 30%;
   border: solid;
 }
 
@@ -553,6 +576,13 @@ export default {
   height: 3rem;
   padding: 0.25rem 0 0 1.25rem;
 }
+
+
+.SoundPrevBar {
+   height: 45%;
+   width: 40%;
+}
+
 
 .song-submit-button {
   width: 5vw;
@@ -692,6 +722,76 @@ export default {
   bottom: 0;
   left: 0;
   opacity: 1;
+}
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: 62.5%;
+  
+  --bar-color: #38b000;
+  --body-color: #222;
+  --text-color: white;
+  --bar-wrap-back-color: white;
+}
+
+body {
+  margin: 0;
+  
+  font-family: 'Fira Sans', sans-serif;
+  
+  background-color: var(--body-color);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  
+  width: min(90%, 800px);
+  height: min(100vh, 800px);
+  margin: 0 auto;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  padding: 0;
+  margin: 0;
+  
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(3.2rem, 6vw, 4.8rem);
+  
+  color: var(--text-color);
+}
+
+.bar-wrap {
+  padding: 6px;
+  margin-top: 3.125rem;
+  width: 60%;
+  border-radius: 100px;
+  
+  background-color: white;
+}
+
+.bar {
+  width: 0%;
+  height: 15px;
+  
+  transition: width .15s ease-out;
+  
+  background-color: grey;
+  border-radius: 100px;
+  box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
 }
 
 .play-beatmap-set:hover > .beatmap-set-img {
