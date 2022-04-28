@@ -1,104 +1,100 @@
 <template>
-  <div class="login-page">
-    <nuxt-link to="/home" class="uso__logo">
-      <img
-        class="uso__logo--hover"
-        src="~/assets/images/navigation/osu-white.svg"
-        alt="logo"
-      />
-    </nuxt-link>
-    <video
-      id="login-video"
-      class="video-bg"
-      autoplay
-      muted
-      loop
-      playsinline
-      disablePictureInPicture
-      src="../assets/images/backgrounds/landing-seirai-island.mp4"
-      type="video/mp4"
-    ></video>
-    <div class="login-box">
-      <h1>Profile</h1>
-      <div class="login-group">
-        <p>Username</p>
-        <input class="login-textbox" type="text" />
-      </div>
-      <div class="login-group">
-        <div class="password-text">
-          <p>Password</p>
-          <p id="show-password-btn">Show password</p>
+  <div>
+    <div class="under-nav"></div>
+
+    <div id="profile-body">
+      <div class="profile-container">
+        <div class="cover-photo"></div>
+        <div class="profile-titlebox">
+          <h1 class="profile-title">♬ rankings</h1>
         </div>
-        <input class="login-textbox" type="password" />
+        <div class="profile-main-body"></div>
       </div>
-      <input type="submit" value="Login" class="login-button" />
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  components: {},
-  layout: 'nonav',
-};
+export default {};
 </script>
 
 <style scoped>
-/* .uso__navbar,
-.uso__navbar--body {
-  display: none;
-} */
+.under-nav {
+  height: 9.5rem;
+}
 
-.login-page {
+.profile-body {
+  width: 100vw;
+}
+
+.profile-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  min-height: 90.2vh;
+  height: 100%;
+  background-image: linear-gradient(
+      rgba(13, 4, 66, 0.7),
+      rgba(16, 51, 112, 0.8)
+    ),
+    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
+      url('~/assets/images/backgrounds/chnBg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.profile-titlebox {
+  width: 55vw;
+
+  background-color: rgb(8, 36, 83);
+}
+
+.profile-title {
+  display: flex;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #f6f6f6;
+  height: 5.5rem;
+  margin: 0.5rem 1rem 0.5rem 3.5rem;
+  padding-top: 0.5rem;
+}
+
+.cover-photo {
+  width: 55vw;
+  height: 32rem;
+  margin-top: 4rem;
+  display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-}
-.video-bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 25%;
-  z-index: -1;
-}
-
-.login-box {
-  /* border: 1px solid white; */
-  background: rgba(66, 50, 89, 0.9);
-  margin: auto;
-  width: 50rem;
-  height: 50rem;
-  padding: 5rem;
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-}
-.login-group {
-  width: 100%;
-  margin-bottom: 2rem;
-}
-.login-textbox {
-  color: black;
-  line-height: 29px;
-  padding: 5px 10px;
-  width: 100%;
-  overflow: hidden;
-}
-.login-button {
-  height: 4.2rem;
-  width: 100%;
-  color: black;
+  padding: 2.5rem;
+  background-image: linear-gradient(
+      rgba(62, 54, 104, 0.7),
+      rgba(62, 54, 104, 0.7)
+    ),
+    url('~/assets/images/backgrounds/yaeMiko.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 25%;
 }
 
-.password-text {
+.profile-main-body {
+  color: #fff;
+  font-size: 15rem;
+  overflow-x: auto;
+
+  --content-width: 55vw;
+  --beatmap-set-container-width: 45vw;
+  --sidebar: 25rem;
+  width: var(--content-width);
   display: flex;
-  justify-content: space-between;
-}
-#show-password-btn {
-  font-size: 2.5rem;
-  cursor: pointer;
+  align-items: flex-start;
+  padding: 1.25rem 2.5rem 2.5rem 2.5rem;
+  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-position: center center; */
 }
 </style>
