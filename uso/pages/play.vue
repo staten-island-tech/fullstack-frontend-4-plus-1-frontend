@@ -1101,7 +1101,7 @@ export default {
 }
 
 .game-canvas-container > * {
-  position: absolute;
+  position: fixed;
   height: 100%;
 }
 
@@ -1215,6 +1215,16 @@ export default {
 
 #game-pb {
   width: 20%;
+  position: fixed;
+  top: 0rem;
+  right: 0;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  /* color: #fff;
+  padding: 1rem; */ 
 }
 
 #game-pb-vol {
