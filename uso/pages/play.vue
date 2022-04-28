@@ -69,8 +69,6 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
-
-        progressbar: false,
       },
       areAllLoaded: false,
       started: false,

@@ -44,7 +44,8 @@
               @click="
                 bmClickEvents(bmSetName, $event),
                   beatmapSoundBit(),
-                  changeSound()
+                  changeSound(),
+                  animateSoundPrevBar()
               "
             >
             <h2>Click for adiuo preview</h2>
@@ -127,7 +128,18 @@
 <script>
 /* eslint-disable */
 export default {
+  head() {
+    return {
+      script: [
 
+        {
+          src: '/lib/howler.min.js',
+          src: '/lib/progressbar.min.js',
+        },
+
+      ],
+    };
+  },
 
 
   data() {
@@ -141,6 +153,8 @@ export default {
       clickBack: false,
       searchQuery: null,
       id: null,
+      SoundPrevBarDur: 0,
+      musicBeatmapDuration: 0,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
@@ -153,6 +167,8 @@ export default {
       songProgress: 20,
     };
   },
+
+  
 
 
   async fetch() {
@@ -182,13 +198,13 @@ export default {
   this.SoundPrevBar = new ProgressBar.Line( SoundPrevBar, {
   strokeWidth: 5,
   easing: 'easeInOut',
-  duration: 1400,
+  duration: this.SoundPrevBarDur,
   color: '#FFEA82',
   trailColor: '#eee',
   trailWidth: 5,
 
 });
-  this.SoundPrevBar.animate(1.0);
+ 
   },
 
   methods: {
@@ -387,12 +403,8 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
-      t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
 
-      t.musicBeatmap = new Howl({      // eslint-disable-line
-  
+      t.musicBeatmap = new Howl({  
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
@@ -406,6 +418,10 @@ export default {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
+            t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
+      );
+
 
       if (!t.executed) {
         t.executed = true;
@@ -451,11 +467,20 @@ export default {
       }
 
     },
+    animateSoundPrevBar() {
+      this.SoundPrevBarDur =  this.musicBeatmapDuration * 1000;
+      console.log(this.SoundPrevBarDur )
+      this.SoundPrevBar.animate(1.0, {
+    duration: this.SoundPrevBarDur
+});
+      this.SoundPrevBar.animate(1.0);
+    }
   },
 };
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
 
 *,
 .beatmaps__content--body {
@@ -726,7 +751,6 @@ export default {
 
 
 
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
 
 * {
   box-sizing: border-box;
