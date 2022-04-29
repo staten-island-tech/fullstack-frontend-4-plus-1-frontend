@@ -31,7 +31,6 @@
              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
               <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
           </div>
-            <div id="SoundPrevBar"></div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -130,6 +129,7 @@
 
 
 export default {
+<<<<<<< HEAD
   head() {
     return {
       script: [
@@ -144,6 +144,8 @@ export default {
   },
 
 
+=======
+>>>>>>> parent of a32ec36 (progress get it :joy:)
   data() {
     return {
       bmSets: {},
@@ -166,13 +168,15 @@ export default {
       audioId: null,
       currVal: null,
       test: 1,
-      songProgress: 20,
     };
   },
 
+<<<<<<< HEAD
   
 
 
+=======
+>>>>>>> parent of a32ec36 (progress get it :joy:)
   async fetch() {
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
@@ -186,8 +190,6 @@ export default {
     });
   },
 
-
-
   computed: {
     currentBmSetName() {
       return this.hoveredBmSetName
@@ -196,6 +198,7 @@ export default {
     },
   },
 
+<<<<<<< HEAD
   mounted() {
   this.SoundPrevBar = new ProgressBar.Line( "#SoundPrevBar", {
   strokeWidth: 5,
@@ -208,10 +211,12 @@ export default {
 });
  
   },
+=======
+  mounted() {},
+>>>>>>> parent of a32ec36 (progress get it :joy:)
 
   methods: {
     getBmData(folder, osz) {
-
       const beatmap = {
         general: {},
         metadata: {},
@@ -365,7 +370,6 @@ export default {
                   beatmap.hitObjects.push(hit);
                   break;
               }
-                  
             }
 
             // Calculates the number of columns in beatmap with the number of distinct x-values.
@@ -376,8 +380,6 @@ export default {
               hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
             });
           }
-
-
         });
 
       // console.log(beatmap);
@@ -498,7 +500,7 @@ export default {
 
 .aduio-cntrl-cont {
     height: 100%;
-	width: 30%;
+	width: 10%;
   border: solid;
 }
 
@@ -601,13 +603,6 @@ export default {
   height: 3rem;
   padding: 0.25rem 0 0 1.25rem;
 }
-
-
-.SoundPrevBar {
-   height: 45%;
-   width: 40%;
-}
-
 
 .song-submit-button {
   width: 5vw;
@@ -749,6 +744,7 @@ export default {
   opacity: 1;
 }
 
+<<<<<<< HEAD
 
 
 
@@ -818,6 +814,8 @@ body {
   box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
 }
 
+=======
+>>>>>>> parent of a32ec36 (progress get it :joy:)
 .play-beatmap-set:hover > .beatmap-set-img {
   opacity: 0.5;
 }
