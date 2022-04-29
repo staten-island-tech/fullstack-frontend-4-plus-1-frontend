@@ -1,20 +1,20 @@
 [
     {
-        "id": 1,
+        "id": 0,
         "name": "Ethan Liang",
         "email": "ethan@gmail.com",
         "password": "password",
         "username": "Cardinal",
-        "description": "sf sdf sd d dsf sdf sfd sd fsdf dfg.",
+        "description": "Esf sdf sd d dsf sdf sfd sd fsdf dfg.",
         "image": "https://cdn.myanimelist.net/images/characters/6/374252.jpg?s=4648e6557c3fdceb87ef1564f45e7a71"
     },
     {
-        "id": 2,
+        "id": 1,
         "name": "Kenny Tung",
         "email": "kenny@gmail.com",
         "password": "password",
         "username": "Keniyo",
-        "description": "sf sdf sd d dsf sdf sfd sd fsdf dfg.",
+        "description": "Ksf sdf sd d dsf sdf sfd sd fsdf dfg.",
         "image": "https://cdn.myanimelist.net/images/characters/6/374252.jpg?s=4648e6557c3fdceb87ef1564f45e7a71"
     }
 ]
