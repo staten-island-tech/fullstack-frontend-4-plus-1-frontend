@@ -31,6 +31,10 @@
              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
               <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
           </div>
+          <div id="audioProgress"></div>
+          <div class="round-time-bar" data-style="smooth" style="--duration: 5;">
+          <div class="bar-inner"></div>
+        </div>  
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -129,23 +133,6 @@
 
 
 export default {
-<<<<<<< HEAD
-  head() {
-    return {
-      script: [
-
-        {
-          src: '/lib/howler.min.js',
-          src: '/lib/progressbar.min.js',
-        },
-
-      ],
-    };
-  },
-
-
-=======
->>>>>>> parent of a32ec36 (progress get it :joy:)
   data() {
     return {
       bmSets: {},
@@ -171,12 +158,6 @@ export default {
     };
   },
 
-<<<<<<< HEAD
-  
-
-
-=======
->>>>>>> parent of a32ec36 (progress get it :joy:)
   async fetch() {
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
@@ -198,22 +179,17 @@ export default {
     },
   },
 
-<<<<<<< HEAD
   mounted() {
-  this.SoundPrevBar = new ProgressBar.Line( "#SoundPrevBar", {
-  strokeWidth: 5,
+   this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+  strokeWidth: 3,
   easing: 'easeInOut',
-  duration: this.SoundPrevBarDur,
   color: '#FFEA82',
+  duration: 10000,
   trailColor: '#eee',
-  trailWidth: 5,
-
+  trailWidth: 3,
+  svgStyle: {width: '100%', height: '30%'}
 });
- 
   },
-=======
-  mounted() {},
->>>>>>> parent of a32ec36 (progress get it :joy:)
 
   methods: {
     getBmData(folder, osz) {
@@ -425,15 +401,20 @@ export default {
             t.musicBeatmapDuration = Math.round(
         this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
       );
+          
 
 
       if (!t.executed) {
         t.executed = true;
         // t.musicBeatmap.play('prevMusic');
-  t.musicBeatmap.play();
+        
+      t.musicBeatmap.seek( t.musicBeatmapDuration/2);
+      t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
+          setTimeout(() => {
+            Howler.stop();
+          }, 10000);
         //t.executed = false;
       }
       console.log(this.clickedBmSetName);
@@ -450,10 +431,13 @@ export default {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
         t.firstBeatmapVal = t.currVal;
-
         console.log('work');
         Howler.stop();
+              t.musicBeatmap.seek( t.musicBeatmapDuration/2);
         t.musicBeatmap.play();
+      setTimeout(() => {
+            Howler.stop();
+          }, 10000);
       }
     },
     toggleAudio() {
@@ -472,10 +456,16 @@ export default {
 
     },
     animateSoundPrevBar() {
-      this.SoundPrevBarDur =  this.musicBeatmapDuration * 1000;
-      console.log(this.SoundPrevBarDur )
+        this.progressAudioBar.set(0);
+          this.progressAudioBar.animate(1.0);
+ 
 
-      this.SoundPrevBar.animate(1.0);
+//  this.progressAudioBar.animate( 1 , {
+//     duration: this.SoundPrevBarDur  
+// }, function() {
+//     console.log('Animation has finished');
+// });
+      // this.SoundPrevBar.animate(1.0);
     }
   },
 };
@@ -492,7 +482,7 @@ export default {
 
 .my-video-audio{
   height: 20%;
-	width: 30%;
+	width: 70%;
   display: flex;
   flex-direction: row;
     border: solid;
@@ -500,7 +490,7 @@ export default {
 
 .aduio-cntrl-cont {
     height: 100%;
-	width: 10%;
+	width: 30%;
   border: solid;
 }
 
@@ -545,7 +535,9 @@ export default {
   height: 5.5rem;
   margin: 0.5rem 1rem 0.5rem 3.5rem;
   padding-top: 0.5rem;
+
 }
+
 
 /* Search Container */
 
@@ -744,78 +736,6 @@ export default {
   opacity: 1;
 }
 
-<<<<<<< HEAD
-
-
-
-* {
-  box-sizing: border-box;
-}
-
-:root {
-  font-size: 62.5%;
-  
-  --bar-color: #38b000;
-  --body-color: #222;
-  --text-color: white;
-  --bar-wrap-back-color: white;
-}
-
-body {
-  margin: 0;
-  
-  font-family: 'Fira Sans', sans-serif;
-  
-  background-color: var(--body-color);
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  
-  width: min(90%, 800px);
-  height: min(100vh, 800px);
-  margin: 0 auto;
-}
-
-.status-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.title {
-  padding: 0;
-  margin: 0;
-  
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(3.2rem, 6vw, 4.8rem);
-  
-  color: var(--text-color);
-}
-
-.bar-wrap {
-  padding: 6px;
-  margin-top: 3.125rem;
-  width: 60%;
-  border-radius: 100px;
-  
-  background-color: white;
-}
-
-.bar {
-  width: 0%;
-  height: 15px;
-  
-  transition: width .15s ease-out;
-  
-  background-color: grey;
-  border-radius: 100px;
-  box-shadow: inset -1px -1px 10px rgb(0 0 0 / .5);
-}
-
-=======
->>>>>>> parent of a32ec36 (progress get it :joy:)
 .play-beatmap-set:hover > .beatmap-set-img {
   opacity: 0.5;
 }
