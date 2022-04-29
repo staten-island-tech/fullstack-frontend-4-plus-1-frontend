@@ -127,6 +127,8 @@
 
 <script>
 /* eslint-disable */
+
+
 export default {
   head() {
     return {
@@ -153,7 +155,7 @@ export default {
       clickBack: false,
       searchQuery: null,
       id: null,
-      SoundPrevBarDur: 0,
+      SoundPrevBarDur: null,
       musicBeatmapDuration: 0,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
@@ -195,7 +197,7 @@ export default {
   },
 
   mounted() {
-  this.SoundPrevBar = new ProgressBar.Line( SoundPrevBar, {
+  this.SoundPrevBar = new ProgressBar.Line( "#SoundPrevBar", {
   strokeWidth: 5,
   easing: 'easeInOut',
   duration: this.SoundPrevBarDur,
@@ -470,9 +472,7 @@ export default {
     animateSoundPrevBar() {
       this.SoundPrevBarDur =  this.musicBeatmapDuration * 1000;
       console.log(this.SoundPrevBarDur )
-      this.SoundPrevBar.animate(1.0, {
-    duration: this.SoundPrevBarDur
-});
+
       this.SoundPrevBar.animate(1.0);
     }
   },

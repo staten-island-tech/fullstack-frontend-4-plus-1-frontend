@@ -1,10 +1,23 @@
 export default {
+
   ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
+    script: [
+    
+      {
+        src: '/lib/howler.min.js',
+        src: '/lib/progressbar.min.js',
+      },
+
+    ],
     title: 'uso',
     htmlAttrs: {
       lang: 'en',
+
+
+
+
     },
     meta: [
       { charset: 'utf-8' },
