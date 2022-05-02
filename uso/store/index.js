@@ -22529,9 +22529,23 @@ export const state = () => ({
           volume: 0,
           filename: '',
         },
-        columnIndex: 1,
+        columnIndex: 0,
       },
       {
+        x: 448,
+        time: 32000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 1,
+      },
+      /* {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22547,6 +22561,20 @@ export const state = () => ({
       },
       {
         x: 448,
+        time: 34000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 0,
+      },
+      {
+        x: 448,
         time: 36000,
         type: 'note',
         hitSound: 0,
@@ -22559,6 +22587,21 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
+
+      {
+        x: 448,
+        time: 36000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 0,
+      }, */
     ],
     columns: 4,
   },
@@ -33426,6 +33469,7 @@ export const state = () => ({
   pageData: {
     currentPage: '',
   },
+  howlerLoaded: false,
 });
 
 export const getters = {};
@@ -33434,11 +33478,17 @@ export const actions = {};
 
 export const mutations = {
   setBeatmap(state, data) {
-    state.beatmapData = data;
+    state.noteBeatmapData = data;
+  },
+
+  setHowlerLoaded(state, boolean) {
+    state.howlerLoaded = true;
   },
 
   nuxtRoute(state) {
     state.pageData.currentPage = this.$route.name;
+
+    state.setHowlerLoaded = false;
   },
 };
 

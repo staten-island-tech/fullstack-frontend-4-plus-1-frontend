@@ -21,15 +21,17 @@
         :beatmap-data="beatmapData"
         :paused="paused"
         :beatmap-intro="beatmapIntro"
-        @updateScore="(newScore) => (score = newScore)"
-        @updateAccuracy="(newAcc) => (accuracy = newAcc)"
+        @updateStats="
+          (newScore, newAccuracy) => {
+            score = newScore;
+            accuracy = newAccuracy;
+          }
+        "
       ></GameCanvas>
 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
-        <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
-        </h1>
+        <h1 id="percentage">{{ Math.round(accuracy * 10000) / 100 }}%</h1>
       </div>
 
       <div class="game-pb-container">
@@ -111,6 +113,7 @@ export default {
   },
 
   destroyed() {
+    // find an alternative
     window.removeEventListener('wheel', this.onScroll);
   },
 
@@ -127,52 +130,52 @@ export default {
 
   methods: {
     onLoad() {
-      {
-        const t = this;
+      const t = this;
 
-        Howler.volume(1);
+      Howler.volume(1);
 
-        t.beatmapData = t.$store.state.beatmapData;
+      window.addEventListener('wheel', this.onScroll);
 
-        t.beatmapIntro =
-          t.beatmapData.hitObjects[0].time < 3000
-            ? 0
-            : t.beatmapData.hitObjects[0].time - 3000;
+      t.beatmapData = t.$store.state.noteBeatmapData;
 
-        /* ===============
-              PROGRESS BAR
-              =============== */
+      t.beatmapIntro =
+        t.beatmapData.hitObjects[0].time < 3000
+          ? 0
+          : t.beatmapData.hitObjects[0].time - 3000;
 
-        t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
-          color: '#FCB03C',
-          // This has to be the same size as the maximum width to
-          // prevent clipping
-          strokeWidth: 7,
-          easing: 'easeInOut',
-          trailColor: '#eee',
-          trailWidth: 7,
-          duration: 1400,
+      /* ===============
+            PROGRESS BAR
+            =============== */
 
-          from: { color: '#aaa', width: 8 },
-          to: { color: '#333', width: 8 },
-          // Set default step function for all animate calls
-          step: function (state, circle) {
-            circle.path.setAttribute('stroke', state.color);
-            circle.path.setAttribute('stroke-width', state.width);
+      t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+        color: '#FCB03C',
+        // This has to be the same size as the maximum width to
+        // prevent clipping
+        strokeWidth: 7,
+        easing: 'easeInOut',
+        trailColor: '#eee',
+        trailWidth: 7,
+        duration: 1400,
 
-            const value = Math.round(circle.value() * 100);
-            if (value === 0) {
-              circle.setText('Volume');
-            } else {
-              circle.setText(value);
-            }
-          },
-        });
+        from: { color: '#aaa', width: 8 },
+        to: { color: '#333', width: 8 },
+        // Set default step function for all animate calls
+        step: function (state, circle) {
+          circle.path.setAttribute('stroke', state.color);
+          circle.path.setAttribute('stroke-width', state.width);
 
-        t.progressBarVol.animate(t.pbVolProgress);
+          const value = Math.round(circle.value() * 100);
+          if (value === 0) {
+            circle.setText('Volume');
+          } else {
+            circle.setText(value);
+          }
+        },
+      });
 
-        t.areAllLoaded = true;
-      }
+      t.progressBarVol.animate(t.pbVolProgress);
+
+      t.areAllLoaded = true;
     },
     startGame() {
       const t = this;

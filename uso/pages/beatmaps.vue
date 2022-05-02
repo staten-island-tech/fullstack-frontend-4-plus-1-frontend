@@ -400,17 +400,15 @@ export default {
       // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
-      const t = this;
-      if (t.firstBeatmapVal !== t.currVal) {
-        t.firstBeatmapVal = t.currVal;
+      if (this.firstBeatmapVal !== this.currVal) {
+        this.firstBeatmapVal = this.currVal;
 
         console.log('work');
         Howler.stop();
-        t.musicBeatmap.play('prevMusic');
+        this.musicBeatmap.play('prevMusic');
       }
     },
     toggleAudio() {
-      const t = this;
       // this.clicked = true
 
       if (this.clicked === false) {
@@ -428,18 +426,7 @@ export default {
 </script>
 
 <style scoped>
-
-*,
-.beatmaps__content--body {
-  font-family: 'Dongle', sans-serif;
-}
-
 /* Beatmaps Title */
-
-.under-nav {
-  height: 9.5rem;
-}
-
 .play-index {
   width: 100vw;
 }

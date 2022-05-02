@@ -77,16 +77,6 @@ export default {
     };
   },
 
-  head() {
-    return {
-      script: [
-        {
-          src: '/lib/howler.min.js',
-        },
-      ],
-    };
-  },
-
   watch: {
     $route(to, from) {
       if (to.name !== 'play') {

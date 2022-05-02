@@ -38,10 +38,10 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
+        howler: false,
       },
       areAllLoaded: false,
       started: false,
-      songLoaded: false,
 
       // beatmaps data
       notes: [],
@@ -194,30 +194,30 @@ export default {
           total['300'] +
           total['320']) *
           300);
-      return isNaN(accuracy) ? null : accuracy;
+      return isNaN(accuracy) ? 1 : accuracy;
     },
   },
 
   watch: {
+    '$store.state.howlerLoaded': function (newValue) {
+      if (newValue) {
+        this.loaded.howler = true;
+      }
+    },
     loaded: {
-      handler(newValue, oldValue) {
+      handler() {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
         // If NO boolean values read false, then all scritps are loaded.
         if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
       },
       deep: true,
     },
-    score(newValue, oldValue) {
-      this.$emit('updateScore', newValue);
+    totalHits: {
+      handler() {
+        this.$emit('updateStats', this.score, this.accuracy);
+      },
+      deep: true,
     },
-    accuracy(newValue, oldValue) {
-      this.$emit('updateAccuracy', newValue);
-    },
-  },
-
-  destroyed() {
-    // find an alternative
-    window.removeEventListener('wheel', this.onScroll);
   },
 
   methods: {
@@ -241,13 +241,13 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
-      t.music = new Howl({
+      this.music = new Howl({
         src: [
-          `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
+          `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
         ],
-        volume: t.volume,
+        volume: this.volume,
         preload: 'metadata',
-        onload: () => (t.songLoaded = true),
+        onload: () => (this.songLoaded = true),
       });
 
       t.music.seek(t.beatmapIntro / 1000);
@@ -371,7 +371,6 @@ export default {
       // as soon as this is loaded, we want to immediately start the game
     },
     startGame() {
-      // idk whats happening here, i'm just transferring code
       const t = this;
 
       t.started = true;
@@ -379,6 +378,10 @@ export default {
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.music.play();
+
+      /* ===============
+          HP DRAIN
+          =============== */
 
       const HP = t.beatmapData.difficulty.HPDrainRate;
 
@@ -404,8 +407,7 @@ export default {
             break;
         }
 
-        if (t.health < 0) t.health = 0;
-        if (t.health > 100) t.health = 100;
+        t.health = t.clamp(t.health, 0, 100);
       }
 
       /* ===============
@@ -429,6 +431,8 @@ export default {
         const columnI = t.keys.findIndex(
           (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
         );
+
+        // console.log('KEY PRESS:', t.notes[0].msFrom());
 
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
@@ -512,6 +516,7 @@ export default {
             t.beatmapIntro -
             (1000 * t.stageHeight * t.hitPercent + t.radius) /
               (t.dy * t.stageFPS);
+
           this.startTime, this.timerID;
 
           this.resumeTimer();
@@ -530,6 +535,8 @@ export default {
         miss() {
           if (this.isRemoved) return;
           this.isRemoved = true;
+
+          console.log('miss()');
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -600,8 +607,7 @@ export default {
               return;
           }
 
-          if (t.bonus > 100) t.bonus = 100;
-          else if (t.bonus < 0) t.bonus = 0;
+          t.bonus = t.clamp(t.bonus, 0, 100);
 
           const baseScore =
             ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
@@ -636,6 +642,8 @@ export default {
             useTicks: true,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
+
+          console.log(this.msFrom(), t.hitJudgement['50']);
 
           switch (true) {
             // If ms from targetCircle is less than ...
@@ -757,6 +765,8 @@ export default {
         miss() {
           if (this.isRemoved) return;
           this.isRemoved = true;
+
+          console.log('Slider Miss');
 
           t.latestHit = 0;
           t.totalHits['0']++;
