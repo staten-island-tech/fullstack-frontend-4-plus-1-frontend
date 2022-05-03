@@ -6,10 +6,14 @@
       <div class="profile-container">
         <div class="cover-photo"></div>
 
-        <div class="profile-main-body">
-          <div class="profile-titlebox">
-            <h1 class="profile-title">♬ rankings</h1>
-          </div>
+        <div class="profile-details">
+          <img 
+          :src="user[0].image"
+            class="profile-picture"
+          ></img>
+      
+            <h1 class="profile-title">{{user[0].username}}</h1>
+     
         </div>
       </div>
     </div>
@@ -26,15 +30,17 @@ export default {
       user,
     };
   },
-  created() {
+  /* created() {
     console.log(user);
-  },
+  }, */
 };
 </script>
 
 <style lang="css" scoped>
 #profile-body {
   --container-width: 55vw;
+  --pfp-size: 120px;
+  --pfp-radius: 40px;
   /* width: 100%; */
 }
 
@@ -68,13 +74,32 @@ export default {
   background-position: center 25%;
 }
 
-.profile-main-body {
+.profile-details {
+  width: var(--container-width);
   background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+
+  display: flex;
+    align-items: center;
+    padding: 0 5rem;
 }
+.profile-picture {
+  width: var(--pfp-size);
+  height: var(--pfp-size);
+  border-radius: var(--pfp-radius);
+  overflow: hidden;
+  align-self: flex-end;
+}
+
+.profile-title {
+  font-size: 6rem;
+    /* line-height: 7rem; */
+    font-weight: 400;
+}
+
 /*
 .profile-titlebox {
   width: 55vw;
@@ -91,7 +116,7 @@ export default {
   margin: 0.5rem 1rem 0.5rem 3.5rem;
   padding-top: 0.5rem;
 }
-.profile-main-body {
+.profile-details {
   color: #fff;
   font-size: 15rem;
   overflow-x: auto;
