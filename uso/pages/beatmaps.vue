@@ -407,7 +407,9 @@ export default {
       if (!t.executed) {
         t.executed = true;
         // t.musicBeatmap.play('prevMusic');
-        
+                 console.log("soundprev")
+        this.progressAudioBar.set(0);
+          this.progressAudioBar.animate(1.0);
       t.musicBeatmap.seek( t.musicBeatmapDuration/2);
       t.musicBeatmap.play();
         t.firstBeatmapVal =
@@ -456,9 +458,9 @@ export default {
 
     },
     animateSoundPrevBar() {
-        this.progressAudioBar.set(0);
-          this.progressAudioBar.animate(1.0);
+        if (this.executed === true) {
  
+            }
 
 //  this.progressAudioBar.animate( 1 , {
 //     duration: this.SoundPrevBarDur  
