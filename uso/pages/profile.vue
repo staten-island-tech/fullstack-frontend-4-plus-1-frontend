@@ -15,6 +15,10 @@
             <h1 class="profile-title">{{user[0].username}}</h1>
      
         </div>
+        <div class="profile-description">
+       <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
+     </div>
+  <section class="collection-section"></section>
       </div>
     </div>
   </div>
@@ -84,7 +88,7 @@ export default {
 
   display: flex;
     align-items: center;
-    padding: 0 5rem;
+    padding: 0 5rem 0 5rem;
 }
 .profile-picture {
   width: var(--pfp-size);
@@ -92,12 +96,28 @@ export default {
   border-radius: var(--pfp-radius);
   overflow: hidden;
   align-self: flex-end;
+
+  margin: -4rem 2rem 1.5rem 0;
 }
 
 .profile-title {
   font-size: 6rem;
     /* line-height: 7rem; */
     font-weight: 400;
+}
+
+.profile-description {
+  width: var(--container-width);
+  padding: 2rem 6rem;
+  background-image: linear-gradient(rgba(13, 4, 66, 0.466), rgba(13, 4, 66, 0.432)),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+}
+
+.collection-section {
+  width: var(--container-width);
+  height: 100vh;
+  background: rgba(0, 0, 255, 0.329);
+  margin-bottom: 4rem;
 }
 
 /*
