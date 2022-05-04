@@ -22545,7 +22545,7 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
-      /* {
+      {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22559,7 +22559,7 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
-      {
+      /* {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22572,7 +22572,7 @@ export const state = () => ({
           filename: '',
         },
         columnIndex: 0,
-      },
+      }, */
       {
         x: 448,
         time: 36000,
@@ -22601,7 +22601,7 @@ export const state = () => ({
           filename: '',
         },
         columnIndex: 0,
-      }, */
+      },
     ],
     columns: 4,
   },
