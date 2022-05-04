@@ -1214,10 +1214,10 @@ export default {
 }
 
 #game-pb {
+  width: 20%;
   position: fixed;
-  width: 12%;
-  bottom: 18rem;
-  left: 27.5rem;
+  top: 0rem;
+  right: 0;
   /* display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -1228,12 +1228,10 @@ export default {
 }
 
 #game-pb-vol {
-  position: fixed;
+  position: relative;
   width: 80%;
   font-family: 'Raleway', Helvetica, sans-serif;
   font-size: 5rem;
-  /* top: 30rem;
-  left: 30rem; */
 }
 
 #game-pb-vol > div {
@@ -1248,7 +1246,6 @@ export default {
   height: 5vh;
   width: 5vw;
   font-size: 3rem;
-  left: 10rem;
 }
 
 /* PAUSE css begins here...*/
