@@ -16,6 +16,7 @@
               placeholder="search for your song..."
             />
 
+
             <span class="deleteText">
               <img
                 class="search-icon"
@@ -25,7 +26,16 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
-
+        <div class="my-video-audio" @click="toggleAudio()">
+          <div class="aduio-cntrl-cont">
+             <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+          </div>
+          <div id="audioProgress"></div>
+          <div class="round-time-bar" data-style="smooth" style="--duration: 5;">
+          <div class="bar-inner"></div>
+        </div>  
+        </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
             <div
@@ -38,12 +48,11 @@
                 bmClickEvents(bmSetName, $event),
                   beatmapSoundBit(),
                   changeSound(),
-                  toggleAudio()
+                  animateSoundPrevBar()
               "
             >
-              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
-
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+            <h2>Click for adiuo preview</h2>
+           
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -109,7 +118,11 @@
             />
             <p class="hover-msg">hover or click on a song~</p>
           </div>
+
         </div>
+
+
+
       </div>
     </div>
   </div>
@@ -117,6 +130,8 @@
 
 <script>
 /* eslint-disable */
+
+
 export default {
   data() {
     return {
@@ -129,6 +144,8 @@ export default {
       clickBack: false,
       searchQuery: null,
       id: null,
+      SoundPrevBarDur: null,
+      musicBeatmapDuration: 0,
 
       osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
@@ -142,10 +159,11 @@ export default {
   },
 
   async fetch() {
-    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
+    const beatmapsData = await fetch('http://localhost:8080/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
     this.bmSets = await beatmapsData.json();
-
+    console.log(this.bmSets)
     Object.keys(this.bmSets).forEach((folder) => {
+     
       this.bmSetsData[folder] = [];
 
       this.bmSets[folder].forEach((osz) => {
@@ -162,7 +180,17 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+   this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+  strokeWidth: 3,
+  easing: 'easeInOut',
+  color: '#FFEA82',
+  duration: 10000,
+  trailColor: '#eee',
+  trailWidth: 3,
+  svgStyle: {width: '100%', height: '30%'}
+});
+  },
 
   methods: {
     getBmData(folder, osz) {
@@ -356,12 +384,8 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
-      t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
 
-      t.musicBeatmap = new Howl({
-        // eslint-disable-line
+      t.musicBeatmap = new Howl({  
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
@@ -371,22 +395,29 @@ export default {
         volume: 0.1,
         preload: true,
         html5: true,
-        sprite: {
-          prevMusic: [t.musicBeatmapDuration, 10000, false],
-        },
+        // sprite: {
+        //   prevMusic: [t.musicBeatmapDuration, 10000, false],
+        // },
       });
+            t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
+      );
+          
 
-      // if (!t.chageExeuted) {
-      //         t.chageExeuted = true;
-      //       }
 
       if (!t.executed) {
         t.executed = true;
-        t.musicBeatmap.play('prevMusic');
-
+        // t.musicBeatmap.play('prevMusic');
+                 console.log("soundprev")
+        this.progressAudioBar.set(0);
+          this.progressAudioBar.animate(1.0);
+      t.musicBeatmap.seek( t.musicBeatmapDuration/2);
+      t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
+          setTimeout(() => {
+            Howler.stop();
+          }, 10000);
         //t.executed = false;
       }
       console.log(this.clickedBmSetName);
@@ -403,10 +434,13 @@ export default {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
         t.firstBeatmapVal = t.currVal;
-
         console.log('work');
         Howler.stop();
-        t.musicBeatmap.play('prevMusic');
+              t.musicBeatmap.seek( t.musicBeatmapDuration/2);
+        t.musicBeatmap.play();
+      setTimeout(() => {
+            Howler.stop();
+          }, 10000);
       }
     },
     toggleAudio() {
@@ -419,19 +453,48 @@ export default {
       } else {
         this.clicked = false;
         //  const sprite1 = t.musicBeatmap.play('prevMusic')
-        // Howler.stop();
+       Howler.stop();
+      //  t.musicBeatmap.pause();
       }
-      console.log(this.clicked);
+
     },
+    animateSoundPrevBar() {
+        if (this.executed === true) {
+ 
+            }
+
+//  this.progressAudioBar.animate( 1 , {
+//     duration: this.SoundPrevBarDur  
+// }, function() {
+//     console.log('Animation has finished');
+// });
+      // this.SoundPrevBar.animate(1.0);
+    }
   },
 };
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
 
 *,
 .beatmaps__content--body {
   font-family: 'Dongle', sans-serif;
+}
+
+
+.my-video-audio{
+  height: 20%;
+	width: 70%;
+  display: flex;
+  flex-direction: row;
+    border: solid;
+}
+
+.aduio-cntrl-cont {
+    height: 100%;
+	width: 30%;
+  border: solid;
 }
 
 /* Beatmaps Title */
@@ -475,7 +538,9 @@ export default {
   height: 5.5rem;
   margin: 0.5rem 1rem 0.5rem 3.5rem;
   padding-top: 0.5rem;
+
 }
+
 
 /* Search Container */
 

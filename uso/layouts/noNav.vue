@@ -7,29 +7,21 @@
 <script>
 export default {
   /* eslint-disable */
+
+
+  
     data() {
     return {
       page:  this.$route.name
     }
   },
 
-  head() {
-    return {
-      script: [
-
-        {
-          src: '/lib/howler.min.js',
-        },
-
-      ],
-    };
-  },
 
 
         watch: {
 
    $route(to, from) {
-      if (to.name !== 'play') {// if you're going to somewhere else than `wallpaper`
+      if (to.name !== 'play' ) {// if you're going to somewhere else than `wallpaper`
       // the `return` will end the execution and not go further
        console.log("yes1")
         this.music.stop();
