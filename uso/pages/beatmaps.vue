@@ -159,7 +159,7 @@ export default {
   },
 
   async fetch() {
-    const beatmapsData = await fetch('http://localhost:8080/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
     this.bmSets = await beatmapsData.json();
     console.log(this.bmSets)
     Object.keys(this.bmSets).forEach((folder) => {

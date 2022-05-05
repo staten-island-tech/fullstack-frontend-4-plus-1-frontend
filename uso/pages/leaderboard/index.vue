@@ -116,7 +116,7 @@
      }
   },
       async fetch() {
-    const userDataFetch = await fetch('http://localhost:8080/');
+    const userDataFetch = await fetch('https://usobackend.onrender.com/');
         const userDataFetched = await userDataFetch.json();
         userDataFetched .forEach(user => {
           this.userData.push(user)
