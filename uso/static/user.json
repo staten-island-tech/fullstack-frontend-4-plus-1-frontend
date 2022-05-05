@@ -6,6 +6,7 @@
         "password": "password",
         "username": "Cardinal",
         "description": "Esf sdf sd d dsf sdf sfd sd fsdf dfg.",
-        "image": "https://a.ppy.sh/27322374?1637719761.jpeg"
+        "image": "https://a.ppy.sh/27322374?1637719761.jpeg",
+        "characters": [0, 1, 2, 3, 4, 5, 6]
     }
 ]

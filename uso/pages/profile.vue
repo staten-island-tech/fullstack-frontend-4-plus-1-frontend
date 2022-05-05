@@ -18,7 +18,10 @@
         <div class="profile-description">
        <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
      </div>
-  <section class="collection-section"></section>
+  <section class="collection-section">
+    <p v-for="character in user[0].characters" :key="character" class="owned-character" >{{character}}</p>
+    <owned-character :all-owned="user[0].characters" />
+  </section>
       </div>
     </div>
   </div>
@@ -26,14 +29,20 @@
 </template>
 
 <script>
+import OwnedCharacter from '../components/ownedCharacter.vue';
 import user from '~/static/user.json';
+import characters from '~/static/characters.json';
 
 export default {
+  
   data() {
     return {
       user,
+ OwnedCharacter,
+      characters
     };
   },
+  
   /* created() {
     console.log(user);
   }, */
@@ -108,7 +117,7 @@ export default {
 
 .profile-description {
   width: var(--container-width);
-  padding: 2rem 6rem;
+  padding: 2.5rem 6rem;
   background-image: linear-gradient(rgba(13, 4, 66, 0.466), rgba(13, 4, 66, 0.432)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
 }
