@@ -407,6 +407,11 @@ export default {
 .uso__avatar--img {
   display: flex;
   align-items: center;
+  transition: all 100ms ease-in;
+}
+
+.uso__avatar--img:hover {
+  transform: scale(1.07);
 }
 
 .uso__login {

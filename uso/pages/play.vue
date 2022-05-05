@@ -42,7 +42,7 @@
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
         <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.0%' }}
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.00%' }}
         </h1>
       </div>
 
@@ -1224,7 +1224,7 @@ export default {
 .game-pb-container {
   position: fixed;
   top: 1.4rem;
-  right: 16rem;
+  right: 19rem;
   min-width: 30rem;
   min-height: 17.5rem;
   display: flex;
