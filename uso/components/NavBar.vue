@@ -23,7 +23,7 @@
             >
           </li>
           <li>
-            <nuxt-link to="/community" class="uso__links">community</nuxt-link>
+            <nuxt-link to="/shop" class="uso__links">shop</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
@@ -326,7 +326,7 @@ export default {
 }
 
 .uso__navbar--links li {
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   list-style: none;
 }
 
