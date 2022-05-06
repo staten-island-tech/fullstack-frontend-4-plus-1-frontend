@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <div v-for="card in ownedCard" :key="card" class="owned-card">
-      <div class="val-bg" :class="cardBg"></div>
-      <div class="card-front">
-        <div class="card-gradient"></div>
-        <p class="chara-name">{{ charaName }}</p>
-        <img :src="activeCharacter.image_url" alt="" class="chara-img" />
-        <img :src="rimSrc" alt="" class="card-rim" />
-      </div>
+  <div class="owned-card-wrap">
+    <div v-for="card in displayedCards" :key="card" class="owned-card">
+      <!-- <div class="val-bg" :class="cardBg"></div> -->
+
+      <div class="card-gradient"></div>
+      <p class="chara-name">{{ card.title }}</p>
+      <img :src="card.image_url" alt="" class="chara-img" />
+      <!-- <img :src="rimSrc" alt="" class="card-rim" /> -->
     </div>
   </div>
 </template>
@@ -27,33 +26,30 @@ export default {
   data() {
     return {
       ownedCards: this.allOwned,
-      cardRarity: null,
-      cardBg: null,
-      flipCard: false,
+      displayedCards: [],
       characters,
-      charasMythical: {},
-      charasBest: {},
-      charasGreat: {},
-      charasGood: {},
-      charasBad: {},
-      activeArray: {},
-      activeCharacter: {},
-      charaName: {},
     };
   },
-
-  computed: {
-    rimSrc() {
-      return require(`../assets/images/night-market-${this.cardBg}-rim.png`);
-
-      /* /_nuxt/assets/images/night-market-bad-rim.png */
-      /* ../assets/images/night-market-bad-rim.png */
+  /*  computed: {
+    getCharaName() {
+      this.displayedCards.forEach((element) => {
+        if (element.title.includes(',')) {
+          let finalCharaName = '';
+          const charaName = this.card.title.split(', ');
+          finalCharaName = charaName[1] + ' ' + charaName[0];
+          console.log(finalCharaName);
+          return finalCharaName;
+        } else {
+          const finalCharaName = this.card.title;
+          return finalCharaName;
+        }
+      });
     },
-  },
-
+  }, */
   created() {
     /* this.getRoll(); */
     this.cropCharacters();
+    this.getCharaName();
   },
 
   methods: {
@@ -65,90 +61,16 @@ export default {
         croppedCharacters.push(this.characters[element]);
       });
       console.log(croppedCharacters);
-    },
-    chooseBg() {
-      let cardRarity = 0;
-      let cardBg = null;
-
-      const bgNum = Math.floor(Math.random() * 100);
-
-      if (bgNum >= 0 && bgNum < 40) {
-        cardRarity = 1;
-        cardBg = 'bad';
-      }
-      if (bgNum >= 40 && bgNum < 60) {
-        cardRarity = 2;
-        cardBg = 'ok';
-      }
-      if (bgNum >= 60 && bgNum < 80) {
-        cardRarity = 3;
-        cardBg = 'ok';
-      }
-      if (bgNum >= 80 && bgNum < 90) {
-        cardRarity = 4;
-        cardBg = 'good';
-      }
-      if (bgNum >= 90 && bgNum < 99) {
-        cardRarity = 5;
-        cardBg = 'great';
-      }
-      if (bgNum === 99) {
-        cardRarity = 6;
-        cardBg = 'great';
-      }
-      /* switch statement */
-      this.cardRarity = cardRarity;
-      this.cardBg = cardBg;
-    },
-    loadCharacters() {
-      const characters = this.characters;
-      const charactersMythical = characters.slice(0, 1);
-      const charactersBest = characters.slice(1, 201);
-      const charactersGreat = characters.slice(201, 401);
-      const charactersGood = characters.slice(401, 601);
-      const charactersBad = characters.slice(601, 1001);
-
-      this.charasMythical = charactersMythical;
-      this.charasBest = charactersBest;
-      this.charasGreat = charactersGreat;
-      this.charasGood = charactersGood;
-      this.charasBad = charactersBad;
-    },
-    chooseCharacter() {
-      const cardRarity = this.cardRarity;
-      if (cardRarity === 1) {
-        this.activeArray = this.charasBad;
-      }
-      if (cardRarity === 2 || cardRarity === 3) {
-        this.activeArray = this.charasGood;
-      }
-      if (cardRarity === 4) {
-        this.activeArray = this.charasGreat;
-      }
-      if (cardRarity === 5) {
-        this.activeArray = this.charasBest;
-      }
-      if (cardRarity === 6) {
-        this.activeArray = this.charasMythical;
-      }
-
-      const activeArray = this.activeArray;
-      const charaNumber = Math.floor(Math.random() * activeArray.length);
-      this.activeCharacter = activeArray[charaNumber];
+      this.displayedCards = croppedCharacters;
     },
     getCharaName() {
-      if (this.activeCharacter.title.includes(',')) {
-        const charaName = this.activeCharacter.title.split(', ');
-        this.charaName = charaName[1] + ' ' + charaName[0];
-      } else {
-        this.charaName = this.activeCharacter.title;
-      }
-    },
-    getRoll() {
-      this.chooseBg();
-      this.loadCharacters();
-      this.chooseCharacter();
-      this.getCharaName();
+      this.displayedCards.forEach((element) => {
+        if (element.title.includes(',')) {
+          let charaName = element.title.split(', ');
+          charaName = charaName[1] + ' ' + charaName[0];
+          element.title = charaName;
+        }
+      });
     },
   },
 };
@@ -173,20 +95,25 @@ button {
   background-image: url('./assets/images/night-market-great.png');
 }
 
+.owned-card-wrap {
+  width: var(--container-width);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 .owned-card {
-  height: 37.8rem;
-  width: 24.3rem;
-  background: white;
-
+  /* height: auto; */
+  width: calc(var(--container-width) / 6);
   position: relative;
-  transition: transform 0.8s ease-out;
-  transform-style: preserve-3d;
 
   user-select: none;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
+
+  display: inline-block;
+  padding: 0.3rem;
 }
 
 .card-front,
@@ -211,8 +138,8 @@ button {
 }
 .card-gradient {
   position: absolute;
-  height: 100%;
-  width: 100%;
+  height: calc(100% - 0.6rem);
+  width: calc(100% - 0.6rem);
   background: linear-gradient(
     360deg,
     #000000 0%,
@@ -223,8 +150,8 @@ button {
 .chara-name {
   position: absolute;
   bottom: 0%;
-  font-size: 4rem;
-  padding: 1rem 1.4rem;
+  font-size: 3.5rem;
+  padding: 0.7rem 1.2rem;
 }
 .chara-img {
   width: 100%;

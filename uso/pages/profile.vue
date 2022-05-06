@@ -19,7 +19,7 @@
        <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
      </div>
   <section class="collection-section">
-    <p v-for="character in user[0].characters" :key="character" class="owned-character" >{{character}}</p>
+    
     <owned-character :all-owned="user[0].characters" />
   </section>
       </div>
@@ -124,9 +124,17 @@ export default {
 
 .collection-section {
   width: var(--container-width);
-  height: 100vh;
-  background: rgba(0, 0, 255, 0.329);
+/*  
+  background: rgba(0, 0, 255, 0.329); */
+  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+    background-attachment: fixed;
+    padding: 1rem 0;
   margin-bottom: 4rem;
+
+  display: flex;
+  flex-direction: row ;
+  flex-wrap: wrap;
 }
 
 /*
