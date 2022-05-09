@@ -40,7 +40,9 @@
             <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
+            <nuxt-link to="/team" class="uso__button"
+            ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
+            /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/shop" class="uso__button"
@@ -133,13 +135,7 @@ export default {
 <style scoped>
 /* Keyframes */
 
-@keyframes pulse {
-  to {
-    transform: scale(1.2);
-  }
-}
-
-@keyframes navLinkFade {
+/* @keyframes navLinkFade {
   from {
     opacity: 0;
     transform: translateY(50px);
@@ -147,6 +143,12 @@ export default {
   to {
     opacity: 3;
     transform: translateY(0px);
+  }
+} */
+
+@keyframes pulse {
+  to {
+    transform: scale(1.2);
   }
 }
 
