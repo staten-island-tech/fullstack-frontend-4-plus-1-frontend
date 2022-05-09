@@ -11,6 +11,7 @@
           <div class="team__members">
             <img src="~/assets/images/navigation/nav-avatar.png" alt="">
               <div class="name">wiichen</div>
+              <div class="college">stony brook university '26</div>
               <div class="role">captain</div>
               <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
 
@@ -24,9 +25,10 @@
           </div>
 
           <div class="team__members">
-            <img src="~/assets/images/navigation/nav-avatar.png" alt="">
+            <img src="~/assets/images/pfps/ganyu.png" alt="">
               <div class="name">harvue</div>
-              <div class="role">ehe</div>
+              <div class="college">staten island tech hs '23</div>
+              <div class="role">frontend/backend</div>
               <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
 
             <div class="social__links">
@@ -39,9 +41,10 @@
 
 
           <div class="team__members">
-            <img src="~/assets/images/navigation/nav-avatar.png" alt="">
+            <img src="~/assets/images/pfps/raiden.png" alt="">
               <div class="name">edan</div>
-              <div class="role">ehe</div>
+              <div class="college">boston university '26</div>
+              <div class="role">frontend</div>
               <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
 
             <div class="social__links">
@@ -53,9 +56,10 @@
           </div>
 
           <div class="team__members">
-            <img src="~/assets/images/navigation/nav-avatar.png" alt="">
+            <img src="~/assets/images/pfps/ayato.webp" alt="">
               <div class="name">kenki</div>
-              <div class="role">ehe</div>
+              <div class="college">yale university '26</div>
+              <div class="role">frontend</div>
               <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
 
             <div class="social__links">
@@ -68,8 +72,9 @@
 
           <div class="team__members">
             <img src="~/assets/images/navigation/nav-avatar.png" alt="">
-              <div class="name">sliger</div>
-              <div class="role">ehe</div>
+              <div class="name">riian</div>
+              <div class="college">quinnipiac university '26</div>
+              <div class="role">backend</div>
               <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
 
             <div class="social__links">
@@ -145,13 +150,14 @@ export default {
 .team__members {
   margin: 15px;
   padding: 30px;
-  max-width: 27.5rem;
+  max-width: 28.5rem;
   cursor: pointer;
   transition: 400ms;
   box-sizing: border-box;
   /* background: #f5f5f5; */
   border-radius: 12px;
   background: #f5f5f5;
+  box-shadow: 0 1.3rem 0.7rem rgba(0, 0, 0, 0.8);
 }
 
 .team__members:hover {
@@ -173,6 +179,11 @@ export default {
   color: #212121;
 }
 
+.college {
+  color: #212121;
+  font-size: 30px;
+}
+
 .role {
   font-style: italic;
   color: #888;
@@ -180,21 +191,21 @@ export default {
 }
 
 .about {
-  margin: 10px 0;
+  margin: 12px 0;
   font-weight: lighter;
   color: #4e4e4e;
   font-size: 24px;
   line-height: 0.75;
 }
 
-.social__linls {
-  margin: 14px;
+.social__links {
+  margin: 12px;
 }
 
 .social__links a {
   display: inline-block;
-  height: 30px;
-  width: 30px;
+  height: 40px;
+  width: 40px;
   transition: 400ms;
 }
 
@@ -203,8 +214,8 @@ export default {
 }
 
 .social__links a img {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 }
 
 @media screen and (max-width: 600px){
