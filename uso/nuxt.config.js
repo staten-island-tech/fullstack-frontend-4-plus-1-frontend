@@ -1,6 +1,7 @@
 export default {
 
   ssr: false,
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     script: [
@@ -32,7 +33,7 @@ export default {
   css: ['~/assets/global.css', '~/assets/loading-bar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/auth0'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -55,8 +56,24 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
+  auth: {
+    redirect: {
+      login: '/home', // redirect user when not connected
+      callback: '/home'
+    },
+    strategies: {
+      auth0: {
+        domain: "dev-2szf794g.us.auth0.com",
+        client_id: "TUkKq8Vy2c0V85piTSKDhyMTQmavtQE7"
+      }
+    }
+  },
+  router: {
+    middleware: ['auth']
+  },
   server: {
     host: '0.0.0.0',
     port: 8090,
