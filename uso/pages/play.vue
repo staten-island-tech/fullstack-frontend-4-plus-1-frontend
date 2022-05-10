@@ -1109,8 +1109,9 @@ export default {
 }
 
 .game-canvas-container > * {
-  position: fixed;
+  position: absolute;
   height: 100%;
+  width: 0;
 }
 
 #canvas {

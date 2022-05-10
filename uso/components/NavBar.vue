@@ -23,13 +23,13 @@
             >
           </li>
           <li>
-            <nuxt-link to="/shop" class="uso__links">shop</nuxt-link>
+            <nuxt-link to="/aboutUs" class="uso__links">about</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">gameTest</nuxt-link>
           </li>
         </ul>
       </div>
