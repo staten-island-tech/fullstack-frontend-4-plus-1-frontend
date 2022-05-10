@@ -229,7 +229,7 @@ export default {
 
 .underline {
   width: 20rem;
-  height: 0.5rem;
+  height: 0.3rem;
   background-color: #a8c6ff;
 }
 

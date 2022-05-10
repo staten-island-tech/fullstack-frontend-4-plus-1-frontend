@@ -40,8 +40,8 @@
             <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/team" class="uso__button"
-            ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
+            <nuxt-link to="/aboutUs" class="uso__button"
+            ><img src="~/assets/images/navigation/paimon2.png" class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
