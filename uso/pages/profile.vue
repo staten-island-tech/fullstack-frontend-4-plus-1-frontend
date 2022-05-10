@@ -17,9 +17,11 @@
         </div>
         <div class="profile-description">
        <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
+
+      
      </div>
   <section class="collection-section">
-    
+     <h1 id="collection-header">Collection</h1>
     <owned-character :all-owned="user[0].characters" />
   </section>
       </div>
@@ -135,6 +137,14 @@ export default {
   display: flex;
   flex-direction: row ;
   flex-wrap: wrap;
+}
+
+#collection-header {
+align-self: center;
+    font-size: 5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: auto;
 }
 
 /*
