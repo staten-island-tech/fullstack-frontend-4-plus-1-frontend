@@ -96,8 +96,8 @@ export default {
   flex-direction: column;
   justify-content: center;
 
-  min-height: 90.2vh;
-  height: 100%;
+  /*  min-height: 90.2vh; */
+  height: calc(100vh - 9.5rem);
   background-image: linear-gradient(
       rgba(20, 14, 54, 0.7),
       rgba(20, 14, 54, 0.7)

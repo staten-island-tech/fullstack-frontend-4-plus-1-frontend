@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      ownedCards: this.allOwned,
+      ownedCards: [this.allOwned],
       displayedCards: [],
       characters,
     };
@@ -48,11 +48,15 @@ export default {
   }, */
   created() {
     /* this.getRoll(); */
+    this.sortAllOwned();
     this.cropCharacters();
     this.getCharaName();
   },
 
   methods: {
+    sortAllOwned() {
+      this.ownedCards = this.ownedCards.sort();
+    },
     cropCharacters() {
       const owned = this.ownedCards;
       const croppedCharacters = [];

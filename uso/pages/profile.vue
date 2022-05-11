@@ -108,7 +108,7 @@ export default {
   overflow: hidden;
   align-self: flex-end;
 
-  margin: -4rem 2rem 1.5rem 0;
+  margin: -4rem 2.4rem 1.5rem 0;
 }
 
 .profile-title {
