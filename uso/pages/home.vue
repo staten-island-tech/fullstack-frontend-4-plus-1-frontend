@@ -27,7 +27,8 @@
         </section>
       </div>
     </section>
-     <button @click="auth()">Sign In</button>
+     <button @click="auth(), testEnv()">Sign In</button>
+     <a  href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a>
   </div>
 
 </template>
@@ -68,12 +69,17 @@ export default {
   },
   created() {
     this.getFeatureCards();
+    console.log(process.env)
   },
 
   methods: {
   
      auth() {
 this.$auth.loginWith('auth0')
+     },
+
+     testEnv() {
+
      },
 
     getFeatureCards: async function getFeatureCards() {

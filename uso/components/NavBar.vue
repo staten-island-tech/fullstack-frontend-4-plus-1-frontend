@@ -31,6 +31,12 @@
           <li>
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
+                  <li>
+            <nuxt-link to="/login" class="uso__links">Login</nuxt-link>
+          </li>
+              <li>
+            <div @click="$router.push('/signout')"> SIGN OUT</div>
+          </li>
         </ul>
       </div>
 

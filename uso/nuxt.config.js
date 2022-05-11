@@ -1,24 +1,19 @@
 export default {
-
   ssr: false,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     script: [
-    
       {
         src: '/lib/howler.min.js',
+      },
+      {
         src: '/lib/progressbar.min.js',
       },
-
     ],
     title: 'uso',
     htmlAttrs: {
       lang: 'en',
-
-
-
-
     },
     meta: [
       { charset: 'utf-8' },
@@ -45,6 +40,10 @@ export default {
     '@nuxtjs/dotenv',
     '@nuxtjs/fontawesome',
   ],
+
+  // router: {
+  //   middleware: ['auth'],
+  // },
   fontawesome: {
     icons: {
       solid: true,
@@ -56,27 +55,49 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyCnV6-W4pOM-PqiiYklXhYeRvRNLLChvsI',
+          authDomain: 'uso-auth.firebaseapp.com',
+          projectId: 'uso-auth',
+          storageBucket: 'uso-auth.appspot.com',
+          messagingSenderId: '367992514507',
+          appId: '1:367992514507:web:97426e90ee35355740f84e',
+        },
+        services: {
+          auth: {
+            persistence: 'local', // default
+            initialize: {
+              onAuthStateChangedAction: 'onAuthStateChangedAction',
+              subscribeManually: false,
+            },
+            ssr: false, // default
+          },
+        },
+      },
+    ],
   ],
 
   auth: {
     redirect: {
-      login: '/home', // redirect user when not connected
-      callback: '/home'
+      login: '/', // redirect user when not connected
+      callback: '/',
     },
     strategies: {
       auth0: {
-        domain: "dev-2szf794g.us.auth0.com",
-        client_id: "TUkKq8Vy2c0V85piTSKDhyMTQmavtQE7"
-      }
-    }
-  },
-  router: {
-    middleware: ['auth']
+        domain: 'dev-xxdii8rn.us.auth0.com',
+        client_id: 'k8e2DgzBq6kY0BuItRZpzeoHCnk4yebX',
+        audience: 'https://dev-xxdii8rn.us.auth0.com/api/v2/',
+        // logoutRedirectUri: 'http://localhost:8090/home',
+      },
+    },
   },
   server: {
-    host: '0.0.0.0',
-    port: 8090,
+    // host: '0.0.0.0',
+    port: 8080,
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
