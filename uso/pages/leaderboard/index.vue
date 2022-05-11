@@ -238,7 +238,9 @@
               <tr class="lb__rankingTable__row">
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
+                >
+                  #6
+                </td>
                 <td class="lb__rankingTable__column">
                   <div class="lb__user">L Bozo</div>
                 </td>
@@ -264,215 +266,9 @@
               <tr class="lb__rankingTable__row">
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
+                >
+                  #7
                 </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                ></td>
                 <td class="lb__rankingTable__column">
                   <div class="lb__user">L Bozo</div>
                 </td>
@@ -606,6 +402,7 @@ tbody {
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+  margin-bottom: 1rem;
   /* background-position: center center; */
 }
 

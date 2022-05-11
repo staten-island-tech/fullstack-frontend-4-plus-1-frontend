@@ -25,6 +25,8 @@
           Canvas is not supported on your browser.
         </canvas>
 
+        <GameCanvas :beatmap-data="beatmapData"></GameCanvas>
+
         <div class="hitCombo__container" :style="{ width: canvasWidth + 'px' }">
           <h1 id="combo">x{{ combo }}</h1>
           <h1 id="hitValue" :style="lastestHitStyle">
@@ -40,14 +42,19 @@
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
         <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100%' }}
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.00%' }}
         </h1>
       </div>
 
+      <!-- <div class="game-pb-container"> -->
       <div class="game-pb-container">
         <div id="game-pb"></div>
+      </div>
+
+      <div class="game-pb-vol-container">
         <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
 
+        <div class="vol-container">
         <button
           v-if="areAllLoaded && started && songLoaded"
           :style="{ opacity: opacity }"
@@ -57,6 +64,9 @@
           MUTE
         </button>
       </div>
+      </div>
+
+      <!-- </div> -->
 
       <div v-show="paused" class="game-pause-menu">
         <div class="game-pause-button-container">
@@ -74,7 +84,10 @@
 /* global createjs:false, Howl:false, Howler:false, kd:false, ProgressBar:false */
 /* eslint-disable */
 
+import GameCanvas from '../components/GameCanvas.vue';
+
 export default {
+  components: { GameCanvas },
   layout: 'nonav',
 
   data() {
@@ -471,8 +484,6 @@ export default {
 
       t.music.play();
 
-      console.log(t.songDuration);
-
       t.progressBar = new ProgressBar.Circle('#game-pb', {
         color: '#FCB03C',
         strokeWidth: 50,
@@ -511,8 +522,6 @@ export default {
 
         if (t.health < 0) t.health = 0;
         if (t.health > 100) t.health = 100;
-
-        console.log(t.health);
       }
 
       /* ===============
@@ -544,8 +553,6 @@ export default {
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
         } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
-
-        console.log(e.key);
       });
 
       document.addEventListener('keyup', function (e) {
@@ -764,6 +771,7 @@ export default {
             // If it reaches offscreen then ...
             // Remove the circle and time it correctly
             case this.msFrom() > t.hitJudgement['50']:
+              console.log(this.msFrom());
               this.miss();
               break;
           }
@@ -1103,6 +1111,7 @@ export default {
 .game-canvas-container > * {
   position: absolute;
   height: 100%;
+  width: 0;
 }
 
 #canvas {
@@ -1182,14 +1191,14 @@ export default {
 
 /* */
 
-.game-pb-container {
+/* .game-pb-container {
   height: 50vh;
   width: 20vw;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-}
+} */
 
 .bar-wrap {
   transform: rotate(-0.5turn);
@@ -1213,9 +1222,44 @@ export default {
   box-shadow: inset -1px -1px 10px rgb(0 0 0 / 0.5);
 }
 
-#game-pb {
-  width: 20%;
+.game-pb-container {
+  position: fixed;
+  top: 1.4rem;
+  right: 19rem;
+  min-width: 30rem;
+  min-height: 17.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  color: #fff;
+  padding: 1rem;
 }
+
+#game-pb {
+  width: 4.3rem;
+  top: 0rem;
+  right: 0;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  /* color: #fff;
+  padding: 1rem; */ 
+}
+
+.game-pb-vol-container {
+  height: 50vh;
+  width: 20vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  padding-top: 3rem;
+}
+
 
 #game-pb-vol {
   position: relative;

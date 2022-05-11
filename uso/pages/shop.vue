@@ -1,31 +1,37 @@
 <template>
   <div class="shop-page">
     <div class="under-nav"></div>
-    <!-- <video
-      id="wish-background"
-      class="video-bg"
-      autoplay
-      muted
-      loop
-      playsinline
-      disablePictureInPicture
-      src="../assets/images/backgrounds/wish-background.mp4"
-      type="video/mp4"
-    ></video> -->
-    <section class="data-bar">
-      <h1 class="shop-heading">Shop</h1>
-      <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
-    </section>
-    <section class="night-market">
-      <div class="night-market-card-container">
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
-        <night-market-card :load-roll="loadRoll" />
+    <div class="wish__container">
+      <div class="wishCards">
+        <!-- <video
+            id="wish-background"
+            class="video-bg"
+            autoplay
+            muted
+            loop
+            playsinline
+            disablePictureInPicture
+            src="../assets/images/backgrounds/wish-background.mp4"
+            type="video/mp4"
+          ></video> -->
+        <section class="data-bar">
+          <h1 class="shop-heading">
+            what does freedom really mean, when demanded of you by a god...?
+          </h1>
+          <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
+        </section>
+        <section class="night-market">
+          <div class="night-market-card-container">
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+          </div>
+          <button class="roll-button" @click="pressRoll()">wish!</button>
+        </section>
       </div>
-      <button class="roll-button" @click="pressRoll()">Wish</button>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -178,7 +184,7 @@ export default {
 
 @media screen and (max-width: 1700px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
@@ -189,13 +195,13 @@ export default {
 
 @media screen and (max-width: 1600px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 }
 
 @media screen and (max-width: 1500px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
@@ -210,7 +216,7 @@ export default {
 
 @media screen and (max-width: 1300px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
