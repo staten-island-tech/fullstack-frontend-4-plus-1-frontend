@@ -107,7 +107,7 @@
               class="img-placeholder"
               src="~/assets/images/backgrounds/landing.png"
             />
-            <p class="hover-msg">hover or click on a song~</p>
+            <p class="hover-msg">hover, then click on a song!~</p>
           </div>
         </div>
       </div>
@@ -697,14 +697,15 @@ export default {
 }
 
 .play-sidebar {
-  width: var(--sidebar);
+  width: calc(50rem + var(--sidebar)); 
+  margin-right: 1rem;
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.75rem;
   height: auto;
   background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
@@ -753,11 +754,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 2.25rem;
+  font-size: 2.75rem;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
 }
@@ -770,6 +771,7 @@ export default {
 .hover-msg {
   text-align: center;
   margin-bottom: 1rem;
+  font-size: 4rem;
 }
 
 .img-placeholder {
