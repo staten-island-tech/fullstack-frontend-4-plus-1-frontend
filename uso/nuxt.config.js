@@ -84,14 +84,14 @@ export default {
   auth: {
     redirect: {
       login: '/', // redirect user when not connected
-      callback: '/',
+      callback: '/auth/signed-in',
     },
     strategies: {
       auth0: {
-        domain: 'dev-xxdii8rn.us.auth0.com',
-        client_id: 'k8e2DgzBq6kY0BuItRZpzeoHCnk4yebX',
-        audience: 'https://dev-xxdii8rn.us.auth0.com/api/v2/',
-        // logoutRedirectUri: 'http://localhost:8090/home',
+        domain: 'dev-2szf794g.us.auth0.com',
+        clientId: '0oJ0TBUYNgtTWAvBOxvxEW955Xy99Ld1',
+        //audience: 'https://dev-xxdii8rn.us.auth0.com/api/v2/',
+        logoutRedirectUri: 'http://localhost:8080',
       },
     },
   },
