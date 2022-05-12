@@ -28,7 +28,7 @@ export default {
   css: ['~/assets/global.css', '~/assets/loading-bar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/auth0'],
+  plugins: [],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -56,29 +56,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    [
-      '@nuxtjs/firebase',
-      {
-        config: {
-          apiKey: 'AIzaSyCnV6-W4pOM-PqiiYklXhYeRvRNLLChvsI',
-          authDomain: 'uso-auth.firebaseapp.com',
-          projectId: 'uso-auth',
-          storageBucket: 'uso-auth.appspot.com',
-          messagingSenderId: '367992514507',
-          appId: '1:367992514507:web:97426e90ee35355740f84e',
-        },
-        services: {
-          auth: {
-            persistence: 'local', // default
-            initialize: {
-              onAuthStateChangedAction: 'onAuthStateChangedAction',
-              subscribeManually: false,
-            },
-            ssr: false, // default
-          },
-        },
-      },
-    ],
+  
   ],
 
   auth: {
