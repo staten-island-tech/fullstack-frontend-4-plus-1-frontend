@@ -727,7 +727,7 @@ export default {
 
 .play-sidebar-text-container > * {
   font-size: 2.25rem;
-  margin: 0 0 0 0.5rem;
+  margin: 0 1rem 0 1rem;
 
   white-space: nowrap;
   overflow: hidden;
@@ -735,9 +735,9 @@ export default {
 }
 
 .play-sidebar-text-title {
-  font-size: 4.5rem;
-
-  line-height: 2.7rem;
+  font-size: 5.5rem;
+  line-height: 4rem;
+  color: #e7ffff;
 }
 
 .play-sidebar-difficulties {
@@ -754,11 +754,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 2.75rem;
+  font-size: 2.5rem;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 3.5rem;
+  font-size: 3.25rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
 }
@@ -772,6 +772,7 @@ export default {
   text-align: center;
   margin-bottom: 1rem;
   font-size: 4rem;
+  text-shadow: 5px 5px 3px rgb(1, 5, 20);
 }
 
 .img-placeholder {
