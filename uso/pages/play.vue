@@ -61,7 +61,7 @@
 </template>
 
 <script>
-/* global createjs:false, Howler:false, ProgressBar:false */
+/* global Howler:false, ProgressBar:false */
 /* eslint-disable */
 
 import GameCanvas from '../components/GameCanvas.vue';
@@ -113,8 +113,14 @@ export default {
   },
 
   destroyed() {
+    const t = this;
     // find an alternative
     window.removeEventListener('wheel', this.onScroll);
+    document.removeEventListener('keydown', function (e) {
+      if (e.repeat) return;
+
+      if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+    });
   },
 
   watch: {
@@ -135,6 +141,11 @@ export default {
       Howler.volume(1);
 
       window.addEventListener('wheel', this.onScroll);
+      document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+
+        if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+      });
 
       t.beatmapData = t.$store.state.noteBeatmapData;
 
@@ -196,15 +207,6 @@ export default {
     },
     onPauseKey() {
       this.paused = !this.paused;
-      if (this.paused) {
-        this.noteObjectArray.forEach((note) => note.pause());
-        createjs.Ticker.paused = true;
-        this.music.pause();
-      } else {
-        this.noteObjectArray.forEach((note) => note.resume());
-        createjs.Ticker.paused = false;
-        this.music.play();
-      }
     },
     onScroll(e) {
       this.scale += e.deltaY * -0.0002;

@@ -95,7 +95,7 @@ export default {
         targetCircles: [],
         targetCirclesGraphics: [],
       },
-      noteObjectArray: [],
+      notesToFallArray: [],
       readyNotes: [],
       readySliders: [],
 
@@ -207,7 +207,7 @@ export default {
     loaded: {
       handler() {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
-        // If NO boolean values read false, then all scritps are loaded.
+        // If NO boolean values read false, then all scripts are loaded.
         if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
       },
       deep: true,
@@ -218,6 +218,37 @@ export default {
       },
       deep: true,
     },
+    pause: {
+      immediate: true,
+      handler(newValue) {
+        if (!Object.values(this.loaded).some((bool) => !bool)) {
+          if (newValue) {
+            console.log('PAUSE');
+            this.notesToFallArray.forEach((note) => note.pauseTimer());
+            createjs.Ticker.paused = true;
+            this.music.pause();
+          } else {
+            console.log('RESUME');
+            this.notesToFallArray.forEach((note) => note.resumeTimer());
+            createjs.Ticker.paused = false;
+            this.music.play();
+          }
+        }
+      },
+    },
+    /* pause(newValue) {
+      if (newValue) {
+        console.log('PAUSE');
+        this.notesToFallArray.forEach((note) => note.pauseTimer());
+        createjs.Ticker.paused = true;
+        this.music.pause();
+      } else {
+        console.log('RESUME');
+        this.notesToFallArray.forEach((note) => note.resumeTimer());
+        createjs.Ticker.paused = false;
+        this.music.play();
+      }
+    }, */
   },
 
   methods: {
@@ -440,7 +471,7 @@ export default {
           });
 
           t.ss.targetCirclesGraphics[columnI].style = 'white';
-        } else if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
+        }
       });
 
       document.addEventListener('keyup', function (e) {
@@ -517,9 +548,10 @@ export default {
             (1000 * t.stageHeight * t.hitPercent + t.radius) /
               (t.dy * t.stageFPS);
 
-          this.startTime, this.timerID;
-
+          t.notesToFallArray.push(this);
           this.resumeTimer();
+
+          this.startTime, this.timerID;
         }
 
         msFrom(isAbs = false) {
@@ -673,7 +705,8 @@ export default {
 
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
-            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
 
             this.animate();
           }, this.remainingTime);
@@ -682,11 +715,6 @@ export default {
         pauseTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
-        }
-
-        startTimer() {
-          this.resumeTimer();
-          t.noteObjectArray.push(this);
         }
       }
 
@@ -875,7 +903,7 @@ export default {
 
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
-            t.noteObjectArray.splice(t.noteObjectArray.indexOf(this), 1);
+            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
 
             this.animate();
           }, this.remainingTime);
@@ -888,7 +916,7 @@ export default {
 
         startTimer() {
           this.resumeTimer();
-          t.noteObjectArray.push(this);
+          t.notesToFallArray.push(this);
         }
       }
 
