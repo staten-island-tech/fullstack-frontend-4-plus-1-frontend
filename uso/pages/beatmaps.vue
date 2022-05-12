@@ -574,7 +574,7 @@ export default {
 
 .play-beatmap-set {
   position: relative;
-  width: 24rem;
+  width: 28rem;
   height: 13.5rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
@@ -589,6 +589,7 @@ export default {
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
+  /* transform: translate(0, -2%); */
 }
 
 .play-beatmap-set:hover::after {
@@ -608,7 +609,7 @@ export default {
   opacity: 0.25;
   position: absolute;
   top: -80px;
-  left: 0;
+  left: 40px;
   animation: shine 250ms linear;
   transform: translateX(250px) rotate(-25deg);
 }
@@ -697,8 +698,8 @@ export default {
 }
 
 .play-sidebar {
-  width: calc(50rem + var(--sidebar)); 
-  margin-right: 1rem;
+  width: calc(32rem + var(--sidebar)); 
+  
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);
