@@ -47,24 +47,46 @@ export default {
     },
   }, */
   created() {
-    /* this.getRoll(); */
     this.sortAllOwned();
+    /*    this.countConsecutive(); */
     this.cropCharacters();
     this.getCharaName();
   },
 
   methods: {
     sortAllOwned() {
-      this.ownedCards = this.ownedCards.sort();
+      const beforeSort = this.ownedCards[0];
+      const afterSort = beforeSort.sort((a, b) => {
+        if (a > b) return 1;
+        if (a < b) return -1;
+        else return 0;
+      });
+      this.ownedCards = afterSort;
     },
+    /*    countConsecutive() {
+      const beforeCount = this.ownedCards;
+      console.log(beforeCount);
+      let result = '';
+      let counter = 1;
+      for (let i = 0; i < beforeCount.length; i++) {
+        if (beforeCount[i] === beforeCount[i + 1]) {
+          counter++;
+        } else {
+          result += beforeCount[i] + counter;
+          counter = 1;
+        }
+      }
+      console.log(result);
+      return result;
+    }, */
     cropCharacters() {
       const owned = this.ownedCards;
       const croppedCharacters = [];
-      console.log(owned);
+      /* console.log(owned); */
       owned.forEach((element) => {
         croppedCharacters.push(this.characters[element]);
       });
-      console.log(croppedCharacters);
+      /* console.log(croppedCharacters); */
       this.displayedCards = croppedCharacters;
     },
     getCharaName() {
