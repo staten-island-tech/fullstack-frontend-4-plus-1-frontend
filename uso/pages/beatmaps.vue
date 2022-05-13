@@ -616,7 +616,7 @@ export default {
   width: var(--content-width);
   display: flex;
   align-items: flex-start;
-  margin-top: 2rem;
+  margin: 2rem 0 1rem 0;
   padding: 1.75rem;
   background-image: linear-gradient(
       rgba(49, 45, 58, 0.7),

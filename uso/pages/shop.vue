@@ -1,10 +1,9 @@
 <template>
-
   <div class="shop-page">
     <div class="under-nav"></div>
-      <div class="wish__container">
-        <div class="wishCards">
-          <!-- <video
+    <div class="wish__container">
+      <div class="wishCards">
+        <!-- <video
             id="wish-background"
             class="video-bg"
             autoplay
@@ -15,25 +14,25 @@
             src="../assets/images/backgrounds/wish-background.mp4"
             type="video/mp4"
           ></video> -->
-          <section class="data-bar">
-            <h1 class="shop-heading">what does freedom really mean, when demanded of you by a god...?</h1>
-            <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
-          </section>
-          <section class="night-market">
-            <div class="night-market-card-container">
-              <night-market-card :load-roll="loadRoll" />
-              <night-market-card :load-roll="loadRoll" />
-              <night-market-card :load-roll="loadRoll" />
-              <night-market-card :load-roll="loadRoll" />
-              <night-market-card :load-roll="loadRoll" />
-            </div>
-            <button class="roll-button" @click="pressRoll()">wish!</button>
-          </section>
-        </div>
-
+        <section class="data-bar">
+          <h1 class="shop-heading">
+            what does freedom really mean, when demanded of you by a god...?
+          </h1>
+          <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
+        </section>
+        <section class="night-market">
+          <div class="night-market-card-container">
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+            <night-market-card :load-roll="loadRoll" />
+          </div>
+          <button class="roll-button" @click="pressRoll()">wish!</button>
+        </section>
+      </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -97,12 +96,13 @@ export default {
   flex-direction: column;
   justify-content: center;
 
-  min-height: 90.2vh;
-  height: 100%;
+  /*  min-height: 90.2vh; */
+  height: calc(100vh - 9.5rem);
   background-image: linear-gradient(
       rgba(20, 14, 54, 0.7),
       rgba(20, 14, 54, 0.7)
-    ), url('~/assets/images/backgrounds/wishBg.jpg');
+    ),
+    url('~/assets/images/backgrounds/wishBg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -184,7 +184,7 @@ export default {
 
 @media screen and (max-width: 1700px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
@@ -195,14 +195,13 @@ export default {
 
 @media screen and (max-width: 1600px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
-
 }
 
 @media screen and (max-width: 1500px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
@@ -217,7 +216,7 @@ export default {
 
 @media screen and (max-width: 1300px) {
   .night-market-card-container {
-    width: 100vw;
+    width: 100%;
   }
 
   .night-market-card {
@@ -230,9 +229,6 @@ export default {
   }
 }
 
-
 /* height: 37.8rem;
     width: 24.3rem; */
-
 </style>
-

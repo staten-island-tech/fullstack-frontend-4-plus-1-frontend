@@ -142,6 +142,7 @@ export default {
       this.loadCharacters();
       this.chooseCharacter();
       this.getCharaName();
+      /* console.log(this.activeCharacter.rank); */
     },
   },
 };

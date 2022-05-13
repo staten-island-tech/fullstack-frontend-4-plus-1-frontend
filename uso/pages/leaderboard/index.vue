@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="under-nav"></div>
-      
-      <div id="lb__index">
+
+    <div id="lb__index">
       <div class="lb__container">
         <div class="lb__titlebox">
           <h1 class="lb__title" @click="test()">♬ rankings</h1>
@@ -10,136 +10,326 @@
 
         <div class="yae__filler"></div>
 
-          <div class="lb__rankingStats">
+        <div class="lb__rankingStats">
+          <table class="lb__rankingTable">
+            <thead>
+              <tr>
+                <th class="lb__rankingHeading"></th>
+                <th class="lb__rankingHeading lb__rankingHeading--main"></th>
+                <th class="lb__rankingHeading">Accuracy</th>
+                <th class="lb__rankingHeading">Play Count</th>
+                <th class="lb__rankingHeading lb__rankingHeading--focused">
+                  Performance
+                </th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">SS</th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">S</th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">A</th>
+              </tr>
+            </thead>
 
-            <table class="lb__rankingTable">
-              <thead>
-                <tr>
-                  <th class="lb__rankingHeading"></th>
-                  <th class="lb__rankingHeading lb__rankingHeading--main"></th>
-                  <th class="lb__rankingHeading">Accuracy</th>
-                  <th class="lb__rankingHeading">Play Count</th>
-                  <th class="lb__rankingHeading lb__rankingHeading--focused">Performance</th>
-                  <th class="lb__rankingHeading lb__rankingHeading--grade">SS</th>
-                  <th class="lb__rankingHeading lb__rankingHeading--grade">S</th>
-                  <th class="lb__rankingHeading lb__rankingHeading--grade">A</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr v-for="user in userData" :key="user.name" class="lb__rankingTable__row"
+            <tbody>
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
                 >
-                  <td class="lb__rankingTable__column lb__rankingTable__column--rank">#{{user.leaderBoardPos}}</td>
-                  <td class="lb__rankingTable__column">
-                    <div class="lb__user">{{user.name}}</div>
-                  </td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">{{user.accuracy}}%</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">{{user.playCount}}</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--focused">{{user.performance}}</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">{{user.SS}}</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">{{user.S}}</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">{{user.A}}</td>
-                </tr>
+                  #1
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">Wiichen</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  98.40%
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  129,766
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                >
+                  22,009
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  48
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  1003
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  972
+                </td>
+              </tr>
 
-                 <!-- <tr class="lb__rankingTable__row">
-                  <td class="lb__rankingTable__column lb__rankingTable__column--rank">#2</td>
-                  <td class="lb__rankingTable__column">
-                    <div class="lb__user">Sliger</div>
-                  </td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">98.40%</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">129,766</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--focused">22,009</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">48</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">1003</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">972</td>
-                </tr>
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #2
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">Sliger</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  98.40%
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  129,766
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                >
+                  22,009
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  48
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  1003
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  972
+                </td>
+              </tr>
 
-                 <tr class="lb__rankingTable__row">
-                  <td class="lb__rankingTable__column lb__rankingTable__column--rank">#3</td>
-                  <td class="lb__rankingTable__column">
-                    <div class="lb__user">Harshey</div>
-                  </td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">98.40%</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">129,766</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--focused">22,009</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">48</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">1003</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">972</td>
-                </tr>
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #3
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">Harshey</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  98.40%
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  129,766
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                >
+                  22,009
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  48
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  1003
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  972
+                </td>
+              </tr>
 
-                 <tr class="lb__rankingTable__row">
-                  <td class="lb__rankingTable__column lb__rankingTable__column--rank">#4</td>
-                  <td class="lb__rankingTable__column">
-                    <div class="lb__user">Edan</div>
-                  </td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">98.40%</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">129,766</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--focused">22,009</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">48</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">1003</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">972</td>
-                </tr>
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #4
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">Edan</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  98.40%
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  129,766
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                >
+                  22,009
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  48
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  1003
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  972
+                </td>
+              </tr>
 
-                 <tr class="lb__rankingTable__row">
-                  <td class="lb__rankingTable__column lb__rankingTable__column--rank">#5</td>
-                  <td class="lb__rankingTable__column">
-                    <div class="lb__user">Kenneru</div>
-                  </td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">98.40%</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">129,766</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--focused">22,009</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">48</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">1003</td>
-                  <td class="lb__rankingTable__column lb__rankingTable__column--dimmed">972</td>
-                </tr> -->
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #5
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">Kenneru</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  98.40%
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  129,766
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                >
+                  22,009
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  48
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  1003
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                >
+                  972
+                </td>
+              </tr>
 
-              </tbody>
-            </table>
+              <!-- delete tables below, just wanted to see how it looks -->
 
-          </div>
-
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #6
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">L Bozo</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+              </tr>
+              <tr class="lb__rankingTable__row">
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--rank"
+                >
+                  #7
+                </td>
+                <td class="lb__rankingTable__column">
+                  <div class="lb__user">L Bozo</div>
+                </td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--focused"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+                <td
+                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
+                ></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
-
 <script>
-
-  export default {
+export default {
   data() {
-     return {
-    userDataFetch: {},
-    userData: [],
-     }
+    return {
+      userDataFetch: {},
+      userData: [],
+    };
   },
-      async fetch() {
+  async fetch() {
     const userDataFetch = await fetch('https://usobackend.onrender.com/');
-        const userDataFetched = await userDataFetch.json();
-        userDataFetched .forEach(user => {
-          this.userData.push(user)
-        });
+    const userDataFetched = await userDataFetch.json();
+    userDataFetched.forEach((user) => {
+      this.userData.push(user);
+    });
 
-        console.log(this.userData)
-      //  this.userDataFetch.forEach(user => {
-      //     this.userData = Object.keys(user)
+    console.log(this.userData);
+    //  this.userDataFetch.forEach(user => {
+    //     this.userData = Object.keys(user)
 
-      //   });
+    //   });
   },
 
   methods: {
     test() {
-     console.log(this.userDataFetch)
-     }
-  }
-  };
-
+      console.log(this.userDataFetch);
+    },
+  },
+};
 </script>
 
 <style>
-
 .under-nav {
   height: 9.5rem;
 }
@@ -218,16 +408,15 @@ tr {
 }
 
 tbody {
-    display: table-row-group;
-    vertical-align: middle;
-    border-color: inherit;
+  display: table-row-group;
+  vertical-align: middle;
+  border-color: inherit;
 }
 
 .lb__rankingStats {
   color: #fff;
   font-size: 15rem;
   overflow-x: auto;
-
   --content-width: 55vw;
   --beatmap-set-container-width: 45vw;
   --sidebar: 25rem;
@@ -235,13 +424,11 @@ tbody {
   display: flex;
   align-items: flex-start;
   padding: 1.25rem 2.5rem 2.5rem 2.5rem;
-  background-image: linear-gradient(
-      rgba(13, 4, 66, 0.7),
-      rgba(13, 4, 66, 0.7)
-    ),
+  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+  margin-bottom: 1rem;
   /* background-position: center center; */
 }
 
@@ -278,7 +465,7 @@ tbody {
 .lb__rankingTable__row {
   background: #161a3d;
   border-radius: 4px;
-  font-size: 3.25rem
+  font-size: 3.25rem;
 }
 
 .lb__rankingTable__column {
@@ -297,7 +484,7 @@ tbody {
 }
 
 .lb__rankingTable__column--dimmed {
-    color: #9599c9;
+  color: #9599c9;
 }
 
 .lb__user {
@@ -307,5 +494,4 @@ tbody {
   font-size: 2.25rem;
   color: #dae0ff;
 }
-
 </style>
