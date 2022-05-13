@@ -130,7 +130,6 @@ export default {
       searchQuery: null,
       id: null,
 
-      osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
       executed: false,
       chageExeuted: false,
