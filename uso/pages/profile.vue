@@ -31,16 +31,17 @@
 </template>
 
 <script>
-import OwnedCharacter from '../components/ownedCharacter.vue';
+import ownedCharacter from '../components/OwnedCharacter.vue';
 import user from '~/static/user.json';
 import characters from '~/static/characters.json';
 
 export default {
-  
+  components: {
+    ownedCharacter
+  },
   data() {
     return {
       user,
- OwnedCharacter,
       characters
     };
   },

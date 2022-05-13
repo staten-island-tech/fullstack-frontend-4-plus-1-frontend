@@ -35,6 +35,7 @@ export default {
       activeArray: {},
       activeCharacter: {},
       charaName: {},
+      toAddToOwned: [],
     };
   },
 
@@ -137,12 +138,20 @@ export default {
         this.charaName = this.activeCharacter.title;
       }
     },
+    addToOwned() {
+      /*  console.log(this.activeCharacter.rank); */
+      /* push rank to this.toAdTooOwned */
+      this.toAddToOwned.push(this.activeCharacter.rank);
+      /*   console.log(this.toAddToOwned); */
+
+      /* !!ADD ID OF ROLLED TO ARRAY ON DB */
+    },
     getRoll() {
       this.chooseBg();
       this.loadCharacters();
       this.chooseCharacter();
       this.getCharaName();
-      /* console.log(this.activeCharacter.rank); */
+      this.addToOwned();
     },
   },
 };
