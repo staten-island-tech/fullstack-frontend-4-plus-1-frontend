@@ -218,37 +218,6 @@ export default {
       },
       deep: true,
     },
-    pause: {
-      immediate: true,
-      handler(newValue) {
-        if (!Object.values(this.loaded).some((bool) => !bool)) {
-          if (newValue) {
-            console.log('PAUSE');
-            this.notesToFallArray.forEach((note) => note.pauseTimer());
-            createjs.Ticker.paused = true;
-            this.music.pause();
-          } else {
-            console.log('RESUME');
-            this.notesToFallArray.forEach((note) => note.resumeTimer());
-            createjs.Ticker.paused = false;
-            this.music.play();
-          }
-        }
-      },
-    },
-    /* pause(newValue) {
-      if (newValue) {
-        console.log('PAUSE');
-        this.notesToFallArray.forEach((note) => note.pauseTimer());
-        createjs.Ticker.paused = true;
-        this.music.pause();
-      } else {
-        console.log('RESUME');
-        this.notesToFallArray.forEach((note) => note.resumeTimer());
-        createjs.Ticker.paused = false;
-        this.music.play();
-      }
-    }, */
   },
 
   methods: {
@@ -925,6 +894,17 @@ export default {
         else if (note.type === 'hold') new Slider(note);
         else console.log(`Invalid note type: ${note.type}`);
       });
+    },
+    onPauseKey(isPaused) {
+      if (isPaused) {
+        this.notesToFallArray.forEach((note) => note.pauseTimer());
+        createjs.Ticker.paused = true;
+        this.music.pause();
+      } else {
+        this.notesToFallArray.forEach((note) => note.resumeTimer());
+        createjs.Ticker.paused = false;
+        this.music.play();
+      }
     },
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;

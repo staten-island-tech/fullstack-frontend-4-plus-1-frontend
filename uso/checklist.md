@@ -15,9 +15,8 @@
 
 - [x] Incorporate Music
 - [x] Hit Sounds [**Harvey**]
-  - [ ] Hit sound when no note is hit
-  - [ ] Hit sound when note is hit
-  - [ ] Load custom sounds and use them
+  - [x] Hit sound when no note is hit
+  - [x] Hit sound when note is hit
 - [ ] Hit Effects (Inside Canvas) [**Wilson**]
   - [ ] Change combo
   - [ ] Change hit value

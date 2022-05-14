@@ -147,7 +147,7 @@ export default {
         if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      t.beatmapData = t.$store.state.noteBeatmapData;
+      t.beatmapData = t.$store.state.beatmapData;
 
       t.beatmapIntro =
         t.beatmapData.hitObjects[0].time < 3000
@@ -207,6 +207,7 @@ export default {
     },
     onPauseKey() {
       this.paused = !this.paused;
+      this.$refs.gameCanvas.onPauseKey(this.paused);
     },
     onScroll(e) {
       this.scale += e.deltaY * -0.0002;
