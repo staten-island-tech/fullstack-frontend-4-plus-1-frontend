@@ -1017,7 +1017,7 @@ export default {
 }
 
 #game__hitValue {
-  font-size: 12rem;
+  font-size: 14.5rem;
   font-weight: 300;
 
   opacity: 0;
@@ -1046,14 +1046,14 @@ export default {
 
 #game__hp-bar__container {
   transform: rotate(180deg);
-  height: 25rem;
+  height: 40rem;
   width: 2rem;
 
   position: relative;
-  left: calc(100% + 2rem);
-  bottom: 10rem;
+  left: calc(100% + 1rem);
+  bottom: 1rem;
 
-  padding: 0.5rem;
+  padding: 0.4rem;
   border-radius: 1rem;
 
   background-color: white;
@@ -1064,7 +1064,7 @@ export default {
 
   transition: height 0.15s linear;
 
-  background-color: #38b000;
+  background-color: #8bff95;
   border-radius: 0.5rem;
   box-shadow: inset -0.1rem -0.1rem 1rem rgb(0 0 0 / 0.5);
 }
