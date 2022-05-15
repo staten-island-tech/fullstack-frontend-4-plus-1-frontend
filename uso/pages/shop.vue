@@ -168,7 +168,7 @@ export default {
   border-radius: 1rem;
   margin: 2rem;
   transition: all 200ms ease-in-out;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .roll-button:hover {

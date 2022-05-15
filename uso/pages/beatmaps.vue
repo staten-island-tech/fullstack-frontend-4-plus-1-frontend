@@ -583,7 +583,7 @@ export default {
   justify-content: flex-end;
   overflow: hidden;
   transition: all 100ms linear;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   border-radius: 1rem;
 }
 
@@ -762,6 +762,7 @@ export default {
   font-size: 3.25rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > *:hover {

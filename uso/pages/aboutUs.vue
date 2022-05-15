@@ -194,7 +194,7 @@ export default {
   margin: 35px;
   padding: 30px;
   max-width: 28.5rem;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor3.png'), auto;
   transition: 400ms;
   box-sizing: border-box;
   border-radius: 12px;
@@ -258,6 +258,7 @@ export default {
   height: 40px;
   width: 40px;
   transition: 300ms ease-out;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .social__links a:hover {

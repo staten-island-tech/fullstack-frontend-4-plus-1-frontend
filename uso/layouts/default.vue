@@ -37,6 +37,26 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 } */
 
+/* width */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #dfe6ff; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #121068; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0b0a46; 
+}
+
 body {
   margin: 0;
   font-family: 'Dongle', sans-serif;
@@ -44,6 +64,7 @@ body {
   line-height: 1.25;
   /* background-color: rgb(15, 15, 15); */
   background-image: url('~/assets/images/backgrounds/background.png');
+  cursor: url('~/assets/images/cursor/paimonCursor3.png'), auto;
 }
 
 /*

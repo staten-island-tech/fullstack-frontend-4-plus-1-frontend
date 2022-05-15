@@ -36,17 +36,20 @@
 
       <div class="uso__avatar--container">
         <div class="uso__avatar">
+
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
-          </div>
-          <div class="uso__circle">
-            <nuxt-link to="/aboutUs" class="uso__button"
-            ><img src="~/assets/images/navigation/paimon2.png" class="nav-shop-btns"
+            <nuxt-link to="/shop" class="uso__button"
+              ><img src="~/assets/images/navigation/primogem.png" id="resizedBtn3" class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/shop" class="uso__button"
-              ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
+            <nuxt-link to="/aboutUs" class="uso__button"
+              ><img src="~/assets/images/navigation/paimon2.png" id="resizedBtn2" class="nav-shop-btns"
+            /></nuxt-link>
+          </div>
+          <div class="uso__circle">
+            <nuxt-link to="/settings" class="uso__button"
+              ><img src="~/assets/images/navigation/paimon1.png" id="resizedBtn1" class="nav-shop-btns"
             /></nuxt-link>
           </div>
 
@@ -300,7 +303,7 @@ export default {
 }
 
 .uso__logo {
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   width: 7.1rem;
   display: flex;
   align-items: center;
@@ -338,6 +341,7 @@ export default {
   font-weight: 300;
   text-decoration: none;
   transition: all 200ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__navbar--links a:hover {
@@ -385,6 +389,7 @@ export default {
   color: #edf0f1;
   margin: 0 3px;
   transition: all 200ms ease-in-out;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__button:hover {
@@ -410,6 +415,7 @@ export default {
   display: flex;
   align-items: center;
   transition: all 100ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__avatar--img:hover {
@@ -426,7 +432,7 @@ export default {
 
 .uso__navburger {
   display: none;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor2.png'), auto;
 }
 
 .uso__navburger div {
@@ -447,6 +453,12 @@ export default {
 
 .toggle .uso__navline3 {
   transform: rotate(45deg) translate(-5px, -6px);
+}
+
+#resizedBtn2 {
+  margin-left: 0.4rem;
+  height: 77.5%;
+  width: 77.5%;
 }
 
 .nav-shop-btns {
