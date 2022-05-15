@@ -403,7 +403,7 @@ export default {
         this.firstBeatmapVal = this.currVal;
 
         console.log('work');
-        Howler.stop();
+        this.$howlerjs.Howler.stop();
         this.musicBeatmap.play('prevMusic');
       }
     },
@@ -415,8 +415,8 @@ export default {
         this.clicked = true;
       } else {
         this.clicked = false;
-        //  const sprite1 = t.musicBeatmap.play('prevMusic')
-        // Howler.stop();
+        // const sprite1 = t.musicBeatmap.play('prevMusic')
+        // this.$howlerjs.Howler.stop();
       }
       console.log(this.clicked);
     },

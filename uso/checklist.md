@@ -24,7 +24,7 @@
   - [ ] Color in target circle when key is pressed (indicator)
 - [ ] Hit Effects (Out Canvas/CSS) [**Kenny**]
 
-- [ ] Add pausing to the game [**Wilson**] (By 3/21)
+- [x] Add pausing to the game [**Wilson**] (By 3/21)
   - Pause when out of focus
   - Add buttons to restart song and back to beatmaps page
 - [ ] Skip intro button [**Wilson**]

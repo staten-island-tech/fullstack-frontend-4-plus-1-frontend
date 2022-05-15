@@ -5,8 +5,14 @@
     </canvas>
 
     <div id="game__hitCombo__container" :style="{ width: canvasWidth + 'px' }">
-      <h1 id="game__combo">{{ combo }}</h1>
-      <h1 id="game__hitValue" :style="lastestHitStyle">
+      <h1 id="game__combo" class="game__combo__on">
+        {{ combo === 0 ? null : combo }}
+      </h1>
+      <h1
+        id="game__hitValue"
+        class="game__hitValue__on"
+        :style="lastestHitStyle"
+      >
         {{ displayedLatestHit }}
       </h1>
     </div>
@@ -18,7 +24,7 @@
 </template>
 
 <script>
-/* global createjs:false, kd:false, Howl:false */
+/* global createjs:false, kd:false */
 /* eslint-disable */
 
 export default {
@@ -38,7 +44,6 @@ export default {
       loaded: {
         createjs: false,
         keydrown: false,
-        howler: false,
       },
       areAllLoaded: false,
       started: false,
@@ -61,6 +66,8 @@ export default {
 
       hitBonusValue: null,
       bonus: 100,
+
+      hitValueHit: false,
 
       hitJudgement: {
         320: null,
@@ -199,11 +206,6 @@ export default {
   },
 
   watch: {
-    '$store.state.howlerLoaded': function (newValue) {
-      if (newValue) {
-        this.loaded.howler = true;
-      }
-    },
     loaded: {
       handler() {
         // If ANY of the boolean values read false, the all scripts are NOT loaded.
@@ -241,7 +243,7 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
-      this.music = new Howl({
+      t.music = new t.$howlerjs.Howl({
         src: [
           `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
         ],
@@ -252,27 +254,27 @@ export default {
 
       t.music.seek(t.beatmapIntro / 1000);
 
-      t.defaultHitNormal = new Howl({
+      t.defaultHitNormal = new t.$howlerjs.Howl({
         src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
         volume: t.volume,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitClapNormal = new Howl({
+      t.defaultHitClapNormal = new t.$howlerjs.Howl({
         src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
         volume: t.volume,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitSoftNormal = new Howl({
+      t.defaultHitSoftNormal = new t.$howlerjs.Howl({
         src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
         volume: 0.3,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitSoftClapNormal = new Howl({
+      t.defaultHitSoftClapNormal = new t.$howlerjs.Howl({
         src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
         volume: 0.08,
         onload: () => (t.songLoaded = true),
       });
-      t.softSliderWhistle = new Howl({
+      t.softSliderWhistle = new t.$howlerjs.Howl({
         src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
         volume: 0.1,
         onload: () => (t.songLoaded = true),
@@ -378,6 +380,10 @@ export default {
       t.songDuration = Math.round(t.music.duration()) * 1000;
 
       t.music.play();
+
+      const $hitComboContainer = document.querySelector(
+        '#game__hitCombo__container'
+      );
 
       /* ===============
           HP DRAIN
@@ -543,20 +549,30 @@ export default {
           t.totalHits['0']++;
           t.bonus = 0;
           t.combo = 0;
-
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
           healthbarFinalVal(t.latestHit);
+
+          const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('comboOnAnimation');
+          $combo.classList.add('comboResetAnimation');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue);
+
+          this.remove();
         }
 
         hit() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
           t.beatmapData.hitObjects.forEach((note) => {
             t.noteHitSound = note.hitSample.filename;
           });
-
-          if (this.isRemoved) return;
-          this.isRemoved = true;
 
           let hitBonusValue = 0;
 
@@ -567,15 +583,12 @@ export default {
               hitBonusValue = 32;
               t.bonus += 2;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['300']:
               t.latestHit = 300;
               t.totalHits['300']++;
               hitBonusValue = 32;
               t.bonus += 1;
-
-              healthbarFinalVal(t.latestHit);
 
               break;
             case this.msFrom(true) <= t.hitJudgement['200']:
@@ -584,7 +597,6 @@ export default {
               hitBonusValue = 16;
               t.bonus -= 8;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['100']:
               t.latestHit = 100;
@@ -592,7 +604,6 @@ export default {
               hitBonusValue = 8;
               t.bonus -= 24;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['50']:
               t.latestHit = 50;
@@ -600,11 +611,9 @@ export default {
               hitBonusValue = 4;
               t.bonus -= 44;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.msFrom(true) <= t.hitJudgement['0']:
               this.miss();
-              healthbarFinalVal(t.latestHit);
               return;
           }
 
@@ -619,6 +628,7 @@ export default {
 
           t.score += bonusScore + baseScore;
           t.combo += 1;
+          healthbarFinalVal(t.latestHit);
 
           //  this.hitSample = note.hitSample;
           //  this.hitSound = note.hitSound;
@@ -628,6 +638,18 @@ export default {
           } else {
             t.softSliderWhistle.play();
           }
+
+          const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('comboResetAnimation');
+          $combo.classList.add('comboOnAnimation');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue);
 
           this.remove();
         }
@@ -644,7 +666,7 @@ export default {
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
 
-          console.log(this.msFrom(), t.hitJudgement['50']);
+          // console.log(this.msFrom(), t.hitJudgement['50']);
 
           switch (true) {
             // If ms from targetCircle is less than ...
@@ -768,10 +790,20 @@ export default {
           t.latestHit = 0;
           t.totalHits['0']++;
           t.bonus = 0;
-
           t.combo = 0;
-
           healthbarFinalVal(t.latestHit);
+
+          const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('comboOnAnimation');
+          $combo.classList.add('comboResetAnimation');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue);
         }
 
         hit() {
@@ -787,7 +819,6 @@ export default {
               hitBonusValue = 32;
               t.bonus += 2;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
               t.latestHit = 300;
@@ -795,7 +826,6 @@ export default {
               hitBonusValue = 32;
               t.bonus += 1;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['300'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
@@ -804,7 +834,6 @@ export default {
               hitBonusValue = 16;
               t.bonus -= 8;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['200'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
@@ -813,7 +842,6 @@ export default {
               hitBonusValue = 8;
               t.bonus -= 24;
 
-              healthbarFinalVal(t.latestHit);
               break;
             case this.avgMs <= t.hitJudgement['50'] ||
               (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
@@ -836,7 +864,24 @@ export default {
 
           t.score += bonusScore + baseScore;
           t.combo += 1;
+          healthbarFinalVal(t.latestHit);
 
+          const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('comboResetAnimation');
+          $combo.classList.add('comboOnAnimation');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue);
+
+          this.remove();
+        }
+
+        remove() {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readySliders[this.i] = null;
@@ -858,11 +903,15 @@ export default {
 
             case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
               this.miss();
+              this.remove();
               break;
 
             case this.msFrom('top') > t.hitJudgement['50']:
               if (this.held && this.initialMs) this.hit();
-              else this.miss();
+              else {
+                this.miss();
+                this.remove();
+              }
               break;
           }
         }
@@ -948,9 +997,51 @@ export default {
   font-weight: 400;
 }
 
+.comboOnAnimation {
+  animation: comboOnAnimation 0.15s linear forwards;
+}
+
+@keyframes comboOnAnimation {
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.comboResetAnimation {
+  opacity: 0;
+  animation: opacity 0.3s linear;
+}
+
 #game__hitValue {
-  font-size: 14rem;
+  font-size: 12rem;
   font-weight: 300;
+
+  opacity: 0;
+}
+
+.game__hitValue__on {
+  animation: hitValueAnimation 0.25s linear forwards;
+}
+
+@keyframes hitValueAnimation {
+  8% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  23% {
+    transform: scale(1);
+  }
+
+  100% {
+    filter: brightness(1.1);
+    transform: scale(0.75);
+    opacity: 0;
+  }
 }
 
 #game__hp-bar__container {

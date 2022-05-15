@@ -61,7 +61,7 @@
 </template>
 
 <script>
-/* global Howler:false, ProgressBar:false */
+/* global ProgressBar:false */
 /* eslint-disable */
 
 import GameCanvas from '../components/GameCanvas.vue';
@@ -138,7 +138,7 @@ export default {
     onLoad() {
       const t = this;
 
-      Howler.volume(1);
+      t.$howlerjs.Howler.volume(1);
 
       window.addEventListener('wheel', this.onScroll);
       document.addEventListener('keydown', function (e) {
@@ -214,7 +214,7 @@ export default {
       // Restrict scale
       this.scale = Math.min(Math.max(0, this.scale), 1);
       // Apply scale transform
-      Howler.volume(this.scale);
+      this.$howlerjs.Howler.volume(this.scale);
       this.pbVolProgress = Math.round(100 * this.scale) / 100;
 
       this.progressBarVol.set(this.pbVolProgress);

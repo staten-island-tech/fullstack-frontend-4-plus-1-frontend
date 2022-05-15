@@ -22,6 +22,7 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/fontawesome": "^1.1.2",
     "core-js": "^3.19.3",
+    "createjs": "^1.0.1",
     "howler": "^2.2.3",
     "nuxt": "^2.15.8",
     "vue": "^2.6.14",
