@@ -182,10 +182,7 @@ export default {
           src: '/lib/keydrown.min.js',
           callback: () => (this.loaded.keydrown = true),
         },
-        {
-          src: '/lib/howler.min.js',
-          callback: () => (this.loaded.howler = true),
-        },
+
         {
           src: '/lib/progressbar.min.js ',
           callback: () => (this.loaded.progressbar = true),

@@ -31,19 +31,19 @@
           <li>
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
-                  <li>
-            <nuxt-link to="/login" class="uso__links">Login</nuxt-link>
+
+        <li>
+             <button class="btn" @click="logout()">logout</button>
           </li>
-              <li>
-            <div @click="$router.push('/signout')"> SIGN OUT</div>
-          </li>
+     
         </ul>
       </div>
 
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
+
+            <nuxt-link to="/" class="uso__button"> Hi {{username}}</nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/" class="uso__button"></nuxt-link>
@@ -53,13 +53,18 @@
               ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
             /></nuxt-link>
           </div>
+            
 
-          <nuxt-link to="/profile" class="uso__avatar--img">
+          <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
-            />
+           /> 
           </nuxt-link>
+        <li v-else>
+            <button class="btn" @click="login()">login</button>
+          </li>
+            <!-- @click="login()"  -->
         </div>
       </div>
 
@@ -80,18 +85,12 @@ export default {
   data() {
     return {
       page: this.$route.name,
+      username:  this.$auth.user.nickname,
+      loginSatus: this.$store.state.auth.loggedIn,
     };
   },
 
-  head() {
-    return {
-      script: [
-        {
-          src: '/lib/howler.min.js',
-        },
-      ],
-    };
-  },
+
 
   watch: {
     $route(to, from) {
@@ -105,6 +104,24 @@ export default {
       }
     },
   },
+      //         async callApi() {
+      // try {
+      //   const token = await this.$auth.strategy.token.get();
+
+      //   const response = await fetch(
+      //     `http://localhost:8090/`,
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     }
+      //   );
+      //   const data = await response.json();
+      //   console.log(data);
+      // } catch (error) {
+      //   console.log(error);
+      // }
+      //   },
 
   mounted() {
     const animateNav = () => {
@@ -132,8 +149,35 @@ export default {
     animateNav();
   },
 
-  methods: {},
+  methods: {
+
+   async  login() {
+        
+        await this.$auth.loginWith('auth0');
+         
+       
+      },
+  username() {
+    if (username == null){
+    this.username = "loser"
+}
+else{
+this.username = this.$auth.user.nickname
+}
+  },
+      async logout() {
+        await this.$auth.logout()
+        console.log("hi")
+      },
+  },
+  //   created() {
+  //   this.callApi();
+  // },
+  created() {
+   // username()
+  }
 };
+
 </script>
 
 <style scoped>
@@ -285,6 +329,10 @@ export default {
 
 /* Navigation Leftside [logo, links] */
 
+.btn {
+  
+  font-size: 2rem;
+}
 .uso__logolinks--container {
   display: contents;
 }

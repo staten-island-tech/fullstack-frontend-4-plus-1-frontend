@@ -27,8 +27,6 @@
         </section>
       </div>
     </section>
-     <button @click="auth(), testEnv()">Sign In</button>
-     <a  href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a>
   </div>
 
 </template>
@@ -39,7 +37,7 @@ import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 
 export default {
-  
+    auth: false,
   // name: 'IndexPage',
   // middleware({ store, redirect }) {
   //   // Automatic Redirection

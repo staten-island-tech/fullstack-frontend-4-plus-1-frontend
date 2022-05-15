@@ -1,5 +1,6 @@
 export const state = () => ({
   user: null,
+  
   beatmapData: {
     general: {
       AudioFilename: 'Flower Dance.mp3',

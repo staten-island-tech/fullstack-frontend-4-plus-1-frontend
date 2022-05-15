@@ -28,7 +28,7 @@ export default {
   css: ['~/assets/global.css', '~/assets/loading-bar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: '~/plugins/howler.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -56,23 +56,30 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-  
   ],
 
   auth: {
     redirect: {
-      login: '/', // redirect user when not connected
-      callback: '/auth/signed-in',
+      login: '/login', // redirect user when not connected
+      callback: '/beatmaps',
     },
     strategies: {
       auth0: {
         domain: 'dev-2szf794g.us.auth0.com',
         clientId: '0oJ0TBUYNgtTWAvBOxvxEW955Xy99Ld1',
-        //audience: 'https://dev-xxdii8rn.us.auth0.com/api/v2/',
-        logoutRedirectUri: 'http://localhost:8080',
+        logoutRedirectUri: 'http://localhost:8080/home',
+        audience: 'http://localhost:6000',
+        scope: ['openid', 'profile', 'email', 'offline_access'],
+        responseType: 'code',
+        grantType: 'authorization_code',
+        codeChallengeMethod: 'S256',
       },
     },
   },
+  router: {
+    middleware: ['auth'],
+  },
+
   server: {
     // host: '0.0.0.0',
     port: 8080,

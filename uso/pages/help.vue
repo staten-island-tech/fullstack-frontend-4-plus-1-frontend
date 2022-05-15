@@ -92,6 +92,7 @@
 
 <script>
 export default {
+  auth: false,
   components: {},
 };
 </script>

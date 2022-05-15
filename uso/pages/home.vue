@@ -35,10 +35,12 @@
 
 <script>
 /* import axios from 'axios'; */
+
 import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 
 export default {
+    auth: false,
   components: { FeatureSongCard, NewsCard },
   /* async asyncData({ $axios }) {
     const data = await $axios.$get('../assets/data/data.json');

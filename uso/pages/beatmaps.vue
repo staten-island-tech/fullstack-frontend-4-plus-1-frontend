@@ -16,7 +16,6 @@
               placeholder="search for your song..."
             />
 
-
             <span class="deleteText">
               <img
                 class="search-icon"
@@ -28,13 +27,14 @@
         </div>
         <div class="my-video-audio" @click="toggleAudio()">
           <div class="aduio-cntrl-cont">
-             <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+         
+            <font-awesome-icon  v-if="clicked" icon="fa-solid fa-play" />
+           <font-awesome-icon  v-else icon="fa-solid fa-pause" />
           </div>
           <div id="audioProgress"></div>
-          <div class="round-time-bar" data-style="smooth" style="--duration: 5;">
-          <div class="bar-inner"></div>
-        </div>  
+          <div class="round-time-bar" data-style="smooth" style="--duration: 5">
+            <div class="bar-inner"></div>
+          </div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -49,10 +49,11 @@
                   beatmapSoundBit(),
                   changeSound(),
                   animateSoundPrevBar()
+             
               "
             >
-            <h2>Click for adiuo preview</h2>
-           
+              <h2>Click for adiuo preview</h2>
+
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -118,11 +119,7 @@
             />
             <p class="hover-msg">hover or click on a song~</p>
           </div>
-
         </div>
-
-
-
       </div>
     </div>
   </div>
@@ -131,16 +128,19 @@
 <script>
 /* eslint-disable */
 
-
 export default {
+  auth: false,
   data() {
     return {
       bmSets: {},
+      timeoutID: null,
+      currAudioProg: null,
+      userdata: null,
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
       hovered: false,
-      clicked: false,
+      clicked: true,
       clickBack: false,
       searchQuery: null,
       id: null,
@@ -158,12 +158,30 @@ export default {
     };
   },
 
+  async login() {
+    await this.$auth.loginWith('auth0');
+  },
   async fetch() {
-    const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    const token = await this.$auth.strategy.token.get();
+    console.log(this.$store.state.auth.loggedIn);
+    // const getUserId = this.userdata.sub.replace("auth0|", "");
+    const beatmapsData = await fetch(
+      `http://localhost:8000/62705a480959d885eafe73dc`,
+      {
+        headers: {
+          // Authorization: token ? `Bearer ${token}` : ""
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     this.bmSets = await beatmapsData.json();
-    console.log(this.bmSets)
+
+    //const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    // const beatmapsData = await fetch('http://localhost:8090/62705a480959d885eafe73dc');
+
+    // this.bmSets = await beatmapsData.json();
+    console.log(this.bmSets);
     Object.keys(this.bmSets).forEach((folder) => {
-     
       this.bmSetsData[folder] = [];
 
       this.bmSets[folder].forEach((osz) => {
@@ -181,15 +199,14 @@ export default {
   },
 
   mounted() {
-   this.progressAudioBar = new ProgressBar.Line(audioProgress, {
-  strokeWidth: 3,
-  easing: 'easeInOut',
-  color: '#FFEA82',
-  duration: 10000,
-  trailColor: '#eee',
-  trailWidth: 3,
-  svgStyle: {width: '100%', height: '30%'}
-});
+    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+      strokeWidth: 3,
+      color: '#FFEA82',
+      duration: 10000,
+      trailColor: '#eee',
+      trailWidth: 3,
+      svgStyle: { width: '100%', height: '30%' },
+    });
   },
 
   methods: {
@@ -384,47 +401,52 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
+ t.clicked = false
+      //  t.musicBeatmapDuration = Math.round(
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
+      // ) *1000 /2
 
-      t.musicBeatmap = new Howl({  
+            t.musicBeatmapDuration = Math.round(
+        (this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime)/2000
+      ) 
+      t.musicBeatmap = new Howl({
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
         //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: 0.1,
+        volume: 0.5,
         preload: true,
         html5: true,
         // sprite: {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
-            t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
-          
 
-
+  console.log( t.musicBeatmapDuration)
       if (!t.executed) {
         t.executed = true;
+               
         // t.musicBeatmap.play('prevMusic');
-                 console.log("soundprev")
         this.progressAudioBar.set(0);
-          this.progressAudioBar.animate(1.0);
-      t.musicBeatmap.seek( t.musicBeatmapDuration/2);
-      t.musicBeatmap.play();
+        this.progressAudioBar.animate(1.0);
+        t.musicBeatmap.seek(t.musicBeatmapDuration);
+        t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-          setTimeout(() => {
-            Howler.stop();
-          }, 10000);
-        //t.executed = false;
+      this.timeoutID = setTimeout(() => {
+              this.resetAdiuo();
+      }, 10000);
+
+      
       }
       console.log(this.clickedBmSetName);
 
-      t.musicBeatmap.on('end', function () {
-        t.executed = false;
-      });
+      // t.musicBeatmap.on('end', function () {
+      //     this.progressAudioBar.set(0);
+      //   t.executed = false;
+      // });
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
 
@@ -433,43 +455,66 @@ export default {
     changeSound() {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
+        this.progressAudioBar.set(0);
+          this.progressAudioBar.animate(1)
         t.firstBeatmapVal = t.currVal;
         console.log('work');
-        Howler.stop();
-              t.musicBeatmap.seek( t.musicBeatmapDuration/2);
-        t.musicBeatmap.play();
-      setTimeout(() => {
-            Howler.stop();
-          }, 10000);
+         Howler.stop();
+          t.musicBeatmap.play();
+      //  t.musicBeatmap.play('prevMusic');
+          clearTimeout( t.timeoutID)
+    t.timeoutID = setTimeout(() => {
+              t.resetAdiuo();
+      }, 10000);
       }
+    },
+    resetAdiuo() {
+
+           Howler.stop();
+          this.executed = false;
+          this.progressAudioBar.set(0);
+          this.clicked = true
+            console.log("hi")
+  
     },
     toggleAudio() {
       const t = this;
-      // this.clicked = true
-
-      if (this.clicked === false) {
-        // t.musicBeatmap.play('prevMusic')
-        this.clicked = true;
-      } else {
-        this.clicked = false;
-        //  const sprite1 = t.musicBeatmap.play('prevMusic')
-       Howler.stop();
-      //  t.musicBeatmap.pause();
+       t.clicked = !t.clicked
+  console.log(t.clicked)
+             
+      if (t.clicked === true) {
+          clearTimeout( t.timeoutID)
+   
+          console.log(  t.progressAudioBar.value())
+         t.musicBeatmap.pause();
+         t.progressAudioBar.stop();
       }
+        else{
+          // t.musicBeatmap.play('prevMusic');
+ t.currAudioProg = Math.round( (1- t.progressAudioBar.value()) * 10000)
+ console.log(t.currAudioProg)
+           t.progressAudioBar.animate(1, {
+    duration:  t.currAudioProg
+          })
+       setTimeout(() => {
+              t.resetAdiuo();
+      }, t.currAudioProg);
+
+          t.musicBeatmap.play();
+        }
 
     },
     animateSoundPrevBar() {
-        if (this.executed === true) {
- 
-            }
+      if (this.executed === true) {
+      }
 
-//  this.progressAudioBar.animate( 1 , {
-//     duration: this.SoundPrevBarDur  
-// }, function() {
-//     console.log('Animation has finished');
-// });
+      //  this.progressAudioBar.animate( 1 , {
+      //     duration: this.SoundPrevBarDur
+      // }, function() {
+      //     console.log('Animation has finished');
+      // });
       // this.SoundPrevBar.animate(1.0);
-    }
+    },
   },
 };
 </script>
@@ -482,18 +527,17 @@ export default {
   font-family: 'Dongle', sans-serif;
 }
 
-
-.my-video-audio{
+.my-video-audio {
   height: 20%;
-	width: 70%;
+  width: 70%;
   display: flex;
   flex-direction: row;
-    border: solid;
+  border: solid;
 }
 
 .aduio-cntrl-cont {
-    height: 100%;
-	width: 30%;
+  height: 100%;
+  width: 30%;
   border: solid;
 }
 
@@ -538,9 +582,7 @@ export default {
   height: 5.5rem;
   margin: 0.5rem 1rem 0.5rem 3.5rem;
   padding-top: 0.5rem;
-
 }
-
 
 /* Search Container */
 
