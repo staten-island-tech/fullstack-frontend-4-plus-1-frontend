@@ -22,7 +22,10 @@
         </section>
         <section class="night-market">
           <div class="night-market-card-container">
-            <night-market-card :load-roll="loadRoll" />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
             <night-market-card :load-roll="loadRoll" />
             <night-market-card :load-roll="loadRoll" />
             <night-market-card :load-roll="loadRoll" />
@@ -71,6 +74,9 @@ export default {
   methods: {
     pressRoll() {
       this.loadRoll = !this.loadRoll;
+    },
+    logRolledCard(value) {
+      console.log(value);
     },
   },
 };

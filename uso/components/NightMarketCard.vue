@@ -139,12 +139,8 @@ export default {
       }
     },
     addToOwned() {
-      /*  console.log(this.activeCharacter.rank); */
-      /* push rank to this.toAdTooOwned */
-      this.toAddToOwned.push(this.activeCharacter.rank);
-      /*   console.log(this.toAddToOwned); */
-
-      /* !!ADD ID OF ROLLED TO ARRAY ON DB */
+      this.$emit('rolledCard', 'this.activeCharacter.rank');
+      /*   console.log(this.activeCharacter.rank); */
     },
     getRoll() {
       this.chooseBg();
