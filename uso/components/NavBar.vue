@@ -78,6 +78,13 @@
 export default {
   /* eslint-disable */
   name: 'NavBar',
+   data() {
+    
+     return {
+        loginSatus: this.$store.state.auth.loggedIn,
+        username:     this.$auth.user.nickname,
+     }
+   },
 
   mounted() {
     const animateNav = () => {
@@ -110,11 +117,7 @@ export default {
       await this.$auth.loginWith('auth0');
     },
     username() {
-      if (username == null) {
-        this.username = 'loser';
-      } else {
-        this.username = this.$auth.user.nickname;
-      }
+
     },
     async logout() {
       await this.$auth.logout();

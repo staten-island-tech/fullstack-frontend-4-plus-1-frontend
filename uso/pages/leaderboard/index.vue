@@ -121,7 +121,14 @@
      }
   },
       async fetch() {
-    const userDataFetch = await fetch('https://usobackend.onrender.com/');
+        const token = await this.$auth.strategy.token.get();
+    const userDataFetch = await fetch('http://localhost:8000/',
+     {
+        headers: {
+          // Authorization: token ? `Bearer ${token}` : ""
+          Authorization: token,
+        },
+      });
         const userDataFetched = await userDataFetch.json();
         userDataFetched .forEach(user => {
           this.userData.push(user)
