@@ -1,5 +1,6 @@
 <template>
   <div id="parse-container">
+       <routeChange/>
     <h1>Check Vue-Dev Tools</h1>
 
     <input

@@ -1,5 +1,7 @@
 <template>
+
   <div>
+       <routeChange/>
     <h1>Forums</h1>
   </div>
 </template>

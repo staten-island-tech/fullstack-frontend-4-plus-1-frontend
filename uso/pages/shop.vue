@@ -1,6 +1,7 @@
 <template>
 
   <div class="shop-page">
+       <routeChange/>
     <div class="under-nav"></div>
       <div class="wish__container">
         <div class="wishCards">

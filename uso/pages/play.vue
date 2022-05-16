@@ -1,5 +1,6 @@
 <template>
   <div id="game-index">
+       <routeChange/>
     <div v-if="!gameEnded" id="game-page-container">
       <div
         v-if="beatmapData.metadata"
@@ -191,9 +192,22 @@ export default {
     };
   },
 
+
   destroyed() {
     window.removeEventListener('wheel', this.onScroll);
   },
+    onLoad() {
+     {
+        t.music = new Howl({
+          src: [
+            `/beatmaps/${t.beatmapData.metadata.BeatmapSetID}/${t.beatmapData.general.AudioFilename}`,
+          ],
+          volume: t.volume,
+            preload: 'metadata',
+          onload: () => (t.songLoaded = true),
+        });
+     }
+   },
 
   computed: {
     dy() {
@@ -271,8 +285,9 @@ export default {
       },
       deep: true,
     },
+    
+  
   },
-
   methods: {
     onLoad() {
       {

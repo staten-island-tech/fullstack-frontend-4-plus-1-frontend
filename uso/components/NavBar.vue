@@ -92,14 +92,17 @@ export default {
 
 
 
-  watch: {
-    $route(to, from) {
-      if (to.name !== to.name) {
-        // if you're going to somewhere else than `wallpaper`
-        // the `return` will end the execution and not go further
-        Howler.stop();
-        
-      } else {
+        watch: {
+
+   $route(to, from) {
+    console.log(from.name)
+      if (to.name !== from.name ) {// if you're going to somewhere else than `wallpaper`
+      // the `return` will end the execution and not go further
+       Howler.stop();
+      
+      }
+      else {
+        console.log("yes refresh yo")
       
       }
     },

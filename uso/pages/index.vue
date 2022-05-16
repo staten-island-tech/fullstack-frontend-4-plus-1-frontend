@@ -1,5 +1,6 @@
 <template>
   <div>
+       <routeChange/>
     <div class="under-nav"></div>
     
     <section class="landing">

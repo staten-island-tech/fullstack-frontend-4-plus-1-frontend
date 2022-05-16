@@ -1,5 +1,7 @@
 <template>
+
   <div>
+       <routeChange/>
     <div class="under-nav"></div>
       
       <div id="lb__index">

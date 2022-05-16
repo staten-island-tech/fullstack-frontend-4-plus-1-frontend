@@ -1,5 +1,6 @@
 <template>
   <div class="beatmaps__content--body">
+    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -25,16 +26,21 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
-        <div class="my-video-audio" @click="toggleAudio()">
+        <div class="my-video-audio">
           <div class="aduio-cntrl-cont">
-         
-            <font-awesome-icon  v-if="clicked" icon="fa-solid fa-play" />
-           <font-awesome-icon  v-else icon="fa-solid fa-pause" />
+            <font-awesome-icon icon="fa-solid fa-backward" />
           </div>
+
+          <div class="aduio-cntrl-cont" @click="toggleAudio()">
+            <font-awesome-icon v-if="clicked" icon="fa-solid fa-play" />
+            <font-awesome-icon v-else icon="fa-solid fa-pause" />
+          </div>
+
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon icon="fa-solid fa-forward-step" />
+          </div>
+
           <div id="audioProgress"></div>
-          <div class="round-time-bar" data-style="smooth" style="--duration: 5">
-            <div class="bar-inner"></div>
-          </div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -49,7 +55,6 @@
                   beatmapSoundBit(),
                   changeSound(),
                   animateSoundPrevBar()
-             
               "
             >
               <h2>Click for adiuo preview</h2>
@@ -401,14 +406,14 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
- t.clicked = false
+      t.clicked = false;
       //  t.musicBeatmapDuration = Math.round(
       //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
       // ) *1000 /2
 
-            t.musicBeatmapDuration = Math.round(
-        (this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime)/2000
-      ) 
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
+      );
       t.musicBeatmap = new Howl({
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
@@ -424,10 +429,10 @@ export default {
         // },
       });
 
-  console.log( t.musicBeatmapDuration)
+      console.log(t.musicBeatmapDuration);
       if (!t.executed) {
         t.executed = true;
-               
+
         // t.musicBeatmap.play('prevMusic');
         this.progressAudioBar.set(0);
         this.progressAudioBar.animate(1.0);
@@ -435,11 +440,9 @@ export default {
         t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-      this.timeoutID = setTimeout(() => {
-              this.resetAdiuo();
-      }, 10000);
-
-      
+        this.timeoutID = setTimeout(() => {
+          this.resetAdiuo();
+        }, 10000);
       }
       console.log(this.clickedBmSetName);
 
@@ -456,53 +459,51 @@ export default {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
         this.progressAudioBar.set(0);
-          this.progressAudioBar.animate(1)
+        t.progressAudioBar.animate(1, {
+          duration: 10000,
+        });
         t.firstBeatmapVal = t.currVal;
         console.log('work');
-         Howler.stop();
-          t.musicBeatmap.play();
-      //  t.musicBeatmap.play('prevMusic');
-          clearTimeout( t.timeoutID)
-    t.timeoutID = setTimeout(() => {
-              t.resetAdiuo();
-      }, 10000);
+        Howler.stop();
+        t.musicBeatmap.play();
+        //  t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.timeoutID = setTimeout(() => {
+          t.resetAdiuo();
+        }, 10000);
       }
     },
     resetAdiuo() {
-
-           Howler.stop();
-          this.executed = false;
-          this.progressAudioBar.set(0);
-          this.clicked = true
-            console.log("hi")
-  
+      Howler.stop();
+      this.executed = false;
+      this.progressAudioBar.set(0);
+      this.clicked = true;
+      console.log('hi');
     },
     toggleAudio() {
       const t = this;
-       t.clicked = !t.clicked
-  console.log(t.clicked)
-             
+      t.clicked = !t.clicked;
+      console.log(t.clicked);
+
       if (t.clicked === true) {
-          clearTimeout( t.timeoutID)
-   
-          console.log(  t.progressAudioBar.value())
-         t.musicBeatmap.pause();
-         t.progressAudioBar.stop();
+        clearTimeout(t.timeoutID);
+
+        console.log(t.progressAudioBar.value());
+        t.musicBeatmap.pause();
+        t.progressAudioBar.stop();
+      } else {
+        // t.musicBeatmap.play('prevMusic');
+        t.currAudioProg = Math.round((1 - t.progressAudioBar.value()) * 10000);
+        console.log(t.currAudioProg);
+        t.progressAudioBar.animate(1, {
+          duration: t.currAudioProg,
+        });
+        setTimeout(() => {
+          t.resetAdiuo();
+        }, t.currAudioProg);
+
+        t.musicBeatmap.play();
       }
-        else{
-          // t.musicBeatmap.play('prevMusic');
- t.currAudioProg = Math.round( (1- t.progressAudioBar.value()) * 10000)
- console.log(t.currAudioProg)
-           t.progressAudioBar.animate(1, {
-    duration:  t.currAudioProg
-          })
-       setTimeout(() => {
-              t.resetAdiuo();
-      }, t.currAudioProg);
-
-          t.musicBeatmap.play();
-        }
-
     },
     animateSoundPrevBar() {
       if (this.executed === true) {
@@ -529,7 +530,7 @@ export default {
 
 .my-video-audio {
   height: 20%;
-  width: 70%;
+  width: 90%;
   display: flex;
   flex-direction: row;
   border: solid;
@@ -537,7 +538,7 @@ export default {
 
 .aduio-cntrl-cont {
   height: 100%;
-  width: 30%;
+  width: 15%;
   border: solid;
 }
 
