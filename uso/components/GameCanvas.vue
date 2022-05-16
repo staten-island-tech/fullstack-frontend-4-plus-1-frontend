@@ -162,7 +162,6 @@ export default {
     displayedLatestHit() {
       switch (this.latestHit) {
         case 320:
-        case 300:
           return 300;
         case 0:
           return 'MISS';
