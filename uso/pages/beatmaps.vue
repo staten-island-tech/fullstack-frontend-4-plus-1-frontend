@@ -174,7 +174,7 @@ export default {
       {
         headers: {
           // Authorization: token ? `Bearer ${token}` : ""
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       }
     );
