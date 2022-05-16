@@ -2,6 +2,7 @@
   <div id="app">
     <NavBar />
     <Nuxt />
+    <RouteChange />
   </div>
 </template>
 
@@ -10,7 +11,6 @@ import NavBar from '~/components/NavBar.vue';
 
 export default {
   components: {
-
     NavBar,
   },
 };
