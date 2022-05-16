@@ -170,7 +170,7 @@ export default {
     console.log(this.$store.state.auth.loggedIn);
     // const getUserId = this.userdata.sub.replace("auth0|", "");
     const beatmapsData = await fetch(
-      `http://localhost:8000/62705a480959d885eafe73dc`,
+      `http://localhost:8000/beatmaps/62705a480959d885eafe73dc`,
       {
         headers: {
           // Authorization: token ? `Bearer ${token}` : ""
