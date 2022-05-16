@@ -1,5 +1,6 @@
 <template>
   <div class="help-page">
+       <routeChange/>
     <div class="under-nav"></div>
     <div class="help-page-container">
       <!-- <h1>L bozo</h1> -->
@@ -92,6 +93,7 @@
 
 <script>
 export default {
+  auth: false,
   components: {},
 };
 </script>

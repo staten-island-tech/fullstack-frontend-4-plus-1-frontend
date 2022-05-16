@@ -1,7 +1,13 @@
 export default {
   ssr: false,
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
+    script: [
+      {
+        src: '/lib/progressbar.min.js',
+      },
+    ],
     title: 'uso',
     htmlAttrs: {
       lang: 'en',
@@ -31,6 +37,7 @@ export default {
     '@nuxtjs/dotenv',
     '@nuxtjs/fontawesome',
   ],
+
   fontawesome: {
     icons: {
       solid: true,
@@ -38,9 +45,39 @@ export default {
     },
   },
 
+  // Modules: https://go.nuxtjs.dev/config-modules
+  modules: [
+    // https://go.nuxtjs.dev/axios
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
+  ],
+
+  auth: {
+    redirect: {
+      login: '/login', // redirect user when not connected
+      callback: '/beatmaps',
+    },
+    strategies: {
+      auth0: {
+        domain: 'dev-2szf794g.us.auth0.com',
+        clientId: '0oJ0TBUYNgtTWAvBOxvxEW955Xy99Ld1',
+        logoutRedirectUri: 'http://localhost:8080/home',
+        audience: 'http://localhost:6000',
+        scope: ['openid', 'profile', 'email', 'offline_access'],
+        responseType: 'code',
+        grantType: 'authorization_code',
+        codeChallengeMethod: 'S256',
+      },
+    },
+  },
+
+  router: {
+    middleware: ['auth'],
+  },
+
   server: {
-    host: '0.0.0.0',
-    port: 8090,
+    // host: '0.0.0.0',
+    port: 8080,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

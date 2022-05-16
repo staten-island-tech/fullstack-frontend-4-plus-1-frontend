@@ -1,4 +1,6 @@
 export const state = () => ({
+  user: null,
+  
   beatmapData: {
     general: {
       AudioFilename: 'Flower Dance.mp3',
@@ -33471,14 +33473,37 @@ export const state = () => ({
   },
 });
 
-export const getters = {};
+// export const getters = {
+//   getUser(state) {
+//     return state.user;
+//   },
+// };
 
-export const actions = {};
+// export const actions = {
+//   onAuthStateChangedAction: (state, { authUser, claims }) => {
+//     if (!authUser) {
+//       state.commit('SET_USER', null);
+//       this.$router.push({
+//         path: '/login',
+//       });
+//     } else {
+//       const { uid, email } = authUser;
+//       state.commit('SET_USER', {
+//         uid,
+//         email,
+//       });
+//     }
+//   },
+// };
 
 export const mutations = {
   setBeatmap(state, data) {
     state.beatmapData = data;
   },
+
+  // SET_USER(state, user) {
+  //   state.user = user;
+  // },
 
   nuxtRoute(state) {
     state.pageData.currentPage = this.$route.name;

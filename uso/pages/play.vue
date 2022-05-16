@@ -1,5 +1,6 @@
 <template>
   <div id="game-index">
+    <routeChange />
     <div v-if="!gameEnded" id="game-page-container">
       <div
         v-if="beatmapData.metadata"
@@ -78,7 +79,7 @@ import GameCanvas from '../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas },
-  layout: 'nonav',
+  layout: 'noNav',
 
   data() {
     return {
@@ -145,7 +146,6 @@ export default {
       deep: true,
     },
   },
-
   methods: {
     onLoad() {
       const t = this;

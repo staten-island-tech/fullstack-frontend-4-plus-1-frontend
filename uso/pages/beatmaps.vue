@@ -1,5 +1,6 @@
 <template>
   <div class="beatmaps__content--body">
+    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -25,7 +26,22 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
+        <div class="my-video-audio">
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon icon="fa-solid fa-backward" />
+          </div>
 
+          <div class="aduio-cntrl-cont" @click="toggleAudio()">
+            <font-awesome-icon v-if="clicked" icon="fa-solid fa-play" />
+            <font-awesome-icon v-else icon="fa-solid fa-pause" />
+          </div>
+
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon icon="fa-solid fa-forward-step" />
+          </div>
+
+          <div id="audioProgress"></div>
+        </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
             <div
@@ -38,12 +54,11 @@
                 bmClickEvents(bmSetName, $event),
                   beatmapSoundBit(),
                   changeSound(),
-                  toggleAudio()
+                  animateSoundPrevBar()
               "
             >
-              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+              <h2>Click for adiuo preview</h2>
 
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -117,18 +132,25 @@
 
 <script>
 /* eslint-disable */
+
 export default {
+  auth: false,
   data() {
     return {
       bmSets: {},
+      timeoutID: null,
+      currAudioProg: null,
+      userdata: null,
       bmSetsData: {},
       hoveredBmSetName: null,
       clickedBmSetName: null,
       hovered: false,
-      clicked: false,
+      clicked: true,
       clickBack: false,
       searchQuery: null,
       id: null,
+      SoundPrevBarDur: null,
+      musicBeatmapDuration: 0,
 
       musicBeatmapDuration: 0,
       executed: false,
@@ -140,10 +162,29 @@ export default {
     };
   },
 
+  async login() {
+    await this.$auth.loginWith('auth0');
+  },
   async fetch() {
-    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
+    const token = await this.$auth.strategy.token.get();
+    console.log(this.$store.state.auth.loggedIn);
+    // const getUserId = this.userdata.sub.replace("auth0|", "");
+    const beatmapsData = await fetch(
+      `http://localhost:8000/62705a480959d885eafe73dc`,
+      {
+        headers: {
+          // Authorization: token ? `Bearer ${token}` : ""
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     this.bmSets = await beatmapsData.json();
 
+    //const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    // const beatmapsData = await fetch('http://localhost:8090/62705a480959d885eafe73dc');
+
+    // this.bmSets = await beatmapsData.json();
+    console.log(this.bmSets);
     Object.keys(this.bmSets).forEach((folder) => {
       this.bmSetsData[folder] = [];
 
@@ -161,7 +202,16 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+      strokeWidth: 3,
+      color: '#FFEA82',
+      duration: 10000,
+      trailColor: '#eee',
+      trailWidth: 3,
+      svgStyle: { width: '100%', height: '30%' },
+    });
+  },
 
   methods: {
     getBmData(folder, osz) {
@@ -355,76 +405,142 @@ export default {
     },
     beatmapSoundBit() {
       const t = this;
-      t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
+      t.clicked = false;
+      //  t.musicBeatmapDuration = Math.round(
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
+      // ) *1000 /2
 
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
+      );
       t.musicBeatmap = new Howl({
-        // eslint-disable-line
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
         //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: 0.1,
+        volume: 0.5,
         preload: true,
         html5: true,
-        sprite: {
-          prevMusic: [t.musicBeatmapDuration, 10000, false],
-        },
+        // sprite: {
+        //   prevMusic: [t.musicBeatmapDuration, 10000, false],
+        // },
       });
 
-      // if (!t.chageExeuted) {
-      //         t.chageExeuted = true;
-      //       }
-
+      console.log(t.musicBeatmapDuration);
       if (!t.executed) {
         t.executed = true;
-        t.musicBeatmap.play('prevMusic');
 
+        // t.musicBeatmap.play('prevMusic');
+        this.progressAudioBar.set(0);
+        this.progressAudioBar.animate(1.0);
+        t.musicBeatmap.seek(t.musicBeatmapDuration);
+        t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-        //t.executed = false;
+        this.timeoutID = setTimeout(() => {
+          this.resetAdiuo();
+        }, 10000);
       }
       console.log(this.clickedBmSetName);
 
-      t.musicBeatmap.on('end', function () {
-        t.executed = false;
-      });
+      // t.musicBeatmap.on('end', function () {
+      //     this.progressAudioBar.set(0);
+      //   t.executed = false;
+      // });
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
 
       // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
-      if (this.firstBeatmapVal !== this.currVal) {
-        this.firstBeatmapVal = this.currVal;
-
+      const t = this;
+      if (t.firstBeatmapVal !== t.currVal) {
+        this.progressAudioBar.set(0);
+        t.progressAudioBar.animate(1, {
+          duration: 10000,
+        });
+        t.firstBeatmapVal = t.currVal;
         console.log('work');
         Howler.stop();
-        this.musicBeatmap.play('prevMusic');
+        t.musicBeatmap.play();
+        //  t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.timeoutID = setTimeout(() => {
+          t.resetAdiuo();
+        }, 10000);
       }
     },
+    resetAdiuo() {
+      Howler.stop();
+      this.executed = false;
+      this.progressAudioBar.set(0);
+      this.clicked = true;
+      console.log('hi');
+    },
     toggleAudio() {
-      // this.clicked = true
+      const t = this;
+      t.clicked = !t.clicked;
+      console.log(t.clicked);
 
-      if (this.clicked === false) {
-        // t.musicBeatmap.play('prevMusic')
-        this.clicked = true;
+      if (t.clicked === true) {
+        clearTimeout(t.timeoutID);
+
+        console.log(t.progressAudioBar.value());
+        t.musicBeatmap.pause();
+        t.progressAudioBar.stop();
       } else {
-        this.clicked = false;
-        // const sprite1 = t.musicBeatmap.play('prevMusic')
-        // Howler.stop();
+        // t.musicBeatmap.play('prevMusic');
+        t.currAudioProg = Math.round((1 - t.progressAudioBar.value()) * 10000);
+        console.log(t.currAudioProg);
+        t.progressAudioBar.animate(1, {
+          duration: t.currAudioProg,
+        });
+        setTimeout(() => {
+          t.resetAdiuo();
+        }, t.currAudioProg);
+
+        t.musicBeatmap.play();
       }
-      console.log(this.clicked);
+    },
+    animateSoundPrevBar() {
+      if (this.executed === true) {
+      }
+
+      //  this.progressAudioBar.animate( 1 , {
+      //     duration: this.SoundPrevBarDur
+      // }, function() {
+      //     console.log('Animation has finished');
+      // });
+      // this.SoundPrevBar.animate(1.0);
     },
   },
 };
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
+
+*,
+.beatmaps__content--body {
+  font-family: 'Dongle', sans-serif;
+}
+
+.my-video-audio {
+  height: 20%;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  border: solid;
+}
+
+.aduio-cntrl-cont {
+  height: 100%;
+  width: 15%;
+  border: solid;
+}
+
 /* Beatmaps Title */
 .play-index {
   width: 100vw;

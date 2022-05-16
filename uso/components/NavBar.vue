@@ -31,13 +31,17 @@
           <li>
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
+
+          <li>
+            <button class="btn" @click="logout()">logout</button>
+          </li>
         </ul>
       </div>
 
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
+            <nuxt-link to="/" class="uso__button"> Hi {{ username }}</nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/" class="uso__button"></nuxt-link>
@@ -48,12 +52,16 @@
             /></nuxt-link>
           </div>
 
-          <nuxt-link to="/profile" class="uso__avatar--img">
+          <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
             />
           </nuxt-link>
+          <li v-else>
+            <button class="btn" @click="login()">login</button>
+          </li>
+          <!-- @click="login()"  -->
         </div>
       </div>
 
@@ -70,25 +78,6 @@
 export default {
   /* eslint-disable */
   name: 'NavBar',
-
-  data() {
-    return {
-      page: this.$route.name,
-    };
-  },
-
-  watch: {
-    $route(to, from) {
-      if (to.name !== 'play') {
-        // if you're going to somewhere else than `wallpaper`
-        // the `return` will end the execution and not go further
-        console.log('yes1');
-        Howler.volume(0);
-      } else {
-        console.log('yes refresh yo');
-      }
-    },
-  },
 
   mounted() {
     const animateNav = () => {
@@ -116,7 +105,22 @@ export default {
     animateNav();
   },
 
-  methods: {},
+  methods: {
+    async login() {
+      await this.$auth.loginWith('auth0');
+    },
+    username() {
+      if (username == null) {
+        this.username = 'loser';
+      } else {
+        this.username = this.$auth.user.nickname;
+      }
+    },
+    async logout() {
+      await this.$auth.logout();
+      console.log('hi');
+    },
+  },
 };
 </script>
 
@@ -269,6 +273,9 @@ export default {
 
 /* Navigation Leftside [logo, links] */
 
+.btn {
+  font-size: 2rem;
+}
 .uso__logolinks--container {
   display: contents;
 }
