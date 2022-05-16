@@ -31,24 +31,32 @@
             <h1 class="title">Results</h1>
             <div class="content-sidebar">
               <div id="left__col" class="col">
-                <div class="score">Score: {{ Math.floor(stats.score) }}</div>
-                <div class="score">Combo: {{ stats.maxCombo }}</div>
-                <div class="score">
-                  Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
+
+                <div class="score__container">
+                  <div class="score">Score: {{ Math.floor(stats.score) }}</div>
+                  <div class="score">Combo: {{ stats.maxCombo }}</div>
+                  <div class="score">
+                    Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
+                  </div>
                 </div>
+
                 <div class="stats__results">
                   <div class="scoreValues">
                     <div class="stats">300</div>
                     <div class="stats">300</div>
                     <div class="stats">200</div>
+                  </div>   
+                  <div class="scoreValues">
+                    <div class="stats">{{ totalHits['320'] }}</div>
+                    <div class="stats">{{ totalHits['300'] }}</div>
+                    <div class="stats">{{ totalHits['200'] }}</div>
+                  </div>
+                  <div class="scoreValues">
                     <div class="stats">100</div>
                     <div class="stats">50</div>
                     <div class="stats">Miss</div>
                   </div>
-                  <div class="scoreX">
-                    <div class="stats">{{ totalHits['320'] }}</div>
-                    <div class="stats">{{ totalHits['300'] }}</div>
-                    <div class="stats">{{ totalHits['200'] }}</div>
+                  <div class="scoreValues">
                     <div class="stats">{{ totalHits['100'] }}</div>
                     <div class="stats">{{ totalHits['50'] }}</div>
                     <div class="stats">{{ totalHits['0'] }}</div>
@@ -130,6 +138,10 @@ export default {
   font-weight: 400;
 }
 
+.score__container {
+  display: flex;
+}
+
 /* endgame things */
 
 .endgame__page--container {
@@ -206,11 +218,19 @@ export default {
 }
 
 .stats__results > *:nth-child(1) {
-  flex: 1 1 50%;
+  flex: 1 1 25%;
 }
 
 .stats__results > *:nth-child(2) {
-  flex: 1 1 50%;
+  flex: 1 1 25%;
+}
+
+.stats__results > *:nth-child(3) {
+  flex: 1 1 25%;
+}
+
+.stats__results > *:nth-child(4) {
+  flex: 1 1 25%;
 }
 
 .score {
