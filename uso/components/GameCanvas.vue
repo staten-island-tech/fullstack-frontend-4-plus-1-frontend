@@ -5,11 +5,16 @@
     </canvas>
 
     <div id="game__hitCombo__container" :style="{ width: canvasWidth + 'px' }">
-      <h1 id="game__combo" class="game__combo__on">
-        {{ combo === 0 ? null : combo }}
+      <h1
+        id="game__combo"
+        :key="comboVKey"
+        :class="{ game__combo__on: comboOn, game__combo__reset: comboReset }"
+      >
+        {{ combo ? combo : missedCombo ? missedCombo : null }}
       </h1>
       <h1
         id="game__hitValue"
+        :key="hitValueVKey"
         class="game__hitValue__on"
         :style="lastestHitStyle"
       >
@@ -31,12 +36,15 @@ export default {
   props: {
     beatmapData: {
       required: true,
+      type: Object,
     },
     paused: {
       required: true,
+      type: Boolean,
     },
     beatmapIntro: {
       required: true,
+      type: Number,
     },
   },
   data() {
@@ -53,7 +61,8 @@ export default {
 
       score: 0,
       combo: 0,
-      scrollSpeed: 10,
+      maxCombo: 0,
+      scrollSpeed: 15,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -67,7 +76,12 @@ export default {
       hitBonusValue: null,
       bonus: 100,
 
-      hitValueHit: false,
+      missedCombo: 0,
+      comboOn: false,
+      comboReset: false,
+
+      comboVKey: 0,
+      hitValueVKey: 1,
 
       hitJudgement: {
         320: null,
@@ -103,6 +117,7 @@ export default {
         targetCirclesGraphics: [],
       },
       notesToFallArray: [],
+      remainingNotes: null,
       readyNotes: [],
       readySliders: [],
 
@@ -220,6 +235,14 @@ export default {
       },
       deep: true,
     },
+    remainingNotes(newValue) {
+      if (newValue === 0) {
+        if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+        setTimeout(() => {
+          this.$emit('endGameParent', this.totalHits, this.maxCombo);
+        }, 1000);
+      }
+    },
   },
 
   methods: {
@@ -227,6 +250,7 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
+      t.remainingNotes = t.notes.length;
       t.numColumns = t.beatmapData.columns;
 
       window.addEventListener('wheel', this.onScroll);
@@ -243,7 +267,7 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
-      t.music = new t.$howlerjs.Howl({
+      t.music = new Howl({
         src: [
           `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
         ],
@@ -254,27 +278,27 @@ export default {
 
       t.music.seek(t.beatmapIntro / 1000);
 
-      t.defaultHitNormal = new t.$howlerjs.Howl({
+      t.defaultHitNormal = new Howl({
         src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
         volume: t.volume,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitClapNormal = new t.$howlerjs.Howl({
+      t.defaultHitClapNormal = new Howl({
         src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
         volume: t.volume,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitSoftNormal = new t.$howlerjs.Howl({
+      t.defaultHitSoftNormal = new Howl({
         src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
         volume: 0.3,
         onload: () => (t.songLoaded = true),
       });
-      t.defaultHitSoftClapNormal = new t.$howlerjs.Howl({
+      t.defaultHitSoftClapNormal = new Howl({
         src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
         volume: 0.08,
         onload: () => (t.songLoaded = true),
       });
-      t.softSliderWhistle = new t.$howlerjs.Howl({
+      t.softSliderWhistle = new Howl({
         src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
         volume: 0.1,
         onload: () => (t.songLoaded = true),
@@ -381,9 +405,9 @@ export default {
 
       t.music.play();
 
-      const $hitComboContainer = document.querySelector(
+      /* const $hitComboContainer = document.querySelector(
         '#game__hitCombo__container'
-      );
+      ); */
 
       /* ===============
           HP DRAIN
@@ -485,9 +509,7 @@ export default {
         });
       }
 
-      kd.run(function () {
-        kd.tick();
-      });
+      kd.run(() => kd.tick());
 
       /* ===============
               NOTES
@@ -509,7 +531,7 @@ export default {
           this.time = note.time;
 
           this.animate = this.animate.bind(this);
-          this.remove = this.remove.bind(this);
+          this.miss = this.miss.bind(this);
           this.cache(
             t.stageColWidth / 2 - t.radius,
             -2 * t.radius,
@@ -543,25 +565,31 @@ export default {
           if (this.isRemoved) return;
           this.isRemoved = true;
 
-          console.log('miss()');
-
           t.latestHit = 0;
           t.totalHits['0']++;
           t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
           t.combo = 0;
           healthbarFinalVal(t.latestHit);
 
-          const $combo = document.querySelector('#game__combo');
+          t.comboOn = false;
+          t.comboReset = true;
+
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
+
+          /* const $combo = document.querySelector('#game__combo');
           const $hitValue = document.querySelector('#game__hitValue');
 
           $hitComboContainer.removeChild($combo);
           $hitComboContainer.removeChild($hitValue);
 
-          $combo.classList.remove('comboOnAnimation');
-          $combo.classList.add('comboResetAnimation');
+          $combo.classList.remove('.game__combo__on');
+          $combo.classList.add('game__combo__reset');
 
           $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue);
+          $hitComboContainer.appendChild($hitValue); */
 
           this.remove();
         }
@@ -639,17 +667,23 @@ export default {
             t.softSliderWhistle.play();
           }
 
-          const $combo = document.querySelector('#game__combo');
+          t.comboReset = false;
+          t.comboOn = true;
+
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
+
+          /* const $combo = document.querySelector('#game__combo');
           const $hitValue = document.querySelector('#game__hitValue');
 
           $hitComboContainer.removeChild($combo);
           $hitComboContainer.removeChild($hitValue);
 
-          $combo.classList.remove('comboResetAnimation');
-          $combo.classList.add('comboOnAnimation');
+          $combo.classList.remove('game__combo__reset');
+          $combo.classList.add('.game__combo__on');
 
           $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue);
+          $hitComboContainer.appendChild($hitValue); */
 
           this.remove();
         }
@@ -658,6 +692,8 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+
+          t.remainingNotes--;
         }
 
         animate() {
@@ -665,8 +701,6 @@ export default {
             useTicks: true,
             onComplete: this.animate,
           }).to({ y: this.y + t.dy }, 1);
-
-          // console.log(this.msFrom(), t.hitJudgement['50']);
 
           switch (true) {
             // If ms from targetCircle is less than ...
@@ -676,7 +710,7 @@ export default {
 
               // Start fading out
               createjs.Tween.get(this, {
-                onComplete: this.remove,
+                onComplete: this.miss,
               }).to(
                 { alpha: 0, visible: false },
                 2 * t.hitJudgement['0'],
@@ -785,25 +819,19 @@ export default {
           if (this.isRemoved) return;
           this.isRemoved = true;
 
-          console.log('Slider Miss');
-
           t.latestHit = 0;
           t.totalHits['0']++;
           t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
           t.combo = 0;
           healthbarFinalVal(t.latestHit);
 
-          const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
+          t.comboOn = false;
+          t.comboReset = true;
 
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('comboOnAnimation');
-          $combo.classList.add('comboResetAnimation');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue);
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
         }
 
         hit() {
@@ -866,17 +894,11 @@ export default {
           t.combo += 1;
           healthbarFinalVal(t.latestHit);
 
-          const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
+          t.comboReset = false;
+          t.comboOn = true;
 
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('comboResetAnimation');
-          $combo.classList.add('comboOnAnimation');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue);
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
 
           this.remove();
         }
@@ -885,6 +907,8 @@ export default {
           createjs.Tween.removeTweens(this);
           t.ss.columnContainers[this.i].removeChild(this);
           t.readySliders[this.i] = null;
+
+          t.remainingNotes--;
         }
 
         animate() {
@@ -997,7 +1021,7 @@ export default {
   font-weight: 400;
 }
 
-.comboOnAnimation {
+.game__combo__on {
   animation: comboOnAnimation 0.15s linear forwards;
 }
 
@@ -1011,9 +1035,18 @@ export default {
   }
 }
 
-.comboResetAnimation {
-  opacity: 0;
-  animation: opacity 0.3s linear;
+.game__combo__reset {
+  animation: comboResetAnimation 0.2s ease-in forwards;
+}
+
+@keyframes comboResetAnimation {
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 #game__hitValue {

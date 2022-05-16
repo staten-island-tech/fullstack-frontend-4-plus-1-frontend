@@ -7,8 +7,16 @@
         <div class="endgame__header">
           <div class="header__left">
             <div id="leftSide">
-              <div id="leftTitle">song // beatmap title</div>
-              <div id="leftTitle">by... musician // beatmap creator</div>
+              <div id="leftTitle">
+                {{
+                  beatmapData.metadata.TitleUnicode +
+                  ' ' +
+                  beatmapData.metadata.Version
+                }}
+              </div>
+              <div id="leftTitle">
+                beatmap by {{ beatmapData.metadata.Creator }}
+              </div>
               <h3></h3>
             </div>
           </div>
@@ -23,7 +31,11 @@
             <h1 class="title">Results</h1>
             <div class="content-sidebar">
               <div id="left__col" class="col">
-                <div class="score">Score:</div>
+                <div class="score">Score: {{ Math.floor(stats.score) }}</div>
+                <div class="score">Combo: {{ stats.maxCombo }}</div>
+                <div class="score">
+                  Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
+                </div>
                 <div class="stats__results">
                   <div class="scoreValues">
                     <div class="stats">300</div>
@@ -34,17 +46,17 @@
                     <div class="stats">Miss</div>
                   </div>
                   <div class="scoreX">
-                    <div class="stats">nx</div>
-                    <div class="stats">nx</div>
-                    <div class="stats">nx</div>
-                    <div class="stats">nx</div>
-                    <div class="stats">nx</div>
-                    <div class="stats">nx</div>
+                    <div class="stats">{{ totalHits['320'] }}</div>
+                    <div class="stats">{{ totalHits['300'] }}</div>
+                    <div class="stats">{{ totalHits['200'] }}</div>
+                    <div class="stats">{{ totalHits['100'] }}</div>
+                    <div class="stats">{{ totalHits['50'] }}</div>
+                    <div class="stats">{{ totalHits['0'] }}</div>
                   </div>
                 </div>
               </div>
               <div id="right__col" class="col">
-                <div class="letterRanking">A</div>
+                <div class="letterRanking">{{ grade }}</div>
               </div>
             </div>
           </div>
@@ -59,7 +71,37 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    beatmapData: {
+      required: true,
+      type: Object,
+    },
+    totalHits: {
+      required: true,
+      type: Object,
+    },
+    stats: {
+      required: true,
+      type: Object,
+    },
+  },
+  data() {
+    return {
+      grade: null,
+    };
+  },
+  created() {
+    const t = this;
+
+    if (t.stats.accuracy === 1) t.grade = 'SS';
+    else if (t.stats.accuracy > 0.95) t.grade = 'S';
+    else if (t.stats.accuracy > 0.9) t.grade = 'A';
+    else if (t.stats.accuracy > 0.8) t.grade = 'B';
+    else if (t.stats.accuracy > 0.7) t.grade = 'C';
+    else t.grade = 'D';
+  },
+};
 </script>
 
 <style scoped>

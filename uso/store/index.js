@@ -22545,7 +22545,7 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
-      {
+      /* {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22559,7 +22559,7 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
-      /* {
+      {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22572,7 +22572,7 @@ export const state = () => ({
           filename: '',
         },
         columnIndex: 0,
-      }, */
+      },
       {
         x: 448,
         time: 36000,
@@ -22601,7 +22601,7 @@ export const state = () => ({
           filename: '',
         },
         columnIndex: 0,
-      },
+      }, */
     ],
     columns: 4,
   },
@@ -33469,7 +33469,6 @@ export const state = () => ({
   pageData: {
     currentPage: '',
   },
-  howlerLoaded: false,
 });
 
 export const getters = {};
@@ -33479,10 +33478,6 @@ export const actions = {};
 export const mutations = {
   setBeatmap(state, data) {
     state.beatmapData = data;
-  },
-
-  setHowlerLoaded(state, boolean) {
-    state.howlerLoaded = true;
   },
 
   nuxtRoute(state) {

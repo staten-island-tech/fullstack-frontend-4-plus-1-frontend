@@ -27,7 +27,8 @@
             accuracy = newAccuracy;
           }
         "
-      ></GameCanvas>
+        @endGameParent="endGame"
+      />
 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
@@ -56,7 +57,16 @@
         </div>
       </div>
     </div>
-    <EndGame v-else></EndGame>
+    <EndGame
+      v-else
+      :beatmap-data="beatmapData"
+      :total-hits="totalHits"
+      :stats="{
+        score: score,
+        maxCombo: maxCombo,
+        accuracy: accuracy,
+      }"
+    />
   </div>
 </template>
 
@@ -82,6 +92,8 @@ export default {
 
       score: 0,
       accuracy: 1,
+      totalHits: null,
+      maxCombo: null,
 
       pauseKey: 'ESCAPE',
       paused: false,
@@ -138,7 +150,7 @@ export default {
     onLoad() {
       const t = this;
 
-      t.$howlerjs.Howler.volume(1);
+      Howler.volume(1);
 
       window.addEventListener('wheel', this.onScroll);
       document.addEventListener('keydown', function (e) {
@@ -205,6 +217,14 @@ export default {
 
       t.progressBar.animate(1);
     },
+    endGame(totalHits, maxCombo) {
+      const t = this;
+
+      t.totalHits = totalHits;
+      t.maxCombo = maxCombo;
+      t.gameEnded = true;
+    },
+    retart() {},
     onPauseKey() {
       this.paused = !this.paused;
       this.$refs.gameCanvas.onPauseKey(this.paused);
@@ -214,7 +234,7 @@ export default {
       // Restrict scale
       this.scale = Math.min(Math.max(0, this.scale), 1);
       // Apply scale transform
-      this.$howlerjs.Howler.volume(this.scale);
+      Howler.volume(this.scale);
       this.pbVolProgress = Math.round(100 * this.scale) / 100;
 
       this.progressBarVol.set(this.pbVolProgress);
