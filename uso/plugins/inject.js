@@ -5,9 +5,9 @@
 import Vue from 'vue';
 
 import { Howl, Howler } from 'howler';
-import { createjs } from 'createjs/builds/createjs-2015.11.26.min.js';
+// import { createjs } from 'createjs/builds/createjs-2015.11.26.min.js';
 
 // import Howler from 'howler';
 Vue.use(Howl);
 Vue.use(Howler);
-Vue.use(createjs);
+// Vue.use(createjs);
