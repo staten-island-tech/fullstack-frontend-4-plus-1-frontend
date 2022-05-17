@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 
 library.add(faUserSecret);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component('FontAwesomeIcon', FontAwesomeIcon);
 
 Vue.use(Howl);
 Vue.use(Howler);

@@ -28,7 +28,7 @@
         </div>
 
         <div class="my-video-audio">
-          <div class="aduio-cntrl-cont">
+          <div class="audio-cntrl-cont">
             <font-awesome-icon
               icon="backward"
               class="svg"
@@ -37,7 +37,7 @@
             <!-- <fa-backward class="svg"/> -->
           </div>
 
-          <div class="aduio-cntrl-cont">
+          <div class="audio-cntrl-cont">
             <font-awesome-icon
               v-if="clicked"
               icon="fa-solid fa-play"
@@ -53,7 +53,7 @@
             <!-- <font-awesome-icon icon="pasue" class="svg"/> -->
           </div>
 
-          <div class="aduio-cntrl-cont">
+          <div class="audio-cntrl-cont">
             <font-awesome-icon
               icon="fa-solid fa-forward-step"
               class="svg"
@@ -63,7 +63,7 @@
 
           <div id="audioProgress"></div>
 
-          <div class="aduio-cntrl-cont">
+          <div class="audio-cntrl-cont">
             <font-awesome-icon
               v-if="mute"
               icon="fa-solid fa-volume-high"
@@ -84,15 +84,11 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event), (hovered = true)"
-              @mouseleave="bmClickEvents(bmSetName, $event), (hovered = false)"
               @click="
-                bmClickEvents(bmSetName, $event),
-                  beatmapSoundBit(),
-                  changeSound()
+                (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2>Click for adiuo preview</h2>
+              <h2>Click For Audio Preview</h2>
 
               <img
                 v-if="oszArray[0].events[0]"
@@ -105,29 +101,29 @@
               </p>
             </div>
           </div>
-          <div v-if="currentBmSetName" class="play-sidebar">
+          <div v-if="clickedBmSetName" class="play-sidebar">
             <div class="play-sidebar-image-container">
               <img
-                :src="`/beatmaps/${currentBmSetName}/${
-                  bmSetsData[`${currentBmSetName}`][0].events[0][2]
+                :src="`/beatmaps/${clickedBmSetName}/${
+                  bmSetsData[`${clickedBmSetName}`][0].events[0][2]
                 }`"
               />
             </div>
             <div class="play-sidebar-text-container">
               <p class="play-sidebar-text-title">
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Title }}
               </p>
               <p>
                 Artist:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Artist }}
               </p>
               <p>
                 Mapper:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
               <nuxt-link
                 :to="`/leaderboard/${
-                  bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
+                  bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
                 class=""
                 >Leaderboard</nuxt-link
@@ -137,7 +133,7 @@
               <tbody>
                 <tr
                   v-for="(bmDifficulty, index) in bmSetsData[
-                    `${currentBmSetName}`
+                    `${clickedBmSetName}`
                   ]"
                   :key="index"
                   @click="$store.commit('setBeatmap', bmDifficulty)"
@@ -183,9 +179,7 @@ export default {
       currAudioProg: null,
       userdata: null,
       bmSetsData: {},
-      hoveredBmSetName: null,
       clickedBmSetName: null,
-      hovered: false,
       clicked: true,
       clickBack: false,
       searchQuery: null,
@@ -217,14 +211,6 @@ export default {
         this.bmSetsData[folder].push(this.getBmData(folder, osz));
       });
     });
-  },
-
-  computed: {
-    currentBmSetName() {
-      return this.hoveredBmSetName
-        ? this.hoveredBmSetName
-        : this.clickedBmSetName;
-    },
   },
 
   mounted() {
@@ -408,26 +394,6 @@ export default {
       // console.log(beatmap);
       return beatmap;
     },
-    bmClickEvents(bmName, event) {
-      switch (event.type) {
-        case 'mouseover':
-          this.hoveredBmSetName = bmName;
-          break;
-
-        case 'mouseleave':
-          this.hoveredBmSetName = null;
-
-          break;
-
-        case 'click':
-          this.clickedBmSetName = bmName;
-          break;
-
-        default:
-          alert(`Dropbox event listener does not exist: ${event.type}`);
-          break;
-      }
-    },
     beatmapSoundBit() {
       const t = this;
       t.clicked = false;
@@ -466,7 +432,7 @@ export default {
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
         this.timeoutID = setTimeout(() => {
-          this.resetAdiuo();
+          this.resetAudio();
         }, 10000);
       }
       console.log(this.clickedBmSetName);
@@ -478,8 +444,6 @@ export default {
       // });
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
       const t = this;
@@ -495,11 +459,11 @@ export default {
         //  t.musicBeatmap.play('prevMusic');
         clearTimeout(t.timeoutID);
         t.timeoutID = setTimeout(() => {
-          t.resetAdiuo();
+          t.resetAudio();
         }, 10000);
       }
     },
-    resetAdiuo() {
+    resetAudio() {
       Howler.stop();
       this.executed = false;
       this.progressAudioBar.set(0);
@@ -524,7 +488,7 @@ export default {
           duration: t.currAudioProg,
         });
         t.timeoutID = setTimeout(() => {
-          t.resetAdiuo();
+          t.resetAudio();
         }, t.currAudioProg);
 
         t.musicBeatmap.play();
@@ -590,7 +554,7 @@ export default {
   border: solid;
 }
 
-.aduio-cntrl-cont {
+.audio-cntrl-cont {
   height: 100%;
   width: 15%;
   border: solid;
