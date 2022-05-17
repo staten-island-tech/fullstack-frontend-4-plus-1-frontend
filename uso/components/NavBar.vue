@@ -32,9 +32,9 @@
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
 
-          <li>
+          <!-- <li>
             <button class="btn" @click="logout()">logout</button>
-          </li>
+          </li> -->
         </ul>
       </div>
 
@@ -56,15 +56,47 @@
             /></nuxt-link>
           </div>
 
-          <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
+           <div class="nav__col nav__col--avatar">
+                <button id="show-login" class="avatar avatar--nav avatar--guest"></button>
+
+                    <div class="login-container">
+
+                        <div class="login-popup">
+                            <div class="close__popup-btn">&times;</div>
+
+                            <div class="user-form">
+                                <h2 class="user-sign-in">Sign In To Proceed</h2>
+                               
+                                <div id="form__sign-in" class="form-element">
+                                    <button class="btn__sign-in">profile</button>
+                                </div>
+
+                                <div id="form__sign-in" class="form-element">
+                                    <button class="btn__sign-in">settings</button>
+                                </div>
+
+                                <div id="form__sign-in" class="form-element">
+                                    <button class="btn__sign-in">sign in</button>
+                                </div>
+                            </div>
+
+                        </div>
+                
+                    </div>
+            </div>
+
+          <!-- <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
             />
           </nuxt-link>
+
           <li v-else>
             <button class="btn" @click="login()">login</button>
-          </li>
+          </li> -->
+          
+          <!-- @click="login()"  -->
         </div>
       </div>
 
@@ -88,6 +120,20 @@ export default {
   },
 
   mounted() {
+    console.log("yale is better than harvard");
+
+    document.querySelector("#show-login")
+    .addEventListener("click", function(){
+        document.querySelector(".login-popup")
+        .classList.add("active");
+    });
+
+    document.querySelector(".login-popup .close__popup-btn")
+    .addEventListener("click", function(){
+        document.querySelector(".login-popup")
+        .classList.remove("active");
+    });
+
     const animateNav = () => {
       const navBurger = document.querySelector('.uso__navburger');
       const navLinks = document.querySelector('.uso__navbar--links');
@@ -125,6 +171,7 @@ export default {
 </script>
 
 <style scoped>
+
 /* Keyframes */
 
 @keyframes pulse {
@@ -442,6 +489,121 @@ export default {
 
 .nav-shop-btns:hover {
   opacity: 1;
+}
+
+/* LOGIN */
+
+.avatar--nav {
+  width: 62px;
+  height: 62px;
+  box-shadow: none;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: width .3s,height .3s;
+  position: relative;
+}
+
+.avatar--guest {
+  background-image: url(~/assets/images/navigation/nav-avatar.png);
+}
+
+.avatar {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  /* background: none; */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  border-radius: 40px;
+  width: 60px;
+  height: 60px;
+  flex: none;
+  background-color: #333;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  margin-left: 0.6rem;
+  display: block;
+  cursor: pointer;
+  }
+
+/* LOGIN FORM, REGISTER FORM, MODAL/POPUP */
+
+.login-popup {
+  position: absolute;
+  top: -150%;
+  left: 73.15%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  width: 330px;
+  padding: 8px 20px;
+  background: #333;
+  color: black;
+  font-size: 10px;
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  transition: top 0ms ease-in-out 200ms,
+              opacity 200ms ease-in-out 0ms,
+              transform 20ms ease-in-out 0ms;
+}
+
+.login-popup.active {
+  top: 200.5%;
+  left: 73.15%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  transition: top 0ms ease-in-out 0ms,
+              opacity 200ms ease-in-out 0ms,
+              transform 20ms ease-in-out 0ms;
+}
+
+.login-popup .close__popup-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 17px;
+  height: 17px;
+  background: #888;
+  color: #eee;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.login-popup .user-sign-in {
+  color: #f5f5f5;
+  margin: 13px 0px 13px 0px;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.login-popup .user-form .form-element .btn__sign-in {
+  width: 30%;
+  height: 35px;
+  border: none;
+  outline: none;
+  font-size: 21px;
+  background-color: rgb(86, 64, 185);
+  color: #f5f5f5;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.login-popup .user-form .form-element .btn__sign-in:hover {
+  background-color: rgb(107, 82, 218);
+}
+
+#form__sign-in {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: left;
 }
 
 /* Mobile Responsive */
