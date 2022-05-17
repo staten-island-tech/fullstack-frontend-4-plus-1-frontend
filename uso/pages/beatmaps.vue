@@ -251,9 +251,9 @@ export default {
               console.log(
                 `Careful: The osu file version is ${lines[0].match(
                   '1[0-3]|[1-9]'
-                )}`
+                )}`,
+                folder
               );
-              console.log(folder);
             }
 
             let section;
@@ -371,7 +371,9 @@ export default {
                     default:
                       // Unknown hit type
                       console.log(
-                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`
+                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`,
+                        folder,
+                        osz
                       );
                       break;
                   }
@@ -391,7 +393,6 @@ export default {
           }
         });
 
-      // console.log(beatmap);
       return beatmap;
     },
     beatmapSoundBit() {
@@ -420,7 +421,6 @@ export default {
       });
       Howler.volume(1);
 
-      console.log(t.musicBeatmapDuration);
       if (!t.executed) {
         t.executed = true;
 
@@ -435,13 +435,8 @@ export default {
           this.resetAudio();
         }, 10000);
       }
-      console.log(this.clickedBmSetName);
-      t.songIndexs = Object.keys(t.bmSets);
 
-      // t.musicBeatmap.on('end', function () {
-      //     this.progressAudioBar.set(0);
-      //   t.executed = false;
-      // });
+      t.songIndexs = Object.keys(t.bmSets);
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
     },
@@ -453,7 +448,7 @@ export default {
           duration: 10000,
         });
         t.firstBeatmapVal = t.currVal;
-        console.log('work');
+
         Howler.stop();
         t.musicBeatmap.play();
         //  t.musicBeatmap.play('prevMusic');
@@ -468,7 +463,6 @@ export default {
       this.executed = false;
       this.progressAudioBar.set(0);
       this.clicked = true;
-      console.log('hi');
     },
     toggleAudio() {
       const t = this;
@@ -483,7 +477,7 @@ export default {
         // t.musicBeatmap.play('prevMusic');
         clearTimeout(t.timeoutID);
         t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
-        console.log(t.currAudioProg);
+
         t.progressAudioBar.animate(1, {
           duration: t.currAudioProg,
         });
@@ -499,14 +493,13 @@ export default {
       // t.songIndexs
 
       const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
-      console.log(currSong);
 
       if (currSong > t.minIndex) {
         const prevSong = currSong - 1;
         t.clickedBmSetName = t.songIndexs[prevSong];
-        console.log(t.clickedBmSetName);
+
         t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-        console.log(t.currVal);
+
         t.beatmapSoundBit();
         t.changeSound();
       }
@@ -514,14 +507,13 @@ export default {
     nextSongIndex() {
       const t = this;
       const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
-      console.log(t.songIndexs);
 
       if (currSong <= t.maxIndex) {
         const prevSong = currSong + 1;
         t.clickedBmSetName = t.songIndexs[prevSong];
-        console.log(t.clickedBmSetName);
+
         t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-        console.log(t.currVal);
+
         t.beatmapSoundBit();
         t.changeSound();
       }

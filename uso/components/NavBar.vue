@@ -61,7 +61,6 @@
           <li v-else>
             <button class="btn" @click="login()">login</button>
           </li>
-          <!-- @click="login()"  -->
         </div>
       </div>
 
@@ -76,7 +75,6 @@
 
 <script>
 export default {
-  /* eslint-disable */
   name: 'NavBar',
   data() {
     return {
@@ -115,10 +113,8 @@ export default {
     async login() {
       await this.$auth.loginWith('auth0');
     },
-    username() {},
     async logout() {
       await this.$auth.logout();
-      console.log('hi');
     },
   },
 };
