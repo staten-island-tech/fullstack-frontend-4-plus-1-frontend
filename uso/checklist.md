@@ -15,9 +15,8 @@
 
 - [x] Incorporate Music
 - [x] Hit Sounds [**Harvey**]
-  - [ ] Hit sound when no note is hit
-  - [ ] Hit sound when note is hit
-  - [ ] Load custom sounds and use them
+  - [x] Hit sound when no note is hit
+  - [x] Hit sound when note is hit
 - [ ] Hit Effects (Inside Canvas) [**Wilson**]
   - [ ] Change combo
   - [ ] Change hit value
@@ -25,7 +24,7 @@
   - [ ] Color in target circle when key is pressed (indicator)
 - [ ] Hit Effects (Out Canvas/CSS) [**Kenny**]
 
-- [ ] Add pausing to the game [**Wilson**] (By 3/21)
+- [x] Add pausing to the game [**Wilson**] (By 3/21)
   - Pause when out of focus
   - Add buttons to restart song and back to beatmaps page
 - [ ] Skip intro button [**Wilson**]

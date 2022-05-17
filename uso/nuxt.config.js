@@ -1,23 +1,16 @@
 export default {
-
   ssr: false,
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     script: [
-    
       {
-        src: '/lib/howler.min.js',
         src: '/lib/progressbar.min.js',
       },
-
     ],
     title: 'uso',
     htmlAttrs: {
       lang: 'en',
-
-
-
-
     },
     meta: [
       { charset: 'utf-8' },
@@ -32,7 +25,7 @@ export default {
   css: ['~/assets/global.css', '~/assets/loading-bar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: '~/plugins/inject.js', mode: 'client' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -42,30 +35,59 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxtjs/dotenv',
-    '@nuxtjs/fontawesome',
+    [
+      '@nuxtjs/fontawesome',
+      {
+        component: 'fa',
+        icons: {
+          solid: true,
+        },
+        // solid: ['faplay', 'faPause', 'faForwardStep', 'faBackward'],
+        // solid: ['faPlay', 'faPause', 'faForwardStep', 'faBackward'],
+      },
+    ],
   ],
-  fontawesome: {
-    icons: {
-      solid: true,
-      brands: true,
-    },
-  },
+
+  // fontawesome: {
+  //   icons: {
+  //     solid: true,
+  //     brands: true,
+  //   },
+  // },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
   ],
 
-  server: {
-    host: '0.0.0.0',
-    port: 8090,
+  auth: {
+    redirect: {
+      login: '/login', // redirect user when not connected
+      callback: '/beatmaps',
+    },
+    strategies: {
+      auth0: {
+        domain: 'dev-2szf794g.us.auth0.com',
+        clientId: '0oJ0TBUYNgtTWAvBOxvxEW955Xy99Ld1',
+        logoutRedirectUri: 'http://localhost:8080/home',
+        audience: 'http://localhost:6000',
+        scope: ['openid', 'profile', 'email', 'offline_access'],
+        responseType: 'code',
+        grantType: 'authorization_code',
+        codeChallengeMethod: 'S256',
+      },
+    },
   },
 
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+  router: {
+    middleware: ['auth'],
+  },
+
+  server: {
+    // host: '0.0.0.0',
+    port: 8080,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

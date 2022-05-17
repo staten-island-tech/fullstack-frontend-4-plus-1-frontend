@@ -1,5 +1,6 @@
 <template>
   <div>
+    <routeChange />
     <div class="under-nav"></div>
 
     <div id="lb__index">
@@ -28,268 +29,49 @@
             </thead>
 
             <tbody>
-              <tr class="lb__rankingTable__row">
+              <tr
+                v-for="user in userData"
+                :key="user.name"
+                class="lb__rankingTable__row"
+              >
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--rank"
                 >
-                  #1
+                  #{{ user.leaderBoardPos }}
                 </td>
                 <td class="lb__rankingTable__column">
-                  <div class="lb__user">Wiichen</div>
+                  <div class="lb__user">{{ user.name }}</div>
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  98.40%
+                  {{ user.accuracy }}%
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  129,766
+                  {{ user.playCount }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--focused"
                 >
-                  22,009
+                  {{ user.performance }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  48
+                  {{ user.SS }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  1003
+                  {{ user.S }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  972
+                  {{ user.A }}
                 </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #2
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Sliger</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  98.40%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  129,766
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  22,009
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  48
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  1003
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  972
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #3
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Harshey</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  98.40%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  129,766
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  22,009
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  48
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  1003
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  972
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #4
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Edan</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  98.40%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  129,766
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  22,009
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  48
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  1003
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  972
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #5
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Kenneru</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  98.40%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  129,766
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  22,009
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  48
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  1003
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  972
-                </td>
-              </tr>
-
-              <!-- delete tables below, just wanted to see how it looks -->
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #6
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #7
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
               </tr>
             </tbody>
           </table>
@@ -301,6 +83,7 @@
 
 <script>
 export default {
+  auth: false,
   data() {
     return {
       userDataFetch: {},
@@ -308,17 +91,18 @@ export default {
     };
   },
   async fetch() {
-    const userDataFetch = await fetch('https://usobackend.onrender.com/');
+    const token = await this.$auth.strategy.token.get();
+    const userDataFetch = await fetch('http://localhost:8000/', {
+      headers: {
+        Authorization: token,
+      },
+    });
     const userDataFetched = await userDataFetch.json();
     userDataFetched.forEach((user) => {
       this.userData.push(user);
     });
 
     console.log(this.userData);
-    //  this.userDataFetch.forEach(user => {
-    //     this.userData = Object.keys(user)
-
-    //   });
   },
 
   methods: {

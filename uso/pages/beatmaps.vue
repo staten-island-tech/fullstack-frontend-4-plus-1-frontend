@@ -1,5 +1,6 @@
 <template>
   <div class="beatmaps__content--body">
+    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -16,7 +17,6 @@
               placeholder="search for your song..."
             />
 
-
             <span class="deleteText">
               <img
                 class="search-icon"
@@ -26,15 +26,57 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
-        <div class="my-video-audio" @click="toggleAudio()">
-          <div class="aduio-cntrl-cont">
-             <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
+
+        <div class="my-video-audio">
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              icon="backward"
+              class="svg"
+              @click="prevSongIndex()"
+            />
+            <!-- <fa-backward class="svg"/> -->
           </div>
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              v-if="clicked"
+              icon="fa-solid fa-play"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-pause"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <!-- <font-awesome-icon icon="pasue" class="svg"/> -->
+          </div>
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              icon="fa-solid fa-forward-step"
+              class="svg"
+              @click="nextSongIndex()"
+            />
+          </div>
+
           <div id="audioProgress"></div>
-          <div class="round-time-bar" data-style="smooth" style="--duration: 5;">
-          <div class="bar-inner"></div>
-        </div>  
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              v-if="mute"
+              icon="fa-solid fa-volume-high"
+              class="svg"
+              @click="audioBarMute()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-volume-xmark"
+              class="svg"
+              @click="audioBarMute()"
+            />
+          </div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -42,17 +84,12 @@
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event), (hovered = true)"
-              @mouseleave="bmClickEvents(bmSetName, $event), (hovered = false)"
               @click="
-                bmClickEvents(bmSetName, $event),
-                  beatmapSoundBit(),
-                  changeSound(),
-                  animateSoundPrevBar()
+                (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-            <h2>Click for adiuo preview</h2>
-           
+              <h2>Click For Audio Preview</h2>
+
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -64,29 +101,29 @@
               </p>
             </div>
           </div>
-          <div v-if="currentBmSetName" class="play-sidebar">
+          <div v-if="clickedBmSetName" class="play-sidebar">
             <div class="play-sidebar-image-container">
               <img
-                :src="`/beatmaps/${currentBmSetName}/${
-                  bmSetsData[`${currentBmSetName}`][0].events[0][2]
+                :src="`/beatmaps/${clickedBmSetName}/${
+                  bmSetsData[`${clickedBmSetName}`][0].events[0][2]
                 }`"
               />
             </div>
             <div class="play-sidebar-text-container">
               <p class="play-sidebar-text-title">
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Title }}
               </p>
               <p>
                 Artist:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Artist }}
               </p>
               <p>
                 Mapper:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
               <nuxt-link
                 :to="`/leaderboard/${
-                  bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
+                  bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
                 class=""
                 >Leaderboard</nuxt-link
@@ -96,7 +133,7 @@
               <tbody>
                 <tr
                   v-for="(bmDifficulty, index) in bmSetsData[
-                    `${currentBmSetName}`
+                    `${clickedBmSetName}`
                   ]"
                   :key="index"
                   @click="$store.commit('setBeatmap', bmDifficulty)"
@@ -116,13 +153,9 @@
               class="img-placeholder"
               src="~/assets/images/backgrounds/landing.png"
             />
-            <p class="hover-msg">hover or click on a song~</p>
+            <p class="hover-msg">hover, then click on a song!~</p>
           </div>
-
         </div>
-
-
-
       </div>
     </div>
   </div>
@@ -131,23 +164,29 @@
 <script>
 /* eslint-disable */
 
-
 export default {
+  auth: false,
   data() {
     return {
       bmSets: {},
+      songIndexs: null,
+      mute: true,
+      minIndex: 0,
+      maxIndex: 24,
+      currentSongIndex: null,
+      currAudioBarVal: null,
+      timeoutID: null,
+      currAudioProg: null,
+      userdata: null,
       bmSetsData: {},
-      hoveredBmSetName: null,
       clickedBmSetName: null,
-      hovered: false,
-      clicked: false,
+      clicked: true,
       clickBack: false,
       searchQuery: null,
       id: null,
       SoundPrevBarDur: null,
       musicBeatmapDuration: 0,
 
-      osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
       executed: false,
       chageExeuted: false,
@@ -158,12 +197,14 @@ export default {
     };
   },
 
+  async login() {
+    await this.$auth.loginWith('auth0');
+  },
   async fetch() {
-    const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
-    console.log(this.bmSets)
+
     Object.keys(this.bmSets).forEach((folder) => {
-     
       this.bmSetsData[folder] = [];
 
       this.bmSets[folder].forEach((osz) => {
@@ -172,24 +213,15 @@ export default {
     });
   },
 
-  computed: {
-    currentBmSetName() {
-      return this.hoveredBmSetName
-        ? this.hoveredBmSetName
-        : this.clickedBmSetName;
-    },
-  },
-
   mounted() {
-   this.progressAudioBar = new ProgressBar.Line(audioProgress, {
-  strokeWidth: 3,
-  easing: 'easeInOut',
-  color: '#FFEA82',
-  duration: 10000,
-  trailColor: '#eee',
-  trailWidth: 3,
-  svgStyle: {width: '100%', height: '30%'}
-});
+    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+      strokeWidth: 3,
+      color: '#FFEA82',
+      duration: 10000,
+      trailColor: '#eee',
+      trailWidth: 3,
+      svgStyle: { width: '100%', height: '30%' },
+    });
   },
 
   methods: {
@@ -219,9 +251,9 @@ export default {
               console.log(
                 `Careful: The osu file version is ${lines[0].match(
                   '1[0-3]|[1-9]'
-                )}`
+                )}`,
+                folder
               );
-              console.log(folder);
             }
 
             let section;
@@ -339,7 +371,9 @@ export default {
                     default:
                       // Unknown hit type
                       console.log(
-                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`
+                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`,
+                        folder,
+                        osz
                       );
                       break;
                   }
@@ -359,117 +393,139 @@ export default {
           }
         });
 
-      // console.log(beatmap);
       return beatmap;
-    },
-    bmClickEvents(bmName, event) {
-      switch (event.type) {
-        case 'mouseover':
-          this.hoveredBmSetName = bmName;
-          break;
-
-        case 'mouseleave':
-          this.hoveredBmSetName = null;
-
-          break;
-
-        case 'click':
-          this.clickedBmSetName = bmName;
-          break;
-
-        default:
-          alert(`Dropbox event listener does not exist: ${event.type}`);
-          break;
-      }
     },
     beatmapSoundBit() {
       const t = this;
+      t.clicked = false;
+      //  t.musicBeatmapDuration = Math.round(
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
+      // ) *1000 /2
 
-      t.musicBeatmap = new Howl({  
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
+      );
+      t.musicBeatmap = new Howl({
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
         //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: 0.1,
+        volume: 0.5,
         preload: true,
         html5: true,
         // sprite: {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
-            t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
-          
-
+      Howler.volume(1);
 
       if (!t.executed) {
         t.executed = true;
+
         // t.musicBeatmap.play('prevMusic');
-                 console.log("soundprev")
         this.progressAudioBar.set(0);
-          this.progressAudioBar.animate(1.0);
-      t.musicBeatmap.seek( t.musicBeatmapDuration/2);
-      t.musicBeatmap.play();
+        this.progressAudioBar.animate(1.0);
+        t.musicBeatmap.seek(t.musicBeatmapDuration);
+        t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-          setTimeout(() => {
-            Howler.stop();
-          }, 10000);
-        //t.executed = false;
+        this.timeoutID = setTimeout(() => {
+          this.resetAudio();
+        }, 10000);
       }
-      console.log(this.clickedBmSetName);
 
-      t.musicBeatmap.on('end', function () {
-        t.executed = false;
-      });
+      t.songIndexs = Object.keys(t.bmSets);
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
+        this.progressAudioBar.set(0);
+        t.progressAudioBar.animate(1, {
+          duration: 10000,
+        });
         t.firstBeatmapVal = t.currVal;
-        console.log('work');
+
         Howler.stop();
-              t.musicBeatmap.seek( t.musicBeatmapDuration/2);
         t.musicBeatmap.play();
-      setTimeout(() => {
-            Howler.stop();
-          }, 10000);
+        //  t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.timeoutID = setTimeout(() => {
+          t.resetAudio();
+        }, 10000);
       }
+    },
+    resetAudio() {
+      Howler.stop();
+      this.executed = false;
+      this.progressAudioBar.set(0);
+      this.clicked = true;
     },
     toggleAudio() {
       const t = this;
-      // this.clicked = true
+      t.clicked = !t.clicked;
 
-      if (this.clicked === false) {
-        // t.musicBeatmap.play('prevMusic')
-        this.clicked = true;
+      if (t.clicked === true) {
+        clearTimeout(t.timeoutID);
+        t.currAudioBarVal = t.progressAudioBar.value();
+        t.musicBeatmap.pause();
+        t.progressAudioBar.stop();
       } else {
-        this.clicked = false;
-        //  const sprite1 = t.musicBeatmap.play('prevMusic')
-       Howler.stop();
-      //  t.musicBeatmap.pause();
+        // t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
+
+        t.progressAudioBar.animate(1, {
+          duration: t.currAudioProg,
+        });
+        t.timeoutID = setTimeout(() => {
+          t.resetAudio();
+        }, t.currAudioProg);
+
+        t.musicBeatmap.play();
       }
-
     },
-    animateSoundPrevBar() {
-        if (this.executed === true) {
- 
-            }
+    prevSongIndex() {
+      const t = this;
+      // t.songIndexs
 
-//  this.progressAudioBar.animate( 1 , {
-//     duration: this.SoundPrevBarDur  
-// }, function() {
-//     console.log('Animation has finished');
-// });
-      // this.SoundPrevBar.animate(1.0);
-    }
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+
+      if (currSong > t.minIndex) {
+        const prevSong = currSong - 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    nextSongIndex() {
+      const t = this;
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+
+      if (currSong <= t.maxIndex) {
+        const prevSong = currSong + 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    audioBarMute() {
+      this.mute = !this.mute;
+      if (this.mute === false) {
+        Howler.volume(0);
+      } else {
+        Howler.volume(1);
+      }
+    },
   },
 };
 </script>
@@ -482,27 +538,21 @@ export default {
   font-family: 'Dongle', sans-serif;
 }
 
-
-.my-video-audio{
+.my-video-audio {
   height: 20%;
-	width: 70%;
+  width: 90%;
   display: flex;
   flex-direction: row;
-    border: solid;
+  border: solid;
 }
 
-.aduio-cntrl-cont {
-    height: 100%;
-	width: 30%;
+.audio-cntrl-cont {
+  height: 100%;
+  width: 15%;
   border: solid;
 }
 
 /* Beatmaps Title */
-
-.under-nav {
-  height: 9.5rem;
-}
-
 .play-index {
   width: 100vw;
 }
@@ -538,9 +588,7 @@ export default {
   height: 5.5rem;
   margin: 0.5rem 1rem 0.5rem 3.5rem;
   padding-top: 0.5rem;
-
 }
-
 
 /* Search Container */
 
@@ -559,7 +607,10 @@ export default {
   background-size: cover;
   background-position: center center;
 }
-
+.svg {
+  height: 4rem;
+  width: 4rem;
+}
 .deleteText {
   transform: translateY(30%);
   left: 4%;
@@ -639,7 +690,7 @@ export default {
 
 .play-beatmap-set {
   position: relative;
-  width: 24rem;
+  width: 28rem;
   height: 13.5rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
@@ -654,6 +705,7 @@ export default {
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
+  /* transform: translate(0, -2%); */
 }
 
 .play-beatmap-set:hover::after {
@@ -673,7 +725,7 @@ export default {
   opacity: 0.25;
   position: absolute;
   top: -80px;
-  left: 0;
+  left: 40px;
   animation: shine 250ms linear;
   transform: translateX(250px) rotate(-25deg);
 }
@@ -762,14 +814,15 @@ export default {
 }
 
 .play-sidebar {
-  width: var(--sidebar);
+  width: calc(32rem + var(--sidebar));
+
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.75rem;
   height: auto;
   background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
@@ -791,7 +844,7 @@ export default {
 
 .play-sidebar-text-container > * {
   font-size: 2.25rem;
-  margin: 0 0 0 0.5rem;
+  margin: 0 1rem 0 1rem;
 
   white-space: nowrap;
   overflow: hidden;
@@ -799,9 +852,9 @@ export default {
 }
 
 .play-sidebar-text-title {
-  font-size: 4.5rem;
-
-  line-height: 2.7rem;
+  font-size: 5.5rem;
+  line-height: 4rem;
+  color: #e7ffff;
 }
 
 .play-sidebar-difficulties {
@@ -818,11 +871,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 2.5rem;
+  font-size: 3.25rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
 }
@@ -835,6 +888,8 @@ export default {
 .hover-msg {
   text-align: center;
   margin-bottom: 1rem;
+  font-size: 4rem;
+  text-shadow: 5px 5px 3px rgb(1, 5, 20);
 }
 
 .img-placeholder {
