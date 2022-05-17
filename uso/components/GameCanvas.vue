@@ -43,7 +43,6 @@ export default {
     },
     beatmapIntro: {
       required: true,
-      type: Number,
     },
   },
   data() {
@@ -61,7 +60,7 @@ export default {
       score: 0,
       combo: 0,
       maxCombo: 0,
-      scrollSpeed: 15,
+      scrollSpeed: 20,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -783,9 +782,11 @@ export default {
             t.beatmapIntro -
             (1000 * t.stageHeight * t.hitPercent + t.radius) /
               (t.dy * t.stageFPS);
-          this.startTime, this.timerID;
 
+          t.notesToFallArray.push(this);
           this.resumeTimer();
+
+          this.startTime, this.timerID;
         }
 
         msFrom(position, isAbs = false) {
@@ -944,6 +945,7 @@ export default {
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
 
             this.animate();
           }, this.remainingTime);
@@ -952,11 +954,6 @@ export default {
         pauseTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
-        }
-
-        startTimer() {
-          this.resumeTimer();
-          t.notesToFallArray.push(this);
         }
       }
 
