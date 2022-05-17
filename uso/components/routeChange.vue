@@ -1,7 +1,5 @@
 <template>
-  <div id="app">
-    <nuxt />
-  </div>
+  <div id="app"></div>
 </template>
 
 <script>
@@ -23,6 +21,11 @@ export default {
         Howler.stop();
       } else {
         console.log('yes refresh yo');
+      }
+    },
+    '$store.state.howlerLoaded'(newValue) {
+      if (newValue) {
+        this.loaded.howler = true;
       }
     },
   },

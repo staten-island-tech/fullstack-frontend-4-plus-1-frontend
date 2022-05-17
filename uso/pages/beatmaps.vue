@@ -166,25 +166,27 @@ export default {
     await this.$auth.loginWith('auth0');
   },
   async fetch() {
-    const token = await this.$auth.strategy.token.get();
+    /* const token = await this.$auth.strategy.token.get();
     console.log(this.$store.state.auth.loggedIn);
     // const getUserId = this.userdata.sub.replace("auth0|", "");
     const beatmapsData = await fetch(
       `http://localhost:8000/62705a480959d885eafe73dc`,
       {
         headers: {
-          // Authorization: token ? `Bearer ${token}` : ""
           Authorization: token,
         },
       }
     );
     this.bmSets = await beatmapsData.json();
 
-    //const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
+    // const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
     // const beatmapsData = await fetch('http://localhost:8090/62705a480959d885eafe73dc');
 
-    // this.bmSets = await beatmapsData.json();
-    console.log(this.bmSets);
+    // this.bmSets = await beatmapsData.json(); */
+
+    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
+    this.bmSets = await beatmapsData.json();
+
     Object.keys(this.bmSets).forEach((folder) => {
       this.bmSetsData[folder] = [];
 

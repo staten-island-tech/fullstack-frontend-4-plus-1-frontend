@@ -29,7 +29,6 @@
 </template>
 
 <script>
-/* global createjs:false, kd:false */
 /* eslint-disable */
 
 export default {

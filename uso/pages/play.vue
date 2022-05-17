@@ -72,7 +72,6 @@
 </template>
 
 <script>
-/* global ProgressBar:false */
 /* eslint-disable */
 
 import GameCanvas from '../components/GameCanvas.vue';
