@@ -2,7 +2,7 @@
   <div id="app">
     <NavBar />
     <Nuxt />
-    <RouteChange />
+
   </div>
 </template>
 
