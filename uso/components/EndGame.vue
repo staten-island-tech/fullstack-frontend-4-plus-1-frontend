@@ -219,7 +219,7 @@ export default {
   justify-content: center;
   /* flex-direction: column; */
   flex-wrap: wrap;
-  padding: 4.5rem 14.5rem 4.5rem 21.5rem;
+  padding: 4.5rem 14.5rem 4.5rem 18.5rem;
   text-shadow: 4px 2px 3px #000;
 }
 
