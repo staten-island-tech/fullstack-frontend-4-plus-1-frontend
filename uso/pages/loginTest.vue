@@ -38,12 +38,10 @@
 </template>
 
 <script>
-import OwnedCharacter from '../components/ownedCharacter.vue';
-import user from '~/static/user.json';
-import characters from '~/static/characters.json';
+/* import user from '~/static/user.json';
+import characters from '~/static/characters.json'; */
 
 export default {
-  components: {},
   layout: 'nonav',
   data() {
     return {

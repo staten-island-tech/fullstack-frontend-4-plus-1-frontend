@@ -29,7 +29,7 @@
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">gameTest</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
 
           <li>
@@ -45,7 +45,9 @@
           </div>
           <div class="uso__circle">
             <nuxt-link to="/aboutUs" class="uso__button"
-            ><img src="~/assets/images/navigation/paimon2.png" class="nav-shop-btns"
+              ><img
+                src="~/assets/images/navigation/paimon2.png"
+                class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
@@ -125,17 +127,6 @@ export default {
 <style scoped>
 /* Keyframes */
 
-/* @keyframes navLinkFade {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 3;
-    transform: translateY(0px);
-  }
-} */
-
 @keyframes pulse {
   to {
     transform: scale(1.2);
@@ -162,6 +153,7 @@ export default {
     filter: hue-rotate(0deg);
   }
 }
+
 @-o-keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);

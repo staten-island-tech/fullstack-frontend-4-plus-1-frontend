@@ -814,8 +814,8 @@ export default {
 }
 
 .play-sidebar {
-  width: calc(32rem + var(--sidebar)); 
-  
+  width: calc(32rem + var(--sidebar));
+
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);
