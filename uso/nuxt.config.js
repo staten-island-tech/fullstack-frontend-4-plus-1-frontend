@@ -35,15 +35,25 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxtjs/dotenv',
-    '@nuxtjs/fontawesome',
+    [
+      '@nuxtjs/fontawesome',
+      {
+        component: 'fa',
+        icons: {
+          solid: true,
+        },
+        // solid: ['faplay', 'faPause', 'faForwardStep', 'faBackward'],
+        // solid: ['faPlay', 'faPause', 'faForwardStep', 'faBackward'],
+      },
+    ],
   ],
 
-  fontawesome: {
-    icons: {
-      solid: true,
-      brands: true,
-    },
-  },
+  // fontawesome: {
+  //   icons: {
+  //     solid: true,
+  //     brands: true,
+  //   },
+  // },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [

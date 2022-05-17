@@ -26,21 +26,57 @@
             <input class="song-submit-button" type="submit" value="" />
           </form>
         </div>
+
         <div class="my-video-audio">
           <div class="aduio-cntrl-cont">
-            <font-awesome-icon icon="fa-solid fa-backward" />
-          </div>
-
-          <div class="aduio-cntrl-cont" @click="toggleAudio()">
-            <font-awesome-icon v-if="clicked" icon="fa-solid fa-play" />
-            <font-awesome-icon v-else icon="fa-solid fa-pause" />
+            <font-awesome-icon
+              icon="backward"
+              class="svg"
+              @click="prevSongIndex()"
+            />
+            <!-- <fa-backward class="svg"/> -->
           </div>
 
           <div class="aduio-cntrl-cont">
-            <font-awesome-icon icon="fa-solid fa-forward-step" />
+            <font-awesome-icon
+              v-if="clicked"
+              icon="fa-solid fa-play"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-pause"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <!-- <font-awesome-icon icon="pasue" class="svg"/> -->
+          </div>
+
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon
+              icon="fa-solid fa-forward-step"
+              class="svg"
+              @click="nextSongIndex()"
+            />
           </div>
 
           <div id="audioProgress"></div>
+
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon
+              v-if="mute"
+              icon="fa-solid fa-volume-high"
+              class="svg"
+              @click="audioBarMute()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-volume-xmark"
+              class="svg"
+              @click="audioBarMute()"
+            />
+          </div>
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -53,8 +89,7 @@
               @click="
                 bmClickEvents(bmSetName, $event),
                   beatmapSoundBit(),
-                  changeSound(),
-                  animateSoundPrevBar()
+                  changeSound()
               "
             >
               <h2>Click for adiuo preview</h2>
@@ -138,6 +173,12 @@ export default {
   data() {
     return {
       bmSets: {},
+      songIndexs: null,
+      mute: true,
+      minIndex: 0,
+      maxIndex: 24,
+      currentSongIndex: null,
+      currAudioBarVal: null,
       timeoutID: null,
       currAudioProg: null,
       userdata: null,
@@ -166,24 +207,6 @@ export default {
     await this.$auth.loginWith('auth0');
   },
   async fetch() {
-    /* const token = await this.$auth.strategy.token.get();
-    console.log(this.$store.state.auth.loggedIn);
-    // const getUserId = this.userdata.sub.replace("auth0|", "");
-    const beatmapsData = await fetch(
-      `http://localhost:8000/62705a480959d885eafe73dc`,
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    this.bmSets = await beatmapsData.json();
-
-    // const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
-    // const beatmapsData = await fetch('http://localhost:8090/62705a480959d885eafe73dc');
-
-    // this.bmSets = await beatmapsData.json(); */
-
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
 
@@ -429,6 +452,7 @@ export default {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
+      Howler.volume(1);
 
       console.log(t.musicBeatmapDuration);
       if (!t.executed) {
@@ -446,6 +470,7 @@ export default {
         }, 10000);
       }
       console.log(this.clickedBmSetName);
+      t.songIndexs = Object.keys(t.bmSets);
 
       // t.musicBeatmap.on('end', function () {
       //     this.progressAudioBar.set(0);
@@ -484,38 +509,66 @@ export default {
     toggleAudio() {
       const t = this;
       t.clicked = !t.clicked;
-      console.log(t.clicked);
 
       if (t.clicked === true) {
         clearTimeout(t.timeoutID);
-
-        console.log(t.progressAudioBar.value());
+        t.currAudioBarVal = t.progressAudioBar.value();
         t.musicBeatmap.pause();
         t.progressAudioBar.stop();
       } else {
         // t.musicBeatmap.play('prevMusic');
-        t.currAudioProg = Math.round((1 - t.progressAudioBar.value()) * 10000);
+        clearTimeout(t.timeoutID);
+        t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
         console.log(t.currAudioProg);
         t.progressAudioBar.animate(1, {
           duration: t.currAudioProg,
         });
-        setTimeout(() => {
+        t.timeoutID = setTimeout(() => {
           t.resetAdiuo();
         }, t.currAudioProg);
 
         t.musicBeatmap.play();
       }
     },
-    animateSoundPrevBar() {
-      if (this.executed === true) {
-      }
+    prevSongIndex() {
+      const t = this;
+      // t.songIndexs
 
-      //  this.progressAudioBar.animate( 1 , {
-      //     duration: this.SoundPrevBarDur
-      // }, function() {
-      //     console.log('Animation has finished');
-      // });
-      // this.SoundPrevBar.animate(1.0);
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+      console.log(currSong);
+
+      if (currSong > t.minIndex) {
+        const prevSong = currSong - 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+        console.log(t.clickedBmSetName);
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+        console.log(t.currVal);
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    nextSongIndex() {
+      const t = this;
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+      console.log(t.songIndexs);
+
+      if (currSong <= t.maxIndex) {
+        const prevSong = currSong + 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+        console.log(t.clickedBmSetName);
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+        console.log(t.currVal);
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    audioBarMute() {
+      this.mute = !this.mute;
+      if (this.mute === false) {
+        Howler.volume(0);
+      } else {
+        Howler.volume(1);
+      }
     },
   },
 };
@@ -598,7 +651,10 @@ export default {
   background-size: cover;
   background-position: center center;
 }
-
+.svg {
+  height: 4rem;
+  width: 4rem;
+}
 .deleteText {
   transform: translateY(30%);
   left: 4%;
