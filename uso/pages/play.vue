@@ -33,22 +33,32 @@
 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
-        <h1 id="percentage">{{ Math.round(accuracy * 10000) / 100 }}%</h1>
+        <h1 id="percentage">
+          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.00%' }}
+        </h1>
       </div>
 
+      <!-- <div class="game-pb-container"> -->
       <div class="game-pb-container">
         <div id="game-pb"></div>
+      </div>
+
+      <div class="game-pb-vol-container">
         <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
 
-        <button
-          v-if="areAllLoaded && started && songLoaded"
-          :style="{ opacity: opacity }"
-          class="game-mute-button"
-          @click="muteButton"
-        >
-          MUTE
-        </button>
+        <div class="vol-container">
+          <button
+            v-if="areAllLoaded && started && songLoaded"
+            :style="{ opacity: opacity }"
+            class="game-mute-button"
+            @click="muteButton"
+          >
+            MUTE
+          </button>
+        </div>
       </div>
+
+      <!-- </div> -->
 
       <div v-show="paused" class="game-pause-menu">
         <div class="game-pause-button-container">
@@ -362,19 +372,64 @@ export default {
   font-weight: 300;
 }
 
-/* */
+.bar-wrap {
+  transform: rotate(-0.5turn);
+  height: 80vh;
+  padding: 6px;
+  margin-top: 50px;
+
+  border-radius: 2rem;
+
+  background-color: white;
+}
+
+.bar {
+  height: 0%;
+  width: 15px;
+
+  transition: height 0.15s ease-out;
+
+  background-color: #38b000;
+  border-radius: 100px;
+  box-shadow: inset -1px -1px 10px rgb(0 0 0 / 0.5);
+}
 
 .game-pb-container {
+  position: fixed;
+  top: 1.4rem;
+  right: 19rem;
+  min-width: 30rem;
+  min-height: 17.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  color: #fff;
+  padding: 1rem;
+}
+
+#game-pb {
+  width: 4.3rem;
+  top: 0rem;
+  right: 0;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  /* font-size: 2rem; */
+  /* color: #fff;
+  padding: 1rem; */
+}
+
+.game-pb-vol-container {
   height: 50vh;
   width: 20vw;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-}
-
-#game-pb {
-  width: 20%;
+  padding-top: 3rem;
 }
 
 #game-pb-vol {

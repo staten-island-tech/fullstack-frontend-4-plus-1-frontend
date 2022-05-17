@@ -23,13 +23,13 @@
             >
           </li>
           <li>
-            <nuxt-link to="/community" class="uso__links">community</nuxt-link>
+            <nuxt-link to="/aboutUs" class="uso__links">about</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">gameTest</nuxt-link>
           </li>
 
           <li>
@@ -44,7 +44,9 @@
             <nuxt-link to="/" class="uso__button"> Hi {{ username }}</nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"></nuxt-link>
+            <nuxt-link to="/aboutUs" class="uso__button"
+            ><img src="~/assets/images/navigation/paimon2.png" class="nav-shop-btns"
+            /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/shop" class="uso__button"
@@ -123,13 +125,7 @@ export default {
 <style scoped>
 /* Keyframes */
 
-@keyframes pulse {
-  to {
-    transform: scale(1.2);
-  }
-}
-
-@keyframes navLinkFade {
+/* @keyframes navLinkFade {
   from {
     opacity: 0;
     transform: translateY(50px);
@@ -137,6 +133,12 @@ export default {
   to {
     opacity: 3;
     transform: translateY(0px);
+  }
+} */
+
+@keyframes pulse {
+  to {
+    transform: scale(1.2);
   }
 }
 
@@ -319,7 +321,7 @@ export default {
 }
 
 .uso__navbar--links li {
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   list-style: none;
 }
 
@@ -400,6 +402,11 @@ export default {
 .uso__avatar--img {
   display: flex;
   align-items: center;
+  transition: all 100ms ease-in;
+}
+
+.uso__avatar--img:hover {
+  transform: scale(1.07);
 }
 
 .uso__login {

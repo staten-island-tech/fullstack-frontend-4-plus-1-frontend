@@ -201,7 +201,6 @@ tbody {
   color: #fff;
   font-size: 15rem;
   overflow-x: auto;
-
   --content-width: 55vw;
   --beatmap-set-container-width: 45vw;
   --sidebar: 25rem;
@@ -213,6 +212,7 @@ tbody {
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+  margin-bottom: 1rem;
   /* background-position: center center; */
 }
 

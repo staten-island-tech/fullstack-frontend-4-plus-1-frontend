@@ -1,4 +1,3 @@
-
 <template>
   <div class="login-page">
     <nuxt-link to="/home" class="uso__logo">
@@ -34,40 +33,44 @@
       </div>
       <input type="submit" value="Login" class="login-button" @click="login" />
     </div>
-
   </div>
+  <!-- copy osu css layout for pfp and header -->
 </template>
 
 <script>
+import OwnedCharacter from '../components/ownedCharacter.vue';
+import user from '~/static/user.json';
+import characters from '~/static/characters.json';
+
 export default {
   components: {},
   layout: 'nonav',
-    data() {
+  data() {
     return {
       snackbar: false,
       snackbarText: 'No error message',
       auth: {
         email: '',
-        password: ''
-      }
-    }
+        password: '',
+      },
+    };
   },
 
   methods: {
-       login() {
-
-      const that = this
-      this.$fire.auth.signInWithEmailAndPassword(this.auth.email, this.auth.password)
-      .catch(function (error){
-        that.snackbarText = error.message
-        that.snackbar = true
-      }).then((user) => {
-        // we are signed in
-        this.$router.push('/')
-      })
-    }, 
-
-  }
+    login() {
+      const that = this;
+      this.$fire.auth
+        .signInWithEmailAndPassword(this.auth.email, this.auth.password)
+        .catch(function (error) {
+          that.snackbarText = error.message;
+          that.snackbar = true;
+        })
+        .then((user) => {
+          // we are signed in
+          this.$router.push('/');
+        });
+    },
+  },
 };
 </script>
 
@@ -79,21 +82,35 @@ export default {
 .login-page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-}
-.video-bg {
-  position: absolute;
-  width: 100%;
+  min-height: 90.2vh;
   height: 100%;
-  object-fit: cover;
-  object-position: 50% 25%;
-  z-index: -1;
+  background-image: linear-gradient(
+      rgba(13, 4, 66, 0.7),
+      rgba(16, 51, 112, 0.8)
+    ),
+    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
+      url('~/assets/images/backgrounds/chnBg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+.cover-photo {
+  width: var(--container-width);
+  height: 32rem;
+  margin-top: 4rem;
+  background-image: linear-gradient(
+      rgba(62, 54, 104, 0.7),
+      rgba(62, 54, 104, 0.7)
+    ),
+    url('~/assets/images/backgrounds/yaeMiko.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 25%;
 }
 .b {
-    height: 4rem;
-    width: 4rem;
+  height: 4rem;
+  width: 4rem;
 }
 .login-box {
   /* border: 1px solid white; */
@@ -107,29 +124,61 @@ export default {
   font-size: 4rem;
   /* align-items: center; */
 }
-.login-group {
-  width: 100%;
-  margin-bottom: 2rem;
-}
-.login-textbox {
-  color: black;
-  line-height: 29px;
-  padding: 5px 10px;
-  width: 100%;
+.profile-picture {
+  width: var(--pfp-size);
+  height: var(--pfp-size);
+  border-radius: var(--pfp-radius);
   overflow: hidden;
-}
-.login-button {
-  height: 4.2rem;
-  width: 100%;
-  color: black;
+  align-self: flex-end;
+
+  margin: -4rem 2rem 1.5rem 0;
 }
 .password-text {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-#show-password-btn {
-  font-size: 2.5rem;
-  cursor: pointer;
-}
-</style>
 
+#collection-header {
+  align-self: center;
+  font-size: 5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin: auto;
+}
+
+/*
+.profile-titlebox {
+  width: 55vw;
+
+  background-color: rgb(8, 36, 83);
+}
+.profile-title {
+  display: flex;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #f6f6f6;
+  height: 5.5rem;
+  margin: 0.5rem 1rem 0.5rem 3.5rem;
+  padding-top: 0.5rem;
+}
+.profile-details {
+  color: #fff;
+  font-size: 15rem;
+  overflow-x: auto;
+
+  --content-width: 55vw;
+  --beatmap-set-container-width: 45vw;
+  --sidebar: 25rem;
+  width: var(--content-width);
+  display: flex;
+  align-items: flex-start;
+  padding: 1.25rem 2.5rem 2.5rem 2.5rem;
+  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-position: center center;
+} */
+</style>

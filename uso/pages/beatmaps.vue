@@ -153,7 +153,7 @@
               class="img-placeholder"
               src="~/assets/images/backgrounds/landing.png"
             />
-            <p class="hover-msg">hover or click on a song~</p>
+            <p class="hover-msg">hover, then click on a song!~</p>
           </div>
         </div>
       </div>
@@ -667,7 +667,7 @@ export default {
   width: var(--content-width);
   display: flex;
   align-items: flex-start;
-  margin-top: 2rem;
+  margin: 2rem 0 1rem 0;
   padding: 1.75rem;
   background-image: linear-gradient(
       rgba(49, 45, 58, 0.7),
@@ -690,7 +690,7 @@ export default {
 
 .play-beatmap-set {
   position: relative;
-  width: 24rem;
+  width: 28rem;
   height: 13.5rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
@@ -705,6 +705,7 @@ export default {
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
+  /* transform: translate(0, -2%); */
 }
 
 .play-beatmap-set:hover::after {
@@ -724,7 +725,7 @@ export default {
   opacity: 0.25;
   position: absolute;
   top: -80px;
-  left: 0;
+  left: 40px;
   animation: shine 250ms linear;
   transform: translateX(250px) rotate(-25deg);
 }
@@ -813,14 +814,15 @@ export default {
 }
 
 .play-sidebar {
-  width: var(--sidebar);
+  width: calc(32rem + var(--sidebar)); 
+  
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.75rem;
   height: auto;
   background-image: linear-gradient(rgba(14, 7, 29, 0.7), rgba(17, 11, 36, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
@@ -842,7 +844,7 @@ export default {
 
 .play-sidebar-text-container > * {
   font-size: 2.25rem;
-  margin: 0 0 0 0.5rem;
+  margin: 0 1rem 0 1rem;
 
   white-space: nowrap;
   overflow: hidden;
@@ -850,9 +852,9 @@ export default {
 }
 
 .play-sidebar-text-title {
-  font-size: 4.5rem;
-
-  line-height: 2.7rem;
+  font-size: 5.5rem;
+  line-height: 4rem;
+  color: #e7ffff;
 }
 
 .play-sidebar-difficulties {
@@ -869,11 +871,11 @@ export default {
 }
 
 .play-sidebar-difficulties > tbody > tr > th {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > * {
-  font-size: 2.5rem;
+  font-size: 3.25rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
 }
@@ -886,6 +888,8 @@ export default {
 .hover-msg {
   text-align: center;
   margin-bottom: 1rem;
+  font-size: 4rem;
+  text-shadow: 5px 5px 3px rgb(1, 5, 20);
 }
 
 .img-placeholder {
