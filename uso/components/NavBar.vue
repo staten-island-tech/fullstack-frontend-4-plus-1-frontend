@@ -41,7 +41,7 @@
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"> Hi {{ username }}</nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/aboutUs" class="uso__button"
@@ -65,19 +65,26 @@
                             <div class="close__popup-btn">&times;</div>
 
                             <div class="user-form">
-                                <h2 class="user-sign-in">Sign In To Proceed</h2>
+                                <h2 v-if="!loginSatus" id="sign-in" class="user-sign-in">sign in to proceed...</h2>
+                                <h2 v-else id="signEd-in" class="user-sign-in">hi, {{ username }}! ~</h2>
                                
                                 <div id="form__sign-in" class="form-element">
-                                    <button class="btn__sign-in">profile</button>
+                                  <nuxt-link to="/beatmaps" id="btnId">
+                                    <button v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">profile</button>
+                                  </nuxt-link>
                                 </div>
 
                                 <div id="form__sign-in" class="form-element">
-                                    <button class="btn__sign-in">settings</button>
+                                  <nuxt-link to="/beatmaps" id="btnId">
+                                    <button  v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">settings</button>
+                                  </nuxt-link>
                                 </div>
 
                                 <div id="form__sign-in" class="form-element">
-                                    <button class="btn__sign-in">sign in</button>
+                                    <button v-if="!loginSatus" @click="login()" id="btn__sign-inId" class="btn__sign-in">sign in</button>
+                                    <button v-else @click="logout()" id="btn__sign-out" class="btn__sign-in">» sign out «</button>
                                 </div>
+                                
                             </div>
 
                         </div>
@@ -550,7 +557,7 @@ export default {
 }
 
 .login-popup.active {
-  top: 200.5%;
+  top: 205.5%;
   left: 73.15%;
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
@@ -577,33 +584,67 @@ export default {
 
 .login-popup .user-sign-in {
   color: #f5f5f5;
-  margin: 13px 0px 13px 0px;
+  margin: 13px 0px 18px 0px;
   font-size: 30px;
   font-weight: 500;
 }
 
 .login-popup .user-form .form-element .btn__sign-in {
-  width: 30%;
+  width: 100%;
   height: 35px;
   border: none;
   outline: none;
   font-size: 21px;
-  background-color: rgb(86, 64, 185);
+  background-color: rgb(80, 58, 179);
   color: #f5f5f5;
   border-radius: 7px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s;
+  font-size: 2.45rem;
 }
+
 
 .login-popup .user-form .form-element .btn__sign-in:hover {
   background-color: rgb(107, 82, 218);
 }
 
+#btn__sign-inId {
+  background-color: rgb(81, 92, 245);
+}
+
+#btn__sign-inId:hover {
+  background-color: rgb(136, 144, 250);
+}
+
 #form__sign-in {
   margin-bottom: 10px;
   display: flex;
-  justify-content: left;
+  /* justify-content: left; */
+}
+
+#btnId {
+  width: 100%;
+}
+
+/* #btn__sign-inId {
+  color: black;
+} */
+
+#sign-in {
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  height: 10rem;
+}
+
+#btn__sign-out {
+  margin-top: 1.5rem;
+}
+
+#btn__sign-out:hover {
+  transform: translate(0, -7.5%);
 }
 
 /* Mobile Responsive */
