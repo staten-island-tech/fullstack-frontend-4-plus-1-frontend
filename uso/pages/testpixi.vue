@@ -72,9 +72,7 @@ export default {
       canvasWidth: 400,
         targetCircle: null,
         gameCircle1: null,
-            gameCircle2: null,
-                gameCircle3: null,
-                    gameCircle4: null,
+
 
       stage: null,
       stageWidth: null,
@@ -201,6 +199,7 @@ t.gameCircle1.endFill();
 // t.texture = PIXI.RenderTexture.create(t.gameCircle1);
 t.targetCircle  = new PIXI.Graphics();
 
+
 for (let i = 0; i < t.numColumns; i++) {
 
     
@@ -214,12 +213,16 @@ container.addChild( t.targetCircle);
 
       }
       let YVel1 =  10;
+  const gameCircle = new PIXI.Sprite(texture);
+       gameCircle.interactive = true;
+ gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
 
-      
-    ticker.start();
+
+   ticker.start();
     for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
     const chunk = t.notes.slice(i, i + t.chunkSize);
          chunk.forEach((note, index) => {
+           
        setTimeout(() => {
          const gameCircle = new PIXI.Sprite(texture);
         if( note.columnIndex === 0) {
@@ -242,14 +245,18 @@ container.addChild( t.targetCircle);
     gameCircle.anchor.set(0.5);
 
     container.addChild(gameCircle);
+       t.childIndx = container.getChildAt(index)
     // t.child = container.getChildAt(index)
     // t.childIndx = container.getChildIndex(t.childIndx)
     // console.log(t.childIndx)
             ticker.add((delta) => {
 
         gameCircle.y += 10 *delta
-         if(  gameCircle.y > 600) { 
+         if(  gameCircle.y > 800) { 
+           t.child = container.getChildByName(gameCircle)
+        
             //   container.removeChildAt(index);
+        
              container.removeChild ( gameCircle )
         }
         // const childIndx = container.getChildAt(index)
@@ -259,14 +266,26 @@ container.addChild( t.targetCircle);
 
      
     });
+   
     // do whatever
 }
- 
 
 
 
 
 
+
+     window.addEventListener("keydown", function (e) {
+
+              if(e.code === "KeyD") {
+                console.log(t.childIndx.y)
+                 if(t.childIndx.y >600) {
+    
+                   container.removeChild ( t.childIndx )
+        
+                 }
+              }
+      });
 
 // container0.addChild(circle2 )
 
