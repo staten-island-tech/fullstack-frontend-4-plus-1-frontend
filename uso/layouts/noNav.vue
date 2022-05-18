@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Nuxt />
-    <RouteChange />
+    <!-- <RouteChange /> -->
   </div>
 </template>
 

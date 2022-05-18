@@ -277,31 +277,6 @@ export default {
 
       t.music.seek(t.beatmapIntro / 1000);
 
-      t.defaultHitNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: t.volume,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitClapNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
-        volume: t.volume,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitSoftNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-        volume: 0.3,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitSoftClapNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
-        volume: 0.08,
-        onload: () => (t.songLoaded = true),
-      });
-      t.softSliderWhistle = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
-        volume: 0.1,
-        onload: () => (t.songLoaded = true),
-      });
 
       /* ===============
           CANVAS SETUP

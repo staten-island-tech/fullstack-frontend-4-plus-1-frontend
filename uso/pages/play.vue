@@ -1,5 +1,5 @@
 <template>
-  <div id="game-index">
+  <!-- <div id="game-index">
     <routeChange />
     <div v-if="!gameEnded" id="game-page-container">
       <div
@@ -8,16 +8,16 @@
         :style="{
           'background-image': `urL(/beatmaps/${beatmapData.metadata.BeatmapSetID}/${beatmapData.events[0][2]})`,
         }"
-      ></div>
+      ></div> -->
       <button
         v-if="areAllLoaded && !started"
         class="game-start-button"
-        @click="$refs.gameCanvas.startGame()"
+        @click="startGame(),  game()"
       >
         START
       </button>
 
-      <GameCanvas
+      <!-- <GameCanvas
         ref="gameCanvas"
         :beatmap-data="beatmapData"
         :paused="paused"
@@ -29,8 +29,8 @@
           }
         "
         @endGameParent="endGame"
-      />
-
+      /> -->
+<!-- 
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
         <h1 id="percentage">{{ Math.round(accuracy * 10000) / 100 }}%</h1>
@@ -48,9 +48,9 @@
         >
           MUTE
         </button>
-      </div>
+      </div> -->
 
-      <div v-show="paused" class="game-pause-menu">
+      <!-- <div v-show="paused" class="game-pause-menu">
         <div class="game-pause-button-container">
           <button @click="onPauseKey()">Continue</button>
           <button>Retry</button>
@@ -68,7 +68,7 @@
         accuracy: accuracy,
       }"
     />
-  </div>
+  </div> -->
 </template>
 
 <script>
