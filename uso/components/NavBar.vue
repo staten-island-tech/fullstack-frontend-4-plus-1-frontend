@@ -627,17 +627,28 @@ export default {
   width: 100%;
 }
 
-/* #btn__sign-inId {
-  color: black;
-} */
+#signEd-in {
+  font-size: 3.5rem;
+}
 
 #sign-in {
-  font-size: 4rem;
+  font-size: 3.5rem;
   display: flex;
   align-items: center;
   text-align: center;
-  height: 10rem;
+  height: 12rem;
+  margin: 13px 0px 0px 0px;
+  border-radius: 10px;
+  background-image: linear-gradient(
+      rgba(45, 42, 54, 0.75),
+      rgba(51, 48, 65, 0.75)
+    ),
+    url('~/assets/images/navigation/ayaka.jpg');
+  background-size: cover;
+  padding: 8.25rem 4.3rem 0rem 4.3rem;
+  font-style: italic;
 }
+
 
 #btn__sign-out {
   margin-top: 1.5rem;
