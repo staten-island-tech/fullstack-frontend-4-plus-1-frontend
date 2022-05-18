@@ -215,11 +215,11 @@ export default {
 
   mounted() {
     this.progressAudioBar = new ProgressBar.Line(audioProgress, {
-      strokeWidth: 3,
+      strokeWidth: 5,
       color: '#FFEA82',
       duration: 10000,
       trailColor: '#eee',
-      trailWidth: 3,
+      trailWidth: 5,
       svgStyle: { width: '100%', height: '30%' },
     });
   },
@@ -539,15 +539,27 @@ export default {
 }
 
 .my-video-audio {
-  height: 20%;
-  width: 90%;
+  height: 5%;
+  width: 20%;
   display: flex;
+  align-items: center;
   flex-direction: row;
-  border: solid;
+  /* border: solid; */
+  position: fixed;
+  bottom: 0;
+  right: 1.25%;
+  background-image: linear-gradient(
+      rgba(160, 151, 211, 0.7),
+      rgba(137, 127, 194, 0.7)
+    ),
+    url('~/assets/images/backgrounds/landing.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .audio-cntrl-cont {
-  height: 100%;
+  height: 60%;
   width: 15%;
   border: solid;
 }
@@ -607,10 +619,12 @@ export default {
   background-size: cover;
   background-position: center center;
 }
+
 .svg {
-  height: 4rem;
-  width: 4rem;
+  height: 2rem;
+  width: 2rem;
 }
+
 .deleteText {
   transform: translateY(30%);
   left: 4%;
@@ -741,8 +755,8 @@ export default {
 }
 
 .fa-play {
-  height: 6rem;
-  width: 6rem;
+  height: 2rem;
+  width: 3rem;
   margin-left: auto;
   margin-right: auto;
   /* font-size: 6rem; */
@@ -750,8 +764,8 @@ export default {
 }
 
 .fa-pause {
-  height: 6rem;
-  width: 6rem;
+  height: 2rem;
+  width: 3rem;
   margin-left: auto;
   margin-right: auto;
   /* font-size: 6rem; */

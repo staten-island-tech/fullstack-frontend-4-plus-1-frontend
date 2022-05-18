@@ -69,13 +69,13 @@
                                 <h2 v-else id="signEd-in" class="user-sign-in">hi, {{ username }}! ~</h2>
                                
                                 <div id="form__sign-in" class="form-element">
-                                  <nuxt-link to="/beatmaps" id="btnId">
+                                  <nuxt-link to="/profile" id="btnId">
                                     <button v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">profile</button>
                                   </nuxt-link>
                                 </div>
 
                                 <div id="form__sign-in" class="form-element">
-                                  <nuxt-link to="/beatmaps" id="btnId">
+                                  <nuxt-link to="/settings" id="btnId">
                                     <button  v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">settings</button>
                                   </nuxt-link>
                                 </div>
@@ -534,6 +534,11 @@ export default {
   margin-left: 0.6rem;
   display: block;
   cursor: pointer;
+  transition: all 100ms ease-in;
+  }
+
+  .avatar:hover {
+    transform: scale(1.07);
   }
 
 /* LOGIN FORM, REGISTER FORM, MODAL/POPUP */
