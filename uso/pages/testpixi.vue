@@ -25,7 +25,7 @@ export default {
 
       // beatmaps data
       i: 0,
-      notes: [],
+      notes: [ ],
         texture: null,
       score: 0,
       combo: 0,
