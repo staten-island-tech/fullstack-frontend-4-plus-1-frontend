@@ -88,7 +88,7 @@
                 (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2>Click For Audio Preview</h2>
+              <h2 class="audio__preview">Click For Audio Preview</h2>
 
               <img
                 v-if="oszArray[0].events[0]"
@@ -216,9 +216,9 @@ export default {
   mounted() {
     this.progressAudioBar = new ProgressBar.Line(audioProgress, {
       strokeWidth: 5,
-      color: '#FFEA82',
+      color: '#8C9EFF',
       duration: 10000,
-      trailColor: '#eee',
+      trailColor: '#f3f3f3',
       trailWidth: 5,
       svgStyle: { width: '100%', height: '30%' },
     });
@@ -556,12 +556,13 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
+  border-radius: 6px;
 }
 
 .audio-cntrl-cont {
-  height: 60%;
+  /* height: 60%; */
   width: 15%;
-  border: solid;
+  /* border: solid; */
 }
 
 /* Beatmaps Title */
@@ -602,6 +603,11 @@ export default {
   padding-top: 0.5rem;
 }
 
+.audio__preview {
+  position: absolute;
+  transform: translate(12.5%, -225%);
+}
+
 /* Search Container */
 
 .search-container {
@@ -623,6 +629,14 @@ export default {
 .svg {
   height: 2rem;
   width: 2rem;
+  margin-left: 6px;
+  margin-right: 6px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.svg:hover {
+  transform: rotate(-6deg);
 }
 
 .deleteText {
