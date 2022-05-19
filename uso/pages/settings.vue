@@ -26,7 +26,7 @@
 
                 <fieldset class="settings__field">
 
-                  <div class="fieldset-item">
+                  <div class="fieldset-item" id="1">
                     <picture aria-hidden="true">
                       <svg viewBox="0 0 24 24">
                         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
@@ -36,11 +36,12 @@
                       <label for="media-volume" id="media-volume" aria-hidden="true">
                           master volume ~
                       </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;">
+                      <input name="media-volume" aria-labelledby="media-volume" type="range" :value="volume1" min="0" max="100" style="--track-fill:30%;">
+                      <input class="ryanisgoodatvideogames" v-model="volume1">
                     </div>
                   </div>
 
-                  <div class="fieldset-item">
+                  <div class="fieldset-item" id="2">
                     <picture aria-hidden="true">
                       <svg viewBox="0 0 24 24">
                         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
@@ -50,11 +51,13 @@
                       <label for="media-volume" id="media-volume" aria-hidden="true">
                           music volume ~
                       </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;">
+                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
+                      <p id="rangeValue">3</p>
                     </div>
-                  </div>
+                  </div>   
 
-                  <div class="fieldset-item">
+
+                  <div class="fieldset-item" id="3">
                     <picture aria-hidden="true">
                       <svg viewBox="0 0 24 24">
                         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
@@ -64,7 +67,23 @@
                       <label for="media-volume" id="media-volume" aria-hidden="true">
                           hitsounds volume ~
                       </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;">
+                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
+                      <p id="rangeValue">3</p>
+                    </div>
+                  </div>
+
+                  <div class="fieldset-item" id="4">
+                    <picture aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
+                      </svg>
+                    </picture>
+                    <div class="input-stack">
+                      <label for="media-volume" id="media-volume" aria-hidden="true">
+                            Scroll Speed ~
+                      </label>
+                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
+                      <p id="rangeValue">3</p>
                     </div>
                   </div>
           
@@ -81,6 +100,17 @@
 
 export default {
   components: {},
+  data() {
+    return {
+      volume1: 3,
+    }
+  },
+  watch: {
+    volume1(newValue) {
+      if (this.volume1 > 100) this.volume1 = 100
+      else if (this.volume1 < 0) this.volume1 = 0
+    }
+  },
 };
 
 </script>
@@ -164,7 +194,7 @@ export default {
 
 .settings__field {
     width: 45rem;
-    height: 30rem;   
+    height: 40rem;   
     border: 1px solid #b3b3da;
     background: #b3b3da;
     padding: 0;
@@ -183,6 +213,8 @@ export default {
     gap: 1.75rem;
     padding: 1.5rem 2rem 1.5rem 1.5rem;
 }
+
+
 
 .fieldset-item > picture {
     -webkit-clip-path: circle(40%);
@@ -224,6 +256,12 @@ input[type=range] {
     margin: 1ex 0;
     outline-offset: 5px;
     cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
+
+.ryanisgoodatvideogames {
+  height: 10rem;
+  color: black;
+  font-size: 5rem;
 }
 
 </style>
