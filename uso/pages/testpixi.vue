@@ -241,10 +241,10 @@ app.stage.addChild(sprites);
              t.gameCircle.x = 100 * (0 + 0.5)
                      sprites.addChild(t.gameCircle);
         }
-        // else if( note.columnIndex === 1) {
-        //      t.gameCircle.x = 100 * (1 + 0.5)
-        //             sprites.addChild(t.gameCircle);
-        // }
+        else if( note.columnIndex === 1) {
+             t.gameCircle.x = 100 * (1 + 0.5)
+                    sprites.addChild(t.gameCircle);
+        }
         //        else if( note.columnIndex === 2) {
         //      t.gameCircle.x = 100 * (2 + 0.5)
         //             sprites.addChild(t.gameCircle);
@@ -256,18 +256,20 @@ app.stage.addChild(sprites);
 
 
         app.ticker.add((delta) => {
-            t.gameCircleAnim = notes[index];
-         t.gameCircleAnim.y += 5 * delta
-  if(   t.gameCircleAnim.y > 150 ){
-      t.t2 =  t.gameCircleAnim
+            const circle = notes[index];
+         circle.y += 10  * delta
+          
+  if(  circle.y > 600  && circle.y > 700 && circle.x === 50){
+        t.t2 = circle
+        t.t1 = circle.y
   }
         
-         if(   t.gameCircleAnim.y > 750 ) { 
-          t.t1 = t.gameCircleAnim.y
-          t.t2 = t.gameCircleAnim
+         if(   circle.y > 850 ) { 
      
-                   sprites.removeChild(t.t2);
-
+            // notes.shift();
+     
+                   sprites.removeChild(circle);
+                  // notes.shift();
 }  
 })
      
@@ -285,18 +287,20 @@ app.stage.addChild(sprites);
 })
   window.addEventListener('keydown', function (e) {
         if (e.code === 'KeyD') {
-            console.log(   t.gameCircleAnim )
- 
-          if( t.gameCircleAnim.x === 50) {
-            console.log("hi")
-          }
-
-          if ( t.t1 > 600 ) {
-        // console.log( t.gameCircleAnim.y);
-             sprites.removeChild(t.t2);
-          }
+   
+            // const gameCircle = notes[0];
+           console.log(     t.t1)
+ if(   t.t1 > 600  &&  t.t1 > 700){
+   sprites.removeChild(t.t2);
+  }
+        //   if ( t.t1 > 600 ) {
+            
+        // // console.log( t.gameCircleAnim.y);
+        //      sprites.removeChild(gameCircle);
+        //   }
+        //     notes.shift()
         }
-      });
+      }); 
 
 
     // tick += 0.1;
