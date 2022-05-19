@@ -3,6 +3,8 @@
     <button class="btn" @click="gameStart()">
         GAME START
     </button>
+        <!-- <canvas id="game__canvas" >
+    </canvas> -->
   </div>
 </template>
 
@@ -151,7 +153,10 @@ export default {
 
 // Listen for animate update
 
-
+// const renderer = new PIXI.Renderer({
+//   width:400,
+//   height: 900,
+// })
       // Sets the canvas width/height pixels = to canvas display size width/height
     
 
@@ -161,44 +166,12 @@ export default {
   backgroundColor: 0x2c3e50
 });
 document.body.appendChild(app.view);
+// const ticker = new PIXI.Ticker();
 
-let ticker = PIXI.Ticker.shared;
-ticker.autoStart = false;
- ticker.stop();
 
 
 // app.stage.addChild(circle )
-
-
-const circle2  = new PIXI.Graphics();
-circle2.beginFill(0xffffff);
-circle2.drawCircle(30, 30, 30);
-circle2.endFill();
-circle2.x = 150;
-circle2.y = 500;
-// app.stage.addChild(circle )
-
-
-let container = new PIXI.Container();
-
-app.stage.addChild(container);
-
-// Create a new texture
-const texture = PIXI.Texture.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
-
-// Create a 5x5 grid of bunnies
-
-
-
-
-
-t.gameCircle1  = new PIXI.Graphics();
-t.gameCircle1.beginFill(0xffffff);
-t.gameCircle1.drawCircle( 100 * (0 + 0.5), 40, t.radius);
-t.gameCircle1.endFill();
-// t.texture = PIXI.RenderTexture.create(t.gameCircle1);
-t.targetCircle  = new PIXI.Graphics();
-
+ t.targetCircle  = new PIXI.Graphics();
 
 for (let i = 0; i < t.numColumns; i++) {
 
@@ -208,94 +181,103 @@ for (let i = 0; i < t.numColumns; i++) {
  t.targetCircle.drawCircle( 100 * (i + 0.5), t.hitPercent * t.stageHeight, t.radius);
  t.targetCircle.endFill();
 
-container.addChild( t.targetCircle);
+app.stage.addChild( t.targetCircle);
 
 
       }
-      let YVel1 =  10;
-  const gameCircle = new PIXI.Sprite(texture);
-       gameCircle.interactive = true;
- gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
 
 
-   ticker.start();
+// let container = new PIXI.ParticleContainer();
+
+
+
+
+let tick = 5;
+
+//   const gameCircle = new PIXI.Sprite(texture);
+//        gameCircle.interactive = true;
+//  gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
+const sprites = new PIXI.ParticleContainer(t.notes.length, {
+    scale: true,
+    position: true,
+    rotation: true,
+    uvs: true,
+    alpha: true,
+});
+
+const notes = [];//
+app.stage.addChild(sprites);
+// const totalSprites = app.renderer instanceof PIXI.Renderer ? t.notes.length : 100;
+
     for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
     const chunk = t.notes.slice(i, i + t.chunkSize);
          chunk.forEach((note, index) => {
-           
+            
        setTimeout(() => {
-         const gameCircle = new PIXI.Sprite(texture);
-        if( note.columnIndex === 0) {
-             gameCircle.x = 100 * (0 + 0.5)
-        }
-        else if( note.columnIndex === 1) {
-             gameCircle.x = 100 * (1 + 0.5)
-        }
-               else if( note.columnIndex === 2) {
-             gameCircle.x = 100 * (2 + 0.5)
-        }
-        else {
-             gameCircle.x = 100 * (3 + 0.5)
-        }
-         
-   
-    gameCircle.y = -40
+        //  const gameCircle = new PIXI.Sprite(texture);
+
+     const gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+           gameCircle.y = -40
     gameCircle.width = 80;
     gameCircle.height = 80;
     gameCircle.anchor.set(0.5);
 
-    container.addChild(gameCircle);
-       t.childIndx = container.getChildAt(index)
+        notes.push(gameCircle);
+
+
+
+        if( note.columnIndex === 0) {
+             gameCircle.x = 100 * (0 + 0.5)
+                     sprites.addChild(gameCircle);
+        }
+        else if( note.columnIndex === 1) {
+             gameCircle.x = 100 * (1 + 0.5)
+                    sprites.addChild(gameCircle);
+        }
+               else if( note.columnIndex === 2) {
+             gameCircle.x = 100 * (2 + 0.5)
+                    sprites.addChild(gameCircle);
+        }
+        else {
+             gameCircle.x = 100 * (3 + 0.5)
+                 sprites.addChild(gameCircle);
+        }
+        app.ticker.add((delta) => {
+            const gameCircle = notes[index];
+        gameCircle.y += 10 *delta
+         if(  gameCircle.y > 700 ) { 
+        //    t.child = container.getChildByName(gameCircle)
+        // console.log(t.child)
+            //   container.removeChildAt(index);
+             sprites.removeChild(gameCircle);
+             
+              // container2.removeChild ( gameCircle )
+              //  container3.removeChild ( gameCircle )
+              //   container4.removeChild ( gameCircle )
+        }
+})
+     
+
+      //  t.childIndx = container.getChildAt(index)
     // t.child = container.getChildAt(index)
     // t.childIndx = container.getChildIndex(t.childIndx)
     // console.log(t.childIndx)
-            ticker.add((delta) => {
 
-        gameCircle.y += 10 *delta
-         if(  gameCircle.y > 800) { 
-           t.child = container.getChildByName(gameCircle)
-        
-            //   container.removeChildAt(index);
-        
-             container.removeChild ( gameCircle )
-        }
-        // const childIndx = container.getChildAt(index)
+   // const childIndx = container.getChildAt(index)
 
-    });
-    }, note.time-25000);
-
-     
-    });
+      }, note.time-25000);
    
     // do whatever
+})
+
+
+
+    // tick += 0.1;
 }
 
-
-
-
-
-
-     window.addEventListener("keydown", function (e) {
-
-              if(e.code === "KeyD") {
-                console.log(t.childIndx.y)
-                 if(t.childIndx.y >600) {
-    
-                   container.removeChild ( t.childIndx )
-        
-                 }
-              }
-      });
-
-// container0.addChild(circle2 )
-
-
-
-    }
-
-
+} }
   }
-}
+
 </script>
 
 <style scoped>
