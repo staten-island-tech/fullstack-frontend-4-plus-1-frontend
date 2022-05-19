@@ -24,7 +24,10 @@ export default {
 
       // beatmaps data
       i: 0,
-      notes: [],
+      notesColOne: [],
+      notesColTwo: [],
+       notesColThree: [],
+        notesColFour: [],
       texture: null,
       score: 0,
       combo: 0,
@@ -113,14 +116,38 @@ export default {
       t2: null,
           t3: null,
       t4: null,
+            t5: null,
+      t6: null,
+        t7: null,
+      t8: null,
     };
   },
 
   created() {
     this.notes = this.$store.state.beatmapData.hitObjects;
+
+    this.notesColOne = this.notes.filter((item) =>{
+              return item.columnIndex === 0
+});
+
+
+    this.notesColTwo = this.notes.filter((item) =>{
+              return item.columnIndex === 1
+});
+
+       this.notesColThree = this.notes.filter((item) =>{
+              return item.columnIndex === 2
+});
+        this.notesColFour = this.notes.filter((item) =>{
+              return item.columnIndex ===  3
+});
+
   },
 
   methods: {
+  checkAdult(col) {
+  return age >= 18;
+},
     gameStart() {
       const t = this;
 
@@ -207,7 +234,7 @@ app.stage.addChild( t.targetCircle);
 //   const gameCircle = new PIXI.Sprite(texture);
 //        gameCircle.interactive = true;
 //  gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
-const sprites = new PIXI.ParticleContainer(t.notes.length, {
+const sprites = new PIXI.ParticleContainer( t.notesColOne.length, {
     scale: true,
     position: true,
     rotation: true,
@@ -216,13 +243,45 @@ const sprites = new PIXI.ParticleContainer(t.notes.length, {
     alpha: true,
 });
 
-const notes = [];//
+const sprites2 = new PIXI.ParticleContainer( t.notesColTwo.length, {
+    scale: true,
+    position: true,
+    rotation: true,
+    roundPixels: false, 
+    uvs: true,
+    alpha: true,
+});
+const sprites3 = new PIXI.ParticleContainer( t.notesColThree.length, {
+    scale: true,
+    position: true,
+    rotation: true,
+    roundPixels: false, 
+    uvs: true,
+    alpha: true,
+});
+const sprites4 = new PIXI.ParticleContainer( t.notesColFour.length, {
+    scale: true,
+    position: true,
+    rotation: true,
+    roundPixels: false, 
+    uvs: true,
+    alpha: true,
+});
+
+const notes = [];
+const notes2 = [];
+const notes3 = [];
+const notes4 = [];
+//
 app.stage.addChild(sprites);
+app.stage.addChild(sprites2);
+app.stage.addChild(sprites3);
+app.stage.addChild(sprites4);
 // const totalSprites = app.renderer instanceof PIXI.Renderer ? t.notes.length : 100;
 
     // for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
     // const chunk = t.notes.slice(i, i + t.chunkSize);
-         t.notes.forEach((note, index) => {
+             t.notesColOne.forEach((note, index) => {
             
        setTimeout(() => {
         //  const gameCircle = new PIXI.Sprite(texture);
@@ -237,32 +296,19 @@ app.stage.addChild(sprites);
 
 
 
-        if( note.columnIndex === 0) {
+
              t.gameCircle.x = 100 * (0 + 0.5)
                      sprites.addChild(t.gameCircle);
-        }
-        else if( note.columnIndex === 1) {
-             t.gameCircle.x = 100 * (1 + 0.5)
-                    sprites.addChild(t.gameCircle);
-        }
-        //        else if( note.columnIndex === 2) {
-        //      t.gameCircle.x = 100 * (2 + 0.5)
-        //             sprites.addChild(t.gameCircle);
-        // }
-        // else {
-        //      t.gameCircle.x = 100 * (3 + 0.5)
-        //          sprites.addChild(t.gameCircle);
-        // }
-
 
         app.ticker.add((delta) => {
             const circle = notes[index];
          circle.y += 10  * delta
           
-  if(  circle.y > 600  && circle.y > 700 && circle.x === 50){
-        t.t2 = circle
+  if(  circle.y > 600  && circle.y > 750){
         t.t1 = circle.y
+        t.t2 = circle
   }
+        
         
          if(   circle.y > 850 ) { 
      
@@ -285,12 +331,152 @@ app.stage.addChild(sprites);
    
     // do whatever
 })
+  
+
+             t.notesColTwo.forEach((note, index) => {
+            
+       setTimeout(() => {
+        //  const gameCircle = new PIXI.Sprite(texture);
+
+     t.gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+           t.gameCircle.y = -40
+    t.gameCircle.width = 80;
+    t.gameCircle.height = 80;
+    t.gameCircle.anchor.set(0.5);
+
+        notes2.push(t.gameCircle);
+
+
+             t.gameCircle.x = 100 * (1 + 0.5)
+                     sprites2.addChild(t.gameCircle);
+
+        app.ticker.add((delta) => {
+            const circle = notes2[index];
+         circle.y += 10  * delta
+          
+  if(  circle.y > 600  && circle.y > 750){
+        t.t3 = circle.y
+        t.t4 = circle
+  }
+    
+         if(   circle.y > 850 ) { 
+                   sprites2 .removeChild(circle);
+                  // notes.shift();
+}  
+})
+     
+      }, note.time-25000);
+   
+    // do whatever
+})
+
+             t.notesColThree.forEach((note, index) => {
+            
+       setTimeout(() => {
+        //  const gameCircle = new PIXI.Sprite(texture);
+
+     t.gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+           t.gameCircle.y = -40
+    t.gameCircle.width = 80;
+    t.gameCircle.height = 80;
+    t.gameCircle.anchor.set(0.5);
+
+        notes3.push(t.gameCircle);
+
+
+             t.gameCircle.x = 100 * (2 + 0.5)
+                     sprites3.addChild(t.gameCircle);
+
+        app.ticker.add((delta) => {
+            const circle = notes3[index];
+         circle.y += 10  * delta
+          
+  if(  circle.y > 600  && circle.y > 750){
+        t.t5 = circle.y
+        t.t6 = circle
+  }
+    
+         if(   circle.y > 850 ) { 
+     
+            // notes.shift();
+     
+                   sprites3.removeChild(circle);
+                  // notes.shift();
+}  
+})
+     
+
+      //  t.childIndx = container.getChildAt(index)
+    // t.child = container.getChildAt(index)
+    // t.childIndx = container.getChildIndex(t.childIndx)
+    // console.log(t.childIndx)
+
+   // const childIndx = container.getChildAt(index)
+
+      }, note.time-25000);
+   
+    // do whatever
+})
+   
+   
+   
+   t.notesColFour.forEach((note, index) => {
+            
+       setTimeout(() => {
+        //  const gameCircle = new PIXI.Sprite(texture);
+
+     t.gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+           t.gameCircle.y = -40
+    t.gameCircle.width = 80;
+    t.gameCircle.height = 80;
+    t.gameCircle.anchor.set(0.5);
+
+        notes4.push(t.gameCircle);
+
+
+             t.gameCircle.x = 100 * (3 + 0.5)
+                     sprites4.addChild(t.gameCircle);
+
+        app.ticker.add((delta) => {
+            const circle = notes4[index];
+         circle.y += 10  * delta
+          
+  if(  circle.y > 600  && circle.y > 750){
+        t.t7 = circle.y
+        t.t8 = circle
+  }
+    
+         if(   circle.y > 850 ) { 
+     
+            // notes.shift();
+     
+                   sprites4.removeChild(circle);
+                  // notes.shift();
+}  
+})
+     
+
+      //  t.childIndx = container.getChildAt(index)
+    // t.child = container.getChildAt(index)
+    // t.childIndx = container.getChildIndex(t.childIndx)
+    // console.log(t.childIndx)
+
+   // const childIndx = container.getChildAt(index)
+
+      }, note.time-25000);
+   
+    // do whatever
+})
+  
+
+
   window.addEventListener('keydown', function (e) {
         if (e.code === 'KeyD') {
-   
+
             // const gameCircle = notes[0];
-           console.log(     t.t1)
+           
  if(   t.t1 > 600  &&  t.t1 > 700){
+   console.log( "hi1")
    sprites.removeChild(t.t2);
   }
         //   if ( t.t1 > 600 ) {
@@ -300,6 +486,31 @@ app.stage.addChild(sprites);
         //   }
         //     notes.shift()
         }
+           else if (e.code === 'KeyF') {
+                  console.log( "hi2")
+        if(   t.t3> 600  &&  t.t3 > 700){
+   sprites2.removeChild(t.t4);
+           }
+
+    
+           }
+  else if (e.code === 'KeyJ') {
+       console.log( "hi3")
+ if(   t.t5 > 600  &&  t.t5 > 700){
+   sprites3.removeChild(t.t6);
+  }
+
+        }
+
+ else if(e.code === 'KeyK') {
+       console.log( "hi4")
+            // const gameCircle = notes[0];
+ if(   t.t7 > 600  &&  t.t7 > 700){
+   sprites4.removeChild(t.t8);
+  }
+
+        }
+
       }); 
 
 
