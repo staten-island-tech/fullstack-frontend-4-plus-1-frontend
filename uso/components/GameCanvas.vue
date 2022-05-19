@@ -29,7 +29,6 @@
 </template>
 
 <script>
-/* global createjs:false, kd:false */
 /* eslint-disable */
 
 export default {
@@ -44,9 +43,9 @@ export default {
     },
     beatmapIntro: {
       required: true,
-      type: Number,
     },
   },
+
   data() {
     return {
       loaded: {
@@ -62,7 +61,7 @@ export default {
       score: 0,
       combo: 0,
       maxCombo: 0,
-      scrollSpeed: 15,
+      scrollSpeed: 20,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -277,6 +276,31 @@ export default {
 
       t.music.seek(t.beatmapIntro / 1000);
 
+      t.defaultHitNormal = new Howl({
+        src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
+        volume: t.volume,
+        onload: () => (t.songLoaded = true),
+      });
+      t.defaultHitClapNormal = new Howl({
+        src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
+        volume: t.volume,
+        onload: () => (t.songLoaded = true),
+      });
+      t.defaultHitSoftNormal = new Howl({
+        src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
+        volume: 0.3,
+        onload: () => (t.songLoaded = true),
+      });
+      t.defaultHitSoftClapNormal = new Howl({
+        src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
+        volume: 0.08,
+        onload: () => (t.songLoaded = true),
+      });
+      t.softSliderWhistle = new Howl({
+        src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
+        volume: 0.1,
+        onload: () => (t.songLoaded = true),
+      });
 
       /* ===============
           CANVAS SETUP
@@ -289,9 +313,9 @@ export default {
       // Sets the canvas width/height pixels = to canvas display size width/height
       t.stageWidth = $canvas.width = t.canvasWidth;
       t.stageHeight = $canvas.height = $canvas.getBoundingClientRect().height;
+      t.stageColWidth = t.stageWidth / t.numColumns;
 
       t.stage = new createjs.Stage($canvas);
-      t.stageColWidth = t.stageWidth / t.numColumns;
 
       /* ===============
           TICKER
@@ -473,7 +497,7 @@ export default {
             t.readySliders[i].finalMs = t.readySliders[i].msFrom('top', true);
 
             t.readySliders[i].avgMs =
-              (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
+              q(t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
 
             t.readySliders[i].hit();
           } else {
@@ -759,9 +783,11 @@ export default {
             t.beatmapIntro -
             (1000 * t.stageHeight * t.hitPercent + t.radius) /
               (t.dy * t.stageFPS);
-          this.startTime, this.timerID;
 
+          t.notesToFallArray.push(this);
           this.resumeTimer();
+
+          this.startTime, this.timerID;
         }
 
         msFrom(position, isAbs = false) {
@@ -920,6 +946,7 @@ export default {
           this.timerID = setTimeout(() => {
             t.ss.columnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
 
             this.animate();
           }, this.remainingTime);
@@ -928,11 +955,6 @@ export default {
         pauseTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
-        }
-
-        startTimer() {
-          this.resumeTimer();
-          t.notesToFallArray.push(this);
         }
       }
 

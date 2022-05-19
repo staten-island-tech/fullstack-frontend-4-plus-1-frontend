@@ -1,20 +1,14 @@
 <template>
   <div class="background">
-    <button class="btn" @click="gameStart()">
-        GAME START
-    </button>
+    <button class="btn" @click="gameStart()">GAME START</button>
   </div>
 </template>
 
 <script>
 export default {
-//       props: {
-//     beatmapData: {
-//       required: true,
-//       type: Object,
-//     },
-//   },
-      data() {
+  layout: 'noNav',
+
+  data() {
     return {
       loaded: {
         createjs: false,
@@ -25,8 +19,8 @@ export default {
 
       // beatmaps data
       i: 0,
-      notes: [ ],
-        texture: null,
+      notes: [],
+      texture: null,
       score: 0,
       combo: 0,
       maxCombo: 0,
@@ -70,9 +64,8 @@ export default {
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
       canvasWidth: 400,
-        targetCircle: null,
-        gameCircle1: null,
-
+      targetCircle: null,
+      gameCircle1: null,
 
       stage: null,
       stageWidth: null,
@@ -111,21 +104,19 @@ export default {
       chunkSize: 4,
     };
   },
-      /* eslint-disable */
-  layout: 'nonav',
 
   created() {
     this.notes = this.$store.state.beatmapData.hitObjects;
   },
-  
+
   methods: {
     gameStart() {
       const t = this;
 
-    // t.notes.forEach(element => {
-    //      console.log(element.columnIndex)
-    // });
-    //   t.notes = t.beatmapData.hitObjects;
+      // t.notes.forEach(element => {
+      //      console.log(element.columnIndex)
+      // });
+      //   t.notes = t.beatmapData.hitObjects;
       t.remainingNotes = t.notes.length;
       t.numColumns = t.$store.state.beatmapData.columns;
 
@@ -141,174 +132,138 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2),
         ...(t.numColumns % 2 ? [t.allColors[4]] : []),
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
- 
       ];
 
+      // Move container to the center
 
-
-
-// Move container to the center
-
-// Listen for animate update
-
+      // Listen for animate update
 
       // Sets the canvas width/height pixels = to canvas display size width/height
-    
 
- const app = new PIXI.Application({
-  width: 400,
-  height: 900,
-  backgroundColor: 0x2c3e50
-});
-document.body.appendChild(app.view);
+      const app = new PIXI.Application({
+        width: 400,
+        height: 900,
+        backgroundColor: 0x2c3e50,
+      });
+      document.body.appendChild(app.view);
 
-let ticker = PIXI.Ticker.shared;
-ticker.autoStart = false;
- ticker.stop();
+      const ticker = PIXI.Ticker.shared;
+      ticker.autoStart = false;
+      ticker.stop();
 
+      // app.stage.addChild(circle )
 
-// app.stage.addChild(circle )
+      const circle2 = new PIXI.Graphics();
+      circle2.beginFill(0xffffff);
+      circle2.drawCircle(30, 30, 30);
+      circle2.endFill();
+      circle2.x = 150;
+      circle2.y = 500;
+      // app.stage.addChild(circle )
 
+      const container = new PIXI.Container();
 
-const circle2  = new PIXI.Graphics();
-circle2.beginFill(0xffffff);
-circle2.drawCircle(30, 30, 30);
-circle2.endFill();
-circle2.x = 150;
-circle2.y = 500;
-// app.stage.addChild(circle )
+      app.stage.addChild(container);
 
+      // Create a new texture
+      const texture = PIXI.Texture.from(
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png'
+      );
 
-let container = new PIXI.Container();
+      // Create a 5x5 grid of bunnies
 
-app.stage.addChild(container);
+      t.gameCircle1 = new PIXI.Graphics();
+      t.gameCircle1.beginFill(0xffffff);
+      t.gameCircle1.drawCircle(100 * (0 + 0.5), 40, t.radius);
+      t.gameCircle1.endFill();
+      // t.texture = PIXI.RenderTexture.create(t.gameCircle1);
+      t.targetCircle = new PIXI.Graphics();
 
-// Create a new texture
-const texture = PIXI.Texture.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+      for (let i = 0; i < t.numColumns; i++) {
+        t.targetCircle.beginFill(0xff0000);
+        t.targetCircle.drawCircle(
+          100 * (i + 0.5),
+          t.hitPercent * t.stageHeight,
+          t.radius
+        );
+        t.targetCircle.endFill();
 
-// Create a 5x5 grid of bunnies
-
-
-
-
-
-t.gameCircle1  = new PIXI.Graphics();
-t.gameCircle1.beginFill(0xffffff);
-t.gameCircle1.drawCircle( 100 * (0 + 0.5), 40, t.radius);
-t.gameCircle1.endFill();
-// t.texture = PIXI.RenderTexture.create(t.gameCircle1);
-t.targetCircle  = new PIXI.Graphics();
-
-
-for (let i = 0; i < t.numColumns; i++) {
-
-    
-
- t.targetCircle.beginFill(0xFF0000);
- t.targetCircle.drawCircle( 100 * (i + 0.5), t.hitPercent * t.stageHeight, t.radius);
- t.targetCircle.endFill();
-
-container.addChild( t.targetCircle);
-
-
+        container.addChild(t.targetCircle);
       }
-      let YVel1 =  10;
-  const gameCircle = new PIXI.Sprite(texture);
-       gameCircle.interactive = true;
- gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
 
+      const gameCircle = new PIXI.Sprite(texture);
+      gameCircle.interactive = true;
+      gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
 
-   ticker.start();
-    for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
-    const chunk = t.notes.slice(i, i + t.chunkSize);
-         chunk.forEach((note, index) => {
-           
-       setTimeout(() => {
-         const gameCircle = new PIXI.Sprite(texture);
-        if( note.columnIndex === 0) {
-             gameCircle.x = 100 * (0 + 0.5)
-        }
-        else if( note.columnIndex === 1) {
-             gameCircle.x = 100 * (1 + 0.5)
-        }
-               else if( note.columnIndex === 2) {
-             gameCircle.x = 100 * (2 + 0.5)
-        }
-        else {
-             gameCircle.x = 100 * (3 + 0.5)
-        }
-         
-   
-    gameCircle.y = -40
-    gameCircle.width = 80;
-    gameCircle.height = 80;
-    gameCircle.anchor.set(0.5);
+      ticker.start();
+      for (let i = 0; i < t.notes.length; i += t.chunkSize) {
+        const chunk = t.notes.slice(i, i + t.chunkSize);
+        chunk.forEach((note, index) => {
+          setTimeout(() => {
+            const gameCircle = new PIXI.Sprite(texture);
+            if (note.columnIndex === 0) {
+              gameCircle.x = 100 * (0 + 0.5);
+            } else if (note.columnIndex === 1) {
+              gameCircle.x = 100 * (1 + 0.5);
+            } else if (note.columnIndex === 2) {
+              gameCircle.x = 100 * (2 + 0.5);
+            } else {
+              gameCircle.x = 100 * (3 + 0.5);
+            }
 
-    container.addChild(gameCircle);
-       t.childIndx = container.getChildAt(index)
-    // t.child = container.getChildAt(index)
-    // t.childIndx = container.getChildIndex(t.childIndx)
-    // console.log(t.childIndx)
+            gameCircle.y = -40;
+            gameCircle.width = 80;
+            gameCircle.height = 80;
+            gameCircle.anchor.set(0.5);
+
+            container.addChild(gameCircle);
+            t.childIndx = container.getChildAt(index);
+            // t.child = container.getChildAt(index)
+            // t.childIndx = container.getChildIndex(t.childIndx)
+            // console.log(t.childIndx)
             ticker.add((delta) => {
+              gameCircle.y += 10 * delta;
+              if (gameCircle.y > 800) {
+                t.child = container.getChildByName(gameCircle);
 
-        gameCircle.y += 10 *delta
-         if(  gameCircle.y > 800) { 
-           t.child = container.getChildByName(gameCircle)
-        
-            //   container.removeChildAt(index);
-        
-             container.removeChild ( gameCircle )
-        }
-        // const childIndx = container.getChildAt(index)
+                //   container.removeChildAt(index);
 
-    });
-    }, note.time-25000);
-
-     
-    });
-   
-    // do whatever
-}
-
-
-
-
-
-
-     window.addEventListener("keydown", function (e) {
-
-              if(e.code === "KeyD") {
-                console.log(t.childIndx.y)
-                 if(t.childIndx.y >600) {
-    
-                   container.removeChild ( t.childIndx )
-        
-                 }
+                container.removeChild(gameCircle);
               }
+              // const childIndx = container.getChildAt(index)
+            });
+          }, note.time - 25000);
+        });
+
+        // do whatever
+      }
+
+      window.addEventListener('keydown', function (e) {
+        if (e.code === 'KeyD') {
+          console.log(t.childIndx.y);
+          if (t.childIndx.y > 600) {
+            container.removeChild(t.childIndx);
+          }
+        }
       });
 
-// container0.addChild(circle2 )
-
-
-
-    }
-
-
-  }
-}
+      // container0.addChild(circle2 )
+    },
+  },
+};
 </script>
 
 <style scoped>
-    .background {
-        background-color: white;
-        width: 100vw;
-        height: 10vh;   
-         }
+.background {
+  background-color: white;
+  width: 100vw;
+  height: 10vh;
+}
 
-         .btn {
-            color: black;
-            font-size: 5rem;
-            height: 10rem;
-            width: 100rem;
-         }
+.btn {
+  color: black;
+  font-size: 5rem;
+  height: 10rem;
+  width: 100rem;
+}
 </style>

@@ -29,13 +29,13 @@
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/testpixi" class="uso__links">game</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
 
           <li>
             <button class="btn" @click="logout()">logout</button>
           </li>
-                <li>
+          <li>
             <button class="btn" @click="newUser()">update</button>
           </li>
         </ul>
@@ -47,7 +47,7 @@
             <nuxt-link to="/" class="uso__button"> Hi {{ username }}</nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"  ></nuxt-link>
+            <nuxt-link to="/" class="uso__button"></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/shop" class="uso__button"
@@ -81,14 +81,13 @@
 export default {
   /* eslint-disable */
   name: 'NavBar',
-   data() {
-    
-     return {
-        loginSatus: this.$store.state.auth.loggedIn,
-        username:     this.$auth.user.nickname,
-        userData: this.$auth.user,
-     }
-   },
+  data() {
+    return {
+      loginSatus: this.$store.state.auth.loggedIn,
+      username: this.$auth.user.nickname,
+      userData: this.$auth.user,
+    };
+  },
 
   mounted() {
     const animateNav = () => {
@@ -119,25 +118,21 @@ export default {
   methods: {
     async login() {
       await this.$auth.loginWith('auth0');
-
     },
     newUser() {
-      const getUserId = this.$auth.user.sub.replace("auth0|", "")
-    fetch(`http://localhost:8000/api/update/${getUserId}`, {
-  method: 'PATCH',
-  body: JSON.stringify({
-       username: "ilostcddrip" ,
-    leaderBoardPos :  "20"
-  }),
-  headers: {
-    'Content-type': 'application/json; charset=UTF-8',
-  },
-})
-  .then((response) => response.json())
-  .then((json) => console.log(json));
-},
-    username() {
-
+      const getUserId = this.$auth.user.sub.replace('auth0|', '');
+      fetch(`http://localhost:8000/api/update/${getUserId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          username: 'ilostcddrip',
+          leaderBoardPos: '20',
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
     },
     async logout() {
       await this.$auth.logout();
