@@ -1,15 +1,13 @@
 <template>
   <div class="background">
-    <button class="btn" @click="gameStart()">
-        GAME START
-    </button>
-        <!-- <canvas id="game__canvas" >
+    <button class="btn" @click="gameStart()">GAME START</button>
+    <!-- <canvas id="game__canvas" >
     </canvas> -->
   </div>
 </template>
 
 <script>
- /* eslint-disable */ 
+/* eslint-disable */
 export default {
   layout: 'nonav',
 
@@ -107,11 +105,11 @@ export default {
       childIndx: null,
       child: null,
       chunkSize: 4,
-      gameCircle:null,
+      gameCircle: null,
       gameCircleAnim: null,
       t1: null,
       t2: null,
-          t3: null,
+      t3: null,
       t4: null,
     };
   },
@@ -147,41 +145,28 @@ export default {
 
       // Move container to the center
 
+      // Move container to the center
 
+      // Listen for animate update
 
-// Move container to the center
-
-// Listen for animate update
-
-// const renderer = new PIXI.Renderer({
-//   width:400,
-//   height: 900,
-// })
+      // const renderer = new PIXI.Renderer({
+      //   width:400,
+      //   height: 900,
+      // })
       // Sets the canvas width/height pixels = to canvas display size width/height
 
- const app = new PIXI.Application({
-  width: 400,
-  height: 900,
-  backgroundColor: 0x2c3e50
-});
-document.body.appendChild(app.view);
-// const ticker = new PIXI.Ticker();
-
+      const app = new PIXI.Application({
+        width: 400,
+        height: 900,
+        backgroundColor: 0x2c3e50,
+      });
+      document.body.appendChild(app.view);
+      // const ticker = new PIXI.Ticker();
 
       // app.stage.addChild(circle )
 
-// app.stage.addChild(circle )
- t.targetCircle  = new PIXI.Graphics();
-
-for (let i = 0; i < t.numColumns; i++) {
-
-    
-
- t.targetCircle.beginFill(0xFF0000);
- t.targetCircle.drawCircle( 100 * (i + 0.5), t.hitPercent * t.stageHeight, t.radius);
- t.targetCircle.endFill();
-
-app.stage.addChild( t.targetCircle);
+      // app.stage.addChild(circle )
+      t.targetCircle = new PIXI.Graphics();
 
       for (let i = 0; i < t.numColumns; i++) {
         t.targetCircle.beginFill(0xff0000);
@@ -192,123 +177,121 @@ app.stage.addChild( t.targetCircle);
         );
         t.targetCircle.endFill();
 
-       app.stage.addChild(t.targetCircle);
+        app.stage.addChild(t.targetCircle);
+
+        for (let i = 0; i < t.numColumns; i++) {
+          t.targetCircle.beginFill(0xff0000);
+          t.targetCircle.drawCircle(
+            100 * (i + 0.5),
+            t.hitPercent * t.stageHeight,
+            t.radius
+          );
+          t.targetCircle.endFill();
+
+          app.stage.addChild(t.targetCircle);
+        }
       }
 
-}
+      // let container = new PIXI.ParticleContainer();
 
-// let container = new PIXI.ParticleContainer();
+      // let tick = 5;
 
+      //   const gameCircle = new PIXI.Sprite(texture);
+      //        gameCircle.interactive = true;
+      //  gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
+      const sprites = new PIXI.ParticleContainer(t.notes.length, {
+        scale: true,
+        position: true,
+        rotation: true,
+        roundPixels: false,
+        uvs: true,
+        alpha: true,
+      });
 
+      const notes = []; //
+      app.stage.addChild(sprites);
+      // const totalSprites = app.renderer instanceof PIXI.Renderer ? t.notes.length : 100;
 
+      // for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
+      // const chunk = t.notes.slice(i, i + t.chunkSize);
+      t.notes.forEach((note, index) => {
+        setTimeout(() => {
+          //  const gameCircle = new PIXI.Sprite(texture);
 
-// let tick = 5;
+          t.gameCircle = PIXI.Sprite.from(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png'
+          );
+          t.gameCircle.y = -40;
+          t.gameCircle.width = 80;
+          t.gameCircle.height = 80;
+          t.gameCircle.anchor.set(0.5);
 
-//   const gameCircle = new PIXI.Sprite(texture);
-//        gameCircle.interactive = true;
-//  gameCircle.hitArea = new PIXI.Rectangle(0, 0, 400, 100);
-const sprites = new PIXI.ParticleContainer(t.notes.length, {
-    scale: true,
-    position: true,
-    rotation: true,
-    roundPixels: false, 
-    uvs: true,
-    alpha: true,
-});
+          notes.push(t.gameCircle);
 
-const notes = [];//
-app.stage.addChild(sprites);
-// const totalSprites = app.renderer instanceof PIXI.Renderer ? t.notes.length : 100;
+          if (note.columnIndex === 0) {
+            t.gameCircle.x = 100 * (0 + 0.5);
+            sprites.addChild(t.gameCircle);
+          } else if (note.columnIndex === 1) {
+            t.gameCircle.x = 100 * (1 + 0.5);
+            sprites.addChild(t.gameCircle);
+          }
+          //        else if( note.columnIndex === 2) {
+          //      t.gameCircle.x = 100 * (2 + 0.5)
+          //             sprites.addChild(t.gameCircle);
+          // }
+          // else {
+          //      t.gameCircle.x = 100 * (3 + 0.5)
+          //          sprites.addChild(t.gameCircle);
+          // }
 
-    // for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
-    // const chunk = t.notes.slice(i, i + t.chunkSize);
-         t.notes.forEach((note, index) => {
-            
-       setTimeout(() => {
-        //  const gameCircle = new PIXI.Sprite(texture);
-
-     t.gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
-           t.gameCircle.y = -40
-    t.gameCircle.width = 80;
-    t.gameCircle.height = 80;
-    t.gameCircle.anchor.set(0.5);
-
-        notes.push(t.gameCircle);
-
-
-
-        if( note.columnIndex === 0) {
-             t.gameCircle.x = 100 * (0 + 0.5)
-                     sprites.addChild(t.gameCircle);
-        }
-        else if( note.columnIndex === 1) {
-             t.gameCircle.x = 100 * (1 + 0.5)
-                    sprites.addChild(t.gameCircle);
-        }
-        //        else if( note.columnIndex === 2) {
-        //      t.gameCircle.x = 100 * (2 + 0.5)
-        //             sprites.addChild(t.gameCircle);
-        // }
-        // else {
-        //      t.gameCircle.x = 100 * (3 + 0.5)
-        //          sprites.addChild(t.gameCircle);
-        // }
-
-
-        app.ticker.add((delta) => {
+          app.ticker.add((delta) => {
             const circle = notes[index];
-         circle.y += 10  * delta
-          
-  if(  circle.y > 600  && circle.y > 700 && circle.x === 50){
-        t.t2 = circle
-        t.t1 = circle.y
-  }
-        
-         if(   circle.y > 850 ) { 
-     
-            // notes.shift();
-     
-                   sprites.removeChild(circle);
-                  // notes.shift();
-}  
-})
-     
+            circle.y += 10 * delta;
 
-      //  t.childIndx = container.getChildAt(index)
-    // t.child = container.getChildAt(index)
-    // t.childIndx = container.getChildIndex(t.childIndx)
-    // console.log(t.childIndx)
+            if (circle.y > 600 && circle.y > 700 && circle.x === 50) {
+              t.t2 = circle;
+              t.t1 = circle.y;
+            }
 
-   // const childIndx = container.getChildAt(index)
+            if (circle.y > 850) {
+              // notes.shift();
 
-      }, note.time-25000);
-   
-    // do whatever
-})
-  window.addEventListener('keydown', function (e) {
+              sprites.removeChild(circle);
+              // notes.shift();
+            }
+          });
+
+          //  t.childIndx = container.getChildAt(index)
+          // t.child = container.getChildAt(index)
+          // t.childIndx = container.getChildIndex(t.childIndx)
+          // console.log(t.childIndx)
+
+          // const childIndx = container.getChildAt(index)
+        }, note.time - 25000);
+
+        // do whatever
+      });
+      window.addEventListener('keydown', function (e) {
         if (e.code === 'KeyD') {
-   
-            // const gameCircle = notes[0];
-           console.log(     t.t1)
- if(   t.t1 > 600  &&  t.t1 > 700){
-   sprites.removeChild(t.t2);
-  }
-        //   if ( t.t1 > 600 ) {
-            
-        // // console.log( t.gameCircleAnim.y);
-        //      sprites.removeChild(gameCircle);
-        //   }
-        //     notes.shift()
+          // const gameCircle = notes[0];
+          console.log(t.t1);
+          if (t.t1 > 600 && t.t1 > 700) {
+            sprites.removeChild(t.t2);
+          }
+          //   if ( t.t1 > 600 ) {
+
+          // // console.log( t.gameCircleAnim.y);
+          //      sprites.removeChild(gameCircle);
+          //   }
+          //     notes.shift()
         }
-      }); 
+      });
 
-
-    // tick += 0.1;
-// }
-
-} }
-  }
-
+      // tick += 0.1;
+      // }
+    },
+  },
+};
 </script>
 
 <style scoped>
