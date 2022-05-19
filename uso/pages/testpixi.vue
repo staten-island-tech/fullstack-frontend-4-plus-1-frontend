@@ -9,14 +9,11 @@
 </template>
 
 <script>
+ /* eslint-disable */ 
 export default {
-//       props: {
-//     beatmapData: {
-//       required: true,
-//       type: Object,
-//     },
-//   },
-      data() {
+  layout: 'nonav',
+
+  data() {
     return {
       loaded: {
         createjs: false,
@@ -27,8 +24,8 @@ export default {
 
       // beatmaps data
       i: 0,
-      notes: [ ],
-        texture: null,
+      notes: [],
+      texture: null,
       score: 0,
       combo: 0,
       maxCombo: 0,
@@ -72,9 +69,8 @@ export default {
       numColumns: 4,
       columnWidth: 100, // in px (we change this to rem later)
       canvasWidth: 400,
-        targetCircle: null,
-        gameCircle1: null,
-
+      targetCircle: null,
+      gameCircle1: null,
 
       stage: null,
       stageWidth: null,
@@ -119,21 +115,19 @@ export default {
       t4: null,
     };
   },
-      /* eslint-disable */
-  layout: 'nonav',
 
   created() {
     this.notes = this.$store.state.beatmapData.hitObjects;
   },
-  
+
   methods: {
     gameStart() {
       const t = this;
 
-    // t.notes.forEach(element => {
-    //      console.log(element.columnIndex)
-    // });
-    //   t.notes = t.beatmapData.hitObjects;
+      // t.notes.forEach(element => {
+      //      console.log(element.columnIndex)
+      // });
+      //   t.notes = t.beatmapData.hitObjects;
       t.remainingNotes = t.notes.length;
       t.numColumns = t.$store.state.beatmapData.columns;
 
@@ -149,9 +143,9 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2),
         ...(t.numColumns % 2 ? [t.allColors[4]] : []),
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
- 
       ];
 
+      // Move container to the center
 
 
 
@@ -164,7 +158,6 @@ export default {
 //   height: 900,
 // })
       // Sets the canvas width/height pixels = to canvas display size width/height
-    
 
  const app = new PIXI.Application({
   width: 400,
@@ -175,6 +168,7 @@ document.body.appendChild(app.view);
 // const ticker = new PIXI.Ticker();
 
 
+      // app.stage.addChild(circle )
 
 // app.stage.addChild(circle )
  t.targetCircle  = new PIXI.Graphics();
@@ -189,16 +183,26 @@ for (let i = 0; i < t.numColumns; i++) {
 
 app.stage.addChild( t.targetCircle);
 
+      for (let i = 0; i < t.numColumns; i++) {
+        t.targetCircle.beginFill(0xff0000);
+        t.targetCircle.drawCircle(
+          100 * (i + 0.5),
+          t.hitPercent * t.stageHeight,
+          t.radius
+        );
+        t.targetCircle.endFill();
 
+       app.stage.addChild(t.targetCircle);
       }
 
+}
 
 // let container = new PIXI.ParticleContainer();
 
 
 
 
-let tick = 5;
+// let tick = 5;
 
 //   const gameCircle = new PIXI.Sprite(texture);
 //        gameCircle.interactive = true;
@@ -207,7 +211,7 @@ const sprites = new PIXI.ParticleContainer(t.notes.length, {
     scale: true,
     position: true,
     rotation: true,
-    roundPixels: false, //diference lol?
+    roundPixels: false, 
     uvs: true,
     alpha: true,
 });
@@ -304,16 +308,16 @@ app.stage.addChild(sprites);
 </script>
 
 <style scoped>
-    .background {
-        background-color: white;
-        width: 100vw;
-        height: 10vh;   
-         }
+.background {
+  background-color: white;
+  width: 100vw;
+  height: 10vh;
+}
 
-         .btn {
-            color: black;
-            font-size: 5rem;
-            height: 10rem;
-            width: 100rem;
-         }
+.btn {
+  color: black;
+  font-size: 5rem;
+  height: 10rem;
+  width: 100rem;
+}
 </style>

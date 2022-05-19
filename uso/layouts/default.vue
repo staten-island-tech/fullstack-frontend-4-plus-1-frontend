@@ -2,7 +2,6 @@
   <div id="app">
     <NavBar />
     <Nuxt />
-
   </div>
 </template>
 

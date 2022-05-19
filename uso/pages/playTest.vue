@@ -17,7 +17,7 @@
         START
       </button>
 
-      <GameCanvas
+      <GameCanvasTest
         ref="gameCanvas"
         :beatmap-data="beatmapData"
         :paused="paused"
