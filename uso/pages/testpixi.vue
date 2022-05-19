@@ -111,6 +111,12 @@ export default {
       childIndx: null,
       child: null,
       chunkSize: 4,
+      gameCircle:null,
+      gameCircleAnim: null,
+      t1: null,
+      t2: null,
+          t3: null,
+      t4: null,
     };
   },
       /* eslint-disable */
@@ -201,6 +207,7 @@ const sprites = new PIXI.ParticleContainer(t.notes.length, {
     scale: true,
     position: true,
     rotation: true,
+    roundPixels: false, //diference lol?
     uvs: true,
     alpha: true,
 });
@@ -209,52 +216,55 @@ const notes = [];//
 app.stage.addChild(sprites);
 // const totalSprites = app.renderer instanceof PIXI.Renderer ? t.notes.length : 100;
 
-    for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
-    const chunk = t.notes.slice(i, i + t.chunkSize);
-         chunk.forEach((note, index) => {
+    // for (let i = 0; i <  t.notes.length; i += t.chunkSize) {
+    // const chunk = t.notes.slice(i, i + t.chunkSize);
+         t.notes.forEach((note, index) => {
             
        setTimeout(() => {
         //  const gameCircle = new PIXI.Sprite(texture);
 
-     const gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
-           gameCircle.y = -40
-    gameCircle.width = 80;
-    gameCircle.height = 80;
-    gameCircle.anchor.set(0.5);
+     t.gameCircle = PIXI.Sprite.from('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png');
+           t.gameCircle.y = -40
+    t.gameCircle.width = 80;
+    t.gameCircle.height = 80;
+    t.gameCircle.anchor.set(0.5);
 
-        notes.push(gameCircle);
+        notes.push(t.gameCircle);
 
 
 
         if( note.columnIndex === 0) {
-             gameCircle.x = 100 * (0 + 0.5)
-                     sprites.addChild(gameCircle);
+             t.gameCircle.x = 100 * (0 + 0.5)
+                     sprites.addChild(t.gameCircle);
         }
-        else if( note.columnIndex === 1) {
-             gameCircle.x = 100 * (1 + 0.5)
-                    sprites.addChild(gameCircle);
-        }
-               else if( note.columnIndex === 2) {
-             gameCircle.x = 100 * (2 + 0.5)
-                    sprites.addChild(gameCircle);
-        }
-        else {
-             gameCircle.x = 100 * (3 + 0.5)
-                 sprites.addChild(gameCircle);
-        }
+        // else if( note.columnIndex === 1) {
+        //      t.gameCircle.x = 100 * (1 + 0.5)
+        //             sprites.addChild(t.gameCircle);
+        // }
+        //        else if( note.columnIndex === 2) {
+        //      t.gameCircle.x = 100 * (2 + 0.5)
+        //             sprites.addChild(t.gameCircle);
+        // }
+        // else {
+        //      t.gameCircle.x = 100 * (3 + 0.5)
+        //          sprites.addChild(t.gameCircle);
+        // }
+
+
         app.ticker.add((delta) => {
-            const gameCircle = notes[index];
-        gameCircle.y += 10 *delta
-         if(  gameCircle.y > 700 ) { 
-        //    t.child = container.getChildByName(gameCircle)
-        // console.log(t.child)
-            //   container.removeChildAt(index);
-             sprites.removeChild(gameCircle);
-             
-              // container2.removeChild ( gameCircle )
-              //  container3.removeChild ( gameCircle )
-              //   container4.removeChild ( gameCircle )
-        }
+            t.gameCircleAnim = notes[index];
+         t.gameCircleAnim.y += 5 * delta
+  if(   t.gameCircleAnim.y > 150 ){
+      t.t2 =  t.gameCircleAnim
+  }
+        
+         if(   t.gameCircleAnim.y > 750 ) { 
+          t.t1 = t.gameCircleAnim.y
+          t.t2 = t.gameCircleAnim
+     
+                   sprites.removeChild(t.t2);
+
+}  
 })
      
 
@@ -269,11 +279,24 @@ app.stage.addChild(sprites);
    
     // do whatever
 })
+  window.addEventListener('keydown', function (e) {
+        if (e.code === 'KeyD') {
+            console.log(   t.gameCircleAnim )
+ 
+          if( t.gameCircleAnim.x === 50) {
+            console.log("hi")
+          }
 
+          if ( t.t1 > 600 ) {
+        // console.log( t.gameCircleAnim.y);
+             sprites.removeChild(t.t2);
+          }
+        }
+      });
 
 
     // tick += 0.1;
-}
+// }
 
 } }
   }
