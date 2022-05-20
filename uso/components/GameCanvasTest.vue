@@ -91,10 +91,10 @@ export default {
 
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      allColors: ['#E1D5E7', '#DAE8FC', '#f7a5cf', '#FFE6CC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#F7A5CF', '#FFE6CC', '#F8CECC'],
       // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
-      /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
+      /* circleColors: ['#dddcdc', '#F7A5CF', '#F7A5CF', '#dddcdc'], */
 
       numColumns: null,
       columnWidth: 100, // in px (we change this to rem later)
@@ -114,7 +114,6 @@ export default {
         columnContainers: [],
         columnBorders: [],
         targetCircles: [],
-        targetCirclesGraphics: [],
       },
       notesToFallArray: [],
       remainingNotes: null,
@@ -262,43 +261,6 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
-      // t.music = new Howl({
-      //   src: [
-      //     `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
-      //   ],
-      //   volume: this.volume,
-      //   preload: 'metadata',
-      //   onload: () => (this.songLoaded = true),
-      // });
-
-      // t.music.seek(t.beatmapIntro / 1000);
-
-      // // t.defaultHitNormal = new Howl({
-      //   src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-      //   volume: t.volume,
-      //   onload: () => (t.songLoaded = true),
-      // });
-      // t.defaultHitClapNormal = new Howl({
-      //   src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
-      //   volume: t.volume,
-      //   onload: () => (t.songLoaded = true),
-      // });
-      // t.defaultHitSoftNormal = new Howl({
-      //   src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-      //   volume: 0.3,
-      //   onload: () => (t.songLoaded = true),
-      // });
-      // t.defaultHitSoftClapNormal = new Howl({
-      //   src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
-      //   volume: 0.08,
-      //   onload: () => (t.songLoaded = true),
-      // });
-      // t.softSliderWhistle = new Howl({
-      //   src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
-      //   volume: 0.1,
-      //   onload: () => (t.songLoaded = true),
-      // });
-
       /* ===============
           CANVAS SETUP
           =============== */
@@ -316,35 +278,161 @@ export default {
         width: t.stageWidth,
         height: t.stageHeight,
         view: $canvas,
-        backgroundColor: 0xFFFFFF,
+        backgroundColor: 0x181818,
       });
 
       /* ===============
           TICKER
           =============== */
 
-      // prettier-ignore
-      const graphics = new PIXI.Graphics();
- graphics.beginFill(0xDE3249);
-graphics.drawRect(50, 50, 100, 100);
-graphics.endFill();
+      t.PIXIticker = PIXI.Ticker.shared;
+      t.PIXIticker.speed = t.stageFPS / 60;
 
+      t.PIXIticker.autoStart = false;
+      t.PIXIticker.stop();
 
- t.PIXIapp.stage.addChild(graphics)
-      
-      let ticker = PIXI.Ticker.shared; // prettier OMEGALUL
-     ticker.autoStart = false;
-      ticker.stop();
+      /* ===============
+          SETUP CONTAINER
+          =============== */
 
+      t.ss.setupContainer = new PIXI.Container();
+      t.PIXIapp.stage.addChild(t.ss.setupContainer);
 
-  ticker.start();
-    ticker.add((delta) => {
-         // each frame we spin the bunny around a bit
-       graphics.y += 0.6 *delta
-    });
- 
- },
-    startGame() {},
+      /* ===============x
+          STAGE SETUP
+          =============== */
+
+      for (let i = 0; i < t.numColumns; i++) {
+        // Creates a new column container for each column
+        t.ss.columnContainers.push(
+          new PIXI.ParticleContainer(null, { tint: true })
+        );
+
+        // Sets the x-offset for each container based off the column index and column width
+        t.ss.columnContainers[i].x = i * t.stageColWidth;
+
+        // "Mounts" the container to the stage
+        t.PIXIapp.stage.addChild(t.ss.columnContainers[i]);
+
+        ////////////////////////////////////////
+
+        const columnBorder = new PIXI.Graphics()
+          .lineStyle(1, 0x000000)
+          .moveTo(t.stageColWidth * i, 0)
+          .lineTo(t.stageColWidth * i, t.stageHeight);
+
+        t.ss.columnBorders.push(columnBorder);
+        t.ss.setupContainer.addChild(columnBorder);
+
+        ////////////////////////////////////////
+
+        const targetCircle = PIXI.Sprite.from('/textures/808080_Circle.png');
+
+        targetCircle.width = 2 * t.radius;
+        targetCircle.height = 2 * t.radius;
+
+        targetCircle.anchor.set(0.5);
+
+        targetCircle.setTransform(
+          t.stageColWidth * (i + 0.5),
+          t.hitPercent * t.stageHeight
+        );
+
+        t.ss.targetCircles.push(targetCircle);
+        t.ss.setupContainer.addChild(targetCircle);
+
+        ////////////////////////////////////////
+
+        t.readyNotes.push([]);
+      }
+
+      t.areAllLoaded = true;
+      // emit this back to play.vue
+      // as soon as this is loaded, we want to immediately start the game
+    },
+    startGame() {
+      console.log('loaded');
+
+      const t = this;
+
+      t.started = true;
+
+      // t.songDuration = Math.round(t.music.duration()) * 1000;
+      // t.music.play();
+
+      /* ===============
+          HP DRAIN
+          =============== */
+
+      const HP = t.beatmapData.difficulty.HPDrainRate;
+
+      function healthbarFinalVal(hitValue) {
+        switch (hitValue) {
+          case 320:
+            t.health += 10;
+            break;
+          case 300:
+            t.health += 10;
+            break;
+          case 200:
+            t.health += 5;
+            break;
+          case 100:
+            t.health += 5;
+            break;
+          case 50:
+            t.health -= 5;
+            break;
+          case 0:
+            t.health -= 10;
+            break;
+        }
+
+        t.health = t.clamp(t.health, 0, 100);
+      }
+      /* ===============
+          KEY PRESS
+          =============== */
+
+      const OD = t.beatmapData.difficulty.OverallDifficulty;
+
+      t.hitJudgement = {
+        320: 16.5,
+        300: Math.floor(64 - 3 * OD) + 0.5,
+        200: Math.floor(97 - 3 * OD) + 0.5,
+        100: Math.floor(127 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,
+        0: Math.floor(170 - 3 * OD) + 0.5,
+      };
+
+      document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+
+        const columnI = t.keys.findIndex(
+          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
+        );
+
+        if (!(columnI === -1)) {
+          /* t.readyNotes[columnI].forEach((thisCircle) => {
+            if (thisCircle) thisCircle.hit();
+          }); */
+
+          t.ss.targetCircles[columnI].texture = '/textures/FFFFFF_Circle.png';
+        }
+      });
+
+      document.addEventListener('keyup', function (e) {
+        if (e.repeat) return;
+
+        const columnI = t.keys.findIndex(
+          (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
+        );
+
+        if (!(columnI === -1)) {
+          t.ss.targetCircles[columnI].texture = '/textures/808080_Circle.png';
+        }
+      });
+    },
     onPauseKey(isPaused) {
       if (isPaused) {
         this.notesToFallArray.forEach((note) => note.pauseTimer());

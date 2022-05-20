@@ -94,7 +94,6 @@ export default {
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
       allColors: ['#E1D5E7', '#DAE8FC', '#f7a5cf', '#FFE6CC', '#F8CECC'],
-      // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
       /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
 
@@ -403,10 +402,6 @@ export default {
 
       t.music.play();
 
-      /* const $hitComboContainer = document.querySelector(
-        '#game__hitCombo__container'
-      ); */
-
       /* ===============
           HP DRAIN
           =============== */
@@ -472,6 +467,8 @@ export default {
       });
 
       document.addEventListener('keyup', function (e) {
+        if (e.repeat) return;
+
         const columnI = t.keys.findIndex(
           (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
         );
@@ -996,7 +993,7 @@ export default {
 }
 
 #game__canvas {
-  background-color: #181818;
+  background-color: ##181818;
 }
 
 #game__hitCombo__container {

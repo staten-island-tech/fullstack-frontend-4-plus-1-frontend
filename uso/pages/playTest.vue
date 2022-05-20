@@ -12,13 +12,13 @@
       <button
         v-if="areAllLoaded && !started"
         class="game-start-button"
-        @click="$refs.gameCanvas.startGame()"
+        @click="$refs.gameCanvasTest.startGame()"
       >
         START
       </button>
 
       <GameCanvasTest
-        ref="gameCanvas"
+        ref="gameCanvasTest"
         :beatmap-data="beatmapData"
         :paused="paused"
         :beatmap-intro="beatmapIntro"
@@ -84,11 +84,11 @@
 <script>
 /* eslint-disable */
 
-import GameCanvas from '../components/GameCanvas.vue';
+import GameCanvasTest from '../components/GameCanvasTest.vue';
 
 export default {
-  components: { GameCanvas },
-  layout: 'nonav',
+  components: { GameCanvasTest },
+  layout: 'noNav',
 
   data() {
     return {
@@ -236,7 +236,7 @@ export default {
     retart() {},
     onPauseKey() {
       this.paused = !this.paused;
-      this.$refs.gameCanvas.onPauseKey(this.paused);
+      this.$refs.gameCanvasTest.onPauseKey(this.paused);
     },
     onScroll(e) {
       this.scale += e.deltaY * -0.0002;
