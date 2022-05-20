@@ -9,7 +9,7 @@
 <script>
 /* eslint-disable */
 export default {
-  layout: 'nonav',
+  layout: 'noNav',
 
   data() {
     return {
@@ -235,6 +235,7 @@ export default {
             t.gameCircle.x = 100 * (1 + 0.5);
             sprites.addChild(t.gameCircle);
           }
+
           //        else if( note.columnIndex === 2) {
           //      t.gameCircle.x = 100 * (2 + 0.5)
           //             sprites.addChild(t.gameCircle);
