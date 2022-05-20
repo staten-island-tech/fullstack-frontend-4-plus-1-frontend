@@ -78,7 +78,7 @@ export default {
       comboReset: false,
 
       comboVKey: 0,
-      hitValueVKey: 1,
+      hitValueVKey: 1, // remove this later
 
       hitJudgement: {
         320: null,
@@ -92,8 +92,9 @@ export default {
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
       allColors: ['#E1D5E7', '#DAE8FC', '#F7A5CF', '#FFE6CC', '#F8CECC'],
-      // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
       colors: [],
+      circleTextures: [],
+      targetCircleTextures: [],
       /* circleColors: ['#dddcdc', '#F7A5CF', '#F7A5CF', '#dddcdc'], */
 
       numColumns: null,
@@ -261,6 +262,17 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
+      t.colors.forEach((color) => {
+        t.circleTextures.push(
+          PIXI.Texture.from(`/textures/${color.slice(1)}_Circle.png`)
+        );
+      });
+
+      t.targetCircleTextures = [
+        PIXI.Texture.from(`/textures/808080_Circle.png`),
+        PIXI.Texture.from(`/textures/FFFFFF_Circle.png`),
+      ];
+
       /* ===============
           CANVAS SETUP
           =============== */
@@ -326,7 +338,7 @@ export default {
 
         ////////////////////////////////////////
 
-        const targetCircle = PIXI.Sprite.from('/textures/808080_Circle.png');
+        const targetCircle = new PIXI.Sprite(t.targetCircleTextures[0]);
 
         targetCircle.width = 2 * t.radius;
         targetCircle.height = 2 * t.radius;
@@ -351,14 +363,9 @@ export default {
       // as soon as this is loaded, we want to immediately start the game
     },
     startGame() {
-      console.log('loaded');
-
       const t = this;
 
       t.started = true;
-
-      // t.songDuration = Math.round(t.music.duration()) * 1000;
-      // t.music.play();
 
       /* ===============
           HP DRAIN
@@ -413,11 +420,11 @@ export default {
         );
 
         if (!(columnI === -1)) {
-          /* t.readyNotes[columnI].forEach((thisCircle) => {
+          t.readyNotes[columnI].forEach((thisCircle) => {
             if (thisCircle) thisCircle.hit();
-          }); */
+          });
 
-          t.ss.targetCircles[columnI].texture = '/textures/FFFFFF_Circle.png';
+          t.ss.targetCircles[columnI].texture = t.targetCircleTextures[1];
         }
       });
 
@@ -429,17 +436,248 @@ export default {
         );
 
         if (!(columnI === -1)) {
-          t.ss.targetCircles[columnI].texture = '/textures/808080_Circle.png';
+          t.ss.targetCircles[columnI].texture = t.targetCircleTextures[0];
         }
       });
+
+      /* for (let i = 0; i < t.numColumns; i++) {
+        kd[t.keys[i]].down(function () {
+          if (!t.readySliders[i]) return;
+          t.readySliders[i].held = true;
+
+          if (!t.readySliders[i].initialMs)
+            t.readySliders[i].initialMs = t.readySliders[i].msFrom('bot', true);
+        });
+
+        kd[[t.keys[i]]].up(function () {
+          if (!t.readySliders[i]) return;
+          t.readySliders[i].held = false;
+
+          if (t.readySliders[i].msFrom('top', true) <= t.hitJudgement['50']) {
+            t.readySliders[i].finalMs = t.readySliders[i].msFrom('top', true);
+
+            t.readySliders[i].avgMs =
+              q(t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
+
+            t.readySliders[i].hit();
+          } else {
+            if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
+            else t.readySliders[i].releasedMs = t.readySliders[i].msFrom('top');
+          }
+        });
+      } */
+
+      class Note extends Pixi.Sprite {
+        constructor(note) {
+          super(t.circleTextures[note.columnIndex]);
+
+          this.width = 2 * t.radius;
+          this.height = 2 * t.radius;
+
+          this.anchor.set(0.5);
+
+          this.setTransform(t.stageColWidth / 2, -t.radius);
+
+          this.i = note.columnIndex;
+          this.hitSample = note.hitSample;
+          this.hitSound = note.hitSound;
+          this.time = note.time;
+
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+
+          t.notesToFallArray.push(this);
+
+          this.resumeDropTimer();
+
+          this.startTime, this.timerID;
+        }
+
+        msFrom(isAbs = false) {
+          return isAbs
+            ? Math.abs(
+                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                  (t.dy * t.stageFPS)
+              )
+            : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                (t.dy * t.stageFPS);
+        }
+
+        miss() {
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          t.combo = 0;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboOn = false;
+          t.comboReset = true;
+
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
+
+          /* const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('.game__combo__on');
+          $combo.classList.add('game__combo__reset');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue); */
+
+          this.remove();
+        }
+
+        hit() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.msFrom(true) <= t.hitJudgement['320']:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['300']:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['200']:
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['100']:
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['50']:
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+
+              break;
+            case this.msFrom(true) <= t.hitJudgement['0']:
+              this.miss();
+              return;
+          }
+
+          t.bonus = t.clamp(t.bonus, 0, 100);
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboReset = false;
+          t.comboOn = true;
+
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
+
+          /* const $combo = document.querySelector('#game__combo');
+          const $hitValue = document.querySelector('#game__hitValue');
+
+          $hitComboContainer.removeChild($combo);
+          $hitComboContainer.removeChild($hitValue);
+
+          $combo.classList.remove('game__combo__reset');
+          $combo.classList.add('.game__combo__on');
+
+          $hitComboContainer.appendChild($combo);
+          $hitComboContainer.appendChild($hitValue); */
+
+          this.remove();
+        }
+
+        remove() {
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+
+          t.remainingNotes--;
+        }
+
+        animate() {
+          t.PIXIapp.ticker.add((dt) => {
+            this.y += t.dy;
+
+            switch (true) {
+              // If ms from targetCircle is less than ...
+              case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
+                this.ready = true;
+                t.readyNotes[this.i].push(this);
+
+                /* // Start fading out
+                createjs.Tween.get(this, {
+                  onComplete: this.miss,
+                }).to(
+                  { alpha: 0, visible: false },
+                  2 * t.hitJudgement['0'],
+                  createjs.Ease.linear
+                ); */
+                break;
+
+              // If it reaches offscreen then ...
+              // Remove the circle and time it correctly
+              case this.msFrom() > t.hitJudgement['50']:
+                this.miss();
+                break;
+            }
+          });
+        }
+
+        resumeDropTimer() {
+          this.startTime = new Date();
+
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
+
+            this.animate();
+          }, this.remainingTime);
+        }
+
+        pauseDropTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+      }
     },
     onPauseKey(isPaused) {
       if (isPaused) {
-        this.notesToFallArray.forEach((note) => note.pauseTimer());
+        this.notesToFallArray.forEach((note) => note.pauseDropTimer());
         // createjs.Ticker.paused = true;
         this.music.pause();
       } else {
-        this.notesToFallArray.forEach((note) => note.resumeTimer());
+        this.notesToFallArray.forEach((note) => note.resumeDropTimer());
         // createjs.Ticker.paused = false;
         this.music.play();
       }
@@ -462,10 +700,6 @@ export default {
 #canvas__container > * {
   position: absolute;
   height: 100%;
-}
-
-#game__canvas {
-  /* background-color: #181818; */
 }
 
 #game__hitCombo__container {
