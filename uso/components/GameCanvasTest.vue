@@ -56,10 +56,11 @@ export default {
       started: false,
 
       // beatmaps data
-      notes: [],
+      notes: this.$store.state.beatmapData.hitObjects,
 
       score: 0,
       combo: 0,
+      index: 0,
       maxCombo: 0,
       scrollSpeed: 20,
       latestHit: null,
@@ -136,6 +137,8 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
+      n: null,
+      testCont: [],
     };
   },
 
@@ -275,7 +278,8 @@ export default {
 
       t.colors.forEach((color) => {
         t.circleTextures.push(
-          PIXI.Texture.from(`/textures/${color.slice(1)}_Circle.png`)
+          PIXI.Texture.from(`/textures/FFFFFF_Circle.png`)
+          //  `/textures/${color.slice(1)}_Circle.png`
         );
       });
 
@@ -480,12 +484,14 @@ export default {
 
       class Note extends PIXI.Sprite {
         constructor(note) {
-          super(t.circleTextures[note.columnIndex]);
+          t.n = super(t.circleTextures[0]);
+          t.n = this.y = 300;
+          // console.log(this.y);
 
-          this.width = 2 * t.radius;
-          this.height = 2 * t.radius;
+          t.n = this.width = 2 * t.radius;
+          t.n = this.height = 2 * t.radius;
 
-          this.anchor.set(0.5);
+          t.n = this.anchor.set(0.5);
 
           this.setTransform(t.stageColWidth / 2, -t.radius);
 
@@ -516,39 +522,33 @@ export default {
         }
 
         miss() {
-          t.latestHit = 0;
-          t.totalHits['0']++;
-          t.bonus = 0;
-          t.missedCombo = t.combo;
-          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          t.combo = 0;
-          healthbarFinalVal(t.latestHit);
-
-          t.comboOn = false;
-          t.comboReset = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
-
-          /* const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
-
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('.game__combo__on');
-          $combo.classList.add('game__combo__reset');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue); */
-
-          this.remove();
+          //       t.latestHit = 0;
+          //       t.totalHits['0']++;
+          //       t.bonus = 0;
+          //       t.missedCombo = t.combo;
+          //       if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          //       t.combo = 0;
+          //       healthbarFinalVal(t.latestHit);
+          //       t.comboOn = false;
+          //       t.comboReset = true;
+          //       t.comboVKey += 2;
+          //       t.hitValueVKey += 2;
+          //       /* const $combo = document.querySelector('#game__combo');
+          //       const $hitValue = document.querySelector('#game__hitValue');
+          //       $hitComboContainer.removeChild($combo);
+          //       $hitComboContainer.removeChild($hitValue);
+          //       $combo.classList.remove('.game__combo__on');
+          //       $combo.classList.add('game__combo__reset');
+          //       $hitComboContainer.appendChild($combo);
+          //       $hitComboContainer.appendChild($hitValue); */
+          //  console.log("remove")
+          //       this.remove();
         }
 
         hit() {
           if (this.isRemoved) return;
           this.isRemoved = true;
-
+          console.log('hit');
           let hitBonusValue = 0;
 
           switch (true) {
@@ -634,9 +634,15 @@ export default {
         }
 
         animate() {
-          t.PIXIapp.ticker.add((dt) => {
-            this.y += t.dy;
-
+          t.PIXIapp.ticker.add((delta) => {
+            console.log(t.n.y);
+            // const circle = t.testCont[t.index];
+            t.n.y += 3 * delta;
+            if (t.n.y > 800) {
+              // t.PIXIapp.ticker.remove();
+              // // t.ss.columnContainers[0].removeChild(this);
+              // console.log('removed');
+            }
             switch (true) {
               // If ms from targetCircle is less than ...
               case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
@@ -666,10 +672,21 @@ export default {
           this.startTime = new Date();
 
           this.timerID = setTimeout(() => {
-            t.ss.columnContainers[this.i].addChild(this);
+            console.log(t.ss.columnContainers[this.i]);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
-            this.timerID = null;
 
+            this.timerID = null;
+            const texture = PIXI.Texture.from(
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png'
+            );
+            // t.ss.columnContainers[0];
+            t.n = new PIXI.Sprite(texture);
+            t.n.y = -40;
+            t.n.width = 80;
+            t.n.height = 80;
+            t.n.anchor.set(0.5);
+            t.ss.columnContainers[this.i].addChild(t.n);
+            t.testCont.push(t.n);
             this.animate();
           }, this.remainingTime);
         }
@@ -680,10 +697,12 @@ export default {
         }
       }
 
-      t.notes.forEach((note) => {
-        if (note.type === 'note') new Note(note);
-        /* else if (note.type === 'hold') new Slider(note); */ else
-          console.log(`Invalid note type: ${note.type}`);
+      t.notes.forEach((note, index) => {
+        t.index = index;
+        if (note.type === 'note') {
+          t.n = new Note(note); // fixed kinda
+          console.log(t.n.height);
+        }
       });
     },
     onPauseKey(isPaused) {
