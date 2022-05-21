@@ -554,6 +554,7 @@ export default {
   display: block;
   cursor: pointer;
   transition: all 100ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   }
 
   .avatar:hover {
@@ -604,6 +605,7 @@ export default {
   cursor: pointer;
   font-size: 23px;
   font-weight: bold;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .login-popup .user-sign-in {
@@ -626,6 +628,7 @@ export default {
   font-weight: 500;
   transition: all 0.3s;
   font-size: 2.45rem;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 

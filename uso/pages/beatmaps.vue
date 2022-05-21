@@ -88,7 +88,7 @@
                 (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2 class="audio__preview">Click For Audio Preview</h2>
+              <h2 class="audio__preview">click for audio preview~</h2>
 
               <img
                 v-if="oszArray[0].events[0]"
@@ -547,7 +547,7 @@ export default {
   /* border: solid; */
   position: fixed;
   bottom: 0;
-  right: 1.25%;
+  right: 1.15%;
   background-image: linear-gradient(
       rgba(160, 151, 211, 0.7),
       rgba(137, 127, 194, 0.7)
@@ -605,7 +605,7 @@ export default {
 
 .audio__preview {
   position: absolute;
-  transform: translate(12.5%, -225%);
+  transform: translate(12%, -225%);
 }
 
 /* Search Container */
@@ -670,6 +670,7 @@ export default {
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   border: none;
   outline: none;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .song-search-bar {
@@ -771,7 +772,7 @@ export default {
 .fa-play {
   height: 2rem;
   width: 3rem;
-  margin-left: auto;
+  margin-left: 0.4rem;
   margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
@@ -780,7 +781,7 @@ export default {
 .fa-pause {
   height: 2rem;
   width: 3rem;
-  margin-left: auto;
+  margin-left: 0.4rem;
   margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
