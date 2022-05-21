@@ -23,7 +23,10 @@
         </section>
         <section class="night-market">
           <div class="night-market-card-container">
-            <night-market-card :load-roll="loadRoll" />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
             <night-market-card :load-roll="loadRoll" />
             <night-market-card :load-roll="loadRoll" />
             <night-market-card :load-roll="loadRoll" />
@@ -73,6 +76,9 @@ export default {
     pressRoll() {
       this.loadRoll = !this.loadRoll;
     },
+    logRolledCard(value) {
+      console.log(value);
+    },
   },
 };
 </script>
@@ -97,8 +103,8 @@ export default {
   flex-direction: column;
   justify-content: center;
 
-  min-height: 90.2vh;
-  height: 100%;
+  /*  min-height: 90.2vh; */
+  height: calc(100vh - 9.5rem);
   background-image: linear-gradient(
       rgba(20, 14, 54, 0.7),
       rgba(20, 14, 54, 0.7)

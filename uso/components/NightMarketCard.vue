@@ -35,6 +35,7 @@ export default {
       activeArray: {},
       activeCharacter: {},
       charaName: {},
+      toAddToOwned: [],
     };
   },
 
@@ -137,11 +138,16 @@ export default {
         this.charaName = this.activeCharacter.title;
       }
     },
+    addToOwned() {
+      this.$emit('rolledCard', 'this.activeCharacter.rank');
+      /*   console.log(this.activeCharacter.rank); */
+    },
     getRoll() {
       this.chooseBg();
       this.loadCharacters();
       this.chooseCharacter();
       this.getCharaName();
+      this.addToOwned();
     },
   },
 };
