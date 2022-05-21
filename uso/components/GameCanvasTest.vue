@@ -123,7 +123,7 @@ export default {
       remainingNotes: null,
       readyNotes: [],
       readySliders: [],
-
+      pixiSlider: null,
       hitPercent: 0.85,
       radius: 40,
 
@@ -278,7 +278,7 @@ export default {
 
       t.colors.forEach((color) => {
         t.circleTextures.push(
-          PIXI.Texture.from(`/textures/FFFFFF_Circle.png`)
+          PIXI.Texture.from(`/textures/${color.slice(1)}_Circle.png`)
           //  `/textures/${color.slice(1)}_Circle.png`
         );
       });
@@ -332,7 +332,8 @@ export default {
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
         t.ss.columnContainers.push(
-          new PIXI.ParticleContainer(null, { tint: true })
+          new PIXI.Container()
+          // new PIXI.ParticleContainer(null, { tint: true })
         );
 
         // Sets the x-offset for each container based off the column index and column width
@@ -484,14 +485,10 @@ export default {
 
       class Note extends PIXI.Sprite {
         constructor(note) {
-          t.n = super(t.circleTextures[0]);
-          t.n = this.y = 300;
+          super(t.targetCircleTextures[1]);
           // console.log(this.y);
 
-          t.n = this.width = 2 * t.radius;
-          t.n = this.height = 2 * t.radius;
-
-          t.n = this.anchor.set(0.5);
+          this.anchor.set(0.5);
 
           this.setTransform(t.stageColWidth / 2, -t.radius);
 
@@ -635,10 +632,9 @@ export default {
 
         animate() {
           t.PIXIapp.ticker.add((delta) => {
-            console.log(t.n.y);
             // const circle = t.testCont[t.index];
-            t.n.y += 3 * delta;
-            if (t.n.y > 800) {
+            this.y += t.dy * delta;
+            if (this.y > 600 && this.y < 800) {
               // t.PIXIapp.ticker.remove();
               // // t.ss.columnContainers[0].removeChild(this);
               // console.log('removed');
@@ -670,23 +666,20 @@ export default {
 
         resumeDropTimer() {
           this.startTime = new Date();
-
+          this.width = t.radius * 2; //change vals in resume drop timer works
+          this.height = t.radius * 2;
           this.timerID = setTimeout(() => {
-            console.log(t.ss.columnContainers[this.i]);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
 
             this.timerID = null;
-            const texture = PIXI.Texture.from(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Circle_-_black_simple.svg/500px-Circle_-_black_simple.svg.png'
-            );
             // t.ss.columnContainers[0];
-            t.n = new PIXI.Sprite(texture);
-            t.n.y = -40;
-            t.n.width = 80;
-            t.n.height = 80;
-            t.n.anchor.set(0.5);
-            t.ss.columnContainers[this.i].addChild(t.n);
-            t.testCont.push(t.n);
+            // t.n = new PIXI.Sprite(texture);
+            // t.n.y = -40;
+            // t.n.width = 80;
+            // t.n.height = 80;
+            // t.n.anchor.set(0.5);
+            t.ss.columnContainers[this.i].addChild(this);
+            // t.testCont.push(t.n);
             this.animate();
           }, this.remainingTime);
         }
@@ -696,12 +689,230 @@ export default {
           this.remainingTime -= new Date() - this.startTime;
         }
       }
+      class Slider extends PIXI.RoundedRectangle {
+        constructor(note) {
+          const height =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+
+          super(
+            new PIXI.RoundedRectangle(
+              t.stageColWidth / 2,
+              -(height + 2 * t.radius),
+              2 * t.radius,
+              height + 2 * t.radius,
+              t.radius
+            )
+          );
+
+          this.lineStyle(2, 0xff00ff, 1);
+          this.beginFill(0x650a5a, 0.25);
+          this.endFill();
+
+          this.height = height;
+
+          this.name = 'thisSlider';
+          this.i = note.columnIndex;
+          this.time = note.time;
+
+          // this.animate = this.animate.bind(this);
+          /* this.cache(
+            t.stageColWidth / 2 - t.radius,
+            -2 * t.radius,
+            2 * t.radius + 30,
+            2 * t.radius + 30
+          ); */
+
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+
+          t.notesToFallArray.push(this);
+          this.resumeTimer();
+
+          this.startTime, this.timerID;
+        }
+        msFrom(position, isAbs = false) {
+          if (position === 'bot') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y - (t.stageHeight * t.hitPercent + t.radius)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                  (t.dy * t.stageFPS);
+          } else if (position === 'top') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y -
+                    (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y -
+                  (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                  1000) /
+                  (t.dy * t.stageFPS);
+          } else console.log('Invalid position in slider.msFrom()');
+        }
+
+        // miss() {
+        //   if (this.isRemoved) return;
+        //   this.isRemoved = true;
+
+        //   t.latestHit = 0;
+        //   t.totalHits['0']++;
+        //   t.bonus = 0;
+        //   t.missedCombo = t.combo;
+        //   if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+        //   t.combo = 0;
+        //   healthbarFinalVal(t.latestHit);
+
+        //   t.comboOn = false;
+        //   t.comboReset = true;
+
+        //   t.comboVKey += 2;
+        //   t.hitValueVKey += 2;
+        // }
+
+        hit() {
+          if (this.isRemoved) return;
+          this.isRemoved = true;
+
+          let hitBonusValue = 0;
+
+          switch (true) {
+            case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
+              t.latestHit = 320;
+              t.totalHits['320']++;
+              hitBonusValue = 32;
+              t.bonus += 2;
+
+              break;
+            case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
+              t.latestHit = 300;
+              t.totalHits['300']++;
+              hitBonusValue = 32;
+              t.bonus += 1;
+
+              break;
+            case this.avgMs <= t.hitJudgement['300'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
+              t.latestHit = 200;
+              t.totalHits['200']++;
+              hitBonusValue = 16;
+              t.bonus -= 8;
+
+              break;
+            case this.avgMs <= t.hitJudgement['200'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
+              t.latestHit = 100;
+              t.totalHits['100']++;
+              hitBonusValue = 8;
+              t.bonus -= 24;
+
+              break;
+            case this.avgMs <= t.hitJudgement['50'] ||
+              (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
+              t.latestHit = 50;
+              t.totalHits['50']++;
+              hitBonusValue = 4;
+              t.bonus -= 44;
+              break;
+          }
+
+          if (t.bonus > 100) t.bonus = 100;
+          if (t.bonus < 0) t.bonus = 0;
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboReset = false;
+          t.comboOn = true;
+
+          t.comboVKey += 2;
+          t.hitValueVKey += 2;
+
+          this.remove();
+        }
+
+        remove() {
+          createjs.Tween.removeTweens(this);
+          t.ss.columnContainers[this.i].removeChild(this);
+          t.readySliders[this.i] = null;
+
+          t.remainingNotes--;
+        }
+
+        animate() {
+          t.PIXIapp.ticker.add((delta) => {
+            // const circle = t.testCont[t.index];
+            this.y += t.dy * delta;
+            if (this.y > 600 && this.y < 800) {
+              // t.PIXIapp.ticker.remove();
+              // // t.ss.columnContainers[0].removeChild(this);
+              // console.log('removed');
+            }
+          });
+          switch (true) {
+            case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
+              !this.ready:
+              this.ready = true;
+
+              t.readySliders[this.i] = this;
+              break;
+
+            case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
+              this.miss();
+              this.remove();
+              break;
+
+            case this.msFrom('top') > t.hitJudgement['50']:
+              if (this.held && this.initialMs) this.hit();
+              else {
+                this.miss();
+                this.remove();
+              }
+              break;
+          }
+        }
+
+        resumeTimer() {
+          this.startTime = new Date();
+
+          this.timerID = setTimeout(() => {
+            t.ss.columnContainers[this.i].addChild(this);
+            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
+
+            this.animate();
+          }, this.remainingTime);
+        }
+
+        pauseTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
+      }
 
       t.notes.forEach((note, index) => {
         t.index = index;
         if (note.type === 'note') {
-          t.n = new Note(note); // fixed kinda
-          console.log(t.n.height);
+          new Note(note); // fixed kinda
+        } else if (note.type === 'hold') {
+          new Note(note);
+        } else {
+          console.log(`Invalid note type: ${note.type}`);
         }
       });
     },

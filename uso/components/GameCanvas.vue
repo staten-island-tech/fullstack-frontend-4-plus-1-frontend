@@ -742,7 +742,7 @@ export default {
         constructor(note) {
           const height =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
+          console.log('Hi');
           super(
             new createjs.Graphics()
               .beginStroke('Black')
@@ -813,22 +813,19 @@ export default {
         }
 
         miss() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
-
-          t.latestHit = 0;
-          t.totalHits['0']++;
-          t.bonus = 0;
-          t.missedCombo = t.combo;
-          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          t.combo = 0;
-          healthbarFinalVal(t.latestHit);
-
-          t.comboOn = false;
-          t.comboReset = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
+          // if (this.isRemoved) return;
+          // this.isRemoved = true;
+          // t.latestHit = 0;
+          // t.totalHits['0']++;
+          // t.bonus = 0;
+          // t.missedCombo = t.combo;
+          // if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          // t.combo = 0;
+          // healthbarFinalVal(t.latestHit);
+          // t.comboOn = false;
+          // t.comboReset = true;
+          // t.comboVKey += 2;
+          // t.hitValueVKey += 2;
         }
 
         hit() {
@@ -909,10 +906,16 @@ export default {
         }
 
         animate() {
-          createjs.Tween.get(this, {
-            useTicks: true,
-            onComplete: this.animate,
-          }).to({ y: this.y + t.dy }, 1);
+          t.PIXIapp.ticker.add((delta) => {
+            // const circle = t.testCont[t.index];
+            console.log(this.y);
+            this.y += t.dy * delta;
+            if (this.y > 600 && this.y < 800) {
+              // t.PIXIapp.ticker.remove();
+              // // t.ss.columnContainers[0].removeChild(this);
+              // console.log('removed');
+            }
+          });
 
           switch (true) {
             case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
