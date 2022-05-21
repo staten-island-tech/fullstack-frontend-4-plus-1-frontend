@@ -17,6 +17,7 @@ export default {
         createjs: false,
         keydrown: false,
       },
+
       areAllLoaded: false,
       started: false,
 

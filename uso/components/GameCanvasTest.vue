@@ -43,12 +43,14 @@ export default {
     },
     beatmapIntro: {
       required: true,
+      // stop passing in null
     },
   },
   data() {
     return {
       loaded: {
         keydrown: false,
+        PIXI: false,
       },
       areAllLoaded: false,
       started: false,
@@ -148,6 +150,15 @@ export default {
     };
   },
 
+  mounted() {
+    const loadedTimerID = setInterval(() => {
+      if (typeof window.PIXI !== 'undefined') {
+        this.loaded.PIXI = true;
+        clearInterval(loadedTimerID);
+      }
+    }, 200);
+  },
+
   computed: {
     dy() {
       return (
@@ -230,14 +241,14 @@ export default {
       },
       deep: true,
     },
-    remainingNotes(newValue) {
+    /* remainingNotes(newValue) {
       if (newValue === 0) {
         if (this.combo > this.maxCombo) this.maxCombo = this.combo;
         setTimeout(() => {
           this.$emit('endGameParent', this.totalHits, this.maxCombo);
         }, 1000);
       }
-    },
+    }, */
   },
 
   methods: {
@@ -467,7 +478,7 @@ export default {
         });
       } */
 
-      class Note extends Pixi.Sprite {
+      class Note extends PIXI.Sprite {
         constructor(note) {
           super(t.circleTextures[note.columnIndex]);
 
@@ -670,6 +681,12 @@ export default {
           this.remainingTime -= new Date() - this.startTime;
         }
       }
+
+      t.notes.forEach((note) => {
+        if (note.type === 'note') new Note(note);
+        /* else if (note.type === 'hold') new Slider(note); */ else
+          console.log(`Invalid note type: ${note.type}`);
+      });
     },
     onPauseKey(isPaused) {
       if (isPaused) {
