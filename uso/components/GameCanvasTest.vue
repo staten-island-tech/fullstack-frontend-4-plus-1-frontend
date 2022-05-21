@@ -909,7 +909,7 @@ export default {
         if (note.type === 'note') {
           new Note(note); // fixed kinda
         } else if (note.type === 'hold') {
-          new Note(note);
+          new Slider(note);
         } else {
           console.log(`Invalid note type: ${note.type}`);
         }
