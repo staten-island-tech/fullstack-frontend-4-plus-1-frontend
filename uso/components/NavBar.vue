@@ -29,36 +29,51 @@
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">gameTest</nuxt-link>
+            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
+          </li>
+
+          <li>
+            <button class="btn" @click="logout()">logout</button>
           </li>
         </ul>
       </div>
 
       <div class="uso__avatar--container">
         <div class="uso__avatar">
-
           <div class="uso__circle">
             <nuxt-link to="/shop" class="uso__button"
-              ><img src="~/assets/images/navigation/primogem.png" id="resizedBtn3" class="nav-shop-btns"
+              ><img
+                src="~/assets/images/navigation/primogem.png"
+                id="resizedBtn3"
+                class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/aboutUs" class="uso__button"
-              ><img src="~/assets/images/navigation/paimon2.png" id="resizedBtn2" class="nav-shop-btns"
+              ><img
+                src="~/assets/images/navigation/paimon2.png"
+                id="resizedBtn2"
+                class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/settings" class="uso__button"
-              ><img src="~/assets/images/navigation/paimon1.png" id="resizedBtn1" class="nav-shop-btns"
+              ><img
+                src="~/assets/images/navigation/paimon1.png"
+                id="resizedBtn1"
+                class="nav-shop-btns"
             /></nuxt-link>
           </div>
 
-          <nuxt-link to="/profile" class="uso__avatar--img">
+          <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
             />
           </nuxt-link>
+          <li v-else>
+            <button class="btn" @click="login()">login</button>
+          </li>
         </div>
       </div>
 
@@ -73,36 +88,12 @@
 
 <script>
 export default {
-  /* eslint-disable */
   name: 'NavBar',
-
   data() {
     return {
-      page: this.$route.name,
+      loginSatus: this.$store.state.auth.loggedIn,
+      username: this.$auth.user.nickname,
     };
-  },
-
-  head() {
-    return {
-      script: [
-        {
-          src: '/lib/howler.min.js',
-        },
-      ],
-    };
-  },
-
-  watch: {
-    $route(to, from) {
-      if (to.name !== 'play') {
-        // if you're going to somewhere else than `wallpaper`
-        // the `return` will end the execution and not go further
-        console.log('yes1');
-        Howler.volume(0);
-      } else {
-        console.log('yes refresh yo');
-      }
-    },
   },
 
   mounted() {
@@ -131,23 +122,19 @@ export default {
     animateNav();
   },
 
-  methods: {},
+  methods: {
+    async login() {
+      await this.$auth.loginWith('auth0');
+    },
+    async logout() {
+      await this.$auth.logout();
+    },
+  },
 };
 </script>
 
 <style scoped>
 /* Keyframes */
-
-/* @keyframes navLinkFade {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 3;
-    transform: translateY(0px);
-  }
-} */
 
 @keyframes pulse {
   to {
@@ -175,6 +162,7 @@ export default {
     filter: hue-rotate(0deg);
   }
 }
+
 @-o-keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -284,6 +272,9 @@ export default {
 
 /* Navigation Leftside [logo, links] */
 
+.btn {
+  font-size: 2rem;
+}
 .uso__logolinks--container {
   display: contents;
 }

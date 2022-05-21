@@ -1,4 +1,6 @@
 export const state = () => ({
+  user: null,
+
   beatmapData: {
     general: {
       AudioFilename: 'Flower Dance.mp3',
@@ -22529,9 +22531,23 @@ export const state = () => ({
           volume: 0,
           filename: '',
         },
-        columnIndex: 1,
+        columnIndex: 0,
       },
       {
+        x: 448,
+        time: 32000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 1,
+      },
+      /* {
         x: 448,
         time: 34000,
         type: 'note',
@@ -22547,6 +22563,20 @@ export const state = () => ({
       },
       {
         x: 448,
+        time: 34000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 0,
+      },
+      {
+        x: 448,
         time: 36000,
         type: 'note',
         hitSound: 0,
@@ -22559,6 +22589,21 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
+
+      {
+        x: 448,
+        time: 36000,
+        type: 'note',
+        hitSound: 0,
+        hitSample: {
+          normalSet: 0,
+          additionSet: 0,
+          index: 0,
+          volume: 0,
+          filename: '',
+        },
+        columnIndex: 0,
+      }, */
     ],
     columns: 4,
   },
@@ -33428,9 +33473,28 @@ export const state = () => ({
   },
 });
 
-export const getters = {};
+export const getters = {
+  /* getUser(state) {
+    return state.user;
+  }, */
+};
 
-export const actions = {};
+export const actions = {
+  /* onAuthStateChangedAction: (state, { authUser, claims }) => {
+    if (!authUser) {
+      state.commit('SET_USER', null);
+      this.$router.push({
+        path: '/login',
+      });
+    } else {
+      const { uid, email } = authUser;
+      state.commit('SET_USER', {
+        uid,
+        email,
+      });
+    }
+  }, */
+};
 
 export const mutations = {
   setBeatmap(state, data) {

@@ -1,5 +1,6 @@
 <template>
   <div class="beatmaps__content--body">
+    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -26,24 +27,69 @@
           </form>
         </div>
 
+        <div class="my-video-audio">
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              icon="backward"
+              class="svg"
+              @click="prevSongIndex()"
+            />
+            <!-- <fa-backward class="svg"/> -->
+          </div>
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              v-if="clicked"
+              icon="fa-solid fa-play"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-pause"
+              class="svg"
+              @click="toggleAudio()"
+            />
+            <!-- <font-awesome-icon icon="pasue" class="svg"/> -->
+          </div>
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              icon="fa-solid fa-forward-step"
+              class="svg"
+              @click="nextSongIndex()"
+            />
+          </div>
+
+          <div id="audioProgress"></div>
+
+          <div class="audio-cntrl-cont">
+            <font-awesome-icon
+              v-if="mute"
+              icon="fa-solid fa-volume-high"
+              class="svg"
+              @click="audioBarMute()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-volume-xmark"
+              class="svg"
+              @click="audioBarMute()"
+            />
+          </div>
+        </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
             <div
               v-for="(oszArray, bmSetName) in bmSetsData"
               :key="bmSetName"
               class="play-beatmap-set"
-              @mouseover="bmClickEvents(bmSetName, $event), (hovered = true)"
-              @mouseleave="bmClickEvents(bmSetName, $event), (hovered = false)"
               @click="
-                bmClickEvents(bmSetName, $event),
-                  beatmapSoundBit(),
-                  changeSound(),
-                  toggleAudio()
+                (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <font-awesome-icon v-show="!clicked" icon="fa-solid fa-play" />
+              <h2>Click For Audio Preview</h2>
 
-              <font-awesome-icon v-show="clicked" icon="fa-solid fa-pause" />
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -55,29 +101,29 @@
               </p>
             </div>
           </div>
-          <div v-if="currentBmSetName" class="play-sidebar">
+          <div v-if="clickedBmSetName" class="play-sidebar">
             <div class="play-sidebar-image-container">
               <img
-                :src="`/beatmaps/${currentBmSetName}/${
-                  bmSetsData[`${currentBmSetName}`][0].events[0][2]
+                :src="`/beatmaps/${clickedBmSetName}/${
+                  bmSetsData[`${clickedBmSetName}`][0].events[0][2]
                 }`"
               />
             </div>
             <div class="play-sidebar-text-container">
               <p class="play-sidebar-text-title">
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Title }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Title }}
               </p>
               <p>
                 Artist:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Artist }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Artist }}
               </p>
               <p>
                 Mapper:
-                {{ bmSetsData[`${currentBmSetName}`][0].metadata.Creator }}
+                {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
               <nuxt-link
                 :to="`/leaderboard/${
-                  bmSetsData[`${currentBmSetName}`][0].metadata.BeatmapSetID
+                  bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
                 class=""
                 >Leaderboard</nuxt-link
@@ -87,7 +133,7 @@
               <tbody>
                 <tr
                   v-for="(bmDifficulty, index) in bmSetsData[
-                    `${currentBmSetName}`
+                    `${clickedBmSetName}`
                   ]"
                   :key="index"
                   @click="$store.commit('setBeatmap', bmDifficulty)"
@@ -117,20 +163,30 @@
 
 <script>
 /* eslint-disable */
+
 export default {
+  auth: false,
   data() {
     return {
       bmSets: {},
+      songIndexs: null,
+      mute: true,
+      minIndex: 0,
+      maxIndex: 24,
+      currentSongIndex: null,
+      currAudioBarVal: null,
+      timeoutID: null,
+      currAudioProg: null,
+      userdata: null,
       bmSetsData: {},
-      hoveredBmSetName: null,
       clickedBmSetName: null,
-      hovered: false,
-      clicked: false,
+      clicked: true,
       clickBack: false,
       searchQuery: null,
       id: null,
+      SoundPrevBarDur: null,
+      musicBeatmapDuration: 0,
 
-      osuClientSecret: process.env.OSU_CLIENT_SECRET,
       musicBeatmapDuration: 0,
       executed: false,
       chageExeuted: false,
@@ -141,6 +197,9 @@ export default {
     };
   },
 
+  async login() {
+    await this.$auth.loginWith('auth0');
+  },
   async fetch() {
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
@@ -154,15 +213,16 @@ export default {
     });
   },
 
-  computed: {
-    currentBmSetName() {
-      return this.hoveredBmSetName
-        ? this.hoveredBmSetName
-        : this.clickedBmSetName;
-    },
+  mounted() {
+    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+      strokeWidth: 3,
+      color: '#FFEA82',
+      duration: 10000,
+      trailColor: '#eee',
+      trailWidth: 3,
+      svgStyle: { width: '100%', height: '30%' },
+    });
   },
-
-  mounted() {},
 
   methods: {
     getBmData(folder, osz) {
@@ -191,9 +251,9 @@ export default {
               console.log(
                 `Careful: The osu file version is ${lines[0].match(
                   '1[0-3]|[1-9]'
-                )}`
+                )}`,
+                folder
               );
-              console.log(folder);
             }
 
             let section;
@@ -311,7 +371,9 @@ export default {
                     default:
                       // Unknown hit type
                       console.log(
-                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`
+                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`,
+                        folder,
+                        osz
                       );
                       break;
                   }
@@ -331,115 +393,166 @@ export default {
           }
         });
 
-      // console.log(beatmap);
       return beatmap;
-    },
-    bmClickEvents(bmName, event) {
-      switch (event.type) {
-        case 'mouseover':
-          this.hoveredBmSetName = bmName;
-          break;
-
-        case 'mouseleave':
-          this.hoveredBmSetName = null;
-
-          break;
-
-        case 'click':
-          this.clickedBmSetName = bmName;
-          break;
-
-        default:
-          alert(`Dropbox event listener does not exist: ${event.type}`);
-          break;
-      }
     },
     beatmapSoundBit() {
       const t = this;
-      t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 1000
-      );
+      t.clicked = false;
+      //  t.musicBeatmapDuration = Math.round(
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
+      // ) *1000 /2
 
+      t.musicBeatmapDuration = Math.round(
+        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
+      );
       t.musicBeatmap = new Howl({
-        // eslint-disable-line
         src: [
           `/beatmaps/${this.clickedBmSetName}/${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
         //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: 0.1,
+        volume: 0.5,
         preload: true,
         html5: true,
-        sprite: {
-          prevMusic: [t.musicBeatmapDuration, 10000, false],
-        },
+        // sprite: {
+        //   prevMusic: [t.musicBeatmapDuration, 10000, false],
+        // },
       });
-
-      // if (!t.chageExeuted) {
-      //         t.chageExeuted = true;
-      //       }
+      Howler.volume(1);
 
       if (!t.executed) {
         t.executed = true;
-        t.musicBeatmap.play('prevMusic');
 
+        // t.musicBeatmap.play('prevMusic');
+        this.progressAudioBar.set(0);
+        this.progressAudioBar.animate(1.0);
+        t.musicBeatmap.seek(t.musicBeatmapDuration);
+        t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-        //t.executed = false;
+        this.timeoutID = setTimeout(() => {
+          this.resetAudio();
+        }, 10000);
       }
-      console.log(this.clickedBmSetName);
 
-      t.musicBeatmap.on('end', function () {
-        t.executed = false;
-      });
+      t.songIndexs = Object.keys(t.bmSets);
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
       const t = this;
       if (t.firstBeatmapVal !== t.currVal) {
+        this.progressAudioBar.set(0);
+        t.progressAudioBar.animate(1, {
+          duration: 10000,
+        });
         t.firstBeatmapVal = t.currVal;
 
-        console.log('work');
         Howler.stop();
-        t.musicBeatmap.play('prevMusic');
+        t.musicBeatmap.play();
+        //  t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.timeoutID = setTimeout(() => {
+          t.resetAudio();
+        }, 10000);
       }
+    },
+    resetAudio() {
+      Howler.stop();
+      this.executed = false;
+      this.progressAudioBar.set(0);
+      this.clicked = true;
     },
     toggleAudio() {
       const t = this;
-      // this.clicked = true
+      t.clicked = !t.clicked;
 
-      if (this.clicked === false) {
-        // t.musicBeatmap.play('prevMusic')
-        this.clicked = true;
+      if (t.clicked === true) {
+        clearTimeout(t.timeoutID);
+        t.currAudioBarVal = t.progressAudioBar.value();
+        t.musicBeatmap.pause();
+        t.progressAudioBar.stop();
       } else {
-        this.clicked = false;
-        //  const sprite1 = t.musicBeatmap.play('prevMusic')
-        // Howler.stop();
+        // t.musicBeatmap.play('prevMusic');
+        clearTimeout(t.timeoutID);
+        t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
+
+        t.progressAudioBar.animate(1, {
+          duration: t.currAudioProg,
+        });
+        t.timeoutID = setTimeout(() => {
+          t.resetAudio();
+        }, t.currAudioProg);
+
+        t.musicBeatmap.play();
       }
-      console.log(this.clicked);
+    },
+    prevSongIndex() {
+      const t = this;
+      // t.songIndexs
+
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+
+      if (currSong > t.minIndex) {
+        const prevSong = currSong - 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    nextSongIndex() {
+      const t = this;
+      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
+
+      if (currSong <= t.maxIndex) {
+        const prevSong = currSong + 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+    },
+    audioBarMute() {
+      this.mute = !this.mute;
+      if (this.mute === false) {
+        Howler.volume(0);
+      } else {
+        Howler.volume(1);
+      }
     },
   },
 };
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Montserrat:wght@600&display=swap');
 
 *,
 .beatmaps__content--body {
   font-family: 'Dongle', sans-serif;
 }
 
-/* Beatmaps Title */
-
-.under-nav {
-  height: 9.5rem;
+.my-video-audio {
+  height: 20%;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  border: solid;
 }
 
+.audio-cntrl-cont {
+  height: 100%;
+  width: 15%;
+  border: solid;
+}
+
+/* Beatmaps Title */
 .play-index {
   width: 100vw;
 }
@@ -494,7 +607,10 @@ export default {
   background-size: cover;
   background-position: center center;
 }
-
+.svg {
+  height: 4rem;
+  width: 4rem;
+}
 .deleteText {
   transform: translateY(30%);
   left: 4%;
@@ -698,8 +814,8 @@ export default {
 }
 
 .play-sidebar {
-  width: calc(32rem + var(--sidebar)); 
-  
+  width: calc(32rem + var(--sidebar));
+
   min-width: 0;
   min-height: 25rem;
   border: 0.2rem solid rgb(45, 40, 68);

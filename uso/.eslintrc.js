@@ -4,6 +4,13 @@ module.exports = {
     browser: true,
     node: true,
   },
+  globals: {
+    Howler: false,
+    Howl: false,
+    createjs: false,
+    ProgressBar: false,
+    kd: false,
+  },
   parserOptions: {
     parser: '@babel/eslint-parser',
     requireConfigFile: false,
