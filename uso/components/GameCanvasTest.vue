@@ -332,8 +332,7 @@ export default {
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
         t.ss.columnContainers.push(
-          new PIXI.Container()
-          // new PIXI.ParticleContainer(null, { tint: true })
+          new PIXI.ParticleContainer(1500, { tint: true })
         );
 
         // Sets the x-offset for each container based off the column index and column width
