@@ -43,24 +43,24 @@
           <div class="uso__circle">
             <nuxt-link to="/shop" class="uso__button"
               ><img
-                src="~/assets/images/navigation/primogem.png"
                 id="resizedBtn3"
+                src="~/assets/images/navigation/primogem.png"
                 class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/aboutUs" class="uso__button"
               ><img
-                src="~/assets/images/navigation/paimon2.png"
                 id="resizedBtn2"
+                src="~/assets/images/navigation/paimon2.png"
                 class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/settings" class="uso__button"
               ><img
-                src="~/assets/images/navigation/paimon1.png"
                 id="resizedBtn1"
+                src="~/assets/images/navigation/paimon1.png"
                 class="nav-shop-btns"
             /></nuxt-link>
           </div>
@@ -93,6 +93,7 @@ export default {
     return {
       loginSatus: this.$store.state.auth.loggedIn,
       username: this.$auth.user.nickname,
+      userdata: this.$auth.user,
     };
   },
 

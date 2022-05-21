@@ -1,122 +1,177 @@
 <template>
   <div class="settings__page">
     <div class="under-nav"></div>
-      <section class="landing">
-        <video
-          id="landing-video"
-          class="video-bg"
-          autoplay
-          muted
-          loop
-          playsinline
-          disablePictureInPicture
-          src="../assets/images/backgrounds/landing-narukami-shrine.mp4"
-          type="video/mp4"
-        ></video>
-      </section>
+    <section class="landing">
+      <video
+        id="landing-video"
+        class="video-bg"
+        autoplay
+        muted
+        loop
+        playsinline
+        disablePictureInPicture
+        src="../assets/images/backgrounds/landing-narukami-shrine.mp4"
+        type="video/mp4"
+      ></video>
+    </section>
 
-        <div class="settings__container">
-          <h1 id="settings__title">settings.</h1>
-            <form class="settings__form">
-              <section class="settings__section">
-                <header>
-                  <h2 id="sounds__title">sfx/sounds</h2>
-                  <h3 id="sounds__subTitle">adjust your volume settings</h3>
-                </header>
+    <div class="settings__container">
+      <h1 id="settings__title">settings.</h1>
+      <form class="settings__form">
+        <section class="settings__section">
+          <header>
+            <h2 id="sounds__title">sfx/sounds</h2>
+            <h3 id="sounds__subTitle">adjust your volume settings</h3>
+          </header>
+          <button class="btn" @click="patch()">UPDATE</button>
+          <fieldset class="settings__field">
+            <div id="1" class="fieldset-item">
+              <picture aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                  ></path>
+                </svg>
+              </picture>
+              <div class="input-stack">
+                <label id="media-volume" for="media-volume" aria-hidden="true">
+                  master volume ~
+                </label>
+                <input
+                  name="media-volume"
+                  aria-labelledby="media-volume"
+                  type="range"
+                  :value="volume1"
+                  min="0"
+                  max="100"
+                  style="--track-fill: 30%"
+                />
+                <input v-model="volume1" class="ryanisgoodatvideogames" />
+              </div>
+            </div>
 
-                <fieldset class="settings__field">
+            <div id="2" class="fieldset-item">
+              <picture aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                  ></path>
+                </svg>
+              </picture>
+              <div class="input-stack">
+                <label id="media-volume" for="media-volume" aria-hidden="true">
+                  music volume ~
+                </label>
+                <input
+                  name="media-volume"
+                  aria-labelledby="media-volume"
+                  type="range"
+                  value="3"
+                  max="10"
+                  style="--track-fill: 30%"
+                  oninput="rangeValue.innerText = this.value"
+                />
+                <p id="rangeValue">3</p>
+              </div>
+            </div>
 
-                  <div class="fieldset-item" id="1">
-                    <picture aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
-                      </svg>
-                    </picture>
-                    <div class="input-stack">
-                      <label for="media-volume" id="media-volume" aria-hidden="true">
-                          master volume ~
-                      </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" :value="volume1" min="0" max="100" style="--track-fill:30%;">
-                      <input class="ryanisgoodatvideogames" v-model="volume1">
-                    </div>
-                  </div>
+            <div id="3" class="fieldset-item">
+              <picture aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                  ></path>
+                </svg>
+              </picture>
+              <div class="input-stack">
+                <label id="media-volume" for="media-volume" aria-hidden="true">
+                  hitsounds volume ~
+                </label>
+                <input
+                  name="media-volume"
+                  aria-labelledby="media-volume"
+                  type="range"
+                  value="3"
+                  max="10"
+                  style="--track-fill: 30%"
+                  oninput="rangeValue.innerText = this.value"
+                />
+                <p id="rangeValue">3</p>
+              </div>
+            </div>
 
-                  <div class="fieldset-item" id="2">
-                    <picture aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
-                      </svg>
-                    </picture>
-                    <div class="input-stack">
-                      <label for="media-volume" id="media-volume" aria-hidden="true">
-                          music volume ~
-                      </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
-                      <p id="rangeValue">3</p>
-                    </div>
-                  </div>   
-
-
-                  <div class="fieldset-item" id="3">
-                    <picture aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
-                      </svg>
-                    </picture>
-                    <div class="input-stack">
-                      <label for="media-volume" id="media-volume" aria-hidden="true">
-                          hitsounds volume ~
-                      </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
-                      <p id="rangeValue">3</p>
-                    </div>
-                  </div>
-
-                  <div class="fieldset-item" id="4">
-                    <picture aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path>
-                      </svg>
-                    </picture>
-                    <div class="input-stack">
-                      <label for="media-volume" id="media-volume" aria-hidden="true">
-                            Scroll Speed ~
-                      </label>
-                      <input name="media-volume" aria-labelledby="media-volume" type="range" value="3" max="10" style="--track-fill:30%;" oninput= "rangeValue.innerText = this.value">
-                      <p id="rangeValue">3</p>
-                    </div>
-                  </div>
-          
-
-                </fieldset>
-              </section>
-            </form>
-        </div>
-
+            <div id="4" class="fieldset-item">
+              <picture aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                  ></path>
+                </svg>
+              </picture>
+              <div class="input-stack">
+                <label id="media-volume" for="media-volume" aria-hidden="true">
+                  Scroll Speed ~
+                </label>
+                <input
+                  name="media-volume"
+                  aria-labelledby="media-volume"
+                  type="range"
+                  value="3"
+                  max="10"
+                  style="--track-fill: 30%"
+                  oninput="rangeValue.innerText = this.value"
+                />
+                <p id="rangeValue">3</p>
+              </div>
+            </div>
+          </fieldset>
+        </section>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
   components: {},
   data() {
     return {
+      userdata: this.$auth.user,
       volume1: 3,
-    }
+    };
   },
   watch: {
     volume1(newValue) {
-      if (this.volume1 > 100) this.volume1 = 100
-      else if (this.volume1 < 0) this.volume1 = 0
-    }
+      if (this.volume1 > 100) this.volume1 = 100;
+      else if (this.volume1 < 0) this.volume1 = 0;
+    },
+  },
+  methods: {
+    async patch() {
+      const getUserId = this.userdata.sub.replace('auth0|', '');
+      console.log(getUserId);
+      try {
+        const token = await this.$auth.strategy.token.get();
+        fetch(`http://localhost:8000/update/${getUserId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            A: '3',
+            username: 'wx346xcs',
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: token,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
-
 </script>
 
 <style scoped>
-
 * {
   font-family: 'Dongle', sans-serif;
   margin: 0;
@@ -136,6 +191,9 @@ export default {
 .landing {
   width: 100%;
   /* height: calc(100vh - 9.5rem); */
+}
+.btn {
+  font-size: 3rem;
 }
 
 .video-bg {
@@ -183,7 +241,7 @@ export default {
   /* display: grid; */
   gap: 3rem 6rem;
   --repeat: auto-fit;
-  grid-template-columns: repeat(auto-fit, minmax(min(10ch,100%),35ch));
+  grid-template-columns: repeat(auto-fit, minmax(min(10ch, 100%), 35ch));
   align-items: flex-start;
 }
 
@@ -193,69 +251,67 @@ export default {
 }
 
 .settings__field {
-    width: 45rem;
-    height: 40rem;   
-    border: 1px solid #b3b3da;
-    background: #b3b3da;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 1px;
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: box-shadow .3s ease;
+  width: 45rem;
+  height: 40rem;
+  border: 1px solid #b3b3da;
+  background: #b3b3da;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1px;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
 }
 
 .fieldset-item {
-    background: #ecedff;
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    gap: 1.75rem;
-    padding: 1.5rem 2rem 1.5rem 1.5rem;
+  background: #ecedff;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1.75rem;
+  padding: 1.5rem 2rem 1.5rem 1.5rem;
 }
 
-
-
 .fieldset-item > picture {
-    -webkit-clip-path: circle(40%);
-    clip-path: circle(40%);
-    display: inline-grid;
-    align-content: center;
-    justify-content: center;
-    place-content: center;
-    background: #ecedff fixed;
+  -webkit-clip-path: circle(40%);
+  clip-path: circle(40%);
+  display: inline-grid;
+  align-content: center;
+  justify-content: center;
+  place-content: center;
+  background: #ecedff fixed;
 }
 
 .fieldset-item svg {
-    fill: #283394;
-    height: 3.75rem;
-    padding-right: 3.5rem;
+  fill: #283394;
+  height: 3.75rem;
+  padding-right: 3.5rem;
 }
 
 .fieldset-item > :is(.input-stack, label) {
-    display: grid;
-    gap: 0.5rem;
+  display: grid;
+  gap: 0.5rem;
 }
 
 .fieldset-item > .input-stack > label {
-    display: contents;
-    font-style: italic;;
-    font-size: 2.75rem;
-    color: #000;
-    text-shadow: 2px 4px 1px rgba(255, 255, 255, 0.8);
+  display: contents;
+  font-style: italic;
+  font-size: 2.75rem;
+  color: #000;
+  text-shadow: 2px 4px 1px rgba(255, 255, 255, 0.8);
 }
 
-input[type=range] {
-    --track-height: .5ex;
-    --track-fill: 0%;
-    --thumb-size: 3ex;
-    --thumb-offset: -1.25ex;
-    --thumb-highlight-size: 0px;
-    display: block;
-    width: 100%;
-    margin: 1ex 0;
-    outline-offset: 5px;
-    cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+input[type='range'] {
+  --track-height: 0.5ex;
+  --track-fill: 0%;
+  --thumb-size: 3ex;
+  --thumb-offset: -1.25ex;
+  --thumb-highlight-size: 0px;
+  display: block;
+  width: 100%;
+  margin: 1ex 0;
+  outline-offset: 5px;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .ryanisgoodatvideogames {
@@ -263,5 +319,4 @@ input[type=range] {
   color: black;
   font-size: 5rem;
 }
-
 </style>
