@@ -7,14 +7,14 @@
     <div id="game__hitCombo__container" :style="{ width: canvasWidth + 'px' }">
       <h1
         id="game__combo"
-        :key="comboVKey"
+        :key="hitComboVKey"
         :class="{ game__combo__on: comboOn, game__combo__reset: comboReset }"
       >
         {{ combo ? combo : missedCombo ? missedCombo : null }}
       </h1>
       <h1
         id="game__hitValue"
-        :key="hitValueVKey"
+        :key="hitComboVKey + 1"
         class="game__hitValue__on"
         :style="lastestHitStyle"
       >
@@ -56,13 +56,13 @@ export default {
       started: false,
 
       // beatmaps data
-      notes: this.$store.state.beatmapData.hitObjects,
+      notes: null,
 
       score: 0,
       combo: 0,
       index: 0,
       maxCombo: 0,
-      scrollSpeed: 20,
+      scrollSpeed: 10,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -80,8 +80,7 @@ export default {
       comboOn: false,
       comboReset: false,
 
-      comboVKey: 0,
-      hitValueVKey: 1, // remove this later
+      hitComboVKey: 0,
 
       hitJudgement: {
         320: null,
@@ -258,7 +257,7 @@ export default {
     onLoad() {
       const t = this;
 
-      t.notes = this.$store.state.beatmapData.hitObjects;
+      t.notes = this.beatmapData.hitObjects;
       t.remainingNotes = t.notes.length;
       t.numColumns = t.beatmapData.columns;
 
@@ -355,15 +354,14 @@ export default {
 
         const targetCircle = new PIXI.Sprite(t.targetCircleTextures[0]);
 
-        targetCircle.width = 2 * t.radius;
-        targetCircle.height = 2 * t.radius;
-
         targetCircle.anchor.set(0.5);
-
         targetCircle.setTransform(
           t.stageColWidth * (i + 0.5),
           t.hitPercent * t.stageHeight
         );
+
+        targetCircle.width = 2 * t.radius;
+        targetCircle.height = 2 * t.radius;
 
         t.ss.targetCircles.push(targetCircle);
         t.ss.setupContainer.addChild(targetCircle);
@@ -484,15 +482,13 @@ export default {
 
       class Note extends PIXI.Sprite {
         constructor(note) {
-          super(t.targetCircleTextures[1]);
-          // console.log(this.y);
-
-          this.anchor.set(0.5);
-
-          this.setTransform(t.stageColWidth / 2, -t.radius);
+          super(t.circleTextures[note.columnIndex]);
 
           this.i = note.columnIndex;
           this.time = note.time;
+
+          this.animateDrop = this.animateDrop.bind(this);
+          this.animateFade = this.animateFade.bind(this);
 
           this.remainingTime =
             note.time -
@@ -502,6 +498,12 @@ export default {
 
           t.notesToFallArray.push(this);
 
+          this.anchor.set(0.5);
+          this.setTransform(t.stageColWidth / 2, -t.radius);
+
+          this.width = t.radius * 2;
+          this.height = t.radius * 2;
+
           this.resumeDropTimer();
 
           this.startTime, this.timerID;
@@ -510,82 +512,58 @@ export default {
         msFrom(isAbs = false) {
           return isAbs
             ? Math.abs(
-                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                   (t.dy * t.stageFPS)
               )
-            : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+            : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                 (t.dy * t.stageFPS);
         }
 
         miss() {
-          //       t.latestHit = 0;
-          //       t.totalHits['0']++;
-          //       t.bonus = 0;
-          //       t.missedCombo = t.combo;
-          //       if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          //       t.combo = 0;
-          //       healthbarFinalVal(t.latestHit);
-          //       t.comboOn = false;
-          //       t.comboReset = true;
-          //       t.comboVKey += 2;
-          //       t.hitValueVKey += 2;
-          //       /* const $combo = document.querySelector('#game__combo');
-          //       const $hitValue = document.querySelector('#game__hitValue');
-          //       $hitComboContainer.removeChild($combo);
-          //       $hitComboContainer.removeChild($hitValue);
-          //       $combo.classList.remove('.game__combo__on');
-          //       $combo.classList.add('game__combo__reset');
-          //       $hitComboContainer.appendChild($combo);
-          //       $hitComboContainer.appendChild($hitValue); */
-          //  console.log("remove")
-          //       this.remove();
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          t.combo = 0;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboOn = false;
+          t.comboReset = true;
+          t.hitComboVKey += 2;
         }
 
         hit() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
-          console.log('hit');
           let hitBonusValue = 0;
 
-          switch (true) {
-            case this.msFrom(true) <= t.hitJudgement['320']:
-              t.latestHit = 320;
-              t.totalHits['320']++;
-              hitBonusValue = 32;
-              t.bonus += 2;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['300']:
-              t.latestHit = 300;
-              t.totalHits['300']++;
-              hitBonusValue = 32;
-              t.bonus += 1;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['200']:
-              t.latestHit = 200;
-              t.totalHits['200']++;
-              hitBonusValue = 16;
-              t.bonus -= 8;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['100']:
-              t.latestHit = 100;
-              t.totalHits['100']++;
-              hitBonusValue = 8;
-              t.bonus -= 24;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['50']:
-              t.latestHit = 50;
-              t.totalHits['50']++;
-              hitBonusValue = 4;
-              t.bonus -= 44;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['0']:
-              this.miss();
-              return;
+          if (this.msFrom(true) <= t.hitJudgement['320']) {
+            t.latestHit = 320;
+            t.totalHits['320']++;
+            hitBonusValue = 32;
+            t.bonus += 2;
+          } else if (this.msFrom(true) <= t.hitJudgement['300']) {
+            t.latestHit = 300;
+            t.totalHits['300']++;
+            hitBonusValue = 32;
+            t.bonus += 1;
+          } else if (this.msFrom(true) <= t.hitJudgement['200']) {
+            t.latestHit = 200;
+            t.totalHits['200']++;
+            hitBonusValue = 16;
+            t.bonus -= 8;
+          } else if (this.msFrom(true) <= t.hitJudgement['100']) {
+            t.latestHit = 100;
+            t.totalHits['100']++;
+            hitBonusValue = 8;
+            t.bonus -= 24;
+          } else if (this.msFrom(true) <= t.hitJudgement['50']) {
+            t.latestHit = 50;
+            t.totalHits['50']++;
+            hitBonusValue = 4;
+            t.bonus -= 44;
+          } else if (this.msFrom(true) <= t.hitJudgement['0']) {
+            this.miss();
+            return;
           }
 
           t.bonus = t.clamp(t.bonus, 0, 100);
@@ -603,83 +581,56 @@ export default {
 
           t.comboReset = false;
           t.comboOn = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
-
-          /* const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
-
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('game__combo__reset');
-          $combo.classList.add('.game__combo__on');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue); */
+          t.hitComboVKey += 2;
 
           this.remove();
         }
 
         remove() {
           t.ss.columnContainers[this.i].removeChild(this);
+          t.PIXIapp.ticker.remove(this.animateDrop);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
 
           t.remainingNotes--;
         }
 
-        animate() {
-          t.PIXIapp.ticker.add((delta) => {
-            // const circle = t.testCont[t.index];
-            this.y += t.dy * delta;
-            if (this.y > 600 && this.y < 800) {
-              // t.PIXIapp.ticker.remove();
-              // // t.ss.columnContainers[0].removeChild(this);
-              // console.log('removed');
-            }
-            switch (true) {
-              // If ms from targetCircle is less than ...
-              case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
-                this.ready = true;
-                t.readyNotes[this.i].push(this);
+        animateDrop() {
+          this.y += t.dy;
 
-                /* // Start fading out
-                createjs.Tween.get(this, {
-                  onComplete: this.miss,
-                }).to(
-                  { alpha: 0, visible: false },
-                  2 * t.hitJudgement['0'],
-                  createjs.Ease.linear
-                ); */
-                break;
+          if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
+            this.ready = true;
+            t.readyNotes[this.i].push(this);
+          } else if (this.msFrom() > t.hitJudgement['50']) {
+            this.miss();
+          }
 
-              // If it reaches offscreen then ...
-              // Remove the circle and time it correctly
-              case this.msFrom() > t.hitJudgement['50']:
-                this.miss();
-                break;
-            }
-          });
+          if (this.msFrom() >= 0 && !this.fading) {
+            this.fading = true;
+            t.PIXIapp.ticker.add(this.animateFade);
+          }
+        }
+
+        animateFade() {
+          const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
+
+          if (this.alpha - da <= 0) {
+            this.alpha = 0;
+            t.PIXIapp.ticker.remove(this.animateFade);
+            this.remove();
+          } else {
+            this.alpha -= da;
+          }
         }
 
         resumeDropTimer() {
           this.startTime = new Date();
-          this.width = t.radius * 2; //change vals in resume drop timer works
-          this.height = t.radius * 2;
+
           this.timerID = setTimeout(() => {
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
-
             this.timerID = null;
-            // t.ss.columnContainers[0];
-            // t.n = new PIXI.Sprite(texture);
-            // t.n.y = -40;
-            // t.n.width = 80;
-            // t.n.height = 80;
-            // t.n.anchor.set(0.5);
+
             t.ss.columnContainers[this.i].addChild(this);
-            // t.testCont.push(t.n);
-            this.animate();
+            t.PIXIapp.ticker.add(this.animateDrop);
           }, this.remainingTime);
         }
 
@@ -688,6 +639,7 @@ export default {
           this.remainingTime -= new Date() - this.startTime;
         }
       }
+
       class Slider extends PIXI.RoundedRectangle {
         constructor(note) {
           const height =
@@ -908,9 +860,9 @@ export default {
         t.index = index;
         if (note.type === 'note') {
           new Note(note); // fixed kinda
-        } else if (note.type === 'hold') {
+        } /* else if (note.type === 'hold') {
           new Slider(note);
-        } else {
+        } */ else {
           console.log(`Invalid note type: ${note.type}`);
         }
       });
