@@ -490,8 +490,6 @@ export default {
           this.setTransform(t.stageColWidth / 2, -t.radius);
 
           this.i = note.columnIndex;
-          this.hitSample = note.hitSample;
-          this.hitSound = note.hitSound;
           this.time = note.time;
 
           this.remainingTime =
