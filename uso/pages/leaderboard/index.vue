@@ -6,7 +6,7 @@
     <div id="lb__index">
       <div class="lb__container">
         <div class="lb__titlebox">
-          <h1 class="lb__title" @click="test()">♬ rankings</h1>
+          <h1 class="lb__title">♬ rankings</h1>
         </div>
 
         <div class="yae__filler"></div>
@@ -90,26 +90,10 @@ export default {
       userData: [],
     };
   },
-  async fetch() {
-    const token = await this.$auth.strategy.token.get();
-    const userDataFetch = await fetch('http://localhost:8000/', {
-      headers: {
-        Authorization: token,
-      },
-    });
-    const userDataFetched = await userDataFetch.json();
-    userDataFetched.forEach((user) => {
-      this.userData.push(user);
-    });
 
-    console.log(this.userData);
-  },
+  created: {},
 
-  methods: {
-    test() {
-      console.log(this.userDataFetch);
-    },
-  },
+  methods: {},
 };
 </script>
 
