@@ -265,7 +265,7 @@ export default {
 
       t.dy =
         (this.scrollSpeed * 1000 * this.stageHeight) /
-        (this.stageFPS * (6860 * this.hitPercent + 6860));
+        (6860 * this.hitPercent + 6860);
       /* t.dy =
         (this.scrollSpeed * 1000 * this.stageHeight) /
         (this.stageFPS * (6860 * this.hitPercent + 6860)); */
@@ -513,8 +513,7 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) /
-              (t.dy * t.stageFPS);
+            (1000 * t.stageHeight * t.hitPercent + t.radius) / t.dy;
 
           t.notesToFallArray.push(this);
 
@@ -530,12 +529,8 @@ export default {
 
         msFrom(isAbs = false) {
           return isAbs
-            ? Math.abs(
-                ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                  (t.dy * t.stageFPS)
-              )
-            : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                (t.dy * t.stageFPS);
+            ? Math.abs(((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy)
+            : ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy;
         }
 
         miss() {
@@ -636,8 +631,10 @@ export default {
           }
         }
 
-        animateFade() {
-          const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
+        animateFade(delta) {
+          const da =
+            (t.dy * delta) /
+            (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
 
           if (this.alpha - da <= 0) {
             this.alpha = 0;
@@ -673,8 +670,7 @@ export default {
 
           this.i = note.columnIndex;
           this.time = note.time;
-          this.sliderHeight =
-            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+          this.sliderHeight = (t.dy * (note.endTime - note.time)) / 1000;
 
           this.animateDrop = this.animateDrop.bind(this);
           this.animateShrink = this.animateShrink.bind(this);
@@ -703,8 +699,7 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) /
-              (t.dy * t.stageFPS);
+            (1000 * t.stageHeight * t.hitPercent + t.radius) / t.dy;
 
           t.notesToFallArray.push(this);
 
@@ -719,11 +714,9 @@ export default {
           if (position === 'bot') {
             return isAbs
               ? Math.abs(
-                  ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                    (t.dy * t.stageFPS)
+                  ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy
                 )
-              : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                  (t.dy * t.stageFPS);
+              : ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy;
           } else if (position === 'top') {
             return isAbs
               ? Math.abs(
@@ -731,11 +724,11 @@ export default {
                     this.children[0].y -
                     t.stageHeight * t.hitPercent) *
                     1000) /
-                    (t.dy * t.stageFPS)
+                    t.dy
                 )
               : ((this.y + this.children[0].y - t.stageHeight * t.hitPercent) *
                   1000) /
-                  (t.dy * t.stageFPS);
+                  t.dy;
           } else console.log('Invalid position in slider.msFrom()');
         }
 
@@ -829,7 +822,7 @@ export default {
 
           t.ss.sliderColumnContainers[this.i].removeChild(this);
           t.PIXIapp.ticker.remove(this.animateDrop);
-          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy));
+          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy * delta));
 
           t.readySliders[this.i] = null;
         }
@@ -854,14 +847,14 @@ export default {
           } else if (this.y + this.children[0].y > t.stageHeight) this.remove();
         }
 
-        animateShrink() {
-          this.children[1].height -= t.dy;
-          this.children[0].y += t.dy;
+        animateShrink(delta) {
+          this.children[1].height -= t.dy * delta;
+          this.children[0].y += t.dy * delta;
 
           if (this.children[0].y >= this.children[2].y) {
             t.PIXIapp.ticker.remove(this.animateShrink);
 
-            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy));
+            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy * delta));
 
             this.hit();
           }
