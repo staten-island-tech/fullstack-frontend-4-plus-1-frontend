@@ -440,6 +440,7 @@ export default {
 
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
+            console.log(t.readyNotes[columnI].length);
             if (thisCircle) thisCircle.hit();
           });
 
@@ -897,15 +898,15 @@ export default {
       // });
     },
     onPauseKey(isPaused) {
-      if (isPaused) {
-        this.notesToFallArray.forEach((note) => note.pauseDropTimer());
-        // createjs.Ticker.paused = true;
-        // this.music.pause();
-      } else {
-        this.notesToFallArray.forEach((note) => note.resumeDropTimer());
-        // createjs.Ticker.paused = false;
-        // this.music.play();
-      }
+      // if (isPaused) {
+      //   this.notesToFallArray.forEach((note) => note.pauseDropTimer());
+      //   createjs.Ticker.paused = true;
+      //   this.music.pause();
+      // } else {
+      //   this.notesToFallArray.forEach((note) => note.resumeDropTimer());
+      //   createjs.Ticker.paused = false;
+      //   this.music.play();
+      // }
     },
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
