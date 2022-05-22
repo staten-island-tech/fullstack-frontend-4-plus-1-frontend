@@ -434,12 +434,20 @@ export default {
       //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
       // ) *1000 /2
 
-      t.musicBeatmapDuration = Math.round(
-        this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
-      );
+      // t.musicBeatmapDuration = Math.round(
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
+      // );
+      // console.log(
+      // console.log(
+      //   `/beatmaps/${this.clickedBmSetName}/B${
+      //     this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
+      //   }`
+      // );
+      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime
+      // );
       t.musicBeatmap = new Howl({
         src: [
-          `/beatmaps/${this.clickedBmSetName}/${
+          `/beatmaps/${this.clickedBmSetName}/B${
             this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
@@ -451,7 +459,6 @@ export default {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
-      Howler.volume(1);
 
       if (!t.executed) {
         t.executed = true;
@@ -459,7 +466,6 @@ export default {
         // t.musicBeatmap.play('prevMusic');
         this.progressAudioBar.set(0);
         this.progressAudioBar.animate(1.0);
-        t.musicBeatmap.seek(t.musicBeatmapDuration);
         t.musicBeatmap.play();
         t.firstBeatmapVal =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;

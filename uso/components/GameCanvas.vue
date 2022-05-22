@@ -894,7 +894,7 @@ export default {
         new Slider(this.sliderCol[i]);
       }
       //   // a, b, c and d are the four elements of this iteration
-
+      // give acc balue to particel container
       // });
     },
     onPauseKey(isPaused) {
