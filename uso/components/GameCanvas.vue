@@ -130,6 +130,7 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
+      notesCol: null,
     };
   },
 
@@ -142,6 +143,16 @@ export default {
         },
       ],
     };
+  },
+
+  created() {
+    this.notes = this.$store.state.beatmapData.hitObjects;
+    this.notesCol = this.notes.filter((item) => {
+      return item.type === 'note';
+    });
+    this.sliderCol = this.notes.filter((item) => {
+      return item.type === 'hold';
+    });
   },
 
   mounted() {
@@ -606,9 +617,9 @@ export default {
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
-        animateDrop() {
-          this.y += t.dy;
-
+        animateDrop(delta) {
+          this.y += t.dy * delta;
+          // t.hitJudgement['0'];
           if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
             this.ready = true;
             t.readyNotes[this.i].push(this);
@@ -820,8 +831,8 @@ export default {
           t.readySliders[this.i] = null;
         }
 
-        animateDrop() {
-          this.y += t.dy;
+        animateDrop(delta) {
+          this.y += t.dy * delta;
 
           if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
             this.ready = true;
@@ -860,7 +871,6 @@ export default {
             t.ss.sliderColumnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
             this.timerID = null;
-
             t.PIXIapp.ticker.add(this.animateDrop);
           }, this.remainingTime);
         }
@@ -870,16 +880,21 @@ export default {
           this.remainingTime -= new Date() - this.startTime;
         }
       }
+      // [...Array(Math.ceil(this.notesCol.length / 4)).keys()].forEach((i) => {
+      //   const allNtoes = this.notesCol.slice(i * 4, (i + 1) * 4);
 
-      t.notes.forEach((note) => {
-        if (note.type === 'note') {
-          new Note(note);
-        } else if (note.type === 'hold') {
-          new Slider(note);
-        } else {
-          console.log(`Invalid note type: ${note.type}`);
-        }
-      });
+      //     // allNtoes.forEach(note => {
+      //     //   new Note(note);
+      //     // });
+      for (let i = 0; i < this.notesCol.length; i++) {
+        new Note(this.notesCol[i]);
+      }
+      for (let i = 0; i < this.sliderCol.length; i++) {
+        new Slider(this.sliderCol[i]);
+      }
+      //   // a, b, c and d are the four elements of this iteration
+
+      // });
     },
     onPauseKey(isPaused) {
       if (isPaused) {
@@ -895,9 +910,9 @@ export default {
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
     },
-    checkIfEnd() {
-      if (this.notesToFallArray)
-    },
+    // checkIfEnd() {
+    //   if (this.notesToFallArray)
+    // },
   },
 };
 </script>
