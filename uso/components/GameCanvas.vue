@@ -106,6 +106,7 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+      dy: null,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -165,12 +166,6 @@ export default {
   },
 
   computed: {
-    dy() {
-      return (
-        (this.scrollSpeed * 1000 * this.stageHeight) /
-        (this.stageFPS * (6860 * this.hitPercent + 6860))
-      );
-    },
     displayedLatestHit() {
       switch (this.latestHit) {
         case 320:
@@ -246,7 +241,7 @@ export default {
       },
       deep: true,
     },
-    remainingNotes(newValue) {
+    /* remainingNotes(newValue) {
       console.log(newValue);
       if (newValue === 0) {
         if (this.combo > this.maxCombo) this.maxCombo = this.combo;
@@ -254,7 +249,7 @@ export default {
           this.$emit('endGameParent', this.totalHits, this.maxCombo);
         }, 1000);
       }
-    },
+    }, */
   },
 
   methods: {
@@ -267,6 +262,13 @@ export default {
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
       window.addEventListener('wheel', this.onScroll);
+
+      t.dy =
+        (this.scrollSpeed * 1000 * this.stageHeight) /
+        (this.stageFPS * (6860 * this.hitPercent + 6860));
+      /* t.dy =
+        (this.scrollSpeed * 1000 * this.stageHeight) /
+        (this.stageFPS * (6860 * this.hitPercent + 6860)); */
 
       t.keys = [
         ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
