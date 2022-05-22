@@ -179,7 +179,7 @@ export default {
         if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      t.beatmapData = t.$store.state.beatmapData;
+      t.beatmapData = t.$store.state.sliderBeatmapData;
 
       /* ===============
             PROGRESS BAR

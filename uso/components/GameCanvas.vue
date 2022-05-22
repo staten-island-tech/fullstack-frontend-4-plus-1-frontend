@@ -660,7 +660,7 @@ export default {
         }
       }
 
-      class Slider extends PIXI.Container {
+      /* class Slider extends PIXI.Container {
         constructor(note) {
           super();
 
@@ -872,13 +872,214 @@ export default {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
+      } */
+
+      class Slider extends PIXI.Graphics {
+        constructor(note) {
+          super();
+
+          this.aaaaaaaaaa = this.drawRoundedRect(
+            t.stageColWidth / 2,
+            -t.radius,
+            2 * t.radius,
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000,
+            t.radius
+          );
+
+          this.i = note.columnIndex;
+          this.sliderHeight =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+
+          this.animateDrop = this.animateDrop.bind(this);
+          this.animateShrink = this.animateShrink.bind(this);
+
+          this.time = note.time;
+          this.remainingTime =
+            note.time -
+            t.beatmapIntro -
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
+
+          t.notesToFallArray.push(this);
+
+          // this.resumeDropTimer();
+
+          t.ss.sliderColumnContainers[this.i].addChild(this.aaaaaaaaaa);
+
+          this.startTime, this.timerID;
+        }
+
+        msFrom(position, isAbs = false) {
+          if (position === 'bot') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                  (t.dy * t.stageFPS);
+          } else if (position === 'top') {
+            return isAbs
+              ? Math.abs(
+                  ((this.y +
+                    this.children[0].y -
+                    t.stageHeight * t.hitPercent) *
+                    1000) /
+                    (t.dy * t.stageFPS)
+                )
+              : ((this.y + this.children[0].y - t.stageHeight * t.hitPercent) *
+                  1000) /
+                  (t.dy * t.stageFPS);
+          } else console.log('Invalid position in slider.msFrom()');
+        }
+
+        miss() {
+          if (this.missed) return;
+          this.missed = true;
+
+          this.children[0].alpha = this.children[2].alpha = 0.7;
+          this.children[1].alpha = 0.6;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          t.combo = 0;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboOn = false;
+          t.comboReset = true;
+          t.hitComboVKey += 2;
+        }
+
+        hit() {
+          if (this.missed) return;
+
+          this.finalMs = this.msFrom('top', true);
+          this.avgMs = (this.initialMs + this.finalMs) / 2;
+
+          let hitBonusValue = 0;
+
+          if (this.avgMs <= t.hitJudgement['320'] && !this.releasedMs) {
+            t.latestHit = 320;
+            t.totalHits['320']++;
+            hitBonusValue = 32;
+            t.bonus += 2;
+          } else if (this.avgMs <= t.hitJudgement['300'] && !this.releasedMs) {
+            t.latestHit = 300;
+            t.totalHits['300']++;
+            hitBonusValue = 32;
+            t.bonus += 1;
+          } else if (
+            this.avgMs <= t.hitJudgement['300'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['300'])
+          ) {
+            t.latestHit = 200;
+            t.totalHits['200']++;
+            hitBonusValue = 16;
+            t.bonus -= 8;
+          } else if (
+            this.avgMs <= t.hitJudgement['200'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['200'])
+          ) {
+            t.latestHit = 100;
+            t.totalHits['100']++;
+            hitBonusValue = 8;
+            t.bonus -= 24;
+          } else if (
+            this.avgMs <= t.hitJudgement['50'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['50'])
+          ) {
+            t.latestHit = 50;
+            t.totalHits['50']++;
+            hitBonusValue = 4;
+            t.bonus -= 44;
+          }
+
+          t.bonus = t.clamp(t.bonus, 0, 100);
+
+          const baseScore =
+            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
+
+          const bonusScore =
+            ((1000000 * 0.5) / t.notes.length) *
+            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
+
+          t.score += bonusScore + baseScore;
+          t.combo += 1;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboReset = false;
+          t.comboOn = true;
+          t.hitComboVKey += 2;
+
+          this.remove();
+        }
+
+        remove() {
+          if (this.removed) return;
+          this.removed = true;
+
+          t.ss.sliderColumnContainers[this.i].removeChild(this);
+          t.PIXIapp.ticker.remove(this.animateDrop);
+          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy));
+
+          t.readySliders[this.i] = null;
+        }
+
+        animateDrop(delta) {
+          this.y += t.dy;
+          if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
+            this.ready = true;
+            t.readySliders[this.i] = this;
+            //
+          } else if (
+            this.msFrom('bot') > t.hitJudgement['50'] &&
+            !this.initialMs
+          ) {
+            this.miss();
+            //
+          } else if (this.msFrom('top') > t.hitJudgement['50']) {
+            if (this.held && this.initialMs) this.hit();
+            else this.miss();
+            //
+          } else if (this.y + this.children[0].y > t.stageHeight) this.remove();
+        }
+
+        animateShrink() {
+          this.children[1].height -= t.dy;
+          this.children[0].y += t.dy;
+
+          if (this.children[0].y >= this.children[2].y) {
+            t.PIXIapp.ticker.remove(this.animateShrink);
+            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy));
+            this.hit();
+          }
+        }
+
+        resumeDropTimer() {
+          this.startTime = new Date();
+
+          this.timerID = setTimeout(() => {
+            t.ss.sliderColumnContainers[this.i].addChild(this);
+            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
+            this.timerID = null;
+            t.PIXIapp.ticker.add(this.animateDrop);
+          }, this.remainingTime);
+        }
+
+        pauseDropTimer() {
+          clearTimeout(this.timerID);
+          this.remainingTime -= new Date() - this.startTime;
+        }
       }
 
       for (let i = 0; i < this.notesCol.length; i++) {
         new Note(this.notesCol[i]);
       }
       for (let i = 0; i < this.sliderCol.length; i++) {
-        new Slider(this.sliderCol[i]);
+        console.log(new Slider(this.sliderCol[i]));
       }
       //   // a, b, c and d are the four elements of this iteration
       // give acc balue to particel container
