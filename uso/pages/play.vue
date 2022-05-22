@@ -168,7 +168,7 @@ export default {
         if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      t.beatmapData = t.$store.state.sliderBeatmapData;
+      t.beatmapData = t.$store.state.beatmapData;
 
       t.beatmapIntro =
         t.beatmapData.hitObjects[0].time < 3000
