@@ -22,14 +22,14 @@
           <feature-song-card :v-for="song in featureSongs" />
         </section>
         <section class="news home-section">
-          <h1 class="news-header">!USO NEWS</h1>
+          <h1 class="news-header">!uso News</h1>
           
           <news-card />
         </section>
       </div>
     </section>
-     <button @click="auth(), testEnv()">Sign In</button>
-     <a  href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a>
+     <!-- <button @click="auth(), testEnv()">Sign In</button>
+     <a href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a> -->
   </div>
 
 </template>
@@ -101,6 +101,88 @@ this.$auth.loginWith('auth0')
 </script>
 
 <style scoped>
+
+@keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-o-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-moz-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+@-webkit-keyframes filterChange {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(45deg);
+  }
+  40% {
+    filter: hue-rotate(115deg);
+  }
+  60% {
+    filter: hue-rotate(200deg);
+  }
+  80% {
+    filter: hue-rotate(333deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
 .container {
   background-color: wheat;
   margin: 0 auto;
@@ -110,6 +192,7 @@ this.$auth.loginWith('auth0')
   align-items: center;
   text-align: center;
 }
+
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -119,6 +202,7 @@ this.$auth.loginWith('auth0')
   color: #35495e;
   letter-spacing: 1px;
 }
+
 .subtitle {
   font-weight: 300;
   font-size: 42px;
@@ -148,6 +232,7 @@ button  {
   background-repeat: no-repeat;
   background-position: center center; */
 }
+
 .home-main {
   width: 100%;
   height: auto;
@@ -164,20 +249,28 @@ button  {
   background-position: center center; */
   background-attachment: fixed;
 }
+
 .home-content-container {
   width: 104rem;
   margin: auto;
 }
+
 .feature-songs {
   width: 100%;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .news-header {
   color: #b7ba91;
+
+  animation: filterChange 5s infinite ease 0s;
+  color: #9cf5b9;
 }
+
 .home-section {
   padding: 7rem 0 0 0;
 }
+
 </style>

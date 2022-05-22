@@ -10,9 +10,10 @@
           <img 
           :src="user[0].image"
             class="profile-picture"
-          ></img>
+          />
       
-            <h1 class="profile-title">{{user[0].username}}</h1>
+            <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
+            <h1 class="profile-title">{{ username }}</h1>
      
         </div>
         <div class="profile-description">
@@ -41,6 +42,7 @@ export default {
   },
   data() {
     return {
+      username: this.$auth.user.nickname,
       user,
       characters
     };

@@ -17,7 +17,7 @@
           ></video> -->
         <section class="data-bar">
           <h1 class="shop-heading">
-            what does freedom really mean, when demanded of you by a god...?
+            "what does freedom really mean, when demanded of you by a god...?"
           </h1>
           <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
         </section>

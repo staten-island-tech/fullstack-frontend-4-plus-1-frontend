@@ -88,7 +88,7 @@
                 (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2 class="audio__preview">click for audio preview~</h2>
+              <h2 class="audio__preview">click for audio preview...</h2>
 
               <img
                 v-if="oszArray[0].events[0]"
@@ -121,7 +121,7 @@
                 Mapper:
                 {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
-              <nuxt-link
+              <nuxt-link id="leaderboard__link"
                 :to="`/leaderboard/${
                   bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
@@ -605,7 +605,7 @@ export default {
 
 .audio__preview {
   position: absolute;
-  transform: translate(12%, -225%);
+  transform: translate(9%, -225%);
 }
 
 /* Search Container */
@@ -933,4 +933,17 @@ export default {
   background-size: cover;
   background-position: center center;
 }
+
+#leaderboard__link {
+  font-size: 3.75rem;
+  color: #8587fa;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  transition: all 300ms;
+  font-style: italic;
+}
+
+#leaderboard__link:hover {
+  color: #b0b1f8;
+}
+
 </style>

@@ -525,7 +525,7 @@ export default {
   box-shadow: none;
   border-radius: 50%;
   overflow: hidden;
-  transition: width .3s,height .3s;
+  transition: width .3s, height .3s;
   position: relative;
 }
 
@@ -606,6 +606,7 @@ export default {
   font-size: 23px;
   font-weight: bold;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  z-index: 420;
 }
 
 .login-popup .user-sign-in {

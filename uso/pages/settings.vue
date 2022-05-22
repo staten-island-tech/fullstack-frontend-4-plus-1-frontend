@@ -233,7 +233,7 @@ export default {
   /* align-content: center;
   justify-content: center; */
   place-content: center;
-  padding: 17.5rem;
+  padding: 10.5rem;
 }
 
 .settings__form {
