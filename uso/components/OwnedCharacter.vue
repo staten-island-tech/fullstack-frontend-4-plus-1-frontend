@@ -5,7 +5,9 @@
 
       <div class="card-gradient"></div>
       <p class="chara-name">{{ card.title }}</p>
+  
       <img :src="card.image_url" alt="" class="chara-img" />
+
       <!-- <img :src="rimSrc" alt="" class="card-rim" /> -->
     </div>
   </div>
@@ -126,6 +128,7 @@ button {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 .owned-card {
   /* height: auto; */

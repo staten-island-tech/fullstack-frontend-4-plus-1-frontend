@@ -112,6 +112,7 @@ export default {
   align-self: flex-end;
 
   margin: -4rem 2.4rem 1.5rem 0;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .profile-title {
