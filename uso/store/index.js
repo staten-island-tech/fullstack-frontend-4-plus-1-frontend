@@ -22383,10 +22383,10 @@ export const state = () => ({
     hitObjects: [
       {
         x: 64,
-        time: 66197,
+        time: 25000,
         type: 'hold',
         hitSound: 0,
-        endTime: 66797,
+        endTime: 25600,
         hitSample: {
           normalSet: 0,
           additionSet: 0,

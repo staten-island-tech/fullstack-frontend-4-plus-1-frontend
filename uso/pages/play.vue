@@ -34,7 +34,7 @@
       <div class="scorePercentage__container">
         <h1 id="score">{{ Math.floor(score) }}</h1>
         <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.00%' }}
+          {{ (Math.round(accuracy * 10000) / 100).toFixed(2) }}%
         </h1>
       </div>
 
@@ -168,7 +168,7 @@ export default {
         if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      t.beatmapData = t.$store.state.beatmapData;
+      t.beatmapData = t.$store.state.sliderBeatmapData;
 
       t.beatmapIntro =
         t.beatmapData.hitObjects[0].time < 3000
