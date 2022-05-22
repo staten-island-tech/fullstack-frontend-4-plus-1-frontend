@@ -146,7 +146,7 @@ export default {
   top: 9.5rem;
   left: 0;
   overflow: auto;
-  background-color: rgb(0, 0, 0); /* Fallback color */
+  /* background-color: rgb(0, 0, 0); Fallback color */
   background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
   /*  height: 50vh;
   width: 60vw;
@@ -158,6 +158,7 @@ export default {
   --modal-container-width: 55vw;
   width: var(--modal-container-width);
 }
+
 .modal-owned-character {
   background-image: linear-gradient(
       rgba(5, 2, 19, 0.958),
@@ -167,6 +168,7 @@ export default {
     height: 100%;
   /* background: linear-gradient(rgba(13, 4, 66, 0.958), rgba(13, 4, 66, 0.938)); */
 }
+
 .modal-owned-character > div {
   width: calc(var(--modal-container-width) / 6);
 }

@@ -154,7 +154,7 @@ export default {
   display: none;
   text-shadow: 0px 3px 2px #000;
   position: absolute;
-  top: -30%;
+  top: -29%;
   left: 19%;
   pointer-events: none;
   transition: all 300ms ease-in-out;
