@@ -527,18 +527,20 @@ export default {
         }
 
         miss() {
-          // if (this.missed) return;
-          // this.missed = true;
-          // t.latestHit = 0;
-          // t.totalHits['0']++;
-          // t.bonus = 0;
-          // t.missedCombo = t.combo;
-          // if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          // t.combo = 0;
-          // healthbarFinalVal(t.latestHit);
-          // t.comboOn = false;
-          // t.comboReset = true;
-          // t.hitComboVKey += 2;
+          if (this.missed) return;
+          this.missed = true;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          t.combo = 0;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboOn = false;
+          t.comboReset = true;
+          t.hitComboVKey += 2;
         }
 
         hit() {
@@ -725,20 +727,23 @@ export default {
         }
 
         miss() {
-          // if (this.missed) return;
-          // this.missed = true;
-          // this.children[0].alpha = this.children[2].alpha = 0.7;
-          // this.children[1].alpha = 0.6;
-          // t.latestHit = 0;
-          // t.totalHits['0']++;
-          // t.bonus = 0;
-          // t.missedCombo = t.combo;
-          // if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          // t.combo = 0;
-          // healthbarFinalVal(t.latestHit);
-          // t.comboOn = false;
-          // t.comboReset = true;
-          // t.hitComboVKey += 2;
+          if (this.missed) return;
+          this.missed = true;
+
+          this.children[0].alpha = this.children[2].alpha = 0.7;
+          this.children[1].alpha = 0.6;
+
+          t.latestHit = 0;
+          t.totalHits['0']++;
+          t.bonus = 0;
+          t.missedCombo = t.combo;
+          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
+          t.combo = 0;
+          healthbarFinalVal(t.latestHit);
+
+          t.comboOn = false;
+          t.comboReset = true;
+          t.hitComboVKey += 2;
         }
 
         hit() {
