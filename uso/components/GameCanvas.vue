@@ -146,16 +146,6 @@ export default {
     };
   },
 
-  created() {
-    this.notes = this.beatmapData.hitObjects;
-    this.notesCol = this.notes.filter((item) => {
-      return item.type === 'note';
-    });
-    this.sliderCol = this.notes.filter((item) => {
-      return item.type === 'hold';
-    });
-  },
-
   mounted() {
     const loadedTimerID = setInterval(() => {
       if (typeof window.PIXI !== 'undefined') {
@@ -257,6 +247,14 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
+
+      t.notesCol = t.notes.filter((item) => {
+        return item.type === 'note';
+      });
+      t.sliderCol = t.notes.filter((item) => {
+        return item.type === 'hold';
+      });
+
       t.numColumns = t.beatmapData.columns;
 
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -875,12 +873,7 @@ export default {
           this.remainingTime -= new Date() - this.startTime;
         }
       }
-      // [...Array(Math.ceil(this.notesCol.length / 4)).keys()].forEach((i) => {
-      //   const allNtoes = this.notesCol.slice(i * 4, (i + 1) * 4);
 
-      //     // allNtoes.forEach(note => {
-      //     //   new Note(note);
-      //     // });
       for (let i = 0; i < this.notesCol.length; i++) {
         new Note(this.notesCol[i]);
       }
