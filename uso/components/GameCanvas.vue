@@ -106,7 +106,7 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
-      dy: null,
+      dy: 10,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -263,13 +263,6 @@ export default {
 
       window.addEventListener('wheel', this.onScroll);
 
-      t.dy =
-        (this.scrollSpeed * 1000 * this.stageHeight) /
-        (6860 * this.hitPercent + 6860);
-      /* t.dy =
-        (this.scrollSpeed * 1000 * this.stageHeight) /
-        (this.stageFPS * (6860 * this.hitPercent + 6860)); */
-
       t.keys = [
         ...t.allKeys.slice(-(Math.floor(t.numColumns / 2) + 5), -5),
         ...(t.numColumns % 2 ? [t.allKeys[4]] : []),
@@ -378,6 +371,10 @@ export default {
 
         t.readyNotes.push([]);
       }
+
+      /* t.dy =
+        (this.scrollSpeed * 1000 * this.stageHeight) /
+        (this.stageFPS * (6860 * this.hitPercent + 6860)); */
 
       t.areAllLoaded = true;
       // emit this back to play.vue
@@ -513,7 +510,8 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) / t.dy;
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
 
@@ -529,8 +527,12 @@ export default {
 
         msFrom(isAbs = false) {
           return isAbs
-            ? Math.abs(((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy)
-            : ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy;
+            ? Math.abs(
+                ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                  (t.dy * t.stageFPS)
+              )
+            : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                (t.dy * t.stageFPS);
         }
 
         miss() {
@@ -616,8 +618,8 @@ export default {
         }
 
         animateDrop(delta) {
-          this.y += t.dy * delta;
-          // t.hitJudgement['0'];
+          this.y += t.dy;
+
           if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
             this.ready = true;
             t.readyNotes[this.i].push(this);
@@ -632,14 +634,10 @@ export default {
         }
 
         animateFade(delta) {
-          const da =
-            (t.dy * delta) /
-            (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
-
+          const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
           if (this.alpha - da <= 0) {
             this.alpha = 0;
             t.PIXIapp.ticker.remove(this.animateFade);
-
             this.remove();
           } else {
             this.alpha -= da;
@@ -670,7 +668,8 @@ export default {
 
           this.i = note.columnIndex;
           this.time = note.time;
-          this.sliderHeight = (t.dy * (note.endTime - note.time)) / 1000;
+          this.sliderHeight =
+            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
           this.animateDrop = this.animateDrop.bind(this);
           this.animateShrink = this.animateShrink.bind(this);
@@ -699,7 +698,8 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) / t.dy;
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
 
@@ -714,9 +714,11 @@ export default {
           if (position === 'bot') {
             return isAbs
               ? Math.abs(
-                  ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy
+                  ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                    (t.dy * t.stageFPS)
                 )
-              : ((this.y - t.stageHeight * t.hitPercent) * 1000) / t.dy;
+              : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
+                  (t.dy * t.stageFPS);
           } else if (position === 'top') {
             return isAbs
               ? Math.abs(
@@ -724,11 +726,11 @@ export default {
                     this.children[0].y -
                     t.stageHeight * t.hitPercent) *
                     1000) /
-                    t.dy
+                    (t.dy * t.stageFPS)
                 )
               : ((this.y + this.children[0].y - t.stageHeight * t.hitPercent) *
                   1000) /
-                  t.dy;
+                  (t.dy * t.stageFPS);
           } else console.log('Invalid position in slider.msFrom()');
         }
 
@@ -822,14 +824,13 @@ export default {
 
           t.ss.sliderColumnContainers[this.i].removeChild(this);
           t.PIXIapp.ticker.remove(this.animateDrop);
-          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy * delta));
+          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy));
 
           t.readySliders[this.i] = null;
         }
 
         animateDrop(delta) {
-          this.y += t.dy * delta;
-
+          this.y += t.dy;
           if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
             this.ready = true;
             t.readySliders[this.i] = this;
@@ -847,15 +848,13 @@ export default {
           } else if (this.y + this.children[0].y > t.stageHeight) this.remove();
         }
 
-        animateShrink(delta) {
-          this.children[1].height -= t.dy * delta;
-          this.children[0].y += t.dy * delta;
+        animateShrink() {
+          this.children[1].height -= t.dy;
+          this.children[0].y += t.dy;
 
           if (this.children[0].y >= this.children[2].y) {
             t.PIXIapp.ticker.remove(this.animateShrink);
-
-            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy * delta));
-
+            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy));
             this.hit();
           }
         }
