@@ -33,12 +33,12 @@
             card-route="beatmaps"
             card-img="/beatmaps/689134/BG.jpg"
           />
-          <feature-song-card
+          <!-- <feature-song-card
             card-title="Goodbye Moonmen"
             card-artist="The Living Tombstone feat. Fart"
             card-route="beatmaps"
             card-img="/beatmaps/1249137/mJGRHh3.jpg"
-          />
+          /> -->
           <feature-song-card
             card-title="Yoru ni Kakeru"
             card-artist="YOASOBI"
@@ -315,7 +315,7 @@ button  {
 }
 
 .news-header {
-  color: #b7ba91;
+  /* color: #b7ba91; */
 
   animation: filterChange 5s infinite ease 0s;
   color: #9cf5b9;

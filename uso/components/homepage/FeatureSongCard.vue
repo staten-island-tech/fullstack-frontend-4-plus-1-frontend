@@ -55,7 +55,9 @@ export default {
 </script>
 
 <style scoped>
+
 .feature-card {
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   width: 50rem;
   height: 27rem;
   margin: 1rem;

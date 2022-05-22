@@ -12,13 +12,14 @@
           :src="user[0].image"
             class="profile-picture"
             @click="toggleShowModal()"
-          > </img>
+          /> 
           <p class="change-pfp-text">CHANGE</p>
          
           </div>
       
             <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
             <h1 class="profile-title">{{ username }}</h1>
+            <h1 id="user__edit" class="profile-title">🖉</h1>
      
         </div>
         <div class="profile-description">
@@ -71,6 +72,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
 #profile-body {
   --container-width: 55vw;
   --pfp-size: 120px;
@@ -89,11 +91,12 @@ export default {
       rgba(16, 51, 112, 0.8)
     ),
     /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
-      url('~/assets/images/backgrounds/chnBg.jpg');
+      url('~/assets/images/backgrounds/liyueEndPg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
+
 .cover-photo {
   width: var(--container-width);
   height: 32rem;
@@ -120,32 +123,43 @@ export default {
     align-items: center;
     padding: 0 5rem 0 5rem;
 }
+
 .profile-picture-div {
   position: relative;
 }
+
 .profile-picture {
   width: var(--pfp-size);
   height: var(--pfp-size);
   border-radius: var(--pfp-radius);
   overflow: hidden;
   align-self: flex-end;
+  transition: all 300ms ease-in-out;
 
-  margin: -4rem 2.4rem 1.5rem 0;
+  margin: -4rem 2.4rem 1.5rem 0;cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
+
 .profile-picture:hover {
   background: black;
-  opacity: 0.7;
+  transform: scale(1.04);
+  opacity: 0.85;
 }
+
 .profile-picture:hover + .change-pfp-text {
   display: block;
 }
+
 .change-pfp-text {
-display: none;
+  display: none;
+  text-shadow: 0px 3px 2px #000;
   position: absolute;
-    top: 16%;
-    left: 20%;
-    pointer-events: none;
+  top: -30%;
+  left: 19%;
+  pointer-events: none;
+  transition: all 300ms ease-in-out;
+        /* top: 16%; */
+        /* left: 20%; */
 }
 
 .profile-title {
@@ -184,7 +198,11 @@ align-self: center;
     margin: auto;
 }
 
-
+#user__edit {
+  margin-left: 2.5rem;
+  font-size: 2.5rem;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
 
 /*
 .profile-titlebox {

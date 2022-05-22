@@ -22,7 +22,7 @@
           <header>
             <h2 id="sounds__title">sfx/sounds</h2>
             <h3 id="sounds__subTitle">adjust your volume settings</h3>
-            <button class="btn" @click="patch()">UPDATE</button>
+            <button class="btn" @click="patch()">update</button>
           </header>
 
           <fieldset class="settings__field">
@@ -47,6 +47,7 @@
                   max="100"
                   style="--track-fill: 30%"
                 />
+                <p id="rangeValue">3</p>
               </div>
             </div>
 
@@ -110,7 +111,7 @@
               </picture>
               <div class="input-stack">
                 <label id="media-volume" for="media-volume" aria-hidden="true">
-                  Scroll Speed ~
+                  scroll speed ~
                 </label>
                 <input
                   name="media-volume"
@@ -172,10 +173,15 @@ export default {
 </script>
 
 <style scoped>
+
 * {
   font-family: 'Dongle', sans-serif;
   margin: 0;
   padding: 0;
+}
+
+#rangeValue {
+  color: #0d0c36;
 }
 
 .settings__page {
@@ -192,8 +198,28 @@ export default {
   width: 100%;
   /* height: calc(100vh - 9.5rem); */
 }
+
 .btn {
+  height: 4.5rem;
+  width: 11rem;
   font-size: 3rem;
+  margin-left: auto;
+  color: #f0f1ff;
+  background-color: #6847dd;
+  border-radius: 12px;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  transition: all 300ms;
+}
+
+.btn:hover {
+  transform: translate(0, -7%);
+  background: #c850cc;
+}
+
+.btn:active {
+  transform: scale(.8);
+  background: #14127c;
+
 }
 
 .video-bg {
@@ -237,7 +263,7 @@ export default {
 }
 
 .settings__form {
-  max-width: 89vw;
+  max-width: 90vw;
   /* display: grid; */
   gap: 3rem 6rem;
   --repeat: auto-fit;
@@ -252,7 +278,7 @@ export default {
 
 .settings__field {
   width: 45rem;
-  height: 40rem;
+  height: 47.5rem;
   border: 1px solid #b3b3da;
   background: #b3b3da;
   padding: 0;
