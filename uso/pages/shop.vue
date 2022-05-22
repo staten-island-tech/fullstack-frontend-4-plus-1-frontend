@@ -27,10 +27,22 @@
               :load-roll="loadRoll"
               @rolled-card="logRolledCard"
             />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
           </div>
           <button class="roll-button" @click="pressRoll()">wish!</button>
         </section>
@@ -46,7 +58,7 @@ export default {
   data() {
     return {
       loadRoll: false,
-      primogemBalance: 1600,
+      rolledCharas: [],
       /* skins: [
         {
           id: 1,
@@ -77,7 +89,7 @@ export default {
       this.loadRoll = !this.loadRoll;
     },
     logRolledCard(value) {
-      console.log(value);
+      this.rolledCharas.push(value);
     },
   },
 };

@@ -1,6 +1,12 @@
 <template>
   <div class="owned-card-wrap">
-    <div v-for="card in displayedCards" :key="card" class="owned-card">
+    <div
+      v-for="card in displayedCards"
+      :id="card.rank"
+      :key="card"
+      class="owned-card"
+      @click="getID()"
+    >
       <!-- <div class="val-bg" :class="cardBg"></div> -->
 
       <div class="card-gradient"></div>
@@ -30,6 +36,7 @@ export default {
       ownedCards: [this.allOwned],
       displayedCards: [],
       characters,
+      clickedID: null,
     };
   },
   /*  computed: {
@@ -100,6 +107,11 @@ export default {
         }
       });
     },
+    getID() {
+      const targetID = event.currentTarget.id;
+      console.log(targetID);
+      this.clickedID = targetID;
+    },
   },
 };
 </script>
@@ -132,7 +144,8 @@ button {
 }
 .owned-card {
   /* height: auto; */
-  width: calc(var(--container-width) / 6);
+  /* width: calc(var(--container-width) / 6); */
+  width: 16.666666666666666666667%;
   position: relative;
 
   user-select: none;

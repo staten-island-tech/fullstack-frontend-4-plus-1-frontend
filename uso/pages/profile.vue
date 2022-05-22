@@ -7,10 +7,15 @@
         <div class="cover-photo"></div>
 
         <div class="profile-details">
+          <div class="profile-picture-div">
           <img 
           :src="user[0].image"
             class="profile-picture"
-          />
+            @click="toggleShowModal()"
+          > </img>
+          <p class="change-pfp-text">CHANGE</p>
+         
+          </div>
       
             <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
             <h1 class="profile-title">{{ username }}</h1>
@@ -19,7 +24,7 @@
         <div class="profile-description">
        <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
 
-      
+  <change-pfp  :show-modal='showModal' :all-owned="user[0].characters" />
      </div>
   <section class="collection-section">
      <h1 id="collection-header">Collection</h1>
@@ -32,22 +37,33 @@
 </template>
 
 <script>
+import ChangePfp from '../components/ChangePfp.vue';
 import ownedCharacter from '../components/OwnedCharacter.vue';
 import user from '~/static/user.json';
 import characters from '~/static/characters.json';
 
+
+
 export default {
   components: {
-    ownedCharacter
+    ownedCharacter,
+    ChangePfp,
+
   },
   data() {
     return {
       username: this.$auth.user.nickname,
       user,
-      characters
+      characters,
+      showModal: false
     };
   },
-  
+  methods: {
+    toggleShowModal () {
+      this.showModal = !this.showModal;
+      
+    }
+  }
   /* created() {
     console.log(user);
   }, */
@@ -104,6 +120,9 @@ export default {
     align-items: center;
     padding: 0 5rem 0 5rem;
 }
+.profile-picture-div {
+  position: relative;
+}
 .profile-picture {
   width: var(--pfp-size);
   height: var(--pfp-size);
@@ -113,6 +132,20 @@ export default {
 
   margin: -4rem 2.4rem 1.5rem 0;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
+.profile-picture:hover {
+  background: black;
+  opacity: 0.7;
+}
+.profile-picture:hover + .change-pfp-text {
+  display: block;
+}
+.change-pfp-text {
+display: none;
+  position: absolute;
+    top: 16%;
+    left: 20%;
+    pointer-events: none;
 }
 
 .profile-title {
@@ -150,6 +183,8 @@ align-self: center;
     text-transform: uppercase;
     margin: auto;
 }
+
+
 
 /*
 .profile-titlebox {

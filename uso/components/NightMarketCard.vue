@@ -139,7 +139,7 @@ export default {
       }
     },
     addToOwned() {
-      this.$emit('rolledCard', 'this.activeCharacter.rank');
+      this.$emit('rolled-card', this.activeCharacter.rank);
       /*   console.log(this.activeCharacter.rank); */
     },
     getRoll() {
