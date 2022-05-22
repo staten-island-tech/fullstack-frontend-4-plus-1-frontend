@@ -57,6 +57,7 @@ export default {
     this.sortAllOwned();
     /*    this.countConsecutive(); */
     this.cropCharacters();
+    this.removeConsecutiveDuplicates();
     this.getCharaName();
   },
 
@@ -104,6 +105,17 @@ export default {
           element.title = charaName;
         }
       });
+    },
+    removeConsecutiveDuplicates() {
+      const toRemove = this.displayedCards;
+
+      const removedDuplicates = toRemove.filter(function (item, pos, arr) {
+        // Always keep the 0th element as there is nothing before it
+        // Then check if each element is different than the one before it
+        return pos === 0 || item !== arr[pos - 1];
+      });
+      this.displayedCards = removedDuplicates;
+      /* document.getElementById('result').innerHTML = b.join(', '); */
     },
     getID() {
       const targetID = event.currentTarget.id;
