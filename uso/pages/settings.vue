@@ -2,22 +2,6 @@
   <div class="settings__page">
     <div class="under-nav"></div>
     <section class="landing">
-      <button
-        class="btn"
-        @click="
-          $store.commit(
-            'setSettings',
-            masterVolume,
-            musicVolume,
-            hitSoundsVolume,
-            scrollSpeed,
-            username
-          ),
-            patch()
-        "
-      >
-        UPDATE
-      </button>
       <video
         id="landing-video"
         class="video-bg"
@@ -38,7 +22,17 @@
           <header>
             <h2 id="sounds__title">sfx/sounds</h2>
             <h3 id="sounds__subTitle">adjust your volume settings</h3>
-            <button class="btn" @click="patch()">update</button>
+            <button class="btn" @click="
+              $store.commit(
+                'setSettings',
+                masterVolume,
+                musicVolume,
+                hitSoundsVolume,
+                scrollSpeed,
+                username
+              ),
+                patch()
+            ">update</button>
           </header>
 
           <fieldset class="settings__field">
@@ -91,6 +85,7 @@
                   max="1"
                   style="--track-fill: 30%"
                 />
+                <p id="rangeValue">3</p>
               </div>
             </div>
 
