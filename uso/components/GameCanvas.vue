@@ -147,7 +147,7 @@ export default {
   },
 
   created() {
-    this.notes = this.$store.state.beatmapData.hitObjects;
+    this.notes = this.beatmapData.hitObjects;
     this.notesCol = this.notes.filter((item) => {
       return item.type === 'note';
     });
