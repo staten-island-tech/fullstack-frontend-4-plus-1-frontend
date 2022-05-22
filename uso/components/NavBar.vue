@@ -65,41 +65,70 @@
             /></nuxt-link>
           </div>
 
-           <div class="nav__col nav__col--avatar">
-                <button id="show-login" class="avatar avatar--nav avatar--guest"></button>
+          <div class="nav__col nav__col--avatar">
+            <button
+              id="show-login"
+              class="avatar avatar--nav avatar--guest"
+            ></button>
 
-                    <div class="login-container">
+            <div class="login-container">
+              <div class="login-popup">
+                <div class="close__popup-btn">&times;</div>
 
-                        <div class="login-popup">
-                            <div class="close__popup-btn">&times;</div>
+                <div class="user-form">
+                  <h2 v-if="!loginSatus" id="sign-in" class="user-sign-in">
+                    sign in to proceed...
+                  </h2>
+                  <h2 v-else id="signEd-in" class="user-sign-in">
+                    hi, {{ username }}! ~
+                  </h2>
 
-                            <div class="user-form">
-                                <h2 v-if="!loginSatus" id="sign-in" class="user-sign-in">sign in to proceed...</h2>
-                                <h2 v-else id="signEd-in" class="user-sign-in">hi, {{ username }}! ~</h2>
-                               
-                                <div id="form__sign-in" class="form-element">
-                                  <nuxt-link to="/profile" id="btnId">
-                                    <button v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">profile</button>
-                                  </nuxt-link>
-                                </div>
+                  <div id="form__sign-in" class="form-element">
+                    <nuxt-link id="btnId" to="/profile">
+                      <button
+                        v-if="loginSatus"
+                        id="btn__sign-inId"
+                        class="btn__sign-in"
+                      >
+                        profile
+                      </button>
+                    </nuxt-link>
+                  </div>
 
-                                <div id="form__sign-in" class="form-element">
-                                  <nuxt-link to="/settings" id="btnId">
-                                    <button  v-if="loginSatus" id="btn__sign-inId" class="btn__sign-in">settings</button>
-                                  </nuxt-link>
-                                </div>
+                  <div id="form__sign-in" class="form-element">
+                    <nuxt-link id="btnId" to="/settings">
+                      <button
+                        v-if="loginSatus"
+                        id="btn__sign-inId"
+                        class="btn__sign-in"
+                      >
+                        settings
+                      </button>
+                    </nuxt-link>
+                  </div>
 
-                                <div id="form__sign-in" class="form-element">
-                                    <button v-if="!loginSatus" @click="login()" id="btn__sign-inId" class="btn__sign-in">sign in</button>
-                                    <button v-else @click="logout()" id="btn__sign-out" class="btn__sign-in">» sign out «</button>
-                                </div>
-                                
-                            </div>
-
-                        </div>
-                
-                    </div>
+                  <div id="form__sign-in" class="form-element">
+                    <button
+                      v-if="!loginSatus"
+                      id="btn__sign-inId"
+                      class="btn__sign-in"
+                      @click="login()"
+                    >
+                      sign in
+                    </button>
+                    <button
+                      v-else
+                      id="btn__sign-out"
+                      class="btn__sign-in"
+                      @click="logout()"
+                    >
+                      » sign out «
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
           <!-- <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
@@ -111,7 +140,7 @@
           <li v-else>
             <button class="btn" @click="login()">login</button>
           </li> -->
-          
+
           <!-- @click="login()"  -->
         </div>
       </div>
@@ -137,19 +166,19 @@ export default {
   },
 
   mounted() {
-    console.log("yale is better than harvard");
+    console.log('yale is better than harvard');
 
-    document.querySelector("#show-login")
-    .addEventListener("click", function(){
-        document.querySelector(".login-popup")
-        .classList.add("active");
-    });
+    document
+      .querySelector('#show-login')
+      .addEventListener('click', function () {
+        document.querySelector('.login-popup').classList.add('active');
+      });
 
-    document.querySelector(".login-popup .close__popup-btn")
-    .addEventListener("click", function(){
-        document.querySelector(".login-popup")
-        .classList.remove("active");
-    });
+    document
+      .querySelector('.login-popup .close__popup-btn')
+      .addEventListener('click', function () {
+        document.querySelector('.login-popup').classList.remove('active');
+      });
 
     const animateNav = () => {
       const navBurger = document.querySelector('.uso__navburger');
@@ -188,7 +217,6 @@ export default {
 </script>
 
 <style scoped>
-
 /* Keyframes */
 
 @keyframes pulse {
@@ -525,7 +553,7 @@ export default {
   box-shadow: none;
   border-radius: 50%;
   overflow: hidden;
-  transition: width .3s, height .3s;
+  transition: width 0.3s, height 0.3s;
   position: relative;
 }
 
@@ -555,11 +583,11 @@ export default {
   cursor: pointer;
   transition: all 100ms ease-in;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
-  }
+}
 
-  .avatar:hover {
-    transform: scale(1.07);
-  }
+.avatar:hover {
+  transform: scale(1.07);
+}
 
 /* LOGIN FORM, REGISTER FORM, MODAL/POPUP */
 
@@ -576,9 +604,8 @@ export default {
   font-size: 10px;
   box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
   border-radius: 7px;
-  transition: top 0ms ease-in-out 200ms,
-              opacity 200ms ease-in-out 0ms,
-              transform 20ms ease-in-out 0ms;
+  transition: top 0ms ease-in-out 200ms, opacity 200ms ease-in-out 0ms,
+    transform 20ms ease-in-out 0ms;
 }
 
 .login-popup.active {
@@ -586,9 +613,8 @@ export default {
   left: 73.15%;
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
-  transition: top 0ms ease-in-out 0ms,
-              opacity 200ms ease-in-out 0ms,
-              transform 20ms ease-in-out 0ms;
+  transition: top 0ms ease-in-out 0ms, opacity 200ms ease-in-out 0ms,
+    transform 20ms ease-in-out 0ms;
 }
 
 .login-popup .close__popup-btn {
@@ -631,7 +657,6 @@ export default {
   font-size: 2.45rem;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
-
 
 .login-popup .user-form .form-element .btn__sign-in:hover {
   background-color: rgb(107, 82, 218);
@@ -676,7 +701,6 @@ export default {
   padding: 8.25rem 4.3rem 0rem 4.3rem;
   font-style: italic;
 }
-
 
 #btn__sign-out {
   margin-top: 1.5rem;

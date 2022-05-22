@@ -121,7 +121,8 @@
                 Mapper:
                 {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
-              <nuxt-link id="leaderboard__link"
+              <nuxt-link
+                id="leaderboard__link"
                 :to="`/leaderboard/${
                   bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
@@ -945,5 +946,4 @@ export default {
 #leaderboard__link:hover {
   color: #b0b1f8;
 }
-
 </style>

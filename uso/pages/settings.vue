@@ -22,10 +22,11 @@
           <header>
             <h2 id="sounds__title">sfx/sounds</h2>
             <h3 id="sounds__subTitle">adjust your volume settings</h3>
+            <button class="btn" @click="patch()">UPDATE</button>
           </header>
-          <button class="btn" @click="patch()">UPDATE</button>
+
           <fieldset class="settings__field">
-            <div id="1" class="fieldset-item">
+            <div class="fieldset-item">
               <picture aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path
@@ -46,11 +47,10 @@
                   max="100"
                   style="--track-fill: 30%"
                 />
-                <input v-model="volume1" class="ryanisgoodatvideogames" />
               </div>
             </div>
 
-            <div id="2" class="fieldset-item">
+            <div class="fieldset-item">
               <picture aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path
@@ -75,7 +75,7 @@
               </div>
             </div>
 
-            <div id="3" class="fieldset-item">
+            <div class="fieldset-item">
               <picture aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path
@@ -100,7 +100,7 @@
               </div>
             </div>
 
-            <div id="4" class="fieldset-item">
+            <div class="fieldset-item">
               <picture aria-hidden="true">
                 <svg viewBox="0 0 24 24">
                   <path
@@ -137,14 +137,14 @@ export default {
   data() {
     return {
       userdata: this.$auth.user,
-      volume1: 3,
+      masterVolume: 0.5,
     };
   },
   watch: {
-    volume1(newValue) {
-      if (this.volume1 > 100) this.volume1 = 100;
-      else if (this.volume1 < 0) this.volume1 = 0;
-    },
+    // volume1(newValue) {
+    //   if (this.volume1 > 100) this.volume1 = 100;
+    //   else if (this.volume1 < 0) this.volume1 = 0;
+    // },
   },
   methods: {
     async patch() {
