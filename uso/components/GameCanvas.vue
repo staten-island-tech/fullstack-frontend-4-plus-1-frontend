@@ -41,10 +41,6 @@ export default {
       required: true,
       type: Boolean,
     },
-    beatmapIntro: {
-      required: true,
-      // stop passing in null
-    },
   },
   data() {
     return {
@@ -56,6 +52,7 @@ export default {
       started: false,
 
       notes: null,
+      beatmapIntro: null,
 
       score: 0,
       combo: 0,
@@ -118,7 +115,6 @@ export default {
         targetCircles: [],
       },
       notesToFallArray: [],
-      remainingNotes: null,
       readyNotes: [],
       readySliders: [],
       hitPercent: 0.85,
@@ -239,23 +235,25 @@ export default {
       },
       deep: true,
     },
-    /* remainingNotes(newValue) {
+    remainingNotes(newValue) {
+      console.log(newValue);
       if (newValue === 0) {
         if (this.combo > this.maxCombo) this.maxCombo = this.combo;
         setTimeout(() => {
           this.$emit('endGameParent', this.totalHits, this.maxCombo);
         }, 1000);
       }
-    }, */
+    },
   },
 
   methods: {
     onLoad() {
       const t = this;
 
-      t.notes = this.beatmapData.hitObjects;
-      t.remainingNotes = t.notes.length;
+      t.notes = t.beatmapData.hitObjects;
       t.numColumns = t.beatmapData.columns;
+
+      t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
       window.addEventListener('wheel', this.onScroll);
 
@@ -599,12 +597,13 @@ export default {
         }
 
         remove() {
+          if (this.removed) return;
+          this.removed = true;
+
           t.ss.columnContainers[this.i].removeChild(this);
 
           t.PIXIapp.ticker.remove(this.animateDrop);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
-
-          t.remainingNotes--;
         }
 
         animateDrop() {
@@ -811,13 +810,14 @@ export default {
         }
 
         remove() {
+          if (this.removed) return;
+          this.removed = true;
+
           t.ss.sliderColumnContainers[this.i].removeChild(this);
           t.PIXIapp.ticker.remove(this.animateDrop);
           t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy));
 
           t.readySliders[this.i] = null;
-
-          t.remainingNotes--;
         }
 
         animateDrop() {
@@ -894,6 +894,9 @@ export default {
     },
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
+    },
+    checkIfEnd() {
+      if (this.notesToFallArray)
     },
   },
 };

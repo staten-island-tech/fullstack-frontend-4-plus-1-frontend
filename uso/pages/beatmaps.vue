@@ -38,7 +38,7 @@
           </div>
 
           <div class="aduio-cntrl-cont">
-           <font-awesome-icon
+            <font-awesome-icon
               v-if="clicked"
               icon="fa-solid fa-play"
               class="svg"
@@ -61,20 +61,22 @@
             />
           </div>
 
-          
-
           <div id="audioProgress"></div>
 
-
-                   <div class="aduio-cntrl-cont">
-                     <font-awesome-icon v-if="mute" icon="fa-solid fa-volume-high" class="svg" @click="audioBarMute()"/>
-                   <font-awesome-icon  v-else icon="fa-solid fa-volume-xmark" class="svg" @click="audioBarMute()"/>
-             
-
+          <div class="aduio-cntrl-cont">
+            <font-awesome-icon
+              v-if="mute"
+              icon="fa-solid fa-volume-high"
+              class="svg"
+              @click="audioBarMute()"
+            />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-volume-xmark"
+              class="svg"
+              @click="audioBarMute()"
+            />
           </div>
-
-
-          
         </div>
         <div class="play-beatmap-content">
           <div v-if="!$fetchState.pending" class="play-beatmap-set-container">
@@ -208,11 +210,6 @@ export default {
     const beatmapsData = await fetch('/beatmaps/beatmaps.json');
     this.bmSets = await beatmapsData.json();
 
-    //const beatmapsData = await fetch('https://usobackend.onrender.com/62705a480959d885eafe73dc'); //  /beatmaps/beatmaps.json'
-    // const beatmapsData = await fetch('http://localhost:8090/62705a480959d885eafe73dc');
-
-    // this.bmSets = await beatmapsData.json();
-    console.log(this.bmSets);
     Object.keys(this.bmSets).forEach((folder) => {
       this.bmSetsData[folder] = [];
 
@@ -270,7 +267,6 @@ export default {
                   '1[0-3]|[1-9]'
                 )}`
               );
-              console.log(folder);
             }
 
             let section;
@@ -455,9 +451,8 @@ export default {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
-        Howler.volume(1)
+      Howler.volume(1);
 
-      console.log(t.musicBeatmapDuration);
       if (!t.executed) {
         t.executed = true;
 
@@ -472,7 +467,6 @@ export default {
           this.resetAdiuo();
         }, 10000);
       }
-      console.log(this.clickedBmSetName);
       t.songIndexs = Object.keys(t.bmSets);
 
       // t.musicBeatmap.on('end', function () {
@@ -481,8 +475,6 @@ export default {
       // });
 
       t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-
-      // console.log(this.bmSetsData[this.hoveredBmSetName][0].general)
     },
     changeSound() {
       const t = this;
@@ -492,7 +484,6 @@ export default {
           duration: 10000,
         });
         t.firstBeatmapVal = t.currVal;
-        console.log('work');
         Howler.stop();
         t.musicBeatmap.play();
         //  t.musicBeatmap.play('prevMusic');
@@ -507,7 +498,6 @@ export default {
       this.executed = false;
       this.progressAudioBar.set(0);
       this.clicked = true;
-      console.log('hi');
     },
     toggleAudio() {
       const t = this;
@@ -522,7 +512,6 @@ export default {
         // t.musicBeatmap.play('prevMusic');
         clearTimeout(t.timeoutID);
         t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
-        console.log(t.currAudioProg);
         t.progressAudioBar.animate(1, {
           duration: t.currAudioProg,
         });
@@ -536,46 +525,38 @@ export default {
     prevSongIndex() {
       const t = this;
       // t.songIndexs
-   
+
       const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
       console.log(currSong);
-     
-    
-       if(  currSong > t.minIndex) {
-          const prevSong = currSong - 1;
-      t.clickedBmSetName = t.songIndexs[prevSong];
-      console.log(t.clickedBmSetName);
-      t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-      console.log(t.currVal);
-      t.beatmapSoundBit();
-      t.changeSound();
+
+      if (currSong > t.minIndex) {
+        const prevSong = currSong - 1;
+        t.clickedBmSetName = t.songIndexs[prevSong];
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+        t.beatmapSoundBit();
+        t.changeSound();
       }
     },
     nextSongIndex() {
-        const t = this;
+      const t = this;
       const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
-      console.log(t.songIndexs);
-      
-       if( currSong <= t.maxIndex) {
+
+      if (currSong <= t.maxIndex) {
         const prevSong = currSong + 1;
-      t.clickedBmSetName = t.songIndexs[prevSong];
-      console.log(t.clickedBmSetName);
-      t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-      console.log(t.currVal);
-      t.beatmapSoundBit();
-      t.changeSound();
-       }
+        t.clickedBmSetName = t.songIndexs[prevSong];
+        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
     },
     audioBarMute() {
-      this.mute = !this.mute
+      this.mute = !this.mute;
       if (this.mute === false) {
-        Howler.volume(0)
+        Howler.volume(0);
+      } else {
+        Howler.volume(1);
       }
-      else {
-        Howler.volume(1)
-      }
-      
-    }
+    },
   },
 };
 </script>
