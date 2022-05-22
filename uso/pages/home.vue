@@ -1,8 +1,8 @@
 <template>
   <div>
-       <routeChange/>
+    <routeChange />
     <div class="under-nav"></div>
-    
+
     <section class="landing">
       <video
         id="landing-video"
@@ -65,15 +65,14 @@
         </section>
         <section class="news home-section">
           <h1 class="news-header">!uso News</h1>
-          
+
           <news-card />
         </section>
       </div>
     </section>
-     <!-- <button @click="auth(), testEnv()">Sign In</button>
+    <!-- <button @click="auth(), testEnv()">Sign In</button>
      <a href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a> -->
   </div>
-
 </template>
 
 <script>
@@ -83,12 +82,13 @@ import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 
 export default {
-    auth: false,
+  auth: false,
   components: { FeatureSongCard, NewsCard },
   /* async asyncData({ $axios }) {
     const data = await $axios.$get('../assets/data/data.json');
     console.log(data);
   }, */
+
   data() {
     return {
       featureSongs: [
@@ -104,23 +104,42 @@ export default {
     };
   },
 
-
-
-
   async fetch() {
-    const userDataFetch = await fetch('https://usobackend.onrender.com/');
-        const userDataFetched = await userDataFetch.json();
-        
-        userDataFetched .forEach(user => {
-          this.userData.push(user)
-        });
+    // http://localhost:8000/6289babceda0db001153a8d8
+    // `http://localhost:8000/${getUserId}`
+    const token = await this.$auth.strategy.token.get();
+    // const getUserId = this.userdata.sub.replace('auth0|', '');
+    // console.log(getUserId);
+    const userDataFetch = await fetch(
+      'http://localhost:8000/6289babceda0db001153a8d8',
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const userDataFetched = await userDataFetch.json();
+    // userDataFetched.forEach((user) => {
+    //   this.userData.push(user);
+    // });
 
-        console.log(this.userData)
-      //  this.userDataFetch.forEach(user => {
-      //     this.userData = Object.keys(user)
-
-      //   });
+    console.log(userDataFetched);
   },
+
+  // async fetch() {
+  //   const userDataFetch = await fetch('https://usobackend.onrender.com/');
+  //   const userDataFetched = await userDataFetch.json();
+
+  //   userDataFetched.forEach((user) => {
+  //     this.userData.push(user);
+  //   });
+
+  //   console.log(this.userData);
+  //   //  this.userDataFetch.forEach(user => {
+  //   //     this.userData = Object.keys(user)
+
+  //   //   });
+  // },
   created() {
     this.getFeatureCards();
     console.log(process.env)
@@ -128,14 +147,11 @@ export default {
   },
 
   methods: {
-  
-     auth() {
-this.$auth.loginWith('auth0')
-     },
+    auth() {
+      this.$auth.loginWith('auth0');
+    },
 
-     testEnv() {
-
-     },
+    testEnv() {},
 
     getFeatureCards: async function getFeatureCards() {
       /*  try {
@@ -153,7 +169,6 @@ this.$auth.loginWith('auth0')
 </script>
 
 <style scoped>
-
 @keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -263,7 +278,7 @@ this.$auth.loginWith('auth0')
   padding-bottom: 15px;
 }
 
-button  {
+button {
   width: 10rem;
   height: 10rem;
   font-size: 4rem;
@@ -324,5 +339,4 @@ button  {
 .home-section {
   padding: 7rem 0 0 0;
 }
-
 </style>

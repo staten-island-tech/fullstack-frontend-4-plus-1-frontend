@@ -2,6 +2,22 @@
   <div class="settings__page">
     <div class="under-nav"></div>
     <section class="landing">
+      <button
+        class="btn"
+        @click="
+          $store.commit(
+            'setSettings',
+            masterVolume,
+            musicVolume,
+            hitSoundsVolume,
+            scrollSpeed,
+            username
+          ),
+            patch()
+        "
+      >
+        UPDATE
+      </button>
       <video
         id="landing-video"
         class="video-bg"
@@ -39,13 +55,15 @@
                   master volume ~
                 </label>
                 <input
+                  v-model="masterVolume"
                   name="media-volume"
                   aria-labelledby="media-volume"
                   type="range"
-                  :value="volume1"
+                  step="0.1"
                   min="0"
-                  max="100"
+                  max="1"
                   style="--track-fill: 30%"
+                  @change="changeGlobalVol()"
                 />
                 <p id="rangeValue">3</p>
               </div>
@@ -64,15 +82,15 @@
                   music volume ~
                 </label>
                 <input
+                  v-model="musicVolume"
                   name="media-volume"
                   aria-labelledby="media-volume"
                   type="range"
-                  value="3"
-                  max="10"
+                  step="0.1"
+                  min="0"
+                  max="1"
                   style="--track-fill: 30%"
-                  oninput="rangeValue.innerText = this.value"
                 />
-                <p id="rangeValue">3</p>
               </div>
             </div>
 
@@ -89,13 +107,14 @@
                   hitsounds volume ~
                 </label>
                 <input
+                  v-model="hitSoundsVolume"
                   name="media-volume"
                   aria-labelledby="media-volume"
                   type="range"
-                  value="3"
-                  max="10"
+                  min="0"
+                  step="0.1"
+                  max="1"
                   style="--track-fill: 30%"
-                  oninput="rangeValue.innerText = this.value"
                 />
                 <p id="rangeValue">3</p>
               </div>
@@ -114,13 +133,14 @@
                   scroll speed ~
                 </label>
                 <input
+                  v-model="scrollSpeed"
                   name="media-volume"
                   aria-labelledby="media-volume"
                   type="range"
-                  value="3"
-                  max="10"
+                  step="1"
+                  min="10"
+                  max="30"
                   style="--track-fill: 30%"
-                  oninput="rangeValue.innerText = this.value"
                 />
                 <p id="rangeValue">3</p>
               </div>
@@ -138,7 +158,11 @@ export default {
   data() {
     return {
       userdata: this.$auth.user,
-      masterVolume: 0.5,
+      masterVolume: this.$store.state.userSettings.masterVolume,
+      musicVolume: this.$store.state.userSettings.musicVolume,
+      hitSoundsVolume: this.$store.state.userSettings.hitSoundsVolume,
+      scrollSpeed: this.$store.state.userSettings.scrollSpeed,
+      username: '',
     };
   },
   watch: {
@@ -150,14 +174,21 @@ export default {
   methods: {
     async patch() {
       const getUserId = this.userdata.sub.replace('auth0|', '');
-      console.log(getUserId);
+      console.log(this.musicVolume);
       try {
         const token = await this.$auth.strategy.token.get();
         fetch(`http://localhost:8000/update/${getUserId}`, {
           method: 'PATCH',
           body: JSON.stringify({
-            A: '3',
-            username: 'wx346xcs',
+            volSettings: {
+              master: `${this.masterVolume}`,
+              music: `${this.musicVolume}`,
+              hitSound: `${this.hitSoundsVolume}`,
+            },
+
+            gameSettings: {
+              scrollSpeed: `${this.scrollSpeed}`,
+            },
           }),
           headers: {
             'Content-type': 'application/json; charset=UTF-8',
@@ -167,6 +198,10 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    changeGlobalVol() {
+      Howler.volume(this.masterVolume);
+      console.log(Howler.volume());
     },
   },
 };

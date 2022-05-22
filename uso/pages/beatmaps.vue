@@ -420,7 +420,6 @@ export default {
         //   prevMusic: [t.musicBeatmapDuration, 10000, false],
         // },
       });
-      Howler.volume(1);
 
       if (!t.executed) {
         t.executed = true;
