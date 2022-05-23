@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      scrollSpeed: 10,
+      scrollSpeed: 5,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -106,7 +106,7 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
-      dy: 10,
+      dy: 8,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -328,7 +328,8 @@ export default {
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
         t.ss.columnContainers.push(
-          new PIXI.ParticleContainer(1500, { tint: true })
+          // new PIXI.Container()
+          new PIXI.ParticleContainer(300, { tint: true })
         );
         t.ss.sliderColumnContainers.push(new PIXI.Container());
 
@@ -369,6 +370,14 @@ export default {
 
         t.readyNotes.push([]);
       }
+      t.music = new Howl({
+        src: [
+          `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
+        ],
+        volume: 0.5,
+        preload: 'metadata',
+        onload: () => (this.songLoaded = true),
+      });
 
       /* t.dy =
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -380,9 +389,17 @@ export default {
     },
     startGame() {
       const t = this;
-
+      const lstnote = t.notes.slice(-1)[0];
+      t.music.play();
       t.started = true;
-
+      setTimeout(
+        () => {
+          this.$emit('endGameParent', this.totalHits, this.maxCombo);
+        },
+        lstnote.endTime
+          ? lstnote.endTime
+          : lstnote.time - t.notes[0].time + 3000
+      );
       /* ===============
           HP DRAIN
           =============== */
@@ -611,13 +628,13 @@ export default {
 
           t.ss.columnContainers[this.i].removeChild(this);
 
-          t.PIXIapp.ticker.remove(this.animateDrop);
+          t.PIXIapp.ticker.remove(this.animateDrop, this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
         animateDrop(delta) {
           this.y += t.dy;
-
+          console.log(this.y);
           if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
             this.ready = true;
             t.readyNotes[this.i].push(this);
@@ -627,15 +644,19 @@ export default {
 
           if (this.msFrom() >= 0 && !this.fading) {
             this.fading = true;
-            t.PIXIapp.ticker.add(this.animateFade);
+            t.PIXIapp.ticker.add(this.animateFade, this);
+            t.ss.columnContainers[this.i].removeChild(this);
           }
+
+          //           if (this.msFrom() >=  && !this.fading) {
+          // this.fading = true;
         }
 
         animateFade(delta) {
           const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
           if (this.alpha - da <= 0) {
             this.alpha = 0;
-            t.PIXIapp.ticker.remove(this.animateFade);
+            t.PIXIapp.ticker.remove(this.animateFade, this);
             this.remove();
           } else {
             this.alpha -= da;
@@ -650,7 +671,7 @@ export default {
             this.timerID = null;
 
             t.ss.columnContainers[this.i].addChild(this);
-            t.PIXIapp.ticker.add(this.animateDrop);
+            t.PIXIapp.ticker.add(this.animateDrop, this);
           }, this.remainingTime);
         }
 
@@ -821,8 +842,8 @@ export default {
           this.removed = true;
 
           t.ss.sliderColumnContainers[this.i].removeChild(this);
-          t.PIXIapp.ticker.remove(this.animateDrop);
-          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy));
+          t.PIXIapp.ticker.remove(this.animateDrop, this);
+          t.PIXIapp.ticker.remove(() => ((this.children[0].y += t.dy), this));
 
           t.readySliders[this.i] = null;
         }
@@ -851,8 +872,8 @@ export default {
           this.children[0].y += t.dy;
 
           if (this.children[0].y >= this.children[2].y) {
-            t.PIXIapp.ticker.remove(this.animateShrink);
-            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy));
+            t.PIXIapp.ticker.remove(this.animateShrink, this);
+            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy), this);
             this.hit();
           }
         }
@@ -864,7 +885,7 @@ export default {
             t.ss.sliderColumnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
             this.timerID = null;
-            t.PIXIapp.ticker.add(this.animateDrop);
+            t.PIXIapp.ticker.add(this.animateDrop, this);
           }, this.remainingTime);
         }
 
@@ -874,12 +895,25 @@ export default {
         }
       }
 
-      for (let i = 0; i < this.notesCol.length; i++) {
-        new Note(this.notesCol[i]);
+      for (let i = 0; i < t.notesCol.length; i += 4) {
+        const chunk = t.notesCol.slice(i, i + 4);
+        //  const chunk2 = t.sliderCol.slice(i, i + 4);
+        chunk.forEach((note) => {
+          new Note(note);
+        });
+
+        //        chunk2.forEach((note) => {
+        //   new Slider(note);
+        // });
       }
-      for (let i = 0; i < this.sliderCol.length; i++) {
-        new Slider(this.sliderCol[i]);
-      }
+      // for (let i = 0; i < t.sliderCol.length; i += 4) {
+      //   const chunk = t.sliderCol.slice(i, i + 4);
+
+      // }
+
+      // for (let i = 0; i < this.sliderCol.length; i++) {
+      //   new Slider(this.sliderCol[i]);
+      // }
       //   // a, b, c and d are the four elements of this iteration
       // give acc balue to particel container
       // });
