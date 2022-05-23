@@ -891,11 +891,13 @@ export default {
 
       for (let i = 0; i < t.notesCol.length; i += 4) {
         const chunk = t.notesCol.slice(i, i + 4);
-        //  const chunk2 = t.sliderCol.slice(i, i + 4);
+         const chunk2 = t.sliderCol.slice(i, i + 4);
         chunk.forEach((note) => {
           new Note(note);
         });
-
+     chunk2.forEach((note) => {
+          new Slider(note);
+        });
         //        chunk2.forEach((note) => {
         //   new Slider(note);
         // });
