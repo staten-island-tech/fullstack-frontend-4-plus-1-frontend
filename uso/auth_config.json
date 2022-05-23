@@ -1,0 +1,5 @@
+{
+    "domain": "dev-2szf794g.us.auth0.com",
+    "clientId": "0oJ0TBUYNgtTWAvBOxvxEW955Xy99Ld1",
+    "redirect_uri": "http://localhost:8080/home"
+  }
