@@ -22383,10 +22383,10 @@ export const state = () => ({
     hitObjects: [
       {
         x: 64,
-        time: 66197,
+        time: 25000,
         type: 'hold',
         hitSound: 0,
-        endTime: 66797,
+        endTime: 25600,
         hitSample: {
           normalSet: 0,
           additionSet: 0,
@@ -22531,34 +22531,6 @@ export const state = () => ({
           volume: 0,
           filename: '',
         },
-        columnIndex: 0,
-      },
-      {
-        x: 448,
-        time: 32000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 1,
-      },
-      /* {
-        x: 448,
-        time: 34000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
         columnIndex: 1,
       },
       {
@@ -22573,7 +22545,7 @@ export const state = () => ({
           volume: 0,
           filename: '',
         },
-        columnIndex: 0,
+        columnIndex: 1,
       },
       {
         x: 448,
@@ -22589,21 +22561,6 @@ export const state = () => ({
         },
         columnIndex: 1,
       },
-
-      {
-        x: 448,
-        time: 36000,
-        type: 'note',
-        hitSound: 0,
-        hitSample: {
-          normalSet: 0,
-          additionSet: 0,
-          index: 0,
-          volume: 0,
-          filename: '',
-        },
-        columnIndex: 0,
-      }, */
     ],
     columns: 4,
   },

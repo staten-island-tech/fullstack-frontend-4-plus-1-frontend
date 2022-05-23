@@ -10,6 +10,7 @@ module.exports = {
     createjs: false,
     ProgressBar: false,
     kd: false,
+    PIXI: false,
   },
   parserOptions: {
     parser: '@babel/eslint-parser',

@@ -21,7 +21,6 @@
         ref="gameCanvas"
         :beatmap-data="beatmapData"
         :paused="paused"
-        :beatmap-intro="beatmapIntro"
         @updateStats="
           (newScore, newAccuracy) => {
             score = newScore;
@@ -32,9 +31,23 @@
       />
 
       <div class="scorePercentage__container">
-        <h1 id="score">{{ Math.floor(score) }}</h1>
+        <h1 id="score">
+          {{
+            score.toLocaleString('en-US', {
+              minimumIntegerDigits: 7,
+              maximumFractionDigits: 0,
+              useGrouping: false,
+            })
+              ? score.toLocaleString('en-US', {
+                  minimumIntegerDigits: 7,
+                  maximumFractionDigits: 0,
+                  useGrouping: false,
+                })
+              : Math.floor(score)
+          }}
+        </h1>
         <h1 id="percentage">
-          {{ accuracy ? `${Math.round(accuracy * 10000) / 100}%` : '100.00%' }}
+          {{ (Math.round(accuracy * 10000) / 100).toFixed(2) }}%
         </h1>
       </div>
 
@@ -108,8 +121,6 @@ export default {
       pauseKey: 'ESCAPE',
       paused: false,
 
-      beatmapIntro: null,
-
       pbVolProgress: 1,
       scale: 0,
       opacity: 1,
@@ -169,11 +180,6 @@ export default {
       });
 
       t.beatmapData = t.$store.state.beatmapData;
-
-      t.beatmapIntro =
-        t.beatmapData.hitObjects[0].time < 3000
-          ? 0
-          : t.beatmapData.hitObjects[0].time - 3000;
 
       /* ===============
             PROGRESS BAR

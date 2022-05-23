@@ -7,14 +7,14 @@
     <div id="game__hitCombo__container" :style="{ width: canvasWidth + 'px' }">
       <h1
         id="game__combo"
-        :key="comboVKey"
+        :key="hitComboVKey"
         :class="{ game__combo__on: comboOn, game__combo__reset: comboReset }"
       >
         {{ combo ? combo : missedCombo ? missedCombo : null }}
       </h1>
       <h1
         id="game__hitValue"
-        :key="hitValueVKey"
+        :key="hitComboVKey + 1"
         class="game__hitValue__on"
         :style="lastestHitStyle"
       >
@@ -41,26 +41,24 @@ export default {
       required: true,
       type: Boolean,
     },
-    beatmapIntro: {
-      required: true,
-    },
   },
   data() {
     return {
       loaded: {
-        createjs: false,
         keydrown: false,
+        PIXI: false,
       },
       areAllLoaded: false,
       started: false,
 
-      // beatmaps data
-      notes: [],
+      notes: null,
+      beatmapIntro: null,
 
       score: 0,
       combo: 0,
+      index: 0,
       maxCombo: 0,
-      scrollSpeed: 20,
+      scrollSpeed: 5,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -78,8 +76,7 @@ export default {
       comboOn: false,
       comboReset: false,
 
-      comboVKey: 0,
-      hitValueVKey: 1,
+      hitComboVKey: 0,
 
       hitJudgement: {
         320: null,
@@ -92,33 +89,35 @@ export default {
 
       allKeys: ['A', 'S', 'D', 'F', 'SPACE', 'H', 'J', 'K', 'L'],
       keys: [],
-      allColors: ['#E1D5E7', '#DAE8FC', '#f7a5cf', '#FFE6CC', '#F8CECC'],
-      // allColors: ['#E1D5E7', '#DAE8FC', '#C8FFE4', '#FFE6CC', '#F8CECC'],
+      allColors: ['#E1D5E7', '#DAE8FC', '#F7A5CF', '#FFE6CC', '#F8CECC'],
       colors: [],
-      /* circleColors: ['#dddcdc', '#f7a5cf', '#f7a5cf', '#dddcdc'], */
+      circleTextures: [],
+      targetCircleTextures: [],
+      /* circleColors: ['#dddcdc', '#F7A5CF', '#F7A5CF', '#dddcdc'], */
 
       numColumns: null,
       columnWidth: 100, // in px (we change this to rem later)
       canvasWidth: null,
 
-      stage: null,
+      PIXIapp: null,
+      PIXIticker: null,
+
       stageWidth: null,
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
+      dy: 8,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
         columnContainers: [],
+        sliderColumnContainers: [],
         columnBorders: [],
         targetCircles: [],
-        targetCirclesGraphics: [],
       },
       notesToFallArray: [],
-      remainingNotes: null,
       readyNotes: [],
       readySliders: [],
-
       hitPercent: 0.85,
       radius: 40,
 
@@ -132,16 +131,13 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
+      notesCol: null,
     };
   },
 
   head() {
     return {
       script: [
-        {
-          src: '/lib/createjs.min.js',
-          callback: () => (this.loaded.createjs = true),
-        },
         {
           src: '/lib/keydrown.min.js',
           callback: () => (this.loaded.keydrown = true),
@@ -150,13 +146,16 @@ export default {
     };
   },
 
+  mounted() {
+    const loadedTimerID = setInterval(() => {
+      if (typeof window.PIXI !== 'undefined') {
+        this.loaded.PIXI = true;
+        clearInterval(loadedTimerID);
+      }
+    }, 200);
+  },
+
   computed: {
-    dy() {
-      return (
-        (this.scrollSpeed * 1000 * this.stageHeight) /
-        (this.stageFPS * (6860 * this.hitPercent + 6860))
-      );
-    },
     displayedLatestHit() {
       switch (this.latestHit) {
         case 320:
@@ -232,14 +231,15 @@ export default {
       },
       deep: true,
     },
-    remainingNotes(newValue) {
+    /* remainingNotes(newValue) {
+      console.log(newValue);
       if (newValue === 0) {
         if (this.combo > this.maxCombo) this.maxCombo = this.combo;
         setTimeout(() => {
           this.$emit('endGameParent', this.totalHits, this.maxCombo);
         }, 1000);
       }
-    },
+    }, */
   },
 
   methods: {
@@ -247,8 +247,17 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
-      t.remainingNotes = t.notes.length;
+
+      t.notesCol = t.notes.filter((item) => {
+        return item.type === 'note';
+      });
+      t.sliderCol = t.notes.filter((item) => {
+        return item.type === 'hold';
+      });
+
       t.numColumns = t.beatmapData.columns;
+
+      t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
 
       window.addEventListener('wheel', this.onScroll);
 
@@ -264,42 +273,16 @@ export default {
         ...t.allColors.slice(-(Math.floor(t.numColumns / 2) + 2), -2).reverse(),
       ];
 
-      t.music = new Howl({
-        src: [
-          `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
-        ],
-        volume: this.volume,
-        preload: 'metadata',
-        onload: () => (this.songLoaded = true),
-      });
+      t.colors.forEach((color) =>
+        t.circleTextures.push(
+          PIXI.Texture.from(`/textures/${color.slice(1)}_Circle.png`)
+        )
+      );
 
-      t.music.seek(t.beatmapIntro / 1000);
-
-      t.defaultHitNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
-        volume: t.volume,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitClapNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/normal-hitclap.wav`],
-        volume: t.volume,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitSoftNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-hitnormal.wav`],
-        volume: 0.3,
-        onload: () => (t.songLoaded = true),
-      });
-      t.defaultHitSoftClapNormal = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-hitclap.wav`],
-        volume: 0.08,
-        onload: () => (t.songLoaded = true),
-      });
-      t.softSliderWhistle = new Howl({
-        src: [`/beatmaps/defaultHitSound/soft-sliderwhistle.wav`],
-        volume: 0.1,
-        onload: () => (t.songLoaded = true),
-      });
+      t.targetCircleTextures = [
+        PIXI.Texture.from(`/textures/808080_Circle.png`),
+        PIXI.Texture.from(`/textures/FFFFFF_Circle.png`),
+      ];
 
       /* ===============
           CANVAS SETUP
@@ -311,32 +294,32 @@ export default {
 
       // Sets the canvas width/height pixels = to canvas display size width/height
       t.stageWidth = $canvas.width = t.canvasWidth;
-      t.stageHeight = $canvas.height = $canvas.getBoundingClientRect().height;
-
-      t.stage = new createjs.Stage($canvas);
+      t.stageHeight = $canvas.getBoundingClientRect().height;
       t.stageColWidth = t.stageWidth / t.numColumns;
+
+      t.PIXIapp = new PIXI.Application({
+        width: t.stageWidth,
+        height: t.stageHeight,
+        view: $canvas,
+        backgroundColor: 0x181818,
+      });
 
       /* ===============
           TICKER
           =============== */
 
-      // I think we have to add sound when we click the route
+      t.PIXIticker = PIXI.Ticker.shared;
+      t.PIXIticker.speed = t.stageFPS / 60;
 
-      createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-      // Each tick is run 1/60 times per second
-      createjs.Ticker.framerate = t.stageFPS;
-      // Automatically updates the stage every tick (aka frame)
-      createjs.Ticker.addEventListener('tick', t.stage);
+      t.PIXIticker.autoStart = false;
+      t.PIXIticker.stop();
 
       /* ===============
           SETUP CONTAINER
           =============== */
 
-      t.ss.setupContainer = new createjs.Container();
-      t.ss.setupContainer.name = 'setupContainer';
-
-      t.stage.addChild(t.ss.setupContainer);
-      t.stage.setChildIndex(t.ss.setupContainer, 0);
+      t.ss.setupContainer = new PIXI.Container();
+      t.PIXIapp.stage.addChild(t.ss.setupContainer);
 
       /* ===============x
           STAGE SETUP
@@ -344,50 +327,61 @@ export default {
 
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
-        t.ss.columnContainers.push(new createjs.Container());
+        t.ss.columnContainers.push(
+          // new PIXI.Container()
+          new PIXI.ParticleContainer(300, { tint: true })
+        );
+        t.ss.sliderColumnContainers.push(new PIXI.Container());
 
         // Sets the x-offset for each container based off the column index and column width
         t.ss.columnContainers[i].x = i * t.stageColWidth;
-        t.ss.columnContainers[i].name = `columnContainer${i}`;
+        t.ss.sliderColumnContainers[i].x = i * t.stageColWidth;
 
         // "Mounts" the container to the stage
-        t.stage.addChild(t.ss.columnContainers[i]);
+        t.PIXIapp.stage.addChild(t.ss.columnContainers[i]);
+        t.PIXIapp.stage.addChild(t.ss.sliderColumnContainers[i]);
 
         ////////////////////////////////////////
 
-        const borderGraphic = new createjs.Graphics()
-          .beginStroke('Black')
-          .drawRect(i * 100, 0, t.stageColWidth, t.stageHeight);
-
-        const columnBorder = new createjs.Shape(borderGraphic);
-
-        columnBorder.name = `border${i}`;
+        const columnBorder = new PIXI.Graphics()
+          .lineStyle(1, 0x000000)
+          .moveTo(t.stageColWidth * i, 0)
+          .lineTo(t.stageColWidth * i, t.stageHeight);
 
         t.ss.columnBorders.push(columnBorder);
         t.ss.setupContainer.addChild(columnBorder);
 
         ////////////////////////////////////////
 
-        const targetCircle = new createjs.Shape(
-          new createjs.Graphics().beginStroke('Black')
-        );
-        const circleGraphic = targetCircle.graphics.beginFill('Gray').command;
-        targetCircle.graphics.drawCircle(
+        const targetCircle = new PIXI.Sprite(t.targetCircleTextures[0]);
+
+        targetCircle.anchor.set(0.5);
+        targetCircle.setTransform(
           t.stageColWidth * (i + 0.5),
-          t.hitPercent * t.stageHeight,
-          t.radius
+          t.hitPercent * t.stageHeight
         );
 
-        targetCircle.name = `targetCircle${i}`;
+        targetCircle.width = targetCircle.height = 2 * t.radius;
 
         t.ss.targetCircles.push(targetCircle);
-        t.ss.targetCirclesGraphics.push(circleGraphic);
         t.ss.setupContainer.addChild(targetCircle);
 
         ////////////////////////////////////////
 
         t.readyNotes.push([]);
       }
+      t.music = new Howl({
+        src: [
+          `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
+        ],
+        volume: 0.5,
+        preload: 'metadata',
+        onload: () => (this.songLoaded = true),
+      });
+
+      /* t.dy =
+        (this.scrollSpeed * 1000 * this.stageHeight) /
+        (this.stageFPS * (6860 * this.hitPercent + 6860)); */
 
       t.areAllLoaded = true;
       // emit this back to play.vue
@@ -395,17 +389,17 @@ export default {
     },
     startGame() {
       const t = this;
-
-      t.started = true;
-
-      t.songDuration = Math.round(t.music.duration()) * 1000;
-
+      const lstnote = t.notes.slice(-1)[0];
       t.music.play();
-
-      /* const $hitComboContainer = document.querySelector(
-        '#game__hitCombo__container'
-      ); */
-
+      t.started = true;
+      setTimeout(
+        () => {
+          this.$emit('endGameParent', this.totalHits, this.maxCombo);
+        },
+        lstnote.endTime
+          ? lstnote.endTime
+          : lstnote.time - t.notes[0].time + 3000
+      );
       /* ===============
           HP DRAIN
           =============== */
@@ -436,7 +430,6 @@ export default {
 
         t.health = t.clamp(t.health, 0, 100);
       }
-
       /* ===============
           KEY PRESS
           =============== */
@@ -459,82 +452,75 @@ export default {
           (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
         );
 
-        // console.log('KEY PRESS:', t.notes[0].msFrom());
-
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
+            console.log(t.readyNotes[columnI].length);
             if (thisCircle) thisCircle.hit();
           });
 
-          t.ss.targetCirclesGraphics[columnI].style = 'white';
+          t.ss.targetCircles[columnI].texture = t.targetCircleTextures[1];
         }
       });
 
       document.addEventListener('keyup', function (e) {
+        if (e.repeat) return;
+
         const columnI = t.keys.findIndex(
           (key) => key === (e.key === ' ' ? 'SPACE' : e.key.toUpperCase())
         );
+
         if (!(columnI === -1)) {
-          t.ss.targetCirclesGraphics[columnI].style = 'gray';
+          t.ss.targetCircles[columnI].texture = t.targetCircleTextures[0];
         }
       });
 
       for (let i = 0; i < t.numColumns; i++) {
         kd[t.keys[i]].down(function () {
           if (!t.readySliders[i]) return;
-          t.readySliders[i].held = true;
 
-          if (!t.readySliders[i].initialMs)
-            t.readySliders[i].initialMs = t.readySliders[i].msFrom('bot', true);
+          const slider = t.readySliders[i];
+
+          if (!slider.held) {
+            t.PIXIapp.ticker.remove(slider.animateDrop);
+            t.PIXIapp.ticker.add(slider.animateShrink);
+          }
+
+          slider.held = true;
+
+          if (!slider.initialMs) slider.initialMs = slider.msFrom('bot', true);
         });
 
         kd[[t.keys[i]]].up(function () {
           if (!t.readySliders[i]) return;
-          t.readySliders[i].held = false;
 
-          if (t.readySliders[i].msFrom('top', true) <= t.hitJudgement['50']) {
-            t.readySliders[i].finalMs = t.readySliders[i].msFrom('top', true);
+          const slider = t.readySliders[i];
 
-            t.readySliders[i].avgMs =
-              (t.readySliders[i].initialMs + t.readySliders[i].finalMs) / 2;
+          if (slider.held) {
+            t.PIXIapp.ticker.remove(slider.animateShrink);
+            t.PIXIapp.ticker.add(slider.animateDrop);
+          }
 
-            t.readySliders[i].hit();
-          } else {
-            if (t.readySliders[i].releasedMs) t.readySliders[i].miss();
-            else t.readySliders[i].releasedMs = t.readySliders[i].msFrom('top');
+          slider.held = false;
+
+          if (slider.msFrom('top', true) <= t.hitJudgement['50']) slider.hit();
+          else {
+            if (slider.releasedMs) slider.miss();
+            else slider.releasedMs = slider.msFrom('top');
           }
         });
+
+        kd.run(() => kd.tick());
       }
 
-      kd.run(() => kd.tick());
-
-      /* ===============
-              NOTES
-          =============== */
-
-      class Note extends createjs.Shape {
+      class Note extends PIXI.Sprite {
         constructor(note) {
-          super(
-            new createjs.Graphics()
-              .beginStroke('Black')
-              .beginFill(t.colors[note.columnIndex])
-              .drawCircle(t.stageColWidth / 2, -t.radius, t.radius)
-          );
+          super(t.circleTextures[note.columnIndex]);
 
-          this.name = 'thisCircle';
           this.i = note.columnIndex;
-          this.hitSample = note.hitSample;
-          this.hitSound = note.hitSound;
           this.time = note.time;
 
-          this.animate = this.animate.bind(this);
-          this.miss = this.miss.bind(this);
-          this.cache(
-            t.stageColWidth / 2 - t.radius,
-            -2 * t.radius,
-            2 * t.radius,
-            2 * t.radius
-          );
+          this.animateDrop = this.animateDrop.bind(this);
+          this.animateFade = this.animateFade.bind(this);
 
           this.remainingTime =
             note.time -
@@ -543,7 +529,13 @@ export default {
               (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
-          this.resumeTimer();
+
+          this.anchor.set(0.5);
+          this.setTransform(t.stageColWidth / 2, -t.radius);
+
+          this.width = this.height = t.radius * 2;
+
+          this.resumeDropTimer();
 
           this.startTime, this.timerID;
         }
@@ -551,16 +543,16 @@ export default {
         msFrom(isAbs = false) {
           return isAbs
             ? Math.abs(
-                ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+                ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                   (t.dy * t.stageFPS)
               )
-            : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+            : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                 (t.dy * t.stageFPS);
         }
 
         miss() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.missed) return;
+          this.missed = true;
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -572,74 +564,42 @@ export default {
 
           t.comboOn = false;
           t.comboReset = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
-
-          /* const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
-
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('.game__combo__on');
-          $combo.classList.add('game__combo__reset');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue); */
-
-          this.remove();
+          t.hitComboVKey += 2;
         }
 
         hit() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
-
-          t.beatmapData.hitObjects.forEach((note) => {
-            t.noteHitSound = note.hitSample.filename;
-          });
+          if (this.missed) return;
 
           let hitBonusValue = 0;
 
-          switch (true) {
-            case this.msFrom(true) <= t.hitJudgement['320']:
-              t.latestHit = 320;
-              t.totalHits['320']++;
-              hitBonusValue = 32;
-              t.bonus += 2;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['300']:
-              t.latestHit = 300;
-              t.totalHits['300']++;
-              hitBonusValue = 32;
-              t.bonus += 1;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['200']:
-              t.latestHit = 200;
-              t.totalHits['200']++;
-              hitBonusValue = 16;
-              t.bonus -= 8;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['100']:
-              t.latestHit = 100;
-              t.totalHits['100']++;
-              hitBonusValue = 8;
-              t.bonus -= 24;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['50']:
-              t.latestHit = 50;
-              t.totalHits['50']++;
-              hitBonusValue = 4;
-              t.bonus -= 44;
-
-              break;
-            case this.msFrom(true) <= t.hitJudgement['0']:
-              this.miss();
-              return;
+          if (this.msFrom(true) <= t.hitJudgement['320']) {
+            t.latestHit = 320;
+            t.totalHits['320']++;
+            hitBonusValue = 32;
+            t.bonus += 2;
+          } else if (this.msFrom(true) <= t.hitJudgement['300']) {
+            t.latestHit = 300;
+            t.totalHits['300']++;
+            hitBonusValue = 32;
+            t.bonus += 1;
+          } else if (this.msFrom(true) <= t.hitJudgement['200']) {
+            t.latestHit = 200;
+            t.totalHits['200']++;
+            hitBonusValue = 16;
+            t.bonus -= 8;
+          } else if (this.msFrom(true) <= t.hitJudgement['100']) {
+            t.latestHit = 100;
+            t.totalHits['100']++;
+            hitBonusValue = 8;
+            t.bonus -= 24;
+          } else if (this.msFrom(true) <= t.hitJudgement['50']) {
+            t.latestHit = 50;
+            t.totalHits['50']++;
+            hitBonusValue = 4;
+            t.bonus -= 44;
+          } else if (this.msFrom(true) <= t.hitJudgement['0']) {
+            this.miss();
+            return;
           }
 
           t.bonus = t.clamp(t.bonus, 0, 100);
@@ -655,127 +615,104 @@ export default {
           t.combo += 1;
           healthbarFinalVal(t.latestHit);
 
-          //  this.hitSample = note.hitSample;
-          //  this.hitSound = note.hitSound;
-
-          if (this.hitSound === 0) {
-            t.defaultHitSoftNormal.play();
-          } else {
-            t.softSliderWhistle.play();
-          }
-
           t.comboReset = false;
           t.comboOn = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
-
-          /* const $combo = document.querySelector('#game__combo');
-          const $hitValue = document.querySelector('#game__hitValue');
-
-          $hitComboContainer.removeChild($combo);
-          $hitComboContainer.removeChild($hitValue);
-
-          $combo.classList.remove('game__combo__reset');
-          $combo.classList.add('.game__combo__on');
-
-          $hitComboContainer.appendChild($combo);
-          $hitComboContainer.appendChild($hitValue); */
+          t.hitComboVKey += 2;
 
           this.remove();
         }
 
         remove() {
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
+          if (this.removed) return;
+          this.removed = true;
 
-          t.remainingNotes--;
+          t.ss.columnContainers[this.i].removeChild(this);
+
+          t.PIXIapp.ticker.remove(this.animateDrop, this);
+          t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
-        animate() {
-          createjs.Tween.get(this, {
-            useTicks: true,
-            onComplete: this.animate,
-          }).to({ y: this.y + t.dy }, 1);
+        animateDrop(delta) {
+          this.y += t.dy;
+          console.log(this.y);
+          if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
+            this.ready = true;
+            t.readyNotes[this.i].push(this);
+          } else if (this.msFrom() > t.hitJudgement['50']) {
+            this.miss();
+          }
 
-          switch (true) {
-            // If ms from targetCircle is less than ...
-            case this.msFrom(true) <= t.hitJudgement['0'] && !this.ready:
-              this.ready = true;
-              t.readyNotes[this.i].push(this);
+          if (this.msFrom() >= 0 && !this.fading) {
+            this.fading = true;
+            t.PIXIapp.ticker.add(this.animateFade, this);
+            t.ss.columnContainers[this.i].removeChild(this);
+          }
 
-              // Start fading out
-              createjs.Tween.get(this, {
-                onComplete: this.miss,
-              }).to(
-                { alpha: 0, visible: false },
-                2 * t.hitJudgement['0'],
-                createjs.Ease.linear
-              );
-              break;
-            // If it reaches offscreen then ...
-            // Remove the circle and time it correctly
-            case this.msFrom() > t.hitJudgement['50']:
-              this.miss();
-              break;
+          //           if (this.msFrom() >=  && !this.fading) {
+          // this.fading = true;
+        }
+
+        animateFade(delta) {
+          const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
+          if (this.alpha - da <= 0) {
+            this.alpha = 0;
+            t.PIXIapp.ticker.remove(this.animateFade, this);
+            this.remove();
+          } else {
+            this.alpha -= da;
           }
         }
 
-        resumeTimer() {
+        resumeDropTimer() {
           this.startTime = new Date();
 
           this.timerID = setTimeout(() => {
-            t.ss.columnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
             this.timerID = null;
 
-            this.animate();
+            t.ss.columnContainers[this.i].addChild(this);
+            t.PIXIapp.ticker.add(this.animateDrop, this);
           }, this.remainingTime);
         }
 
-        pauseTimer() {
+        pauseDropTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
       }
 
-      class Slider extends createjs.Shape {
+      class Slider extends PIXI.Container {
         constructor(note) {
-          const height =
+          super();
+
+          this.i = note.columnIndex;
+          this.time = note.time;
+          this.sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-          super(
-            new createjs.Graphics()
-              .beginStroke('Black')
-              .beginFill(t.colors[note.columnIndex])
-              .drawRoundRectComplex(
-                10,
-                -(height + 2 * t.radius),
-                2 * t.radius,
-                height + 2 * t.radius,
-                t.radius,
-                t.radius,
-                t.radius,
-                t.radius
-              )
-          );
+          this.animateDrop = this.animateDrop.bind(this);
+          this.animateShrink = this.animateShrink.bind(this);
 
-          this.height = height;
+          // Creating the 3 parts of a slider
+          const circleTopSprite = new PIXI.Sprite(t.circleTextures[this.i]);
+          circleTopSprite.anchor.set(0.5);
+          circleTopSprite.setTransform(0, -this.sliderHeight);
+          circleTopSprite.width = circleTopSprite.height = 2 * t.radius;
+          this.addChild(circleTopSprite);
 
-          this.name = 'thisSlider';
-          this.i = note.columnIndex;
-          this.hitSample = note.hitSample;
-          this.hitSound = note.hitSound;
-          this.time = note.time;
+          const rectSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+          rectSprite.tint = parseInt(t.colors[this.i].slice(1), 16);
+          rectSprite.anchor.set(0.5, 1); // anchors to the middle, bottom
+          rectSprite.width = 2 * t.radius;
+          rectSprite.height = this.sliderHeight;
+          this.addChild(rectSprite);
 
-          this.animate = this.animate.bind(this);
-          /* this.cache(
-            t.stageColWidth / 2 - t.radius,
-            -2 * t.radius,
-            2 * t.radius + 30,
-            2 * t.radius + 30
-          ); */
+          const circleBotSprite = new PIXI.Sprite(t.circleTextures[this.i]);
+          circleBotSprite.anchor.set(0.5);
+          circleBotSprite.width = circleBotSprite.height = 2 * t.radius;
+          this.addChild(circleBotSprite);
+
+          this.setTransform(t.stageColWidth / 2, -t.radius);
 
           this.remainingTime =
             note.time -
@@ -784,7 +721,10 @@ export default {
               (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
-          this.resumeTimer();
+
+          this.resumeDropTimer();
+
+          t.ss.sliderColumnContainers[this.i].addChild(this);
 
           this.startTime, this.timerID;
         }
@@ -793,30 +733,32 @@ export default {
           if (position === 'bot') {
             return isAbs
               ? Math.abs(
-                  ((this.y - (t.stageHeight * t.hitPercent + t.radius)) *
-                    1000) /
+                  ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                     (t.dy * t.stageFPS)
                 )
-              : ((this.y - (t.stageHeight * t.hitPercent + t.radius)) * 1000) /
+              : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
                   (t.dy * t.stageFPS);
           } else if (position === 'top') {
             return isAbs
               ? Math.abs(
-                  ((this.y -
-                    (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+                  ((this.y +
+                    this.children[0].y -
+                    t.stageHeight * t.hitPercent) *
                     1000) /
                     (t.dy * t.stageFPS)
                 )
-              : ((this.y -
-                  (t.stageHeight * t.hitPercent + t.radius + this.height)) *
+              : ((this.y + this.children[0].y - t.stageHeight * t.hitPercent) *
                   1000) /
                   (t.dy * t.stageFPS);
           } else console.log('Invalid position in slider.msFrom()');
         }
 
         miss() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.missed) return;
+          this.missed = true;
+
+          this.children[0].alpha = this.children[2].alpha = 0.7;
+          this.children[1].alpha = 0.6;
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -828,59 +770,54 @@ export default {
 
           t.comboOn = false;
           t.comboReset = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
+          t.hitComboVKey += 2;
         }
 
         hit() {
-          if (this.isRemoved) return;
-          this.isRemoved = true;
+          if (this.missed) return;
+
+          this.finalMs = this.msFrom('top', true);
+          this.avgMs = (this.initialMs + this.finalMs) / 2;
 
           let hitBonusValue = 0;
 
-          switch (true) {
-            case this.avgMs <= t.hitJudgement['320'] && !this.releasedMs:
-              t.latestHit = 320;
-              t.totalHits['320']++;
-              hitBonusValue = 32;
-              t.bonus += 2;
-
-              break;
-            case this.avgMs <= t.hitJudgement['300'] && !this.releasedMs:
-              t.latestHit = 300;
-              t.totalHits['300']++;
-              hitBonusValue = 32;
-              t.bonus += 1;
-
-              break;
-            case this.avgMs <= t.hitJudgement['300'] ||
-              (!this.finalMs && this.initialMs <= t.hitJudgement['300']):
-              t.latestHit = 200;
-              t.totalHits['200']++;
-              hitBonusValue = 16;
-              t.bonus -= 8;
-
-              break;
-            case this.avgMs <= t.hitJudgement['200'] ||
-              (!this.finalMs && this.initialMs <= t.hitJudgement['200']):
-              t.latestHit = 100;
-              t.totalHits['100']++;
-              hitBonusValue = 8;
-              t.bonus -= 24;
-
-              break;
-            case this.avgMs <= t.hitJudgement['50'] ||
-              (!this.finalMs && this.initialMs <= t.hitJudgement['50']):
-              t.latestHit = 50;
-              t.totalHits['50']++;
-              hitBonusValue = 4;
-              t.bonus -= 44;
-              break;
+          if (this.avgMs <= t.hitJudgement['320'] && !this.releasedMs) {
+            t.latestHit = 320;
+            t.totalHits['320']++;
+            hitBonusValue = 32;
+            t.bonus += 2;
+          } else if (this.avgMs <= t.hitJudgement['300'] && !this.releasedMs) {
+            t.latestHit = 300;
+            t.totalHits['300']++;
+            hitBonusValue = 32;
+            t.bonus += 1;
+          } else if (
+            this.avgMs <= t.hitJudgement['300'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['300'])
+          ) {
+            t.latestHit = 200;
+            t.totalHits['200']++;
+            hitBonusValue = 16;
+            t.bonus -= 8;
+          } else if (
+            this.avgMs <= t.hitJudgement['200'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['200'])
+          ) {
+            t.latestHit = 100;
+            t.totalHits['100']++;
+            hitBonusValue = 8;
+            t.bonus -= 24;
+          } else if (
+            this.avgMs <= t.hitJudgement['50'] ||
+            (!this.finalMs && this.initialMs <= t.hitJudgement['50'])
+          ) {
+            t.latestHit = 50;
+            t.totalHits['50']++;
+            hitBonusValue = 4;
+            t.bonus -= 44;
           }
 
-          if (t.bonus > 100) t.bonus = 100;
-          if (t.bonus < 0) t.bonus = 0;
+          t.bonus = t.clamp(t.bonus, 0, 100);
 
           const baseScore =
             ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
@@ -895,88 +832,109 @@ export default {
 
           t.comboReset = false;
           t.comboOn = true;
-
-          t.comboVKey += 2;
-          t.hitValueVKey += 2;
+          t.hitComboVKey += 2;
 
           this.remove();
         }
 
         remove() {
-          createjs.Tween.removeTweens(this);
-          t.ss.columnContainers[this.i].removeChild(this);
-          t.readySliders[this.i] = null;
+          if (this.removed) return;
+          this.removed = true;
 
-          t.remainingNotes--;
+          t.ss.sliderColumnContainers[this.i].removeChild(this);
+          t.PIXIapp.ticker.remove(this.animateDrop, this);
+          t.PIXIapp.ticker.remove(() => ((this.children[0].y += t.dy), this));
+
+          t.readySliders[this.i] = null;
         }
 
-        animate() {
-          createjs.Tween.get(this, {
-            useTicks: true,
-            onComplete: this.animate,
-          }).to({ y: this.y + t.dy }, 1);
+        animateDrop(delta) {
+          this.y += t.dy;
+          if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
+            this.ready = true;
+            t.readySliders[this.i] = this;
+            //
+          } else if (
+            this.msFrom('bot') > t.hitJudgement['50'] &&
+            !this.initialMs
+          ) {
+            this.miss();
+            //
+          } else if (this.msFrom('top') > t.hitJudgement['50']) {
+            if (this.held && this.initialMs) this.hit();
+            else this.miss();
+            //
+          } else if (this.y + this.children[0].y > t.stageHeight) this.remove();
+        }
 
-          switch (true) {
-            case this.msFrom('bot', true) <= t.hitJudgement['50'] &&
-              !this.ready:
-              this.ready = true;
+        animateShrink() {
+          this.children[1].height -= t.dy;
+          this.children[0].y += t.dy;
 
-              t.readySliders[this.i] = this;
-              break;
-
-            case this.msFrom('bot') > t.hitJudgement['50'] && !this.initialMs:
-              this.miss();
-              this.remove();
-              break;
-
-            case this.msFrom('top') > t.hitJudgement['50']:
-              if (this.held && this.initialMs) this.hit();
-              else {
-                this.miss();
-                this.remove();
-              }
-              break;
+          if (this.children[0].y >= this.children[2].y) {
+            t.PIXIapp.ticker.remove(this.animateShrink, this);
+            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy), this);
+            this.hit();
           }
         }
 
-        resumeTimer() {
+        resumeDropTimer() {
           this.startTime = new Date();
 
           this.timerID = setTimeout(() => {
-            t.ss.columnContainers[this.i].addChild(this);
+            t.ss.sliderColumnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
             this.timerID = null;
-
-            this.animate();
+            t.PIXIapp.ticker.add(this.animateDrop, this);
           }, this.remainingTime);
         }
 
-        pauseTimer() {
+        pauseDropTimer() {
           clearTimeout(this.timerID);
           this.remainingTime -= new Date() - this.startTime;
         }
       }
 
-      t.notes.forEach((note) => {
-        if (note.type === 'note') new Note(note);
-        else if (note.type === 'hold') new Slider(note);
-        else console.log(`Invalid note type: ${note.type}`);
-      });
+      for (let i = 0; i < t.notesCol.length; i += 4) {
+        const chunk = t.notesCol.slice(i, i + 4);
+        //  const chunk2 = t.sliderCol.slice(i, i + 4);
+        chunk.forEach((note) => {
+          new Note(note);
+        });
+
+        //        chunk2.forEach((note) => {
+        //   new Slider(note);
+        // });
+      }
+      // for (let i = 0; i < t.sliderCol.length; i += 4) {
+      //   const chunk = t.sliderCol.slice(i, i + 4);
+
+      // }
+
+      // for (let i = 0; i < this.sliderCol.length; i++) {
+      //   new Slider(this.sliderCol[i]);
+      // }
+      //   // a, b, c and d are the four elements of this iteration
+      // give acc balue to particel container
+      // });
     },
     onPauseKey(isPaused) {
-      if (isPaused) {
-        this.notesToFallArray.forEach((note) => note.pauseTimer());
-        createjs.Ticker.paused = true;
-        this.music.pause();
-      } else {
-        this.notesToFallArray.forEach((note) => note.resumeTimer());
-        createjs.Ticker.paused = false;
-        this.music.play();
-      }
+      // if (isPaused) {
+      //   this.notesToFallArray.forEach((note) => note.pauseDropTimer());
+      //   createjs.Ticker.paused = true;
+      //   this.music.pause();
+      // } else {
+      //   this.notesToFallArray.forEach((note) => note.resumeDropTimer());
+      //   createjs.Ticker.paused = false;
+      //   this.music.play();
+      // }
     },
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
     },
+    // checkIfEnd() {
+    //   if (this.notesToFallArray)
+    // },
   },
 };
 </script>
@@ -992,10 +950,6 @@ export default {
 #canvas__container > * {
   position: absolute;
   height: 100%;
-}
-
-#game__canvas {
-  background-color: #181818;
 }
 
 #game__hitCombo__container {
