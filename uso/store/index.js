@@ -33436,28 +33436,9 @@ export const state = () => ({
   },
 });
 
-export const getters = {
-  /* getUser(state) {
-    return state.user;
-  }, */
-};
+export const getters = {};
 
-export const actions = {
-  /* onAuthStateChangedAction: (state, { authUser, claims }) => {
-    if (!authUser) {
-      state.commit('SET_USER', null);
-      this.$router.push({
-        path: '/login',
-      });
-    } else {
-      const { uid, email } = authUser;
-      state.commit('SET_USER', {
-        uid,
-        email,
-      });
-    }
-  }, */
-};
+export const actions = {};
 
 export const mutations = {
   setBeatmap(state, data) {

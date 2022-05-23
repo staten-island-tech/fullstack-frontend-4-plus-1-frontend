@@ -395,7 +395,7 @@ export default {
         },
         lastNote.endTime
           ? lastNote.endTime
-          : lastNote.time - t.notes[0].time - t.beatmapIntro + 3000
+          : lastNote.time - t.notes[0].time + 3000
       );
       /* ===============
           HP DRAIN
@@ -521,7 +521,8 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent) / (t.dy * t.stageFPS);
+            (1000 * t.stageHeight * t.hitPercent + t.radius) /
+              (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
 
@@ -548,6 +549,8 @@ export default {
         miss() {
           if (this.missed) return;
           this.missed = true;
+
+          console.log('missed');
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -640,7 +643,6 @@ export default {
           if (this.msFrom() >= 0 && !this.fading) {
             this.fading = true;
             t.PIXIapp.ticker.add(this.animateFade, this);
-            t.ss.columnContainers[this.i].removeChild(this);
           }
         }
 

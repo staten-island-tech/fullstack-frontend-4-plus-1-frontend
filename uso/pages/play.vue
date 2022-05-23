@@ -34,12 +34,12 @@
         <h1 id="score">
           {{
             score.toLocaleString('en-US', {
-              minimumIntegerDigits: 7,
+              minimumIntegerDigits: 6,
               maximumFractionDigits: 0,
               useGrouping: false,
             })
               ? score.toLocaleString('en-US', {
-                  minimumIntegerDigits: 7,
+                  minimumIntegerDigits: 6,
                   maximumFractionDigits: 0,
                   useGrouping: false,
                 })
