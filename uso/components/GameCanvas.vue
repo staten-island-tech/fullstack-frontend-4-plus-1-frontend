@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      scrollSpeed: 5,
+      dy: 15,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -106,7 +106,6 @@ export default {
       stageColWidth: null,
       stageHeight: null,
       stageFPS: 60,
-      dy: 8,
       // Stands for stageSetup
       ss: {
         setupContainer: null,
@@ -131,7 +130,6 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
-      notesCol: null,
     };
   },
 
@@ -238,14 +236,6 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
-
-      t.notesCol = t.notes.filter((item) => {
-        return item.type === 'note';
-      });
-      t.sliderCol = t.notes.filter((item) => {
-        return item.type === 'hold';
-      });
-
       t.numColumns = t.beatmapData.columns;
 
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -291,6 +281,7 @@ export default {
       t.PIXIapp = new PIXI.Application({
         width: t.stageWidth,
         height: t.stageHeight,
+        antialias: true,
         view: $canvas,
         backgroundColor: 0x181818,
       });
@@ -319,8 +310,7 @@ export default {
       for (let i = 0; i < t.numColumns; i++) {
         // Creates a new column container for each column
         t.ss.columnContainers.push(
-          // new PIXI.Container()
-          new PIXI.ParticleContainer(300, { tint: true })
+          new PIXI.ParticleContainer(100, { tint: true })
         );
         t.ss.sliderColumnContainers.push(new PIXI.Container());
 
@@ -373,10 +363,6 @@ export default {
 
       t.music.seek(t.beatmapIntro / 1000);
 
-      /* t.dy =
-        (this.scrollSpeed * 1000 * this.stageHeight) /
-        (this.stageFPS * (6860 * this.hitPercent + 6860)); */
-
       t.areAllLoaded = true;
       // emit this back to play.vue
       // as soon as this is loaded, we want to immediately start the game
@@ -388,15 +374,23 @@ export default {
 
       t.started = true;
 
-      const lastNote = t.notes.slice(-1)[0];
-      setTimeout(
-        () => {
-          this.$emit('endGameParent', this.totalHits, this.maxCombo);
-        },
-        lastNote.endTime
-          ? lastNote.endTime
-          : lastNote.time - t.notes[0].time + 3000
+      const firstNote = t.notes[0];
+      const lastNote = t.notes[t.notes.length - 1];
+
+      console.log(firstNote, lastNote);
+      console.log(t.beatmapIntro);
+      console.log(
+        (lastNote.endTime ? lastNote.endTime : lastNote.time) -
+          firstNote.time +
+          (1000 * t.stageHeight * t.hitPercent + t.radius) /
+            (t.dy * t.stageFPS) +
+          4000
       );
+
+      setTimeout(() => {
+        this.$emit('endGameParent', this.totalHits, this.maxCombo);
+      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 4000);
+
       /* ===============
           HP DRAIN
           =============== */
@@ -477,8 +471,8 @@ export default {
           const slider = t.readySliders[i];
 
           if (!slider.held) {
-            t.PIXIapp.ticker.remove(slider.animateDrop);
-            t.PIXIapp.ticker.add(slider.animateShrink);
+            t.PIXIapp.ticker.remove(slider.animateDrop, slider);
+            t.PIXIapp.ticker.add(slider.animateShrink, slider);
           }
 
           slider.held = true;
@@ -492,8 +486,8 @@ export default {
           const slider = t.readySliders[i];
 
           if (slider.held) {
-            t.PIXIapp.ticker.remove(slider.animateShrink);
-            t.PIXIapp.ticker.add(slider.animateDrop);
+            t.PIXIapp.ticker.remove(slider.animateShrink, slider);
+            t.PIXIapp.ticker.add(slider.animateDrop, slider);
           }
 
           slider.held = false;
@@ -514,9 +508,6 @@ export default {
 
           this.i = note.columnIndex;
           this.time = note.time;
-
-          this.animateDrop = this.animateDrop.bind(this);
-          this.animateFade = this.animateFade.bind(this);
 
           this.remainingTime =
             note.time -
@@ -549,8 +540,6 @@ export default {
         miss() {
           if (this.missed) return;
           this.missed = true;
-
-          console.log('missed');
 
           t.latestHit = 0;
           t.totalHits['0']++;
@@ -621,16 +610,13 @@ export default {
         }
 
         remove() {
-          if (this.removed) return;
-          this.removed = true;
-
           t.ss.columnContainers[this.i].removeChild(this);
 
           t.PIXIapp.ticker.remove(this.animateDrop, this);
           t.readyNotes[this.i].splice(t.readyNotes[this.i].indexOf(this), 1);
         }
 
-        animateDrop(delta) {
+        animateDrop() {
           this.y += t.dy;
 
           if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
@@ -646,11 +632,13 @@ export default {
           }
         }
 
-        animateFade(delta) {
+        animateFade() {
           const da = t.dy / (t.stageHeight * (1 - t.hitPercent) + 2 * t.radius);
+
           if (this.alpha - da <= 0) {
             this.alpha = 0;
             t.PIXIapp.ticker.remove(this.animateFade, this);
+
             this.remove();
           } else {
             this.alpha -= da;
@@ -683,9 +671,6 @@ export default {
           this.time = note.time;
           this.sliderHeight =
             (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
-          this.animateDrop = this.animateDrop.bind(this);
-          this.animateShrink = this.animateShrink.bind(this);
 
           // Creating the 3 parts of a slider
           const circleTopSprite = new PIXI.Sprite(t.circleTextures[this.i]);
@@ -832,18 +817,16 @@ export default {
         }
 
         remove() {
-          if (this.removed) return;
-          this.removed = true;
-
           t.ss.sliderColumnContainers[this.i].removeChild(this);
           t.PIXIapp.ticker.remove(this.animateDrop, this);
-          t.PIXIapp.ticker.remove(() => ((this.children[0].y += t.dy), this));
+          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy), this);
 
           t.readySliders[this.i] = null;
         }
 
-        animateDrop(delta) {
+        animateDrop() {
           this.y += t.dy;
+
           if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
             this.ready = true;
             t.readySliders[this.i] = this;
@@ -865,9 +848,16 @@ export default {
           this.children[1].height -= t.dy;
           this.children[0].y += t.dy;
 
+          /* if (this.children[2].y < t.stageHeight * t.hitPercent) {
+            this.children[1].y += t.dy;
+            this.children[2].y += t.dy;
+          } */
+
           if (this.children[0].y >= this.children[2].y) {
             t.PIXIapp.ticker.remove(this.animateShrink, this);
+
             t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy), this);
+
             this.hit();
           }
         }
@@ -879,6 +869,7 @@ export default {
             t.ss.sliderColumnContainers[this.i].addChild(this);
             t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
             this.timerID = null;
+
             t.PIXIapp.ticker.add(this.animateDrop, this);
           }, this.remainingTime);
         }
@@ -889,41 +880,26 @@ export default {
         }
       }
 
-      for (let i = 0; i < t.notesCol.length; i += 4) {
-        const chunk = t.notesCol.slice(i, i + 4);
-         const chunk2 = t.sliderCol.slice(i, i + 4);
-        chunk.forEach((note) => {
+      t.notes.forEach((note) => {
+        if (note.type === 'note') {
           new Note(note);
-        });
-     chunk2.forEach((note) => {
+        } else if (note.type === 'hold') {
           new Slider(note);
-        });
-        //        chunk2.forEach((note) => {
-        //   new Slider(note);
-        // });
-      }
-      // for (let i = 0; i < t.sliderCol.length; i += 4) {
-      //   const chunk = t.sliderCol.slice(i, i + 4);
-
-      // }
-
-      // for (let i = 0; i < this.sliderCol.length; i++) {
-      //   new Slider(this.sliderCol[i]);
-      // }
-      //   // a, b, c and d are the four elements of this iteration
-      // give acc balue to particel container
-      // });
+        } else {
+          console.log(`Invalid note type: ${note.type}`);
+        }
+      });
     },
     onPauseKey(isPaused) {
-      // if (isPaused) {
-      //   this.notesToFallArray.forEach((note) => note.pauseDropTimer());
-      //   createjs.Ticker.paused = true;
-      //   this.music.pause();
-      // } else {
-      //   this.notesToFallArray.forEach((note) => note.resumeDropTimer());
-      //   createjs.Ticker.paused = false;
-      //   this.music.play();
-      // }
+      if (isPaused) {
+        this.notesToFallArray.forEach((note) => note.pauseDropTimer());
+        // createjs.Ticker.paused = true;
+        // this.music.pause();
+      } else {
+        this.notesToFallArray.forEach((note) => note.resumeDropTimer());
+        // createjs.Ticker.paused = false;
+        // this.music.play();
+      }
     },
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
