@@ -37,13 +37,14 @@
 
           <fieldset class="settings__field">
 
-            <div class="fieldset-item">
-              <div class="search-container">
-                <form class="song-search-form">
+            <div id="fieldset__user" class="fieldset-item">
+              <div class="username-container">
+                <h1 class="username">ktestusername</h1>
+                <form class="user-form">
                   <input
-                    class="song-search-bar"
+                    class="user-bar"
                     type="text"
-                    placeholder="search for your song..."
+                    placeholder="change username..."
                   />
                 </form>
               </div>
@@ -340,7 +341,7 @@ export default {
   display: grid;
   grid-template-columns: 2rem 1fr;
   gap: 1.75rem;
-  padding: 1.5rem 2rem 1.5rem 1.5rem;
+  padding: 1.5rem 2rem 1rem 1.5rem;
 }
 
 .fieldset-item > picture {
@@ -391,40 +392,51 @@ input[type='range'] {
   font-size: 5rem;
 }
 
-.search-container {
+#fieldset__user {
+  padding: 0rem 2rem 0rem 1.5rem;
+}
+
+.username {
+  padding-top: 0.5rem;
+  font-size: 3rem;
+  color: #0d0c36;
+  width: 20rem;
+}
+
+.username-container {
   width: 42rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2.5rem;
+  padding: 1rem;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
 }
-
-.song-search-form {
+.user-form {
   width: 42rem;
   display: flex;
   justify-content: center;
   padding: 1.5rem;
 }
 
-.song-search-form > input {
+.user-form > input {
   font-size: 2.5rem;
-  height: initial;
+  /* height: initial; */
   /* margin: 0 1rem; */
-  /* height: 5vh; */
+  height: 4rem;
+  color: black;
 
   overflow: hidden;
-  background-color: rgb(176, 167, 196);
-  border-radius: 0rem;
+  background-color: rgb(237, 232, 250);
+  border-radius: 8px;
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   border: none;
   outline: none;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
-.song-search-bar {
+.user-bar {
   width: 100%;
   height: 3rem;
   padding: 0.25rem 0 0 1.25rem;
