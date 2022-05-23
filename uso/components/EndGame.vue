@@ -269,6 +269,7 @@ export default {
 
 .beatmap__btnClass {
   position: fixed;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   left: -0.1rem;
   bottom: -0.1rem;
   width: 20rem;
