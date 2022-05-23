@@ -11,6 +11,8 @@ module.exports = {
     ProgressBar: false,
     kd: false,
     PIXI: false,
+    zip: false,
+    localforage: false,
   },
   parserOptions: {
     parser: '@babel/eslint-parser',
