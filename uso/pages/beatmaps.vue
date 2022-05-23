@@ -140,9 +140,10 @@
                   @click="$store.commit('setBeatmap', bmDifficulty)"
                   @mouseover="$store.commit('setBeatmap', bmDifficulty)"
                 >
-                  <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/play`">PLAY</nuxt-link>
+                    <nuxt-link :to="`/play`">{{
+                      bmDifficulty.metadata.Version
+                    }}</nuxt-link>
                   </th>
                   <th>??? notes/s</th>
                 </tr>
@@ -201,17 +202,25 @@ export default {
   async login() {
     await this.$auth.loginWith('auth0');
   },
+
   async fetch() {
-    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
-    this.bmSets = await beatmapsData.json();
+    const listOfBeatmaps = await fetch('/beatmaps/beatmaps.json');
+    this.bmSets = await listOfBeatmaps.json();
 
-    Object.keys(this.bmSets).forEach((folder) => {
-      this.bmSetsData[folder] = [];
+    for (let i = 0; i < Object.keys(this.bmSets).length; i++) {
+      const bmSetID = Object.keys(this.bmSets)[i];
 
-      this.bmSets[folder].forEach((osz) => {
-        this.bmSetsData[folder].push(this.getBmData(folder, osz));
-      });
-    });
+      this.bmSetsData[bmSetID] = [];
+
+      for (let bmI = 0; bmI < this.bmSets[bmSetID].length; bmI++) {
+        const bmID = this.bmSets[bmSetID][bmI];
+
+        const promise = await fetch(`/beatmaps/${bmSetID}/${bmID}.json`);
+        const beatmapData = await promise.json();
+
+        this.bmSetsData[bmSetID].push(beatmapData);
+      }
+    }
   },
 
   mounted() {
@@ -226,194 +235,11 @@ export default {
   },
 
   methods: {
-    getBmData(folder, osz) {
-      const beatmap = {
-        general: {},
-        metadata: {},
-        difficulty: {},
-        events: [],
-        timingPoints: [],
-        hitObjects: [],
-        columns: null,
-      };
-
-      fetch(`/beatmaps/${folder}/${osz}`)
-        .then((response) => response.text())
-        .then((beatmapData) => {
-          // Split the data by line breaks into an array
-          const lines = beatmapData.replaceAll('\r', '').split('\n');
-
-          // If it is NOT an osu file
-          if (!lines[0].includes('osu file format')) {
-            console.log('Not an osu file!');
-          } else {
-            // If it is an osu file but not the latest version
-            if (lines[0] !== 'osu file format v14') {
-              console.log(
-                `Careful: The osu file version is ${lines[0].match(
-                  '1[0-3]|[1-9]'
-                )}`,
-                folder
-              );
-            }
-
-            let section;
-            const xValues = [];
-
-            for (let i = 0; i < lines.length; i++) {
-              // removes whitespace at beginning/end of line
-              const line = lines[i].trim();
-
-              // "continue" terminates current iteration of for loop and starts new iteration
-              if (line === '') continue;
-              if (line.indexOf('//') === 0) continue;
-              if (line.indexOf('[') === 0) {
-                section = line;
-                continue;
-              }
-
-              let key, value, array, parts, t, hit, hitSample;
-
-              switch (section) {
-                case '[General]':
-                  key = line.slice(0, line.indexOf(':'));
-                  value = line.slice(line.indexOf(':') + 1).trim();
-
-                  //  the +_ operator converts "value" to a number
-                  beatmap.general[key] = isNaN(value) ? value : +value;
-                  break;
-                case '[Metadata]':
-                  key = line.slice(0, line.indexOf(':'));
-                  value = line.slice(line.indexOf(':') + 1).trim();
-                  beatmap.metadata[key] = value;
-                  break;
-                case '[Events]':
-                  array = line
-                    .replaceAll('"', '')
-                    .split(',')
-                    .map((e) => {
-                      return isNaN(e) ? e : +e;
-                    });
-                  beatmap.events.push(array);
-                  break;
-                case '[Difficulty]':
-                  key = line.slice(0, line.indexOf(':'));
-                  if (key === 'HPDrainRate' || key === 'OverallDifficulty') {
-                    value = line.slice(line.indexOf(':') + 1).trim();
-                    beatmap.difficulty[key] = +value;
-                  } else continue;
-                  break;
-                case '[TimingPoints]':
-                  parts = line.split(',');
-                  t = {
-                    time: +parts[0],
-                    millisecondsPerBeat: +parts[1],
-                    beatsPerMeasure: +parts[2],
-                    sampleSet: +parts[3],
-                    sampleIndex: +parts[4],
-                    volume: +parts[5],
-                    uninherited: +parts[6],
-                    kiaiMode: +parts[7],
-                  };
-                  if (t.millisecondsPerBeat < 0) {
-                    t.uninherited = 0;
-                  }
-                  beatmap.timingPoints.push(t);
-                  break;
-                case '[HitObjects]':
-                  parts = line.split(',');
-
-                  // Columns are indexed 0.
-
-                  hit = {
-                    x: +parts[0],
-                    time: +parts[2],
-                    type: +parts[3],
-                    hitSound: +parts[4],
-                  };
-
-                  // Stores all possible x-values in order to calculate numColumns with array.length
-                  if (!xValues.includes(hit.x)) {
-                    xValues.push(hit.x);
-                  }
-
-                  // Decode specific hit object type
-                  switch (hit.type) {
-                    case 1:
-                    case 5:
-                      hit.type = 'note';
-
-                      hitSample = parts[5].split(':');
-
-                      hit.hitSample = {
-                        normalSet: +hitSample[0],
-                        additionSet: +hitSample[1],
-                        index: +hitSample[2],
-                        volume: +hitSample[3],
-                        filename: hitSample[4],
-                      };
-
-                      break;
-                    case 128: // hold
-                      hit.type = 'hold';
-
-                      hitSample = parts[5].split(':');
-
-                      hit.endTime = +hitSample[0];
-                      hit.hitSample = {
-                        normalSet: +hitSample[1],
-                        additionSet: +hitSample[2],
-                        index: +hitSample[3],
-                        volume: +hitSample[4],
-                        filename: hitSample[5],
-                      };
-
-                      break;
-                    default:
-                      // Unknown hit type
-                      console.log(
-                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`,
-                        folder,
-                        osz
-                      );
-                      break;
-                  }
-
-                  beatmap.hitObjects.push(hit);
-                  break;
-              }
-            }
-
-            // Calculates the number of columns in beatmap with the number of distinct x-values.
-            beatmap.columns = xValues.length;
-
-            // Calculates the column for each hit object
-            beatmap.hitObjects.forEach((hit) => {
-              hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
-            });
-          }
-        });
-
-      return beatmap;
-    },
     beatmapSoundBit() {
       const t = this;
-      t.clicked = false;
-      //  t.musicBeatmapDuration = Math.round(
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
-      // ) *1000 /2
 
-      // t.musicBeatmapDuration = Math.round(
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
-      // );
-      // console.log(
-      // console.log(
-      //   `/beatmaps/${this.clickedBmSetName}/B${
-      //     this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
-      //   }`
-      // );
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime
-      // );
+      t.clicked = false;
+
       t.musicBeatmap = new Howl({
         src: [
           `/beatmaps/${this.clickedBmSetName}/B${
