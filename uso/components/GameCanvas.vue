@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      dy: 15,
+      dy: 10,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -389,7 +389,7 @@ export default {
 
       setTimeout(() => {
         this.$emit('endGameParent', this.totalHits, this.maxCombo);
-      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 4000);
+      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 3000);
 
       /* ===============
           HP DRAIN
