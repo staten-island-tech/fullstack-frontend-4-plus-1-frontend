@@ -39,6 +39,13 @@
             card-route="beatmaps"
             card-img="/beatmaps/1249137/mJGRHh3.jpg"
           />
+          <feature-song-card
+            card-title="Harumachi Clover (TV Size)"
+            card-artist="Hanasaka Yui (CV: M.A.O)"
+            card-route="beatmaps"
+            card-img="/beatmaps/682518/Harumachi%20bg1.jpg"
+          />
+
           <!-- <feature-song-card
             card-title="Yoru ni Kakeru"
             card-artist="YOASOBI"
