@@ -1,7 +1,7 @@
 <template>
   <div class="settings__page">
     <div class="under-nav"></div>
-    <!-- <section class="landing">
+    <section class="landing">
       <video
         id="landing-video"
         class="video-bg"
@@ -13,16 +13,9 @@
         src="../assets/images/backgrounds/landing-narukami-shrine.mp4"
         type="video/mp4"
       ></video>
-    </section> -->
+    </section>
 
-    <div class="settings__container">
-      <h1 id="settings__title">settings.</h1>
-      <form class="settings__form">
-        <section class="settings__section">
-          <header>
-            <h2 id="sounds__title">sfx/sounds</h2>
-            <h3 id="sounds__subTitle">adjust your volume settings</h3>
-            <button class="btn" @click="
+    <button class="btn" @click="
               $store.commit(
                 'setSettings',
                 masterVolume,
@@ -33,6 +26,14 @@
               ),
                 patch()
             ">update</button>
+
+    <div class="settings__container">
+      <h1 id="settings__title">settings.</h1>
+      <form class="settings__form">
+        <section class="settings__section">
+          <header>
+            <h2 id="sounds__title">sfx/sounds</h2>
+            <h3 id="sounds__subTitle">adjust your volume settings</h3>
           </header>
 
           <fieldset class="settings__field">
@@ -249,7 +250,8 @@ export default {
   height: 4.5rem;
   width: 11rem;
   font-size: 3rem;
-  margin-left: auto;
+  margin: auto;
+  transform: translate(17rem, 17.25rem);
   color: #f0f1ff;
   background-color: #6847dd;
   border-radius: 12px;
@@ -258,14 +260,14 @@ export default {
 }
 
 .btn:hover {
-  transform: translate(0, -7%);
+  transform: translate(17rem, 16.75rem);
   background: #c850cc;
 }
 
 .btn:active {
   transform: scale(.8);
   background: #14127c;
-
+  transform: translate(17rem, 16.75rem);
 }
 
 .video-bg {
