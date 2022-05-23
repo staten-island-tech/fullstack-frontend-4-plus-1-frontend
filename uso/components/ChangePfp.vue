@@ -1,10 +1,13 @@
 <template>
   <div v-if="showModalTwo" class="change-pfp-modal">
-    <div class="under-nav"></div>
-    <div class="close-pfp-modal" @click="showModalTwo = false">Close [X]</div>
+
+    <div class="close-pfp-modal" 
+    @click="showModalTwo = false">Close [X]</div>
 
     <div class="change-pfp-modal-content">
-      <owned-character :all-owned="allOwned" class="modal-owned-character" />
+      <owned-character :all-owned="allOwned" 
+      class="modal-owned-character" />
+
     </div>
   </div>
 </template>
@@ -38,6 +41,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
 @keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -139,7 +143,7 @@ export default {
   z-index: 8;
   height: 100%;
   width: 100%;
-  top: 0;
+  top: 9.5rem;
   left: 0;
   overflow: auto;
   /* background-color: rgb(0, 0, 0); Fallback color */
@@ -161,7 +165,7 @@ export default {
       rgba(14, 14, 15, 0.938)
     ),
     url('~/assets/images/navigation/ayaka.jpg');
-  height: 100%;
+    height: 100%;
   /* background: linear-gradient(rgba(13, 4, 66, 0.958), rgba(13, 4, 66, 0.938)); */
 }
 
