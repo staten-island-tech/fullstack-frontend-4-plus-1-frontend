@@ -231,15 +231,6 @@ export default {
       },
       deep: true,
     },
-    /* remainingNotes(newValue) {
-      console.log(newValue);
-      if (newValue === 0) {
-        if (this.combo > this.maxCombo) this.maxCombo = this.combo;
-        setTimeout(() => {
-          this.$emit('endGameParent', this.totalHits, this.maxCombo);
-        }, 1000);
-      }
-    }, */
   },
 
   methods: {
@@ -370,6 +361,7 @@ export default {
 
         t.readyNotes.push([]);
       }
+
       t.music = new Howl({
         src: [
           `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
@@ -378,6 +370,8 @@ export default {
         preload: 'metadata',
         onload: () => (this.songLoaded = true),
       });
+
+      t.music.seek(t.beatmapIntro / 1000);
 
       /* t.dy =
         (this.scrollSpeed * 1000 * this.stageHeight) /
@@ -389,16 +383,19 @@ export default {
     },
     startGame() {
       const t = this;
-      const lstnote = t.notes.slice(-1)[0];
+
       t.music.play();
+
       t.started = true;
+
+      const lastNote = t.notes.slice(-1)[0];
       setTimeout(
         () => {
           this.$emit('endGameParent', this.totalHits, this.maxCombo);
         },
-        lstnote.endTime
-          ? lstnote.endTime
-          : lstnote.time - t.notes[0].time + 3000
+        lastNote.endTime
+          ? lastNote.endTime
+          : lastNote.time - t.notes[0].time - t.beatmapIntro + 3000
       );
       /* ===============
           HP DRAIN
@@ -454,7 +451,6 @@ export default {
 
         if (!(columnI === -1)) {
           t.readyNotes[columnI].forEach((thisCircle) => {
-            console.log(t.readyNotes[columnI].length);
             if (thisCircle) thisCircle.hit();
           });
 
@@ -525,8 +521,7 @@ export default {
           this.remainingTime =
             note.time -
             t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) /
-              (t.dy * t.stageFPS);
+            (1000 * t.stageHeight * t.hitPercent) / (t.dy * t.stageFPS);
 
           t.notesToFallArray.push(this);
 
@@ -634,7 +629,7 @@ export default {
 
         animateDrop(delta) {
           this.y += t.dy;
-          console.log(this.y);
+
           if (this.msFrom(true) <= t.hitJudgement['0'] && !this.ready) {
             this.ready = true;
             t.readyNotes[this.i].push(this);
@@ -647,9 +642,6 @@ export default {
             t.PIXIapp.ticker.add(this.animateFade, this);
             t.ss.columnContainers[this.i].removeChild(this);
           }
-
-          //           if (this.msFrom() >=  && !this.fading) {
-          // this.fading = true;
         }
 
         animateFade(delta) {
@@ -932,9 +924,6 @@ export default {
     clamp(value, min, max) {
       return value > max ? max : value < min ? min : value;
     },
-    // checkIfEnd() {
-    //   if (this.notesToFallArray)
-    // },
   },
 };
 </script>
