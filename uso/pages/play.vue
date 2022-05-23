@@ -101,7 +101,7 @@ import GameCanvas from '../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas },
-  layout: 'nonav',
+  layout: 'NavBar',
 
   data() {
     return {

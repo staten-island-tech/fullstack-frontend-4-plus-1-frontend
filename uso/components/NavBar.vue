@@ -165,6 +165,16 @@ export default {
     };
   },
 
+  watch: {
+    $route(to, from) {
+      if (to.name !== from.name) {
+        // if you're going to somewhere else than `wallpaper`
+        // the `return` will end the execution and not go further
+        Howler.stop();
+      }
+    },
+  },
+
   mounted() {
     document
       .querySelector('#show-login')
