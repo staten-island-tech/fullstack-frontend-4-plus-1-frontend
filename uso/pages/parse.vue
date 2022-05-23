@@ -26,8 +26,6 @@
 </template>
 
 <script>
-/* global zip:false, localforage:false */
-
 export default {
   name: 'ParseTest',
 
