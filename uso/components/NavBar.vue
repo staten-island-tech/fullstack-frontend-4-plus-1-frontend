@@ -32,42 +32,116 @@
             <nuxt-link to="/play" class="uso__links">game</nuxt-link>
           </li>
 
-          <li>
+          <!-- <li>
             <button class="btn" @click="logout()">logout</button>
-          </li>
-          <li>
-            <button class="btn" @click="newUser()">update</button>
-          </li>
+          </li> -->
         </ul>
       </div>
 
       <div class="uso__avatar--container">
         <div class="uso__avatar">
           <div class="uso__circle">
-            <nuxt-link to="/" class="uso__button"> Hi {{ username }}</nuxt-link>
+            <nuxt-link to="/shop" class="uso__button"
+              ><img
+                id="resizedBtn3"
+                src="~/assets/images/navigation/primogem.png"
+                class="nav-shop-btns"
+            /></nuxt-link>
           </div>
           <div class="uso__circle">
             <nuxt-link to="/aboutUs" class="uso__button"
               ><img
+                id="resizedBtn2"
                 src="~/assets/images/navigation/paimon2.png"
                 class="nav-shop-btns"
             /></nuxt-link>
           </div>
           <div class="uso__circle">
-            <nuxt-link to="/shop" class="uso__button"
-              ><img src="~/assets/images/primogem.png" class="nav-shop-btns"
+            <nuxt-link to="/settings" class="uso__button"
+              ><img
+                id="resizedBtn1"
+                src="~/assets/images/navigation/paimon1.png"
+                class="nav-shop-btns"
             /></nuxt-link>
           </div>
 
-          <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
+          <div class="nav__col nav__col--avatar">
+            <button
+              id="show-login"
+              class="avatar avatar--nav avatar--guest"
+            ></button>
+
+            <div class="login-container">
+              <div class="login-popup">
+                <div class="close__popup-btn">&times;</div>
+
+                <div class="user-form">
+                  <h2 v-if="!loginSatus" id="sign-in" class="user-sign-in">
+                    sign in to proceed...
+                  </h2>
+                  <h2 v-else id="signEd-in" class="user-sign-in">
+                    hi, {{ username }}! ~
+                  </h2>
+
+                  <div id="form__sign-in" class="form-element">
+                    <nuxt-link id="btnId" to="/profile">
+                      <button
+                        v-if="loginSatus"
+                        id="btn__sign-inId"
+                        class="btn__sign-in"
+                      >
+                        profile
+                      </button>
+                    </nuxt-link>
+                  </div>
+
+                  <div id="form__sign-in" class="form-element">
+                    <nuxt-link id="btnId" to="/settings">
+                      <button
+                        v-if="loginSatus"
+                        id="btn__sign-inId"
+                        class="btn__sign-in"
+                      >
+                        settings
+                      </button>
+                    </nuxt-link>
+                  </div>
+
+                  <div id="form__sign-in" class="form-element">
+                    <button
+                      v-if="!loginSatus"
+                      id="btn__sign-inId"
+                      class="btn__sign-in"
+                      @click="login()"
+                    >
+                      sign in
+                    </button>
+                    <button
+                      v-else
+                      id="btn__sign-out"
+                      class="btn__sign-in"
+                      @click="logout()"
+                    >
+                      » sign out «
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <nuxt-link v-if="loginSatus" to="/beatmaps" class="uso__avatar--img">
             <img
               src="~/assets/images/navigation/nav-avatar.png"
               class="uso__login"
             />
           </nuxt-link>
+
           <li v-else>
             <button class="btn" @click="login()">login</button>
-          </li>
+          </li> -->
+
+          <!-- @click="login()"  -->
         </div>
       </div>
 
@@ -92,6 +166,18 @@ export default {
   },
 
   mounted() {
+    document
+      .querySelector('#show-login')
+      .addEventListener('click', function () {
+        document.querySelector('.login-popup').classList.add('active');
+      });
+
+    document
+      .querySelector('.login-popup .close__popup-btn')
+      .addEventListener('click', function () {
+        document.querySelector('.login-popup').classList.remove('active');
+      });
+
     const animateNav = () => {
       const navBurger = document.querySelector('.uso__navburger');
       const navLinks = document.querySelector('.uso__navbar--links');
@@ -247,7 +333,6 @@ export default {
   filter: hue-rotate(0deg);
   z-index: 99;
 
-  z-index: 99;
   /* linear-gradient(rgba(13, 4, 66, 0.7), rgba(20, 4, 66, 0.7)) */
 
   /* filter: hue-rotate(255deg) saturate(.6); */
@@ -304,7 +389,7 @@ export default {
 }
 
 .uso__logo {
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   width: 7.1rem;
   display: flex;
   align-items: center;
@@ -342,6 +427,7 @@ export default {
   font-weight: 300;
   text-decoration: none;
   transition: all 200ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__navbar--links a:hover {
@@ -389,6 +475,7 @@ export default {
   color: #edf0f1;
   margin: 0 3px;
   transition: all 200ms ease-in-out;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__button:hover {
@@ -414,6 +501,7 @@ export default {
   display: flex;
   align-items: center;
   transition: all 100ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .uso__avatar--img:hover {
@@ -430,7 +518,7 @@ export default {
 
 .uso__navburger {
   display: none;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor2.png'), auto;
 }
 
 .uso__navburger div {
@@ -453,6 +541,12 @@ export default {
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
+#resizedBtn2 {
+  margin-left: 0.4rem;
+  height: 77.5%;
+  width: 77.5%;
+}
+
 .nav-shop-btns {
   height: 100%;
   width: 100%;
@@ -461,6 +555,171 @@ export default {
 
 .nav-shop-btns:hover {
   opacity: 1;
+}
+
+/* LOGIN */
+
+.avatar--nav {
+  width: 62px;
+  height: 62px;
+  box-shadow: none;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: width 0.3s, height 0.3s;
+  position: relative;
+}
+
+.avatar--guest {
+  background-image: url(~/assets/images/navigation/nav-avatar.png);
+}
+
+.avatar {
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  /* background: none; */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  border-radius: 40px;
+  width: 60px;
+  height: 60px;
+  flex: none;
+  background-color: #333;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  margin-left: 0.6rem;
+  display: block;
+  cursor: pointer;
+  transition: all 100ms ease-in;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
+
+.avatar:hover {
+  transform: scale(1.07);
+}
+
+/* LOGIN FORM, REGISTER FORM, MODAL/POPUP */
+
+.login-popup {
+  position: absolute;
+  top: -150%;
+  left: 73.15%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  width: 330px;
+  padding: 8px 20px;
+  background: #333;
+  color: black;
+  font-size: 10px;
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  transition: top 0ms ease-in-out 200ms, opacity 200ms ease-in-out 0ms,
+    transform 20ms ease-in-out 0ms;
+}
+
+.login-popup.active {
+  top: 205.5%;
+  left: 73.15%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  transition: top 0ms ease-in-out 0ms, opacity 200ms ease-in-out 0ms,
+    transform 20ms ease-in-out 0ms;
+}
+
+.login-popup .close__popup-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 17px;
+  height: 17px;
+  background: #888;
+  color: #eee;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 23px;
+  font-weight: bold;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  z-index: 420;
+}
+
+.login-popup .user-sign-in {
+  color: #f5f5f5;
+  margin: 13px 0px 18px 0px;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.login-popup .user-form .form-element .btn__sign-in {
+  width: 100%;
+  height: 35px;
+  border: none;
+  outline: none;
+  font-size: 21px;
+  background-color: rgb(80, 58, 179);
+  color: #f5f5f5;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+  font-size: 2.45rem;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
+
+.login-popup .user-form .form-element .btn__sign-in:hover {
+  background-color: rgb(107, 82, 218);
+}
+
+#btn__sign-inId {
+  background-color: rgb(81, 92, 245);
+}
+
+#btn__sign-inId:hover {
+  background-color: rgb(136, 144, 250);
+}
+
+#form__sign-in {
+  margin-bottom: 10px;
+  display: flex;
+  /* justify-content: left; */
+}
+
+#btnId {
+  width: 100%;
+}
+
+#signEd-in {
+  font-size: 3.5rem;
+}
+
+#sign-in {
+  font-size: 3.5rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  height: 12rem;
+  margin: 13px 0px 0px 0px;
+  border-radius: 10px;
+  background-image: linear-gradient(
+      rgba(45, 42, 54, 0.75),
+      rgba(51, 48, 65, 0.75)
+    ),
+    url('~/assets/images/navigation/ayaka.jpg');
+  background-size: cover;
+  padding: 8.25rem 4.3rem 0rem 4.3rem;
+  font-style: italic;
+}
+
+#btn__sign-out {
+  margin-top: 1.5rem;
+}
+
+#btn__sign-out:hover {
+  transform: translate(0, -7.5%);
 }
 
 /* Mobile Responsive */

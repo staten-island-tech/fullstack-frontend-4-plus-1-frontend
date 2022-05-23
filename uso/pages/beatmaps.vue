@@ -88,7 +88,7 @@
                 (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2>Click For Audio Preview</h2>
+              <h2 class="audio__preview">click for audio preview...</h2>
 
               <img
                 v-if="oszArray[0].events[0]"
@@ -122,6 +122,7 @@
                 {{ bmSetsData[`${clickedBmSetName}`][0].metadata.Creator }}
               </p>
               <nuxt-link
+                id="leaderboard__link"
                 :to="`/leaderboard/${
                   bmSetsData[`${clickedBmSetName}`][0].metadata.BeatmapSetID
                 }`"
@@ -215,11 +216,11 @@ export default {
 
   mounted() {
     this.progressAudioBar = new ProgressBar.Line(audioProgress, {
-      strokeWidth: 3,
-      color: '#FFEA82',
+      strokeWidth: 5,
+      color: '#8C9EFF',
       duration: 10000,
-      trailColor: '#eee',
-      trailWidth: 3,
+      trailColor: '#f3f3f3',
+      trailWidth: 5,
       svgStyle: { width: '100%', height: '30%' },
     });
   },
@@ -540,17 +541,30 @@ export default {
 }
 
 .my-video-audio {
-  height: 20%;
-  width: 90%;
+  height: 5%;
+  width: 20%;
   display: flex;
+  align-items: center;
   flex-direction: row;
-  border: solid;
+  /* border: solid; */
+  position: fixed;
+  bottom: 0;
+  right: 1.15%;
+  background-image: linear-gradient(
+      rgba(160, 151, 211, 0.7),
+      rgba(137, 127, 194, 0.7)
+    ),
+    url('~/assets/images/backgrounds/landing.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  border-radius: 6px;
 }
 
 .audio-cntrl-cont {
-  height: 100%;
+  /* height: 60%; */
   width: 15%;
-  border: solid;
+  /* border: solid; */
 }
 
 /* Beatmaps Title */
@@ -591,6 +605,11 @@ export default {
   padding-top: 0.5rem;
 }
 
+.audio__preview {
+  position: absolute;
+  transform: translate(9%, -225%);
+}
+
 /* Search Container */
 
 .search-container {
@@ -608,10 +627,20 @@ export default {
   background-size: cover;
   background-position: center center;
 }
+
 .svg {
-  height: 4rem;
-  width: 4rem;
+  height: 2rem;
+  width: 2rem;
+  margin-left: 6px;
+  margin-right: 6px;
+  transition: all 0.3s;
+  cursor: pointer;
 }
+
+.svg:hover {
+  transform: rotate(-6deg);
+}
+
 .deleteText {
   transform: translateY(30%);
   left: 4%;
@@ -643,6 +672,7 @@ export default {
   box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
   border: none;
   outline: none;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .song-search-bar {
@@ -700,7 +730,7 @@ export default {
   justify-content: flex-end;
   overflow: hidden;
   transition: all 100ms linear;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   border-radius: 1rem;
 }
 
@@ -742,18 +772,18 @@ export default {
 }
 
 .fa-play {
-  height: 6rem;
-  width: 6rem;
-  margin-left: auto;
+  height: 2rem;
+  width: 3rem;
+  margin-left: 0.4rem;
   margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
 }
 
 .fa-pause {
-  height: 6rem;
-  width: 6rem;
-  margin-left: auto;
+  height: 2rem;
+  width: 3rem;
+  margin-left: 0.4rem;
   margin-right: auto;
   /* font-size: 6rem; */
   opacity: 1;
@@ -879,6 +909,7 @@ export default {
   font-size: 3.25rem;
   color: rgb(133, 185, 228);
   transition: all 100ms ease-in-out;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .play-sidebar-difficulties > tbody > tr > th > *:hover {
@@ -903,5 +934,17 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+}
+
+#leaderboard__link {
+  font-size: 3.75rem;
+  color: #8587fa;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  transition: all 300ms;
+  font-style: italic;
+}
+
+#leaderboard__link:hover {
+  color: #b0b1f8;
 }
 </style>

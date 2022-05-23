@@ -1,3 +1,23 @@
+/* width */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #dfe6ff; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #121068; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0b0a46; 
+}
+
 @font-face {
   font-family: 'Dongle';
   font-style: normal;
@@ -44,6 +64,7 @@ body {
   font-size: 16px;
   line-height: 1.25;
   background-image: url('~/assets/images/backgrounds/background.png');
+  cursor: url('~/assets/images/cursor/paimonCursor3.png'), auto;
 }
 
 h1 {

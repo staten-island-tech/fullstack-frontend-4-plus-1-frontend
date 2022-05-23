@@ -17,17 +17,32 @@
           ></video> -->
         <section class="data-bar">
           <h1 class="shop-heading">
-            what does freedom really mean, when demanded of you by a god...?
+            "what does freedom really mean, when demanded of you by a god...?"
           </h1>
           <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
         </section>
         <section class="night-market">
           <div class="night-market-card-container">
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
-            <night-market-card :load-roll="loadRoll" />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
+            <night-market-card
+              :load-roll="loadRoll"
+              @rolled-card="logRolledCard"
+            />
           </div>
           <button class="roll-button" @click="pressRoll()">wish!</button>
         </section>
@@ -43,7 +58,7 @@ export default {
   data() {
     return {
       loadRoll: false,
-      primogemBalance: 1600,
+      rolledCharas: [],
       /* skins: [
         {
           id: 1,
@@ -73,6 +88,9 @@ export default {
     pressRoll() {
       this.loadRoll = !this.loadRoll;
     },
+    logRolledCard(value) {
+      this.rolledCharas.push(value);
+    },
   },
 };
 </script>
@@ -97,8 +115,8 @@ export default {
   flex-direction: column;
   justify-content: center;
 
-  min-height: 90.2vh;
-  height: 100%;
+  /*  min-height: 90.2vh; */
+  height: calc(100vh - 9.5rem);
   background-image: linear-gradient(
       rgba(20, 14, 54, 0.7),
       rgba(20, 14, 54, 0.7)
@@ -169,7 +187,7 @@ export default {
   border-radius: 1rem;
   margin: 2rem;
   transition: all 200ms ease-in-out;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
 .roll-button:hover {

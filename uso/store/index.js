@@ -1,6 +1,12 @@
 export const state = () => ({
   user: null,
-
+  userSettings: {
+    masterVolume: 0.5,
+    musicVolume: 0.5,
+    hitSoundsVolume: 0.5,
+    scrollSpeed: 10,
+    username: '',
+  },
   beatmapData: {
     general: {
       AudioFilename: 'Flower Dance.mp3',
@@ -33456,6 +33462,14 @@ export const actions = {
 export const mutations = {
   setBeatmap(state, data) {
     state.beatmapData = data;
+  },
+
+  setSettings(state, masterVol, musicVol, hitsoundsVol, scrollSpeed, username) {
+    state.userSettings.masterVolume = masterVol;
+    state.userSettings.musicVolume = musicVol;
+    state.userSettings.hitSoundsVolume = hitsoundsVol;
+    state.userSettings.scrollSpeed = scrollSpeed;
+    state.userSettings.username = username;
   },
 
   nuxtRoute(state) {

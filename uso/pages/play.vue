@@ -310,7 +310,7 @@ export default {
   outline: none;
 
   border-radius: 10px;
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 
   background-image: linear-gradient(
       rgba(30, 30, 30, 0.8),
@@ -549,7 +549,7 @@ export default {
 
   transition: 0.3s all;
 
-  cursor: pointer;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 
   box-shadow: 0px 10px 10px 0px #1b1b1b;
 }

@@ -1,11 +1,19 @@
 <template>
   <div class="owned-card-wrap">
-    <div v-for="card in displayedCards" :key="card" class="owned-card">
+    <div
+      v-for="card in displayedCards"
+      :id="card.rank"
+      :key="card"
+      class="owned-card"
+      @click="getID()"
+    >
       <!-- <div class="val-bg" :class="cardBg"></div> -->
 
       <div class="card-gradient"></div>
       <p class="chara-name">{{ card.title }}</p>
+  
       <img :src="card.image_url" alt="" class="chara-img" />
+
       <!-- <img :src="rimSrc" alt="" class="card-rim" /> -->
     </div>
   </div>
@@ -25,9 +33,10 @@ export default {
   },
   data() {
     return {
-      ownedCards: this.allOwned,
+      ownedCards: [this.allOwned],
       displayedCards: [],
       characters,
+      clickedID: null,
     };
   },
   /*  computed: {
@@ -47,20 +56,47 @@ export default {
     },
   }, */
   created() {
-    /* this.getRoll(); */
+    this.sortAllOwned();
+    /*    this.countConsecutive(); */
     this.cropCharacters();
+    this.removeConsecutiveDuplicates();
     this.getCharaName();
   },
 
   methods: {
+    sortAllOwned() {
+      const beforeSort = this.ownedCards[0];
+      const afterSort = beforeSort.sort((a, b) => {
+        if (a > b) return 1;
+        if (a < b) return -1;
+        else return 0;
+      });
+      this.ownedCards = afterSort;
+    },
+    /*    countConsecutive() {
+      const beforeCount = this.ownedCards;
+      console.log(beforeCount);
+      let result = '';
+      let counter = 1;
+      for (let i = 0; i < beforeCount.length; i++) {
+        if (beforeCount[i] === beforeCount[i + 1]) {
+          counter++;
+        } else {
+          result += beforeCount[i] + counter;
+          counter = 1;
+        }
+      }
+      console.log(result);
+      return result;
+    }, */
     cropCharacters() {
       const owned = this.ownedCards;
       const croppedCharacters = [];
-      console.log(owned);
+      /* console.log(owned); */
       owned.forEach((element) => {
         croppedCharacters.push(this.characters[element]);
       });
-      console.log(croppedCharacters);
+      /* console.log(croppedCharacters); */
       this.displayedCards = croppedCharacters;
     },
     getCharaName() {
@@ -71,6 +107,22 @@ export default {
           element.title = charaName;
         }
       });
+    },
+    removeConsecutiveDuplicates() {
+      const toRemove = this.displayedCards;
+
+      const removedDuplicates = toRemove.filter(function (item, pos, arr) {
+        // Always keep the 0th element as there is nothing before it
+        // Then check if each element is different than the one before it
+        return pos === 0 || item !== arr[pos - 1];
+      });
+      this.displayedCards = removedDuplicates;
+      /* document.getElementById('result').innerHTML = b.join(', '); */
+    },
+    getID() {
+      const targetID = event.currentTarget.id;
+      console.log(targetID);
+      this.clickedID = targetID;
     },
   },
 };
@@ -100,10 +152,12 @@ button {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 .owned-card {
   /* height: auto; */
-  width: calc(var(--container-width) / 6);
+  /* width: calc(var(--container-width) / 6); */
+  width: 16.666666666666666666667%;
   position: relative;
 
   user-select: none;
