@@ -31,27 +31,35 @@
             <h1 class="title">Results</h1>
             <div class="content-sidebar">
               <div id="left__col" class="col">
-                <div class="score">Score: {{ Math.floor(stats.score) }}</div>
-                <div class="score">Combo: {{ stats.maxCombo }}</div>
-                <div class="score">
-                  Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
+
+                <div class="score__container">
+                  <div class="score">Score: {{ Math.floor(stats.score) }} |</div>
+                  <div class="score">Combo: {{ stats.maxCombo }} |</div>
+                  <div class="score">
+                    Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
+                  </div>
                 </div>
+
                 <div class="stats__results">
                   <div class="scoreValues">
-                    <div class="stats">300</div>
-                    <div class="stats">300</div>
-                    <div class="stats">200</div>
-                    <div class="stats">100</div>
-                    <div class="stats">50</div>
-                    <div class="stats">Miss</div>
+                    <div id="s320" class="stats">300</div>
+                    <div id="s300" class="stats">300</div>
+                    <div id="s200" class="stats">200</div>
+                  </div>   
+                  <div class="scoreValues">
+                    <div class="stats">x{{ totalHits['320'] }}</div>
+                    <div class="stats">x{{ totalHits['300'] }}</div>
+                    <div class="stats">x{{ totalHits['200'] }}</div>
                   </div>
-                  <div class="scoreX">
-                    <div class="stats">{{ totalHits['320'] }}</div>
-                    <div class="stats">{{ totalHits['300'] }}</div>
-                    <div class="stats">{{ totalHits['200'] }}</div>
-                    <div class="stats">{{ totalHits['100'] }}</div>
-                    <div class="stats">{{ totalHits['50'] }}</div>
-                    <div class="stats">{{ totalHits['0'] }}</div>
+                  <div class="scoreValues">
+                    <div id="s100" class="stats">100</div>
+                    <div id="s50" class="stats">50</div>
+                    <div id="s0" class="stats">miss!</div>
+                  </div>
+                  <div class="scoreValues">
+                    <div class="stats">x{{ totalHits['100'] }}</div>
+                    <div class="stats">x{{ totalHits['50'] }}</div>
+                    <div class="stats">x{{ totalHits['0'] }}</div>
                   </div>
                 </div>
               </div>
@@ -109,16 +117,19 @@ export default {
 
 #leftSide {
   font-weight: 300;
+  text-shadow: 4px 2px 3px #000;
 }
 
 #leftTitle {
   font-size: 4rem;
+  text-shadow: 4px 2px 3px #000;
 }
 
 #rightSide {
   font-size: 12.5rem;
   font-weight: 500;
   padding: 0 15rem 0 0;
+  text-shadow: 4px 2px 3px #000;
 }
 
 #statsLeft {
@@ -128,6 +139,12 @@ export default {
 .title {
   font-size: 10.5rem;
   font-weight: 400;
+  text-shadow: 4px 2px 3px #000;
+}
+
+.score__container {
+  display: flex;
+  justify-content: center;
 }
 
 /* endgame things */
@@ -202,25 +219,36 @@ export default {
   justify-content: center;
   /* flex-direction: column; */
   flex-wrap: wrap;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 4.5rem 14.5rem 4.5rem 18.5rem;
+  text-shadow: 4px 2px 3px #000;
 }
 
 .stats__results > *:nth-child(1) {
-  flex: 1 1 50%;
+  flex: 1 1 25%;
 }
 
 .stats__results > *:nth-child(2) {
-  flex: 1 1 50%;
+  flex: 1 1 25%;
+}
+
+.stats__results > *:nth-child(3) {
+  flex: 1 1 25%;
+}
+
+.stats__results > *:nth-child(4) {
+  flex: 1 1 15%;
 }
 
 .score {
-  font-size: 7rem;
-  font-weight: 600;
+  font-size: 7.5rem;
+  font-weight: 500;
+  padding: 0 0rem 0 1rem;
+  text-shadow: 4px 2px 3px #000;
 }
 
 .stats {
-  font-size: 6rem;
-  height: 5rem;
+  font-size: 7rem;
+  height: 7.5rem;
 }
 
 #right__col {
@@ -230,10 +258,11 @@ export default {
 
 .letterRanking {
   text-align: center;
-  font-size: 50rem;
+  font-size: 52rem;
   font-weight: 500;
-  margin-top: -8rem;
-  height: 20vh;
+  margin-top: 24rem;
+  line-height: 0;
+  text-shadow: 4px 2px 3px #000;
 }
 
 /* triangle */
@@ -276,4 +305,35 @@ export default {
   font-size: 8.5rem;
   transform: translate(-30px, 60px);
 }
+
+/* colors */
+
+#s320 {
+  /* background: linear-gradient(to top, red 32%, orange, yellow, green, blue, indigo 75%);
+  background-clip: 'text';
+  -webkit-background-clip: 'text';
+  -webkit-text-fill-color: 'transparent'; */
+  color: rgb(74, 255, 228);
+}
+
+#s300 {
+  color: #fcff64;
+}
+
+#s200 {
+  color: rgb(111, 255, 111);
+}
+
+#s100 {
+  color: rgb(85, 73, 255);
+}
+
+#s50 {
+  color: rgb(97, 97, 97);
+}
+
+#s0 {
+  color: rgb(224, 46, 46);
+}
+
 </style>
