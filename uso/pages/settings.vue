@@ -1,7 +1,7 @@
 <template>
   <div class="settings__page">
     <div class="under-nav"></div>
-    <section class="landing">
+    <!-- <section class="landing">
       <video
         id="landing-video"
         class="video-bg"
@@ -13,7 +13,7 @@
         src="../assets/images/backgrounds/landing-narukami-shrine.mp4"
         type="video/mp4"
       ></video>
-    </section>
+    </section> -->
 
     <div class="settings__container">
       <h1 id="settings__title">settings.</h1>
@@ -36,6 +36,19 @@
           </header>
 
           <fieldset class="settings__field">
+
+            <div class="fieldset-item">
+              <div class="search-container">
+                <form class="song-search-form">
+                  <input
+                    class="song-search-bar"
+                    type="text"
+                    placeholder="search for your song..."
+                  />
+                </form>
+              </div>
+            </div>
+
             <div class="fieldset-item">
               <picture aria-hidden="true">
                 <svg viewBox="0 0 24 24">
@@ -148,10 +161,12 @@
 </template>
 
 <script>
+
 export default {
   components: {},
   data() {
     return {
+      // username: this.$auth.user.nickname,
       userdata: this.$auth.user,
       masterVolume: this.$store.state.userSettings.masterVolume,
       musicVolume: this.$store.state.userSettings.musicVolume,
@@ -289,7 +304,7 @@ export default {
   /* align-content: center;
   justify-content: center; */
   place-content: center;
-  padding: 10.5rem;
+  padding: 6rem;
 }
 
 .settings__form {
@@ -308,7 +323,7 @@ export default {
 
 .settings__field {
   width: 45rem;
-  height: 47.5rem;
+  height: 55rem;
   border: 1px solid #b3b3da;
   background: #b3b3da;
   padding: 0;
@@ -375,4 +390,44 @@ input[type='range'] {
   color: black;
   font-size: 5rem;
 }
+
+.search-container {
+  width: 42rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.song-search-form {
+  width: 42rem;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.song-search-form > input {
+  font-size: 2.5rem;
+  height: initial;
+  /* margin: 0 1rem; */
+  /* height: 5vh; */
+
+  overflow: hidden;
+  background-color: rgb(176, 167, 196);
+  border-radius: 0rem;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.4);
+  border: none;
+  outline: none;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+}
+
+.song-search-bar {
+  width: 100%;
+  height: 3rem;
+  padding: 0.25rem 0 0 1.25rem;
+}
+
 </style>
