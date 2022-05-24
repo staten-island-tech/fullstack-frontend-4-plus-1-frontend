@@ -62,7 +62,7 @@
         </div>
 
         <div class="team__members">
-          <img src="~/assets/images/pfps/ayaka.webp" alt="" />
+          <img src="~/assets/images/pfps/AYAKA.png" alt="" />
           <div class="name">edan</div>
           <div class="r__name">ethan liang</div>
           <div class="college">boston university '26</div>
