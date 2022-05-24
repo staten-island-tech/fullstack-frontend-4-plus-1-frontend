@@ -428,7 +428,7 @@ export default {
         300: Math.floor(64 - 3 * OD) + 0.5,
         200: Math.floor(97 - 3 * OD) + 0.5,
         100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(151 - 3 * OD) + 0.5,
+        50: Math.floor(160 - 3 * OD) + 0.5,
         0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
@@ -869,6 +869,7 @@ export default {
             this.timerID = null;
 
             t.PIXIapp.ticker.add(this.animateDrop, this);
+            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 
@@ -882,7 +883,7 @@ export default {
         if (note.type === 'note') {
           new Note(note);
         } else if (note.type === 'hold') {
-          // new Slider(note);
+          new Slider(note);
         } else {
           console.log(`Invalid note type: ${note.type}`);
         }
