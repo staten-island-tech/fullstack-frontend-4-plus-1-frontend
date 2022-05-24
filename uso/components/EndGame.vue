@@ -31,9 +31,10 @@
             <h1 class="title">Results</h1>
             <div class="content-sidebar">
               <div id="left__col" class="col">
-
                 <div class="score__container">
-                  <div class="score">Score: {{ Math.floor(stats.score) }} |</div>
+                  <div class="score">
+                    Score: {{ Math.floor(stats.score) }} |
+                  </div>
                   <div class="score">Combo: {{ stats.maxCombo }} |</div>
                   <div class="score">
                     Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
@@ -45,7 +46,7 @@
                     <div id="s320" class="stats">300</div>
                     <div id="s300" class="stats">300</div>
                     <div id="s200" class="stats">200</div>
-                  </div>   
+                  </div>
                   <div class="scoreValues">
                     <div class="stats">x{{ totalHits['320'] }}</div>
                     <div class="stats">x{{ totalHits['300'] }}</div>
@@ -101,7 +102,7 @@ export default {
   },
   created() {
     const t = this;
-
+    console.log(t.stats);
     if (t.stats.accuracy === 1) t.grade = 'SS';
     else if (t.stats.accuracy > 0.95) t.grade = 'S';
     else if (t.stats.accuracy > 0.9) t.grade = 'A';
@@ -336,5 +337,4 @@ export default {
 #s0 {
   color: rgb(224, 46, 46);
 }
-
 </style>
