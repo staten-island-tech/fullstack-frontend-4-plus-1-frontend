@@ -237,6 +237,8 @@ export default {
     onLoad() {
       const t = this;
 
+      // console.log(Object.keys(t.beatmapData));
+
       t.notes = t.beatmapData.hitObjects;
       t.notesCol = t.notes.filter((note) => note.type === 'note');
       t.sliderCol = t.notes.filter((note) => note.type === 'hold');
