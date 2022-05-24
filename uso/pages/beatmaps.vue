@@ -291,7 +291,6 @@ export default {
       }
     },
     resetAudio() {
-      Howler.stop();
       this.executed = false;
       this.progressAudioBar.set(0);
       this.clicked = true;

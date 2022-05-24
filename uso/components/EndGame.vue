@@ -98,6 +98,7 @@ export default {
   data() {
     return {
       grade: null,
+      userdata: this.$auth.user,
     };
   },
   created() {
@@ -109,6 +110,38 @@ export default {
     else if (t.stats.accuracy > 0.8) t.grade = 'B';
     else if (t.stats.accuracy > 0.7) t.grade = 'C';
     else t.grade = 'D';
+    this.patch();
+  },
+
+  methods: {
+    async patch() {
+      const getUserId = this.userdata.sub.replace('auth0|', '');
+
+      const pref = Math.round(this.stats.score);
+
+      const acc = Math.round(this.stats.accuracy * 1000) / 10;
+      const maxcombo = this.stats.maxCombo;
+      try {
+        const token = await this.$auth.strategy.token.get();
+        fetch(`http://localhost:8000/update/${getUserId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            gameData: {
+              playCount: 1,
+              performance: pref,
+              accuracy: acc,
+              maxCombo: maxcombo,
+            },
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: token,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
