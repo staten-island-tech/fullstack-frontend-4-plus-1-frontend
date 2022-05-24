@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      dy: 15,
+      dy: 8,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -237,8 +237,6 @@ export default {
     onLoad() {
       const t = this;
 
-      // console.log(Object.keys(t.beatmapData));
-
       t.notes = t.beatmapData.hitObjects;
       t.notesCol = t.notes.filter((note) => note.type === 'note');
       t.sliderCol = t.notes.filter((note) => note.type === 'hold');
@@ -375,12 +373,6 @@ export default {
     },
     startGame() {
       const t = this;
-
-      /* let testTime = 0;
-      setInterval(() => {
-        console.log(`${testTime} milliseconds passed`);
-        testTime += 300;
-      }, 300); */
 
       t.music.play();
       const durr = Math.round(t.music.duration()) * 1000;
@@ -656,8 +648,6 @@ export default {
 
             t.ss.columnContainers[this.i].addChild(this);
             t.PIXIapp.ticker.add(this.animateDrop, this);
-
-            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 
@@ -875,7 +865,6 @@ export default {
             this.timerID = null;
 
             t.PIXIapp.ticker.add(this.animateDrop, this);
-            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 

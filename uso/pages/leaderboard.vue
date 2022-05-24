@@ -100,14 +100,10 @@ export default {
       // const getUserId = this.$auth.user.sub.replace('auth0|', '');
       // http://localhost:8000/6289babceda0db001153a8d8
       // `http://localhost:8000/${getUserId}`
-      const token = await this.$auth.strategy.token.get();
+      // const token = await this.$auth.strategy.token.get();
       // const getUserId = this.userdata.sub.replace('auth0|', '');
       // console.log(getUserId);
-      const userDataFetch = await fetch('http://localhost:8000/', {
-        headers: {
-          Authorization: token,
-        },
-      });
+      const userDataFetch = await fetch('https://usobackend.onrender.com/');
       const userDataFetched = await userDataFetch.json();
       this.userData = userDataFetched;
       console.log(this.userData);

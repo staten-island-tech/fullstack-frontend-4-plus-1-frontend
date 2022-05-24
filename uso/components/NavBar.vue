@@ -1,5 +1,5 @@
 <template>
-  <div v-if="onPlayPage" class="uso__navbar--body">
+  <div v-if="show" class="uso__navbar--body">
     <nav class="uso__navbar">
       <div class="uso__logolinks--container">
         <nuxt-link to="/home" class="uso__logo">
@@ -152,7 +152,7 @@ export default {
   name: 'NavBar',
   data() {
     return {
-      onPlayPage: true,
+      show: true,
       loginSatus: this.$store.state.auth.loggedIn,
     };
   },
@@ -164,11 +164,11 @@ export default {
         // the `return` will end the execution and not go further
         Howler.stop();
       }
-      if (to.name === 'play') {
-        this.onPlayPage = false;
+      /* if (to.name.includes('play')) {
+        this.show = false;
       } else {
-        this.onPlayPage = true;
-      }
+        this.show = true;
+      } */
     },
   },
 
@@ -177,7 +177,7 @@ export default {
       this.fetchNewUser();
     }
 
-    if (this.onPlayPage === true) {
+    if (this.show) {
       document
         .querySelector('#show-login')
         .addEventListener('click', function () {

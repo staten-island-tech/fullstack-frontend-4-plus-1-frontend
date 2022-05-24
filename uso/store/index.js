@@ -7,6 +7,7 @@ export const state = () => ({
     scrollSpeed: 10,
     username: '',
   },
+
   gameData: {
     A: 0,
     S: 0,
