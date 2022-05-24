@@ -68,9 +68,8 @@
           <div class="college">boston university '26</div>
           <div class="role">frontend</div>
           <div class="about">
-            "When the world is filled with red lights signaling danger, the
-            world is safer than usual. But when it's filled with green lights
-            signaling safety, it creates a place more dangerous than anywhere."
+            "Did you know every time you sigh, a little bit of happiness
+            escapes?"
           </div>
 
           <div class="social__links">
