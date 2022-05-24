@@ -17,7 +17,7 @@
           ></video> -->
         <section class="data-bar">
           <h1 class="shop-heading">
-            "what does freedom really mean, when demanded of you by a god...?"
+            get your favorite anime characters today!
           </h1>
           <!--  <p class="primogem-balance">{{ primogemBalance }}</p> -->
         </section>
@@ -45,6 +45,9 @@
             />
           </div>
           <button class="roll-button" @click="pressRoll()">wish!</button>
+          <div class="currency__container">
+            <div class="currency__counter">infinite...</div>
+          </div>
         </section>
       </div>
     </div>
@@ -96,6 +99,7 @@ export default {
 </script>
 
 <style scoped>
+
 #wish-background {
   height: calc(100vh - 9.5rem);
   /* width: 100%; */
@@ -199,6 +203,26 @@ export default {
   background: rgb(177, 236, 238);
   color: rgb(23, 23, 107);
   transform: scale(0.85);
+}
+
+.currency__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 15rem;
+  height: 6rem;
+  top: 12.5rem;
+  right: 3rem;
+  border-radius: 1rem;
+  background: rgb(177, 236, 238);
+}
+
+.currency__counter {
+  text-align: center;
+  color: rgb(23, 23, 107);
+  font-size: 4rem;
+  margin-top: 0.75rem;
 }
 
 @media screen and (max-width: 1700px) {
