@@ -883,57 +883,55 @@ export default {
         }
       }
 
-      const Slider = function (note) {
-        const sliderHeight =
-          (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+      // const Slider = function (note) {
+      //   const sliderHeight =
+      //     (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-        const slider = new PIXI.Graphics();
+      //   const slider = new PIXI.Graphics();
 
-        slider.i = note.columnIndex;
-        slider.sliderHeight = sliderHeight;
+      //   slider.i = note.columnIndex;
+      //   slider.sliderHeight = sliderHeight;
 
-        /* slider
-          .lineStyle(1)
-          .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
-          .drawRoundedRect(
-            t.stageColWidth / 2 - t.radius,
-            slider.sliderHeight + 2 * t.radius,
-            2 * t.radius,
-            slider.sliderHeight + 2 * t.radius,
-            t.radius
-          )
-          .endFill(); */
+      //   /* slider
+      //     .lineStyle(1)
+      //     .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
+      //     .drawRoundedRect(
+      //       t.stageColWidth / 2 - t.radius,
+      //       slider.sliderHeight + 2 * t.radius,
+      //       2 * t.radius,
+      //       slider.sliderHeight + 2 * t.radius,
+      //       t.radius
+      //     )
+      //     .endFill(); */
 
-        console.log();
+      //   slider
+      //     .lineStyle(1)
+      //     .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
+      //     .drawRoundedRect(
+      //       t.stageColWidth / 2 - t.radius,
+      //       -t.stageHeight / 5,
+      //       2 * t.radius,
+      //       slider.sliderHeight + 2 * t.radius,
+      //       t.radius
+      //     )
+      //     .endFill();
 
-        slider
-          .lineStyle(1)
-          .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
-          .drawRoundedRect(
-            t.stageColWidth / 2 - t.radius,
-            -t.stageHeight / 5,
-            2 * t.radius,
-            slider.sliderHeight + 2 * t.radius,
-            t.radius
-          )
-          .endFill();
+      //   slider.time = note.time;
+      //   slider.remainingTime =
+      //     note.time -
+      //     t.beatmapIntro -
+      //     (1000 * t.stageHeight * t.hitPercent + t.radius) /
+      //       (t.dy * t.stageFPS);
 
-        slider.time = note.time;
-        slider.remainingTime =
-          note.time -
-          t.beatmapIntro -
-          (1000 * t.stageHeight * t.hitPercent + t.radius) /
-            (t.dy * t.stageFPS);
+      //   t.notesToFallArray.push(slider);
 
-        t.notesToFallArray.push(slider);
+      //   slider.resumeDropTimer();
 
-        // slider.resumeDropTimer();
-
-        t.ss.sliderColumnContainers[slider.i].addChild(slider);
-        t.PIXIapp.ticker.add(() => {
-          slider.y += t.dy / 10;
-        });
-      };
+      //   t.ss.sliderColumnContainers[slider.i].addChild(slider);
+      //   t.PIXIapp.ticker.add(() => {
+      //     slider.y += t.dy / 10;
+      //   });
+      // };
 
       for (let index = 0; index < t.notesCol.length; index++) {
         new Note(t.notesCol[index]);
@@ -941,16 +939,6 @@ export default {
       for (let index = 0; index < t.sliderCol.length; index++) {
         new Slider(t.sliderCol[index]);
       }
-      // for (const note of t.notesCol) {
-      //   new Note(note);
-      // }
-      // for (const note of t.sliderCol) {
-      //   new Slider(note);
-      // }
-
-      //       for (const note of t.notesCol) {
-      //   new Note(note)
-      // }
     },
     onPauseKey(isPaused) {
       if (isPaused) {
