@@ -130,6 +130,8 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
+      notesCol: null,
+      sliderCol: null,
     };
   },
 
@@ -236,6 +238,8 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
+      t.notesCol = t.notes.filter((note) => note.type === 'note');
+      t.sliderCol = t.notes.filter((note) => note.type === 'hold');
       t.numColumns = t.beatmapData.columns;
 
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -879,15 +883,16 @@ export default {
         }
       }
 
-      t.notes.forEach((note) => {
-        if (note.type === 'note') {
-          new Note(note);
-        } else if (note.type === 'hold') {
-          new Slider(note);
-        } else {
-          console.log(`Invalid note type: ${note.type}`);
-        }
-      });
+      for (const note of t.notesCol) {
+        new Note(note);
+      }
+      for (const note of t.sliderCol) {
+        new Slider(note);
+      }
+
+      //       for (const note of t.notesCol) {
+      //   new Note(note)
+      // }
     },
     onPauseKey(isPaused) {
       if (isPaused) {
