@@ -12,24 +12,28 @@
 
         <ul class="uso__navbar--links">
           <li>
-            <nuxt-link to="/home" class="uso__links">home</nuxt-link>
+            <nuxt-link to="/home" 
+            class="uso__links">home</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/beatmaps" class="uso__links">beatmaps</nuxt-link>
+            <nuxt-link to="/beatmaps" 
+            class="uso__links">beatmaps</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/leaderboard" class="uso__links"
-              >leaderboard</nuxt-link
-            >
+            <nuxt-link to="/leaderboard" 
+            class="uso__links">leaderboard</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/aboutUs" class="uso__links">about</nuxt-link>
+            <nuxt-link to="/aboutUs" 
+            class="uso__links">team</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/help" class="uso__links">help</nuxt-link>
+            <nuxt-link to="/help" 
+            class="uso__links">help</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/play" class="uso__links">game</nuxt-link>
+            <nuxt-link to="/play" 
+            class="uso__links">game</nuxt-link>
           </li>
 
           <!-- <li>
@@ -72,7 +76,7 @@
             ></button>
 
             <div class="login-container">
-              <div class="login-popup">
+              <div id="modal__popup" class="login-popup">
                 <div class="close__popup-btn">&times;</div>
 
                 <div class="user-form">
@@ -176,6 +180,9 @@ export default {
   },
 
   mounted() {
+
+    // const closeMd = document.getElementById("modal__popup");
+    
     document
       .querySelector('#show-login')
       .addEventListener('click', function () {
@@ -187,6 +194,12 @@ export default {
       .addEventListener('click', function () {
         document.querySelector('.login-popup').classList.remove('active');
       });
+
+    // window.onclick = function(e) {
+    //   if (e.target === closeMd) {
+    //     closeMd.style.display = "none";
+    //   }
+    // }
 
     const animateNav = () => {
       const navBurger = document.querySelector('.uso__navburger');
