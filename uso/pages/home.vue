@@ -3,6 +3,8 @@
     <routeChange />
     <div class="under-nav"></div>
 
+    <h1 class="hello__user">welcome to uso, {{ username }} !</h1>
+
     <section class="landing">
       <video
         id="landing-video"
@@ -98,6 +100,7 @@ export default {
 
   data() {
     return {
+      username: this.$auth.user.nickname,
       featureSongs: [
         {
           cardType: 'Featured Map',
@@ -176,6 +179,7 @@ export default {
 </script>
 
 <style scoped>
+
 @keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -236,6 +240,7 @@ export default {
     filter: hue-rotate(0deg);
   }
 }
+
 @-webkit-keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -255,6 +260,16 @@ export default {
   100% {
     filter: hue-rotate(0deg);
   }
+}
+
+.hello__user {
+  font-size: 15rem;
+  font-weight: 400;
+  text-shadow: 4px 4px 5px #212272;
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  width: 100%;
 }
 
 .container {

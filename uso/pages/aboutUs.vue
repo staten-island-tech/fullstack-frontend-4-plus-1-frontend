@@ -28,14 +28,13 @@
               <div class="r__name">wilson w.</div>
               <div class="college">stony brook university '26</div>
               <div class="role">captain</div>
-              <div class="about">idk i speak in code so i dunno,, 
-                i am having a for loop error error 404... help pls</div>
+              <div class="about">spent like 16 hours straight just coding 
+                one time, somehow breaks the code but still makes it work</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/wilsonw13" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/wilsonw13" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           
           </div>
@@ -46,14 +45,13 @@
               <div class="r__name">harvey j.</div>
               <div class="college">staten island tech hs '23</div>
               <div class="role">frontend/backend</div>
-              <div class="about">idk i speak in code so i dunno,, 
-                i am having a for loop error error 404... help pls</div>
+              <div class="about">"if all you're good for is breathing in and out, 
+                then even an ac unit is more useful than you."</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/harveyj123" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/harveyj123" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
@@ -64,15 +62,14 @@
               <div class="college">yale university '26</div>
               <div class="role">frontend</div>
               <div class="about">"i probably just want to leave a trace 
-                of myself behind in this world," thank you, kai</div>
+                of myself behind in this world," forever grateful, kai</div>
 
                 
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/kentng01" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/kentng01" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
@@ -86,10 +83,9 @@
                 are things you can only do now, things you can only find here"</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/ethanl66" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/ethanl66" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
@@ -100,13 +96,14 @@
               <div class="college">quinnipiac university '26</div>
               <div class="role">backend</div>
               <div class="about">idk i speak in code so i dunno,, 
-                i am having a for loop error error 404... help pls</div>
+                i am having a for loop error error 404... help pls kaboom</div>
+              <!-- <div class="about">idk i speak in code so i dunno,, 
+                i am having a for loop error error 404... help pls</div> -->
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/ryan-sliger" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/ryan-sliger" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 

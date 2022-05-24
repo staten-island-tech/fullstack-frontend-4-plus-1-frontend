@@ -84,7 +84,7 @@
                     sign in to proceed...
                   </h2>
                   <h2 v-else id="signEd-in" class="user-sign-in">
-                    hi, {{ username }}! ~
+                    hi, {{ username }}~!
                   </h2>
 
                   <div id="form__sign-in" class="form-element">

@@ -121,7 +121,7 @@ export default {
 }
 
 #leftTitle {
-  font-size: 4rem;
+  font-size: 4.5rem;
   text-shadow: 4px 2px 3px #000;
 }
 
