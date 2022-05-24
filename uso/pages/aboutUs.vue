@@ -62,14 +62,15 @@
         </div>
 
         <div class="team__members">
-          <img src="~/assets/images/pfps/raiden.png" alt="" />
+          <img src="~/assets/images/pfps/ayaka.webp" alt="" />
           <div class="name">edan</div>
           <div class="r__name">ethan liang</div>
           <div class="college">boston university '26</div>
           <div class="role">frontend</div>
           <div class="about">
-            "the present isn't everything, but there are things you can only do
-            now, things you can only find here"
+            "When the world is filled with red lights signaling danger, the
+            world is safer than usual. But when it's filled with green lights
+            signaling safety, it creates a place more dangerous than anywhere."
           </div>
 
           <div class="social__links">
