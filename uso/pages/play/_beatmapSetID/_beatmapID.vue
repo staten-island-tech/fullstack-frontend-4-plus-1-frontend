@@ -100,6 +100,8 @@ import GameCanvas from '../../../components/GameCanvas.vue';
 export default {
   components: { GameCanvas, PlayBeatmapNotFound },
 
+  layout: 'nonav',
+
   data() {
     return {
       loaded: {
@@ -134,7 +136,7 @@ export default {
   },
 
   async fetch() {
-    const promise = await fetch(
+    let promise = await fetch(
       `/beatmaps/${this.beatmapSetID}/${this.beatmapID}.json`
     );
     /* const promise = await fetch('/beatmaps/test/slider.json'); */
@@ -142,8 +144,12 @@ export default {
     this.beatmapData = await promise.json();
 
     // CHECK IF SONG NOT FOUND
-    if (!Object.keys(this.beatmapData).length) this.beatmapNotFoundError = true;
-    else this.loaded.beatmapData = true;
+    if (!Object.keys(this.beatmapData).length) {
+      promise = await fetch('/beatmaps/682518/1443373.json');
+      this.beatmapData = await promise.json();
+    }
+
+    this.loaded.beatmapData = true;
   },
 
   head() {
@@ -193,15 +199,18 @@ export default {
       const t = this;
 
       Howler.volume(1);
-      t.progressBar = new ProgressBar.Circle('#game-pb', {
-        strokeWidth: 50,
-        easing: 'easeInOut',
-        color: '#FFEA82',
-        trailColor: '#eee',
-        trailWidth: 50,
-        // svgStyle: null,
-        // duration: t.songDuration,
-      });
+
+      if (document.querySelector('#game-pb')) {
+        t.progressBar = new ProgressBar.Circle('#game-pb', {
+          strokeWidth: 50,
+          easing: 'easeInOut',
+          color: '#FFEA82',
+          trailColor: '#eee',
+          trailWidth: 50,
+          // svgStyle: null,
+          // duration: t.songDuration,
+        });
+      }
 
       // window.addEventListener('wheel', this.onScroll);
       document.addEventListener('keydown', function (e) {
