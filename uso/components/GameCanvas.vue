@@ -130,8 +130,8 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
-      notesCol: null,
-      sliderCol: null,
+      filteredNotes: null,
+      filteredSliders: null,
     };
   },
 
@@ -238,8 +238,8 @@ export default {
       const t = this;
 
       t.notes = t.beatmapData.hitObjects;
-      t.notesCol = t.notes.filter((note) => note.type === 'note');
-      t.sliderCol = t.notes.filter((note) => note.type === 'hold');
+      t.filteredNotes = t.notes.filter((note) => note.type === 'note');
+      t.filteredSliders = t.notes.filter((note) => note.type === 'hold');
       t.numColumns = t.beatmapData.columns;
 
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -374,22 +374,22 @@ export default {
     startGame() {
       const t = this;
 
-      let testTime = 0;
+      /* let testTime = 0;
       setInterval(() => {
         console.log(`${testTime} milliseconds passed`);
         testTime += 300;
-      }, 300);
+      }, 300); */
 
       t.music.play();
       const durr = Math.round(t.music.duration()) * 1000;
       this.$store.commit('currSongDuration', durr);
 
-      const firstNote = t.notes[0];
+      /* const firstNote = t.notes[0];
       const lastNote = t.notes[t.notes.length - 1];
 
       setTimeout(() => {
         this.$emit('endGameParent', this.totalHits, this.maxCombo);
-      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 3000);
+      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 3000); */
 
       /* ===============
           HP DRAIN
@@ -665,234 +665,65 @@ export default {
         }
       }
 
-      class Slider extends PIXI.Container {
-        constructor(note) {
-          super();
+      const Slider = function (note) {
+        const sliderHeight =
+          (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
 
-          this.i = note.columnIndex;
-          this.time = note.time;
-          this.sliderHeight =
-            (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
+        const slider = new PIXI.Graphics();
 
-          // Creating the 3 parts of a slider
-          const circleTopSprite = new PIXI.Sprite(t.circleTextures[this.i]);
-          circleTopSprite.anchor.set(0.5);
-          circleTopSprite.setTransform(0, -this.sliderHeight);
-          circleTopSprite.width = circleTopSprite.height = 2 * t.radius;
-          this.addChild(circleTopSprite);
+        slider.i = note.columnIndex;
+        slider.sliderHeight = sliderHeight;
 
-          const rectSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-          rectSprite.tint = parseInt(t.colors[this.i].slice(1), 16);
-          rectSprite.anchor.set(0.5, 1); // anchors to the middle, bottom
-          rectSprite.width = 2 * t.radius;
-          rectSprite.height = this.sliderHeight;
-          this.addChild(rectSprite);
+        /* slider
+          .lineStyle(1)
+          .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
+          .drawRoundedRect(
+            t.stageColWidth / 2 - t.radius,
+            slider.sliderHeight + 2 * t.radius,
+            2 * t.radius,
+            slider.sliderHeight + 2 * t.radius,
+            t.radius
+          )
+          .endFill(); */
 
-          const circleBotSprite = new PIXI.Sprite(t.circleTextures[this.i]);
-          circleBotSprite.anchor.set(0.5);
-          circleBotSprite.width = circleBotSprite.height = 2 * t.radius;
-          this.addChild(circleBotSprite);
+        console.log();
 
-          this.setTransform(t.stageColWidth / 2, -t.radius);
+        slider
+          .lineStyle(1)
+          .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
+          .drawRoundedRect(
+            t.stageColWidth / 2 - t.radius,
+            t.stageHeight / 2,
+            2 * t.radius,
+            slider.sliderHeight + 2 * t.radius,
+            t.radius
+          )
+          .endFill();
 
-          this.remainingTime =
-            note.time -
-            t.beatmapIntro -
-            (1000 * t.stageHeight * t.hitPercent + t.radius) /
-              (t.dy * t.stageFPS);
+        slider.time = note.time;
+        slider.remainingTime =
+          note.time -
+          t.beatmapIntro -
+          (1000 * t.stageHeight * t.hitPercent + t.radius) /
+            (t.dy * t.stageFPS);
 
-          t.notesToFallArray.push(this);
+        t.notesToFallArray.push(slider);
 
-          this.resumeDropTimer();
+        // slider.resumeDropTimer();
 
-          t.ss.sliderColumnContainers[this.i].addChild(this);
+        t.ss.sliderColumnContainers[slider.i].addChild(slider);
+        t.PIXIapp.ticker.add(() => {
+          slider.height -= t.dy / 20;
+          slider.radius += 10;
+        });
+      };
 
-          this.startTime, this.timerID;
-        }
-
-        msFrom(position, isAbs = false) {
-          if (position === 'bot') {
-            return isAbs
-              ? Math.abs(
-                  ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                    (t.dy * t.stageFPS)
-                )
-              : ((this.y - t.stageHeight * t.hitPercent) * 1000) /
-                  (t.dy * t.stageFPS);
-          } else if (position === 'top') {
-            return isAbs
-              ? Math.abs(
-                  ((this.y +
-                    this.children[0].y -
-                    t.stageHeight * t.hitPercent) *
-                    1000) /
-                    (t.dy * t.stageFPS)
-                )
-              : ((this.y + this.children[0].y - t.stageHeight * t.hitPercent) *
-                  1000) /
-                  (t.dy * t.stageFPS);
-          } else console.log('Invalid position in slider.msFrom()');
-        }
-
-        miss() {
-          if (this.missed) return;
-          this.missed = true;
-
-          this.children[0].alpha = this.children[2].alpha = 0.7;
-          this.children[1].alpha = 0.6;
-
-          t.latestHit = 0;
-          t.totalHits['0']++;
-          t.bonus = 0;
-          t.missedCombo = t.combo;
-          if (t.missedCombo > t.maxCombo) t.maxCombo = t.missedCombo;
-          t.combo = 0;
-          healthbarFinalVal(t.latestHit);
-
-          t.comboOn = false;
-          t.comboReset = true;
-          t.hitComboVKey += 2;
-        }
-
-        hit() {
-          if (this.missed) return;
-
-          this.finalMs = this.msFrom('top', true);
-          this.avgMs = (this.initialMs + this.finalMs) / 2;
-
-          let hitBonusValue = 0;
-
-          if (this.avgMs <= t.hitJudgement['320'] && !this.releasedMs) {
-            t.latestHit = 320;
-            t.totalHits['320']++;
-            hitBonusValue = 32;
-            t.bonus += 2;
-          } else if (this.avgMs <= t.hitJudgement['300'] && !this.releasedMs) {
-            t.latestHit = 300;
-            t.totalHits['300']++;
-            hitBonusValue = 32;
-            t.bonus += 1;
-          } else if (
-            this.avgMs <= t.hitJudgement['300'] ||
-            (!this.finalMs && this.initialMs <= t.hitJudgement['300'])
-          ) {
-            t.latestHit = 200;
-            t.totalHits['200']++;
-            hitBonusValue = 16;
-            t.bonus -= 8;
-          } else if (
-            this.avgMs <= t.hitJudgement['200'] ||
-            (!this.finalMs && this.initialMs <= t.hitJudgement['200'])
-          ) {
-            t.latestHit = 100;
-            t.totalHits['100']++;
-            hitBonusValue = 8;
-            t.bonus -= 24;
-          } else if (
-            this.avgMs <= t.hitJudgement['50'] ||
-            (!this.finalMs && this.initialMs <= t.hitJudgement['50'])
-          ) {
-            t.latestHit = 50;
-            t.totalHits['50']++;
-            hitBonusValue = 4;
-            t.bonus -= 44;
-          }
-
-          t.bonus = t.clamp(t.bonus, 0, 100);
-
-          const baseScore =
-            ((1000000 * 0.5) / t.notes.length) * (t.latestHit / 320);
-
-          const bonusScore =
-            ((1000000 * 0.5) / t.notes.length) *
-            ((hitBonusValue * Math.sqrt(t.bonus)) / 320);
-
-          t.score += bonusScore + baseScore;
-          t.combo += 1;
-          healthbarFinalVal(t.latestHit);
-
-          t.comboReset = false;
-          t.comboOn = true;
-          t.hitComboVKey += 2;
-
-          this.remove();
-        }
-
-        remove() {
-          t.ss.sliderColumnContainers[this.i].removeChild(this);
-          t.PIXIapp.ticker.remove(this.animateDrop, this);
-          t.PIXIapp.ticker.remove(() => (this.children[0].y += t.dy), this);
-
-          t.readySliders[this.i] = null;
-        }
-
-        animateDrop() {
-          this.y += t.dy;
-
-          if (this.msFrom('bot', true) <= t.hitJudgement['50'] && !this.ready) {
-            this.ready = true;
-            t.readySliders[this.i] = this;
-            //
-          } else if (
-            this.msFrom('bot') > t.hitJudgement['50'] &&
-            !this.initialMs
-          ) {
-            this.miss();
-            //
-          } else if (this.msFrom('top') > t.hitJudgement['50']) {
-            if (this.held && this.initialMs) this.hit();
-            else this.miss();
-            //
-          } else if (this.y + this.children[0].y > t.stageHeight) this.remove();
-        }
-
-        animateShrink() {
-          this.children[1].height -= t.dy;
-          this.children[0].y += t.dy;
-
-          /* if (this.children[2].y < t.stageHeight * t.hitPercent) {
-            this.children[1].y += t.dy;
-            this.children[2].y += t.dy;
-          } */
-
-          if (this.children[0].y >= this.children[2].y) {
-            t.PIXIapp.ticker.remove(this.animateShrink, this);
-
-            t.PIXIapp.ticker.add(() => (this.children[0].y += t.dy), this);
-
-            this.hit();
-          }
-        }
-
-        resumeDropTimer() {
-          this.startTime = new Date();
-
-          this.timerID = setTimeout(() => {
-            t.ss.sliderColumnContainers[this.i].addChild(this);
-            t.notesToFallArray.splice(t.notesToFallArray.indexOf(this), 1);
-            this.timerID = null;
-
-            t.PIXIapp.ticker.add(this.animateDrop, this);
-            console.log('Added:', Math.round(this.remainingTime));
-          }, this.remainingTime);
-        }
-
-        pauseDropTimer() {
-          clearTimeout(this.timerID);
-          this.remainingTime -= new Date() - this.startTime;
-        }
-      }
-
-      for (const note of t.notesCol) {
+      for (const note of t.filteredNotes) {
         new Note(note);
       }
-      for (const note of t.sliderCol) {
+      for (const note of t.filteredSliders) {
         new Slider(note);
       }
-
-      //       for (const note of t.notesCol) {
-      //   new Note(note)
-      // }
     },
     onPauseKey(isPaused) {
       if (isPaused) {
