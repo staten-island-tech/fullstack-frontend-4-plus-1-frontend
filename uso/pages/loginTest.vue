@@ -34,12 +34,9 @@
       <input type="submit" value="Login" class="login-button" @click="login" />
     </div>
   </div>
-  <!-- copy osu css layout for pfp and header -->
 </template>
 
 <script>
-/* import user from '~/static/user.json';
-import characters from '~/static/characters.json'; */
 
 export default {
   layout: 'nonav',
@@ -64,7 +61,6 @@ export default {
           that.snackbar = true;
         })
         .then((user) => {
-          // we are signed in
           this.$router.push('/');
         });
     },
@@ -73,10 +69,7 @@ export default {
 </script>
 
 <style scoped>
-/* .uso__navbar,
-.uso__navbar--body {
-  display: none;
-} */
+
 .login-page {
   display: flex;
   flex-direction: column;
@@ -111,7 +104,6 @@ export default {
   width: 4rem;
 }
 .login-box {
-  /* border: 1px solid white; */
   background: rgba(66, 50, 89, 0.9);
   margin: auto;
   width: 50rem;
@@ -120,7 +112,6 @@ export default {
   display: flex;
   flex-direction: column;
   font-size: 4rem;
-  /* align-items: center; */
 }
 .profile-picture {
   width: var(--pfp-size);
@@ -144,39 +135,4 @@ export default {
   text-transform: uppercase;
   margin: auto;
 }
-
-/*
-.profile-titlebox {
-  width: 55vw;
-
-  background-color: rgb(8, 36, 83);
-}
-.profile-title {
-  display: flex;
-  align-items: center;
-  font-size: 3.5rem;
-  font-weight: 400;
-  color: #f6f6f6;
-  height: 5.5rem;
-  margin: 0.5rem 1rem 0.5rem 3.5rem;
-  padding-top: 0.5rem;
-}
-.profile-details {
-  color: #fff;
-  font-size: 15rem;
-  overflow-x: auto;
-
-  --content-width: 55vw;
-  --beatmap-set-container-width: 45vw;
-  --sidebar: 25rem;
-  width: var(--content-width);
-  display: flex;
-  align-items: flex-start;
-  padding: 1.25rem 2.5rem 2.5rem 2.5rem;
-  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* background-position: center center;
-} */
 </style>

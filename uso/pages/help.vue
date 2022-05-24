@@ -1,9 +1,7 @@
 <template>
   <div class="help-page">
-       <routeChange/>
     <div class="under-nav"></div>
     <div class="help-page-container">
-      <!-- <h1>L bozo</h1> -->
       <section id="paimon" class="paimonInfo">
         <div class="section-header">
           <h1 class="section-heading">welcome to !uso</h1>
@@ -15,9 +13,10 @@
               <h3>introduction</h3>
             </div>
             <p class="paimonStuff-text">
-              do you like watching anime? do you enjoy rhythm games? do you enjoy 
-              games like guitar hero or piano tiles? then yo, this is the game for 
-              you! welcome to our take on osu! Mania~ we hope you enjoy!
+              do you like watching anime? do you enjoy rhythm games? do you
+              enjoy games like guitar hero or piano tiles? then yo, this is the
+              game for you! welcome to our take on osu! Mania~ we hope you
+              enjoy!
             </p>
           </div>
 
@@ -26,9 +25,9 @@
               <h3>navigating !uso</h3>
             </div>
             <p class="paimonStuff-text">
-              before you even start playing, explore our site! there is so much fun
-              to be offered here~ once you are finished, go visit our beatmaps page,
-              there you will find a wide array of songs to play!
+              before you even start playing, explore our site! there is so much
+              fun to be offered here~ once you are finished, go visit our
+              beatmaps page, there you will find a wide array of songs to play!
             </p>
           </div>
 
@@ -37,9 +36,10 @@
               <h3>logging in...</h3>
             </div>
             <p class="paimonStuff-text">
-              to register an account, please look to the top right and click the avatar
-              icon. once you have made your account, go enjoy all the songs to your heart's
-              content! in order to login, simply press the avatar icon~
+              to register an account, please look to the top right and click the
+              avatar icon. once you have made your account, go enjoy all the
+              songs to your heart's content! in order to login, simply press the
+              avatar icon~
             </p>
           </div>
 
@@ -48,9 +48,10 @@
               <h3>how to play</h3>
             </div>
             <p class="paimonStuff-text">
-              for the majority of songs, the keyboard keys [D][F][H][J] will be the primary
-              ones to use and play with! however, for those who are more advanced, some songs
-              may utilize up to seven keys! play at your own pace~
+              for the majority of songs, the keyboard keys [D][F][H][J] will be
+              the primary ones to use and play with! however, for those who are
+              more advanced, some songs may utilize up to seven keys! play at
+              your own pace~
             </p>
           </div>
 
@@ -59,9 +60,10 @@
               <h3>how to play (cont.)</h3>
             </div>
             <p class="paimonStuff-text">
-              for standard notes, just hit them as closely on time as you possibly can! if you
-              miss, that's okay, keep moving forward! for longer notes, hold on to your key and
-              release it when the respective note ends!
+              for standard notes, just hit them as closely on time as you
+              possibly can! if you miss, that's okay, keep moving forward! for
+              longer notes, hold on to your key and release it when the
+              respective note ends!
             </p>
           </div>
 
@@ -70,9 +72,10 @@
               <h3>shop</h3>
             </div>
             <p class="paimonStuff-text">
-              our site implements a shop, gacha system, where the score you get will determine
-              how much primogems you get! with primogems, you can roll for custom anime profile  
-              pictures~ *there is a secret special 1% pic...
+              our site implements a shop, gacha system, where the score you get
+              will determine how much primogems you get! with primogems, you can
+              roll for custom anime profile pictures~ *there is a secret special
+              1% pic...
             </p>
           </div>
 
@@ -86,16 +89,13 @@
 </template>
 
 <script>
-
 export default {
   auth: false,
   components: {},
 };
-
 </script>
 
 <style scoped>
-
 * {
   font-family: 'Dongle', sans-serif;
 }

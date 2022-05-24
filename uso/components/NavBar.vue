@@ -154,8 +154,6 @@ export default {
     return {
       onPlayPage: true,
       loginSatus: this.$store.state.auth.loggedIn,
-      // username: this.$auth.user.nickname,
-      // userData: this.$auth.user,
     };
   },
 
@@ -172,11 +170,6 @@ export default {
         this.onPlayPage = true;
       }
     },
-    // loginSatus() {
-    //   if (this.loginSatus) {
-    //     this.fetchNewUser();
-    //   }
-    // },
   },
 
   mounted() {
@@ -227,21 +220,6 @@ export default {
     async login() {
       await this.$auth.loginWith('auth0');
     },
-    // newUser() {
-    //   const getUserId = this.$auth.user.sub.replace('auth0|', '');
-    //   fetch(`http://localhost:8000/${getUserId}`, {
-    //     method: 'PATCH',
-    //     body: JSON.stringify({
-    //       username: 'ilostcddrip',
-    //       leaderBoardPos: '20',
-    //     }),
-    //     headers: {
-    //       'Content-type': 'application/json; charset=UTF-8',
-    //     },
-    //   })
-    //     .then((response) => response.json())
-    //     .then((json) => console.log(json));
-    // },
     async fetchNewUser() {
       const getUserId = this.$auth.user.sub.replace('auth0|', '');
       // http://localhost:8000/6289babceda0db001153a8d8

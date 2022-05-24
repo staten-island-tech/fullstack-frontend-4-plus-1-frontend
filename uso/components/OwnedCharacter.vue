@@ -7,14 +7,11 @@
       class="owned-card"
       @click="getID()"
     >
-      <!-- <div class="val-bg" :class="cardBg"></div> -->
 
       <div class="card-gradient"></div>
       <p class="chara-name">{{ card.title }}</p>
   
       <img :src="card.image_url" alt="" class="chara-img" />
-
-      <!-- <img :src="rimSrc" alt="" class="card-rim" /> -->
     </div>
   </div>
 </template>
@@ -39,25 +36,8 @@ export default {
       clickedID: null,
     };
   },
-  /*  computed: {
-    getCharaName() {
-      this.displayedCards.forEach((element) => {
-        if (element.title.includes(',')) {
-          let finalCharaName = '';
-          const charaName = this.card.title.split(', ');
-          finalCharaName = charaName[1] + ' ' + charaName[0];
-          console.log(finalCharaName);
-          return finalCharaName;
-        } else {
-          const finalCharaName = this.card.title;
-          return finalCharaName;
-        }
-      });
-    },
-  }, */
   created() {
     this.sortAllOwned();
-    /*    this.countConsecutive(); */
     this.cropCharacters();
     this.removeConsecutiveDuplicates();
     this.getCharaName();
@@ -73,30 +53,12 @@ export default {
       });
       this.ownedCards = afterSort;
     },
-    /*    countConsecutive() {
-      const beforeCount = this.ownedCards;
-      console.log(beforeCount);
-      let result = '';
-      let counter = 1;
-      for (let i = 0; i < beforeCount.length; i++) {
-        if (beforeCount[i] === beforeCount[i + 1]) {
-          counter++;
-        } else {
-          result += beforeCount[i] + counter;
-          counter = 1;
-        }
-      }
-      console.log(result);
-      return result;
-    }, */
     cropCharacters() {
       const owned = this.ownedCards;
       const croppedCharacters = [];
-      /* console.log(owned); */
       owned.forEach((element) => {
         croppedCharacters.push(this.characters[element]);
       });
-      /* console.log(croppedCharacters); */
       this.displayedCards = croppedCharacters;
     },
     getCharaName() {
@@ -112,12 +74,9 @@ export default {
       const toRemove = this.displayedCards;
 
       const removedDuplicates = toRemove.filter(function (item, pos, arr) {
-        // Always keep the 0th element as there is nothing before it
-        // Then check if each element is different than the one before it
         return pos === 0 || item !== arr[pos - 1];
       });
       this.displayedCards = removedDuplicates;
-      /* document.getElementById('result').innerHTML = b.join(', '); */
     },
     getID() {
       const targetID = event.currentTarget.id;

@@ -16,7 +16,6 @@
             <p class="change-pfp-text">CHANGE</p>
           </div>
 
-          <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
           <h1 class="profile-title">{{ username }}</h1>
           <h1 id="user__edit" class="profile-title">🖉</h1>
         </div>
@@ -51,6 +50,7 @@ export default {
     ownedCharacter,
     ChangePfp,
   },
+
   data() {
     return {
       username: this.$auth.user.nickname,
@@ -59,18 +59,13 @@ export default {
       showModal: false,
     };
   },
+
   methods: {
     toggleShowModal() {
       this.showModal = !this.showModal;
       document.getElementById('profile-container').style.overflow = 'hidden';
-      /* document.getElementById('change-pfp-modal').style.overflow = 'y'; */
-      /* profile-container overflow none
-      change-pfp-modal overflow y */
     },
   },
-  /* created() {
-    console.log(user);
-  }, */
 };
 </script>
 
@@ -79,7 +74,6 @@ export default {
   --container-width: 55vw;
   --pfp-size: 120px;
   --pfp-radius: 40px;
-  /* width: 100%; */
 }
 
 #profile-container {
@@ -92,8 +86,7 @@ export default {
       rgba(13, 4, 66, 0.7),
       rgba(16, 51, 112, 0.8)
     ),
-    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
-      url('~/assets/images/backgrounds/liyueEndPg.jpg');
+    url('~/assets/images/backgrounds/liyueEndPg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -161,13 +154,10 @@ export default {
   left: 19%;
   pointer-events: none;
   transition: all 300ms ease-in-out;
-  /* top: 16%; */
-  /* left: 20%; */
 }
 
 .profile-title {
   font-size: 6rem;
-  /* line-height: 7rem; */
   font-weight: 400;
 }
 
@@ -183,8 +173,6 @@ export default {
 
 .collection-section {
   width: var(--container-width);
-  /*  
-  background: rgba(0, 0, 255, 0.329); */
   background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
   background-attachment: fixed;
@@ -209,39 +197,4 @@ export default {
   font-size: 2.5rem;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
-
-/*
-.profile-titlebox {
-  width: 55vw;
-
-  background-color: rgb(8, 36, 83);
-}
-.profile-title {
-  display: flex;
-  align-items: center;
-  font-size: 3.5rem;
-  font-weight: 400;
-  color: #f6f6f6;
-  height: 5.5rem;
-  margin: 0.5rem 1rem 0.5rem 3.5rem;
-  padding-top: 0.5rem;
-}
-.profile-details {
-  color: #fff;
-  font-size: 15rem;
-  overflow-x: auto;
-
-  --content-width: 55vw;
-  --beatmap-set-container-width: 45vw;
-  --sidebar: 25rem;
-  width: var(--content-width);
-  display: flex;
-  align-items: flex-start;
-  padding: 1.25rem 2.5rem 2.5rem 2.5rem;
-  background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* background-position: center center;
-} */
 </style>

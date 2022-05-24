@@ -245,16 +245,10 @@ export default {
 .settings__page {
   min-height: 100vh;
   height: 100%;
-  /* background-image: linear-gradient(rgba(4, 22, 54, 0.7), rgba(11, 4, 48, 0.7)),
-    url('~/assets/images/backgrounds/fleeting-colors.jpg'); 
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed; */
 }
 
 .landing {
   width: 100%;
-  /* height: calc(100vh - 9.5rem); */
 }
 
 .btn {
@@ -315,15 +309,12 @@ export default {
 .settings__container {
   display: grid;
   gap: 3rem;
-  /* align-content: center;
-  justify-content: center; */
   place-content: center;
   padding: 5rem;
 }
 
 .settings__form {
   max-width: 90vw;
-  /* display: grid; */
   gap: 3rem 6rem;
   --repeat: auto-fit;
   grid-template-columns: repeat(auto-fit, minmax(min(10ch, 100%), 35ch));
@@ -435,8 +426,6 @@ input[type='range'] {
 
 .user-form > input {
   font-size: 2.5rem;
-  /* height: initial; */
-  /* margin: 0 1rem; */
   height: 4rem;
   color: black;
 

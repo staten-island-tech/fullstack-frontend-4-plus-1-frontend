@@ -1,6 +1,5 @@
 <template>
   <div class="beatmaps__content--body">
-    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -169,8 +168,6 @@
 </template>
 
 <script>
-/* eslint-disable */
-
 export default {
   auth: false,
   data() {
@@ -189,7 +186,6 @@ export default {
       clickBack: false,
       searchQuery: null,
       id: null,
-      musicBeatmapDuration: 0,
 
       musicBeatmapDuration: 0,
       executed: false,
@@ -228,7 +224,7 @@ export default {
   },
 
   mounted() {
-    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+    this.progressAudioBar = new ProgressBar.Line('#audioProgress', {
       strokeWidth: 5,
       color: '#8C9EFF',
       duration: 10000,
@@ -326,7 +322,7 @@ export default {
     changeSongIndex(i) {
       const t = this;
       const currentIndex = t.songIndexes.indexOf(t.clickedBmSetName);
-      let newIndex =
+      const newIndex =
         (((currentIndex + i) % t.songIndexes.length) + t.songIndexes.length) %
         t.songIndexes.length;
 

@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <Nuxt />
-    <RouteChange />
   </div>
 </template>
 

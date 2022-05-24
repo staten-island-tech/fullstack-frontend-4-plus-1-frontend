@@ -1,8 +1,7 @@
 <template>
   <div>
-       <routeChange/>
     <div class="under-nav"></div>
-    
+
     <section class="landing">
       <video
         id="landing-video"
@@ -23,79 +22,50 @@
         </section>
         <section class="news home-section">
           <h1 class="news-header">!USO NEWS</h1>
-          
+
           <news-card />
         </section>
       </div>
     </section>
   </div>
-
 </template>
 
 <script>
-/* import axios from 'axios'; */
 import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 
 export default {
-    auth: false,
-  // name: 'IndexPage',
-  // middleware({ store, redirect }) {
-  //   // Automatic Redirection
-  //   return redirect('/home');
-  // },
+  auth: false,
   components: { FeatureSongCard, NewsCard },
-  /* async asyncData({ $axios }) {
-    const data = await $axios.$get('../assets/data/data.json');
-    console.log(data);
-  }, */
   data() {
     return {
       featureSongs: [],
     };
   },
-
-
-
-
   async fetch() {
     const userDataFetch = await fetch('https://usobackend.onrender.com/');
-        const userDataFetched = await userDataFetch.json();
-        
-        userDataFetched .forEach(user => {
-          this.userData.push(user)
-        });
+    const userDataFetched = await userDataFetch.json();
 
-        console.log(this.userData)
-      //  this.userDataFetch.forEach(user => {
-      //     this.userData = Object.keys(user)
-
-      //   });
+    userDataFetched.forEach((user) => {
+      this.userData.push(user);
+    });
   },
   created() {
     this.getFeatureCards();
-
   },
 
   methods: {
-  
-     auth() {
-this.$auth.loginWith('auth0')
-     },
+    auth() {
+      this.$auth.loginWith('auth0');
+    },
 
-     testEnv() {
-
-     },
+    testEnv() {},
 
     getFeatureCards: async function getFeatureCards() {
       try {
-        /* const data = await this.$axios.$get('data.json'); */
         const data = await fetch('../static/data.json');
-        console.log(data + 'fetched data');
         this.featureSongs = data.json;
-        console.log(this.featureSongs);
       } catch (error) {
-        console.log(error);
       }
     },
   },
@@ -129,7 +99,7 @@ this.$auth.loginWith('auth0')
   padding-bottom: 15px;
 }
 
-button  {
+button {
   width: 10rem;
   height: 10rem;
   font-size: 4rem;
@@ -141,29 +111,18 @@ button  {
 
 .landing {
   width: 100%;
-  /* max-width: 100%; */
 
   height: calc(100vh - 9.5rem);
-  /*   background-image: url('./assets/images/backgrounds/landing.png');
-
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; */
 }
 .home-main {
   width: 100%;
   height: auto;
   padding-bottom: 5rem;
-  /* height: calc(100vh - 9.5rem); */
-  /*   background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); */
   background-image: linear-gradient(
       rgba(16, 51, 112, 0.8),
       rgba(16, 51, 112, 0.7)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
-  /*  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; */
   background-attachment: fixed;
 }
 .home-content-container {
@@ -183,7 +142,3 @@ button  {
   padding: 7rem 0 0 0;
 }
 </style>
-
-
-
-
