@@ -23,7 +23,7 @@
         <div class="team__subContainer">
 
           <div class="team__members">
-            <img src="~/assets/images/navigation/nav-avatar.png" alt="">
+            <img src="~/assets/images/pfps/yuji.jpg" alt="">
               <div class="name">wiichen</div>
               <div class="r__name">wilson w.</div>
               <div class="college">stony brook university '26</div>
