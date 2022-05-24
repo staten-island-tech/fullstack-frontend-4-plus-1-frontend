@@ -1,6 +1,5 @@
 <template>
   <div id="game-index">
-    <routeChange />
     <div v-if="!gameEnded" id="game-page-container">
       <div
         v-if="beatmapData.metadata"
@@ -12,7 +11,7 @@
       <button
         v-if="areAllLoaded && !started"
         class="game-start-button"
-        @click="$refs.gameCanvas.startGame()"
+        @click="$refs.gameCanvas.startGame(), (started = true)"
       >
         START
       </button>
@@ -51,7 +50,6 @@
         </h1>
       </div>
 
-      <!-- <div class="game-pb-container"> -->
       <div class="game-pb-container">
         <div id="game-pb"></div>
       </div>
@@ -59,16 +57,16 @@
       <div class="game-pb-vol-container">
         <div id="game-pb-vol" :style="{ opacity: opacity }"></div>
 
-        <div class="vol-container">
+        <!-- <div class="vol-container">
           <button
-            v-if="areAllLoaded && started && songLoaded"
+            v-if="areAllLoaded && started"
             :style="{ opacity: opacity }"
             class="game-mute-button"
             @click="muteButton"
           >
             MUTE
           </button>
-        </div>
+        </div> -->
       </div>
 
       <!-- </div> -->
@@ -101,7 +99,6 @@ import GameCanvas from '../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas },
-  layout: 'NavBar',
 
   data() {
     return {
@@ -223,15 +220,6 @@ export default {
       // t.progressBarVol.animate(t.pbVolProgress);
 
       t.areAllLoaded = true;
-    },
-    startGame() {
-      const t = this;
-      console.log(this.$store.state.songDuration);
-      t.progressBar.animate(1, {
-        duration: this.$store.state.songDuration,
-      });
-
-      t.started = true;
     },
     endGame(totalHits, maxCombo) {
       const t = this;

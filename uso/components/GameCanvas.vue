@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      dy: 10,
+      dy: 8,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -370,23 +370,18 @@ export default {
     startGame() {
       const t = this;
 
+      let testTime = 0;
+      setInterval(() => {
+        console.log(`${testTime} milliseconds passed`);
+        testTime += 300;
+      }, 300);
+
       t.music.play();
       const durr = Math.round(t.music.duration()) * 1000;
-      this.$store.commit('currSongDuration', durr),
-        console.log((t.started = true));
+      this.$store.commit('currSongDuration', durr);
 
       const firstNote = t.notes[0];
       const lastNote = t.notes[t.notes.length - 1];
-
-      console.log(firstNote, lastNote);
-      console.log(t.beatmapIntro);
-      console.log(
-        (lastNote.endTime ? lastNote.endTime : lastNote.time) -
-          firstNote.time +
-          (1000 * t.stageHeight * t.hitPercent + t.radius) /
-            (t.dy * t.stageFPS) +
-          4000
-      );
 
       setTimeout(() => {
         this.$emit('endGameParent', this.totalHits, this.maxCombo);
@@ -655,6 +650,8 @@ export default {
 
             t.ss.columnContainers[this.i].addChild(this);
             t.PIXIapp.ticker.add(this.animateDrop, this);
+
+            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 
