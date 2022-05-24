@@ -33,13 +33,20 @@
             card-route="beatmaps"
             card-img="/beatmaps/689134/BG.jpg"
           />
-          <!-- <feature-song-card
+          <feature-song-card
             card-title="Goodbye Moonmen"
             card-artist="The Living Tombstone feat. Fart"
             card-route="beatmaps"
             card-img="/beatmaps/1249137/mJGRHh3.jpg"
-          /> -->
+          />
           <feature-song-card
+            card-title="Harumachi Clover (TV Size)"
+            card-artist="Hanasaka Yui (CV: M.A.O)"
+            card-route="beatmaps"
+            card-img="/beatmaps/682518/Harumachi%20bg1.jpg"
+          />
+
+          <!-- <feature-song-card
             card-title="Yoru ni Kakeru"
             card-artist="YOASOBI"
             card-route="/beatmaps"
@@ -61,7 +68,7 @@
             card-artist="Mori Calliope"
             card-route="/beatmaps"
             card-img="https://images.alphacoders.com/111/thumb-1920-1113744.png"
-          />
+          /> -->
         </section>
         <section class="news home-section">
           <h1 class="news-header">!uso News</h1>
@@ -142,7 +149,7 @@ export default {
   // },
   created() {
     this.getFeatureCards();
-    console.log(process.env)
+    console.log(process.env);
     /* this.getFeatureCards(); */
   },
 

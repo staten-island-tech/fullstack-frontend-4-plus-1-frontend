@@ -91,6 +91,8 @@ export default {
     port: 8080,
   },
 
+  serverMiddleware: ['~/middleware/redirects.js'],
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 };
