@@ -104,28 +104,6 @@ export default {
     };
   },
 
-  async fetch() {
-    // http://localhost:8000/6289babceda0db001153a8d8
-    // `http://localhost:8000/${getUserId}`
-    const token = await this.$auth.strategy.token.get();
-    // const getUserId = this.userdata.sub.replace('auth0|', '');
-    // console.log(getUserId);
-    const userDataFetch = await fetch(
-      'http://localhost:8000/6289babceda0db001153a8d8',
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    const userDataFetched = await userDataFetch.json();
-    // userDataFetched.forEach((user) => {
-    //   this.userData.push(user);
-    // });
-
-    console.log(userDataFetched);
-  },
-
   // async fetch() {
   //   const userDataFetch = await fetch('https://usobackend.onrender.com/');
   //   const userDataFetched = await userDataFetch.json();
@@ -142,7 +120,7 @@ export default {
   // },
   created() {
     this.getFeatureCards();
-    console.log(process.env)
+    console.log(process.env);
     /* this.getFeatureCards(); */
   },
 

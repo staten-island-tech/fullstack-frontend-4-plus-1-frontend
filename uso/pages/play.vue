@@ -101,7 +101,7 @@ import GameCanvas from '../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas },
-  layout: 'nonav',
+  layout: 'NavBar',
 
   data() {
     return {
@@ -148,7 +148,7 @@ export default {
   destroyed() {
     const t = this;
     // find an alternative
-    window.removeEventListener('wheel', this.onScroll);
+    // window.removeEventListener('wheel', this.onScroll);
     document.removeEventListener('keydown', function (e) {
       if (e.repeat) return;
 
@@ -171,8 +171,17 @@ export default {
       const t = this;
 
       Howler.volume(1);
+      t.progressBar = new ProgressBar.Circle('#game-pb', {
+        strokeWidth: 50,
+        easing: 'easeInOut',
+        color: '#FFEA82',
+        trailColor: '#eee',
+        trailWidth: 50,
+        // svgStyle: null,
+        // duration: t.songDuration,
+      });
 
-      window.addEventListener('wheel', this.onScroll);
+      // window.addEventListener('wheel', this.onScroll);
       document.addEventListener('keydown', function (e) {
         if (e.repeat) return;
 
@@ -185,52 +194,44 @@ export default {
             PROGRESS BAR
             =============== */
 
-      t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
-        color: '#FCB03C',
-        // This has to be the same size as the maximum width to
-        // prevent clipping
-        strokeWidth: 7,
-        easing: 'easeInOut',
-        trailColor: '#eee',
-        trailWidth: 7,
-        duration: 1400,
+      // t.progressBarVol = new ProgressBar.Circle('#game-pb-vol', {
+      //   color: '#FCB03C',
+      //   // This has to be the same size as the maximum width to
+      //   // prevent clipping
+      //   strokeWidth: 7,
+      //   easing: 'easeInOut',
+      //   trailColor: '#eee',
+      //   trailWidth: 7,
+      //   duration: 1400,
 
-        from: { color: '#aaa', width: 8 },
-        to: { color: '#333', width: 8 },
-        // Set default step function for all animate calls
-        step: function (state, circle) {
-          circle.path.setAttribute('stroke', state.color);
-          circle.path.setAttribute('stroke-width', state.width);
+      //   from: { color: '#aaa', width: 8 },
+      //   to: { color: '#333', width: 8 },
+      //   // Set default step function for all animate calls
+      //   step: function (state, circle) {
+      //     circle.path.setAttribute('stroke', state.color);
+      //     circle.path.setAttribute('stroke-width', state.width);
 
-          const value = Math.round(circle.value() * 100);
-          if (value === 0) {
-            circle.setText('Volume');
-          } else {
-            circle.setText(value);
-          }
-        },
-      });
+      //     const value = Math.round(circle.value() * 100);
+      //     if (value === 0) {
+      //       circle.setText('Volume');
+      //     } else {
+      //       circle.setText(value);
+      //     }
+      //   },
+      // });
 
-      t.progressBarVol.animate(t.pbVolProgress);
+      // t.progressBarVol.animate(t.pbVolProgress);
 
       t.areAllLoaded = true;
     },
     startGame() {
       const t = this;
-
-      t.started = true;
-
-      t.progressBar = new ProgressBar.Circle('#game-pb', {
-        color: '#FCB03C',
-        strokeWidth: 50,
-        trailColor: '#D3D3D3',
-        duration: t.songDuration,
-        text: {
-          value: '0',
-        },
+      console.log(this.$store.state.songDuration);
+      t.progressBar.animate(1, {
+        duration: this.$store.state.songDuration,
       });
 
-      t.progressBar.animate(1);
+      t.started = true;
     },
     endGame(totalHits, maxCombo) {
       const t = this;
@@ -244,16 +245,16 @@ export default {
       this.paused = !this.paused;
       this.$refs.gameCanvas.onPauseKey(this.paused);
     },
-    onScroll(e) {
-      this.scale += e.deltaY * -0.0002;
-      // Restrict scale
-      this.scale = Math.min(Math.max(0, this.scale), 1);
-      // Apply scale transform
-      Howler.volume(this.scale);
-      this.pbVolProgress = Math.round(100 * this.scale) / 100;
+    // onScroll(e) {
+    //   this.scale += e.deltaY * -0.0002;
+    //   // Restrict scale
+    //   this.scale = Math.min(Math.max(0, this.scale), 1);
+    //   // Apply scale transform
+    //   Howler.volume(this.scale);
+    //   this.pbVolProgress = Math.round(100 * this.scale) / 100;
 
-      this.progressBarVol.set(this.pbVolProgress);
-    },
+    //   this.progressBarVol.set(this.pbVolProgress);
+    // },
     muteButton() {
       if (this.music.mute() === false) {
         this.music.mute(true);
@@ -419,16 +420,18 @@ export default {
   width: 4.3rem;
   top: 0rem;
   right: 0;
-  /* display: flex;
+  height: 5rem;
+  width: 5rem;
+  display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: flex-end;
-  /* font-size: 2rem; */
-  /* color: #fff;
-  padding: 1rem; */
+  font-size: 2rem;
+  color: #fff;
+  padding: 1rem;
 }
 
-.game-pb-vol-container {
+/* .game-pb-vol-container {
   height: 50vh;
   width: 20vw;
   display: flex;
@@ -436,21 +439,21 @@ export default {
   justify-content: space-evenly;
   flex-direction: column;
   padding-top: 3rem;
-}
+} */
 
-#game-pb-vol {
+/* #game-pb-vol {
   position: relative;
   width: 80%;
   font-family: 'Raleway', Helvetica, sans-serif;
   font-size: 5rem;
-}
+} */
 
-#game-pb-vol > div {
+/* #game-pb-vol > div {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
+} */
 
 .game-mute-button {
   color: black;

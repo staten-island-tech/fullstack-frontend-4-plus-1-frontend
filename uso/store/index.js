@@ -7,6 +7,7 @@ export const state = () => ({
     scrollSpeed: 10,
     username: '',
   },
+  songDuration: null,
   beatmapData: {
     general: {
       AudioFilename: 'Flower Dance.mp3',
@@ -33445,14 +33446,33 @@ export const mutations = {
     state.beatmapData = data;
   },
 
-  setSettings(state, masterVol, musicVol, hitsoundsVol, scrollSpeed, username) {
-    state.userSettings.masterVolume = masterVol;
-    state.userSettings.musicVolume = musicVol;
-    state.userSettings.hitSoundsVolume = hitsoundsVol;
-    state.userSettings.scrollSpeed = scrollSpeed;
-    state.userSettings.username = username;
+  // setSettings(state, masterVol, musicVol, hitsoundsVol, scrollSpeed, username) {
+  //   state.userSettings.masterVolume = masterVol;
+  //   state.userSettings.musicVolume = musicVol;
+  //   state.userSettings.hitSoundsVolume = hitsoundsVol;
+  //   state.userSettings.scrollSpeed = scrollSpeed;
+  //   state.userSettings.username = username;
+  // },
+  setSettings(state, userDataFetch) {
+    state.userSettings.masterVolume = userDataFetch;
+  },
+  setSettings2(state, userDataFetch) {
+    state.userSettings.musicVolume = userDataFetch;
+  },
+  setSettings3(state, userDataFetch) {
+    state.userSettings.hitSoundsVolume = userDataFetch;
+  },
+  setSettings4(state, userDataFetch) {
+    state.userSettings.scrollSpeed = userDataFetch;
+  },
+  setSettings5(state, userDataFetch) {
+    state.userSettings.username = userDataFetch;
   },
 
+  currSongDuration(state, songDur) {
+    state.songDuration = songDur;
+  },
+ 
   nuxtRoute(state) {
     state.pageData.currentPage = this.$route.name;
   },

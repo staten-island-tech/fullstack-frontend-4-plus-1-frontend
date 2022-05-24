@@ -15,17 +15,31 @@
       ></video>
     </section>
 
-    <button class="btn" @click="
-              $store.commit(
-                'setSettings',
-                masterVolume,
-                musicVolume,
-                hitSoundsVolume,
-                scrollSpeed,
-                username
-              ),
-                patch()
-            ">update</button>
+    <button
+      class="btn"
+      @click="
+        $store.commit('setSettings', masterVolume),
+          $store.commit(
+            'setSettings2',
+
+            musicVolume
+          ),
+          $store.commit(
+            'setSettings3',
+
+            hitSoundsVolume
+          ),
+          $store.commit(
+            'setSettings4',
+
+            scrollSpeed
+          ),
+          $store.commit('setSettings5', username),
+          patch()
+      "
+    >
+      update
+    </button>
 
     <div class="settings__container">
       <h1 id="settings__title">settings.</h1>
@@ -37,7 +51,6 @@
           </header>
 
           <fieldset class="settings__field">
-
             <div id="fieldset__user" class="fieldset-item">
               <div class="username-container">
                 <h1 class="username">ktestusername</h1>
@@ -163,7 +176,6 @@
 </template>
 
 <script>
-
 export default {
   components: {},
   data() {
@@ -220,7 +232,6 @@ export default {
 </script>
 
 <style scoped>
-
 * {
   font-family: 'Dongle', sans-serif;
   margin: 0;
@@ -265,7 +276,7 @@ export default {
 }
 
 .btn:active {
-  transform: scale(.8);
+  transform: scale(0.8);
   background: #14127c;
   transform: translate(17rem, 16.75rem);
 }
@@ -443,5 +454,4 @@ input[type='range'] {
   height: 3rem;
   padding: 0.25rem 0 0 1.25rem;
 }
-
 </style>

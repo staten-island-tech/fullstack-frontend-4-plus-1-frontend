@@ -371,8 +371,9 @@ export default {
       const t = this;
 
       t.music.play();
-
-      t.started = true;
+      const durr = Math.round(t.music.duration()) * 1000;
+      this.$store.commit('currSongDuration', durr),
+        console.log((t.started = true));
 
       const firstNote = t.notes[0];
       const lastNote = t.notes[t.notes.length - 1];

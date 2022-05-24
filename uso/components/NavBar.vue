@@ -1,5 +1,5 @@
 <template>
-  <div class="uso__navbar--body">
+  <div v-if="onPlayPage" class="uso__navbar--body">
     <nav class="uso__navbar">
       <div class="uso__logolinks--container">
         <nuxt-link to="/home" class="uso__logo">
@@ -159,9 +159,10 @@ export default {
   name: 'NavBar',
   data() {
     return {
+      onPlayPage: true,
       loginSatus: this.$store.state.auth.loggedIn,
-      username: this.$auth.user.nickname,
-      userData: this.$auth.user,
+      // username: this.$auth.user.nickname,
+      // userData: this.$auth.user,
     };
   },
 
@@ -172,65 +173,116 @@ export default {
         // the `return` will end the execution and not go further
         Howler.stop();
       }
+      if (to.name === 'play') {
+        this.onPlayPage = false;
+      } else {
+        this.onPlayPage = true;
+      }
     },
+    // loginSatus() {
+    //   if (this.loginSatus) {
+    //     this.fetchNewUser();
+    //   }
+    // },
   },
 
   mounted() {
-    document
-      .querySelector('#show-login')
-      .addEventListener('click', function () {
-        document.querySelector('.login-popup').classList.add('active');
-      });
-
-    document
-      .querySelector('.login-popup .close__popup-btn')
-      .addEventListener('click', function () {
-        document.querySelector('.login-popup').classList.remove('active');
-      });
-
-    const animateNav = () => {
-      const navBurger = document.querySelector('.uso__navburger');
-      const navLinks = document.querySelector('.uso__navbar--links');
-      const navbarLinks = document.querySelectorAll('.uso__navbar--links li');
-
-      navBurger.addEventListener('click', () => {
-        navLinks.classList.toggle('nav-active');
-
-        navbarLinks.forEach((link, index) => {
-          if (link.style.animation) {
-            link.style.animation = '';
-          } else {
-            link.style.animation = `navLinkFade 0.5s ease forwards ${
-              index / 7 + 1.5
-            }s`;
-          }
+    if (this.loginSatus) {
+      this.fetchNewUser();
+    }
+    if (this.onPlayPage === true) {
+      document
+        .querySelector('#show-login')
+        .addEventListener('click', function () {
+          document.querySelector('.login-popup').classList.add('active');
         });
 
-        navBurger.classList.toggle('toggle');
-      });
-    };
+      document
+        .querySelector('.login-popup .close__popup-btn')
+        .addEventListener('click', function () {
+          document.querySelector('.login-popup').classList.remove('active');
+        });
 
-    animateNav();
+      const animateNav = () => {
+        const navBurger = document.querySelector('.uso__navburger');
+        const navLinks = document.querySelector('.uso__navbar--links');
+        const navbarLinks = document.querySelectorAll('.uso__navbar--links li');
+
+        navBurger.addEventListener('click', () => {
+          navLinks.classList.toggle('nav-active');
+
+          navbarLinks.forEach((link, index) => {
+            if (link.style.animation) {
+              link.style.animation = '';
+            } else {
+              link.style.animation = `navLinkFade 0.5s ease forwards ${
+                index / 7 + 1.5
+              }s`;
+            }
+          });
+
+          navBurger.classList.toggle('toggle');
+        });
+      };
+
+      animateNav();
+    }
   },
 
   methods: {
     async login() {
       await this.$auth.loginWith('auth0');
     },
-    newUser() {
+    // newUser() {
+    //   const getUserId = this.$auth.user.sub.replace('auth0|', '');
+    //   fetch(`http://localhost:8000/${getUserId}`, {
+    //     method: 'PATCH',
+    //     body: JSON.stringify({
+    //       username: 'ilostcddrip',
+    //       leaderBoardPos: '20',
+    //     }),
+    //     headers: {
+    //       'Content-type': 'application/json; charset=UTF-8',
+    //     },
+    //   })
+    //     .then((response) => response.json())
+    //     .then((json) => console.log(json));
+    // },
+    async fetchNewUser() {
       const getUserId = this.$auth.user.sub.replace('auth0|', '');
-      fetch(`http://localhost:8000/api/update/${getUserId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          username: 'ilostcddrip',
-          leaderBoardPos: '20',
-        }),
+      // http://localhost:8000/6289babceda0db001153a8d8
+      // `http://localhost:8000/${getUserId}`
+      const token = await this.$auth.strategy.token.get();
+      // const getUserId = this.userdata.sub.replace('auth0|', '');
+      // console.log(getUserId);
+      const userDataFetch = await fetch(`http://localhost:8000/${getUserId}`, {
         headers: {
-          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: token,
         },
-      })
-        .then((response) => response.json())
-        .then((json) => console.log(json));
+      });
+      const userDataFetched = await userDataFetch.json();
+      // userDataFetched.forEach((user) => {
+      //   this.userData.push(user);
+      // });
+      console.log(userDataFetched);
+      // this.$store.commit(
+      //   'setSettings',
+      //   userDataFetched.volSettings.master,
+      //   userDataFetched.volSettings.music,
+      //   userDataFetched.volSettings.hitSound,
+      //   userDataFetched.gameSettings.scrollSpeed,
+      //   userDataFetched.userSettings.username
+      // );
+
+      this.$store.commit('setSettings', userDataFetched.volSettings.master);
+      this.$store.commit('setSettings2', userDataFetched.volSettings.music);
+      this.$store.commit('setSettings3', userDataFetched.volSettings.hitSound);
+      this.$store.commit(
+        'setSettings4',
+        userDataFetched.gameSettings.scrollSpeed
+      );
+      this.$store.commit('setSettings5', userDataFetched.userSettings.username);
+      console.log(this.$store.state.userSettings.masterVolume);
     },
     async logout() {
       await this.$auth.logout();
