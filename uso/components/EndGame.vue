@@ -97,49 +97,70 @@ export default {
   },
   data() {
     return {
+      user: null,
       grade: null,
       userdata: this.$auth.user,
     };
   },
   created() {
     const t = this;
+    t.fetchUser();
     console.log(t.stats);
+
     if (t.stats.accuracy === 1) t.grade = 'SS';
     else if (t.stats.accuracy > 0.95) t.grade = 'S';
     else if (t.stats.accuracy > 0.9) t.grade = 'A';
     else if (t.stats.accuracy > 0.8) t.grade = 'B';
     else if (t.stats.accuracy > 0.7) t.grade = 'C';
     else t.grade = 'D';
+
     this.patch();
   },
 
   methods: {
+    async fetchUser() {
+      const getUserId = this.$auth.user.sub.replace('auth0|', '');
+      // http://localhost:8000/6289babceda0db001153a8d8
+      // `http://localhost:8000/${getUserId}`
+      const token = await this.$auth.strategy.token.get();
+      // const getUserId = this.userdata.sub.replace('auth0|', '');
+      // console.log(getUserId);
+      const userDataFetch = await fetch(`http://localhost:8000/${getUserId}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const userDataFetched = await userDataFetch.json();
+      this.user = userDataFetched;
+    },
     async patch() {
-      const getUserId = this.userdata.sub.replace('auth0|', '');
+      if (this.user.gameData.performance < this.stats.score) {
+        const getUserId = this.userdata.sub.replace('auth0|', '');
 
-      const pref = Math.round(this.stats.score);
+        const pref = Math.round(this.stats.score);
 
-      const acc = Math.round(this.stats.accuracy * 1000) / 10;
-      const maxcombo = this.stats.maxCombo;
-      try {
-        const token = await this.$auth.strategy.token.get();
-        fetch(`http://localhost:8000/update/${getUserId}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            gameData: {
-              playCount: 1,
-              performance: pref,
-              accuracy: acc,
-              maxCombo: maxcombo,
+        const acc = Math.round(this.stats.accuracy * 1000) / 10;
+        const maxcombo = this.stats.maxCombo;
+        try {
+          const token = await this.$auth.strategy.token.get();
+          fetch(`http://localhost:8000/update/${getUserId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              gameData: {
+                playCount: 1,
+                performance: pref,
+                accuracy: acc,
+                maxCombo: maxcombo,
+              },
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: token,
             },
-          }),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-            Authorization: token,
-          },
-        });
-      } catch (error) {
-        console.log(error);
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
   },

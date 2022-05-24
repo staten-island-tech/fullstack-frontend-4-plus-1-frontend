@@ -40,37 +40,37 @@
                   #{{ user.leaderBoardPos }}
                 </td>
                 <td class="lb__rankingTable__column">
-                  <div class="lb__user">{{ user.name }}</div>
+                  <div class="lb__user">{{ user.userSettings.username }}</div>
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  {{ user.accuracy }}%
+                  {{ user.gameData.accuracy }}%
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  {{ user.playCount }}
+                  {{ user.gameData.playCount }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--focused"
                 >
-                  {{ user.performance }}
+                  {{ user.gameData.performance }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  {{ user.SS }}
+                  {{ user.gameData.SS }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  {{ user.S }}
+                  {{ user.gameData.S }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  {{ user.A }}
+                  {{ user.gameData.A }}
                 </td>
               </tr>
             </tbody>
@@ -86,14 +86,33 @@ export default {
   auth: false,
   data() {
     return {
-      userDataFetch: {},
+      userDataFetch: [],
       userData: [],
     };
   },
 
-  created: {},
+  created() {
+    this.fetchNewUser();
+  },
 
-  methods: {},
+  methods: {
+    async fetchNewUser() {
+      // const getUserId = this.$auth.user.sub.replace('auth0|', '');
+      // http://localhost:8000/6289babceda0db001153a8d8
+      // `http://localhost:8000/${getUserId}`
+      const token = await this.$auth.strategy.token.get();
+      // const getUserId = this.userdata.sub.replace('auth0|', '');
+      // console.log(getUserId);
+      const userDataFetch = await fetch('http://localhost:8000/', {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const userDataFetched = await userDataFetch.json();
+      this.userData = userDataFetched;
+      console.log(this.userData);
+    },
+  },
 };
 </script>
 

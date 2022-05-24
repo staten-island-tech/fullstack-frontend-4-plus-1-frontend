@@ -883,12 +883,18 @@ export default {
         }
       }
 
-      for (const note of t.notesCol) {
-        new Note(note);
+      for (let index = 0; index < t.notesCol.length; index++) {
+        new Note(t.notesCol[index]);
       }
-      for (const note of t.sliderCol) {
-        new Slider(note);
+      for (let index = 0; index < t.sliderCol.length; index++) {
+        new Slider(t.sliderCol[index]);
       }
+      // for (const note of t.notesCol) {
+      //   new Note(note);
+      // }
+      // for (const note of t.sliderCol) {
+      //   new Slider(note);
+      // }
 
       //       for (const note of t.notesCol) {
       //   new Note(note)

@@ -264,7 +264,9 @@ export default {
       // userDataFetched.forEach((user) => {
       //   this.userData.push(user);
       // });
-      console.log(userDataFetched);
+
+      // const gameData = userDataFetched.gameData;
+      // console.log(gameData);
       // this.$store.commit(
       //   'setSettings',
       //   userDataFetched.volSettings.master,
@@ -282,7 +284,15 @@ export default {
         userDataFetched.gameSettings.scrollSpeed
       );
       this.$store.commit('setSettings5', userDataFetched.userSettings.username);
-      console.log(this.$store.state.userSettings.masterVolume);
+
+      // this.$store.commit(' gameData', userDataFetched.gameData.A);
+      // this.$store.commit(' gameData2', userDataFetched.gameData.S);
+      // this.$store.commit(' gameData3', userDataFetched.gameData.SS);
+      // this.$store.commit(' gameData4', userDataFetched.gameData.accuracy);
+      // this.$store.commit(' gameData5', userDataFetched.gameData.maxCombo);
+      // this.$store.commit(' gameData6', userDataFetched.gameData.performance);
+      // this.$store.commit(' gameData7', userDataFetched.gameData.playCount);
+      console.log(this.$store.state.gameData.A);
     },
     async logout() {
       await this.$auth.logout();
