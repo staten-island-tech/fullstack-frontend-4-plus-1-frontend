@@ -1,5 +1,5 @@
 <template>
-  <div id="game-index">
+  <div v-if="loaded.beatmapData" id="game-index">
     <div v-if="!gameEnded" id="game-page-container">
       <div
         v-if="beatmapData.metadata"
@@ -90,24 +90,26 @@
       }"
     />
   </div>
+  <Play-Beatmap-Not-Found v-else-if="beatmapNotFoundError" />
 </template>
 
 <script>
-/* eslint-disable */
-
-import GameCanvas from '../components/GameCanvas.vue';
+import PlayBeatmapNotFound from '../../../components/errors/playBeatmapNotFound.vue';
+import GameCanvas from '../../../components/GameCanvas.vue';
 
 export default {
-  components: { GameCanvas },
+  components: { GameCanvas, PlayBeatmapNotFound },
 
   data() {
     return {
       loaded: {
         progressbar: false,
+        beatmapData: false,
       },
       areAllLoaded: false,
       started: false,
 
+      beatmapNotFoundError: false,
       beatmapData: {},
 
       score: 0,
@@ -131,6 +133,18 @@ export default {
     };
   },
 
+  async fetch() {
+    const promise = await fetch(
+      `/beatmaps/${this.beatmapSetID}/${this.beatmapID}.json`
+    );
+
+    this.beatmapData = await promise.json();
+
+    // CHECK IF EMPTY
+    if (!Object.keys(this.beatmapData).length) this.beatmapNotFoundError = true;
+    else this.loaded.beatmapData = true;
+  },
+
   head() {
     return {
       script: [
@@ -140,6 +154,26 @@ export default {
         },
       ],
     };
+  },
+
+  computed: {
+    beatmapSetID() {
+      return this.$route.params.beatmapSetID;
+    },
+    beatmapID() {
+      return this.$route.params.beatmapID;
+    },
+  },
+
+  watch: {
+    loaded: {
+      handler(newValue, oldValue) {
+        // If ANY of the boolean values read false, the all scripts are NOT loaded.
+        // If NO boolean values read false, then all scritps are loaded.
+        if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
+      },
+      deep: true,
+    },
   },
 
   destroyed() {
@@ -153,16 +187,6 @@ export default {
     });
   },
 
-  watch: {
-    loaded: {
-      handler(newValue, oldValue) {
-        // If ANY of the boolean values read false, the all scripts are NOT loaded.
-        // If NO boolean values read false, then all scritps are loaded.
-        if (!Object.values(this.loaded).some((bool) => !bool)) this.onLoad();
-      },
-      deep: true,
-    },
-  },
   methods: {
     onLoad() {
       const t = this;
@@ -185,7 +209,7 @@ export default {
         if (e.key.toUpperCase() === t.pauseKey) t.onPauseKey();
       });
 
-      t.beatmapData = t.$store.state.beatmapData;
+      // t.beatmapData = t.$store.state.beatmapData;
 
       /* ===============
             PROGRESS BAR

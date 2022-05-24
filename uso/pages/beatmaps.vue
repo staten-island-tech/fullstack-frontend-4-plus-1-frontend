@@ -133,13 +133,12 @@
                     `${clickedBmSetName}`
                   ]"
                   :key="index"
-                  @click="$store.commit('setBeatmap', bmDifficulty)"
-                  @mouseover="$store.commit('setBeatmap', bmDifficulty)"
                 >
                   <th>
-                    <nuxt-link :to="`/play`">{{
-                      bmDifficulty.metadata.Version
-                    }}</nuxt-link>
+                    <nuxt-link
+                      :to="`/play/${bmDifficulty.metadata.BeatmapSetID}/${bmDifficulty.metadata.BeatmapID}`"
+                      >{{ bmDifficulty.metadata.Version }}</nuxt-link
+                    >
                   </th>
 
                   <th>{{ bmDifficulty.columns }}K</th>
