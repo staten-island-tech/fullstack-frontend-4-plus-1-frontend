@@ -23,7 +23,7 @@
             >
           </li>
           <li>
-            <nuxt-link to="/aboutUs" class="uso__links">about</nuxt-link>
+            <nuxt-link to="/aboutUs" class="uso__links">team</nuxt-link>
           </li>
           <li>
             <nuxt-link to="/help" class="uso__links">help</nuxt-link>
@@ -65,7 +65,7 @@
             ></button>
 
             <div class="login-container">
-              <div class="login-popup">
+              <div id="modal__popup" class="login-popup">
                 <div class="close__popup-btn">&times;</div>
 
                 <div class="user-form">
@@ -73,7 +73,7 @@
                     sign in to proceed...
                   </h2>
                   <h2 v-else id="signEd-in" class="user-sign-in">
-                    hi, {{ username }}! ~
+                    hi, {{ username }}~!
                   </h2>
 
                   <div id="form__sign-in" class="form-element">
@@ -183,6 +183,7 @@ export default {
     if (this.loginSatus) {
       this.fetchNewUser();
     }
+
     if (this.onPlayPage === true) {
       document
         .querySelector('#show-login')

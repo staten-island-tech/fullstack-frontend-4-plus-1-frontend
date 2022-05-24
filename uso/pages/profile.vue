@@ -3,34 +3,37 @@
     <div class="under-nav"></div>
 
     <div id="profile-body">
-      <div class="profile-container">
+      <div id="profile-container">
         <div class="cover-photo"></div>
 
         <div class="profile-details">
           <div class="profile-picture-div">
-          <img 
-          :src="user[0].image"
-            class="profile-picture"
-            @click="toggleShowModal()"
-          /> 
-          <p class="change-pfp-text">CHANGE</p>
-         
+            <img
+              :src="user[0].image"
+              class="profile-picture"
+              @click="toggleShowModal()"
+            />
+            <p class="change-pfp-text">CHANGE</p>
           </div>
-      
-            <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
-            <h1 class="profile-title">{{ username }}</h1>
-            <h1 id="user__edit" class="profile-title">🖉</h1>
-     
+
+          <!-- <h1 class="profile-title">{{user[0].username}}</h1> -->
+          <h1 class="profile-title">{{ username }}</h1>
+          <h1 id="user__edit" class="profile-title">🖉</h1>
         </div>
         <div class="profile-description">
-       <p class="description-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda, adipisci libero est exercitationem porro harum quasi quisquam, sit modi esse cumque quas consectetur necessitatibus. Praesentium repudiandae aliquid pariatur. Vitae, at!</p>
+          <p class="description-text">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Assumenda,
+            adipisci libero est exercitationem porro harum quasi quisquam, sit
+            modi esse cumque quas consectetur necessitatibus. Praesentium
+            repudiandae aliquid pariatur. Vitae, at!
+          </p>
 
-  <change-pfp  :show-modal='showModal' :all-owned="user[0].characters" />
-     </div>
-  <section class="collection-section">
-     <h1 id="collection-header">Collection</h1>
-    <owned-character :all-owned="user[0].characters" />
-  </section>
+          <change-pfp :show-modal="showModal" :all-owned="user[0].characters" />
+        </div>
+        <section class="collection-section">
+          <h1 id="collection-header">Collection</h1>
+          <owned-character :all-owned="user[0].characters" />
+        </section>
       </div>
     </div>
   </div>
@@ -43,28 +46,28 @@ import ownedCharacter from '../components/OwnedCharacter.vue';
 import user from '~/static/user.json';
 import characters from '~/static/characters.json';
 
-
-
 export default {
   components: {
     ownedCharacter,
     ChangePfp,
-
   },
   data() {
     return {
       username: this.$auth.user.nickname,
       user,
       characters,
-      showModal: false
+      showModal: false,
     };
   },
   methods: {
-    toggleShowModal () {
+    toggleShowModal() {
       this.showModal = !this.showModal;
-      
-    }
-  }
+      document.getElementById('profile-container').style.overflow = 'hidden';
+      /* document.getElementById('change-pfp-modal').style.overflow = 'y'; */
+      /* profile-container overflow none
+      change-pfp-modal overflow y */
+    },
+  },
   /* created() {
     console.log(user);
   }, */
@@ -72,7 +75,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
 #profile-body {
   --container-width: 55vw;
   --pfp-size: 120px;
@@ -80,7 +82,7 @@ export default {
   /* width: 100%; */
 }
 
-.profile-container {
+#profile-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,8 +122,8 @@ export default {
   background-position: center center;
 
   display: flex;
-    align-items: center;
-    padding: 0 5rem 0 5rem;
+  align-items: center;
+  padding: 0 5rem 0 5rem;
 }
 
 .profile-picture-div {
@@ -136,7 +138,8 @@ export default {
   align-self: flex-end;
   transition: all 300ms ease-in-out;
 
-  margin: -4rem 2.4rem 1.5rem 0;cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
+  margin: -4rem 2.4rem 1.5rem 0;
+  cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
 }
 
@@ -158,44 +161,47 @@ export default {
   left: 19%;
   pointer-events: none;
   transition: all 300ms ease-in-out;
-        /* top: 16%; */
-        /* left: 20%; */
+  /* top: 16%; */
+  /* left: 20%; */
 }
 
 .profile-title {
   font-size: 6rem;
-    /* line-height: 7rem; */
-    font-weight: 400;
+  /* line-height: 7rem; */
+  font-weight: 400;
 }
 
 .profile-description {
   width: var(--container-width);
   padding: 2.5rem 6rem;
-  background-image: linear-gradient(rgba(13, 4, 66, 0.466), rgba(13, 4, 66, 0.432)),
+  background-image: linear-gradient(
+      rgba(13, 4, 66, 0.466),
+      rgba(13, 4, 66, 0.432)
+    ),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
 }
 
 .collection-section {
   width: var(--container-width);
-/*  
+  /*  
   background: rgba(0, 0, 255, 0.329); */
   background-image: linear-gradient(rgba(13, 4, 66, 0.7), rgba(13, 4, 66, 0.7)),
     url('~/assets/images/backgrounds/fleeting-colors.jpg');
-    background-attachment: fixed;
-    padding: 1rem 0;
+  background-attachment: fixed;
+  padding: 1rem 0;
   margin-bottom: 4rem;
 
   display: flex;
-  flex-direction: row ;
+  flex-direction: row;
   flex-wrap: wrap;
 }
 
 #collection-header {
-align-self: center;
-    font-size: 5rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    margin: auto;
+  align-self: center;
+  font-size: 5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin: auto;
 }
 
 #user__edit {

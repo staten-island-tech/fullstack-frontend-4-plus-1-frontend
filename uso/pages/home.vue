@@ -3,6 +3,8 @@
     <routeChange />
     <div class="under-nav"></div>
 
+    <h1 class="hello__user">welcome to uso, {{ username }} !</h1>
+
     <section class="landing">
       <video
         id="landing-video"
@@ -33,13 +35,20 @@
             card-route="beatmaps"
             card-img="/beatmaps/689134/BG.jpg"
           />
-          <!-- <feature-song-card
+          <feature-song-card
             card-title="Goodbye Moonmen"
             card-artist="The Living Tombstone feat. Fart"
             card-route="beatmaps"
             card-img="/beatmaps/1249137/mJGRHh3.jpg"
-          /> -->
+          />
           <feature-song-card
+            card-title="Harumachi Clover (TV Size)"
+            card-artist="Hanasaka Yui (CV: M.A.O)"
+            card-route="beatmaps"
+            card-img="/beatmaps/682518/Harumachi%20bg1.jpg"
+          />
+
+          <!-- <feature-song-card
             card-title="Yoru ni Kakeru"
             card-artist="YOASOBI"
             card-route="/beatmaps"
@@ -61,7 +70,7 @@
             card-artist="Mori Calliope"
             card-route="/beatmaps"
             card-img="https://images.alphacoders.com/111/thumb-1920-1113744.png"
-          />
+          /> -->
         </section>
         <section class="news home-section">
           <h1 class="news-header">!uso News</h1>
@@ -91,6 +100,7 @@ export default {
 
   data() {
     return {
+      username: this.$auth.user.nickname,
       featureSongs: [
         {
           cardType: 'Featured Map',
@@ -147,6 +157,7 @@ export default {
 </script>
 
 <style scoped>
+
 @keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -207,6 +218,7 @@ export default {
     filter: hue-rotate(0deg);
   }
 }
+
 @-webkit-keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -226,6 +238,16 @@ export default {
   100% {
     filter: hue-rotate(0deg);
   }
+}
+
+.hello__user {
+  font-size: 15rem;
+  font-weight: 400;
+  text-shadow: 4px 4px 5px #212272;
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  width: 100%;
 }
 
 .container {

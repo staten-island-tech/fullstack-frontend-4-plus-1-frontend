@@ -16,7 +16,7 @@
     </section> -->
       <div class="team__container">
         <div class="team__header">
-          <h1 id="team__title">meet the team~ we are, FourPlusOne!</h1>
+          <h1 id="team__title">meet the team... we are, FourPlusOne~!</h1>
           <div class="underline"></div>
         </div>
 
@@ -25,15 +25,16 @@
           <div class="team__members">
             <img src="~/assets/images/navigation/nav-avatar.png" alt="">
               <div class="name">wiichen</div>
+              <div class="r__name">wilson w.</div>
               <div class="college">stony brook university '26</div>
               <div class="role">captain</div>
-              <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
+              <div class="about">spent like 16 hours straight just coding 
+                one time, somehow breaks the code but still makes it work</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/wilsonw13" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/wilsonw13" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           
           </div>
@@ -41,60 +42,68 @@
           <div class="team__members">
             <img src="~/assets/images/pfps/ganyu.png" alt="">
               <div class="name">harvue</div>
+              <div class="r__name">harvey j.</div>
               <div class="college">staten island tech hs '23</div>
               <div class="role">frontend/backend</div>
-              <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
+              <div class="about">"if all you're good for is breathing in and out, 
+                then even an ac unit is more useful than you."</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/harveyj123" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/harveyj123" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
           <div class="team__members">
             <img src="~/assets/images/pfps/ayato.webp" alt="">
               <div class="name">kenneru</div>
+              <div class="r__name">kenny t.</div>
               <div class="college">yale university '26</div>
               <div class="role">frontend</div>
-              <div class="about">i said, "KEEP MY WAIFUS' NAMES OUT OF YOUR MOUTH!" <br/>*slaps you*</div>
+              <div class="about">"i probably just want to leave a trace 
+                of myself behind in this world," forever grateful, kai</div>
+
+                
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/kentng01" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/kentng01" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
           <div class="team__members">
             <img src="~/assets/images/pfps/raiden.png" alt="">
               <div class="name">edan</div>
+              <div class="r__name">ethan l.</div>
               <div class="college">boston university '26</div>
               <div class="role">frontend</div>
-              <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
+              <div class="about">"the present isn't everything, but there
+                are things you can only do now, things you can only find here"</div>
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/ethanl66" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/ethanl66" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
           <div class="team__members">
             <img src="~/assets/images/pfps/akame.png" alt="">
               <div class="name">riian</div>
+              <div class="r__name">ryan s.</div>
               <div class="college">quinnipiac university '26</div>
               <div class="role">backend</div>
-              <div class="about">idk i speak in code so i dunno,, i am having a for loop error error 404... help pls</div>
+              <div class="about">idk i speak in code so i dunno,, 
+                i am having a for loop error error 404... help pls kaboom</div>
+              <!-- <div class="about">idk i speak in code so i dunno,, 
+                i am having a for loop error error 404... help pls</div> -->
 
             <div class="social__links">
-              <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-              <a href="#"><i class="fa fa-instagram"></i></a>
-              <a href="#"><i class="fa fa-facebook"></i></a> -->
-              <a href="https://github.com/ryan-sliger" target="_blank"><img src="~/assets/images/navigation/gitLogo.png" alt=""></a>
+              <a href="https://github.com/ryan-sliger" target="_blank">
+                <img src="~/assets/images/navigation/gitLogo.png" alt="">
+              </a>
             </div>
           </div>
 
@@ -192,10 +201,10 @@ export default {
 
 .team__members {
   margin: 35px;
-  padding: 30px;
+  padding: 30px 20px;
   max-width: 28.5rem;
   cursor: url('~/assets/images/cursor/paimonCursor3.png'), auto;
-  transition: 400ms;
+  transition: 250ms;
   box-sizing: border-box;
   border-radius: 12px;
   background: #f3f3f5;
@@ -203,9 +212,9 @@ export default {
 }
 
 .team__members:hover {
-  background: #eeeeff;
+  background: #efeffd;
   border-radius: 12px;
-  transform: translate(0, -2%);
+  transform: translate(0, -2.5%);
 }
 
 .team__members img {
@@ -216,7 +225,7 @@ export default {
 }
 
 .team__members img:hover {
-  transform: scale(1.05);
+  transform: scale(1.05) translate(0, 2%);
 }
 
 .name {
@@ -229,9 +238,16 @@ export default {
   margin-bottom: -1.25rem;
 }
 
+.r__name {
+  color: #212121;
+  font-size: 26px;
+  opacity: 0.8;
+  margin-top: -20px;
+}
+
 .college {
   color: #212121;
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .role {
@@ -250,7 +266,7 @@ export default {
 }
 
 .social__links {
-  margin: 15px 0 0 0;
+  margin: 16px 0 0 0;
 }
 
 .social__links a {
@@ -263,6 +279,10 @@ export default {
 
 .social__links a:hover {
   transform: scale(1.1);
+}
+
+.social__links a:active {
+  transform: scale(0.85);
 }
 
 .social__links a img {

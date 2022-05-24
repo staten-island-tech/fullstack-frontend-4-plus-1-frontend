@@ -262,7 +262,7 @@ export default {
   width: 11rem;
   font-size: 3rem;
   margin: auto;
-  transform: translate(17rem, 17.25rem);
+  transform: translate(17rem, 16.75rem);
   color: #f0f1ff;
   background-color: #6847dd;
   border-radius: 12px;
@@ -271,14 +271,14 @@ export default {
 }
 
 .btn:hover {
-  transform: translate(17rem, 16.75rem);
+  transform: translate(17rem, 16.25rem);
   background: #c850cc;
 }
 
 .btn:active {
   transform: scale(0.8);
   background: #14127c;
-  transform: translate(17rem, 16.75rem);
+  transform: translate(17rem, 16.25rem);
 }
 
 .video-bg {
@@ -318,7 +318,7 @@ export default {
   /* align-content: center;
   justify-content: center; */
   place-content: center;
-  padding: 6rem;
+  padding: 5rem;
 }
 
 .settings__form {
