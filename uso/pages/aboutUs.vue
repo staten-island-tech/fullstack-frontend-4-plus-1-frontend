@@ -62,14 +62,14 @@
         </div>
 
         <div class="team__members">
-          <img src="~/assets/images/pfps/raiden.png" alt="" />
+          <img src="~/assets/images/pfps/AYAKA.png" alt="" />
           <div class="name">edan</div>
           <div class="r__name">ethan liang</div>
           <div class="college">boston university '26</div>
           <div class="role">frontend</div>
           <div class="about">
-            "the present isn't everything, but there are things you can only do
-            now, things you can only find here"
+            "Did you know every time you sigh, a little bit of happiness
+            escapes?"
           </div>
 
           <div class="social__links">
