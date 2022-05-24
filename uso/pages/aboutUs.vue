@@ -8,14 +8,14 @@
 
       <div class="team__subContainer">
         <div class="team__members">
-          <img src="~/assets/images/navigation/nav-avatar.png" alt="" />
+          <img src="~/assets/images/pfps/yuji.jpg" alt="" />
           <div class="name">wiichen</div>
-          <div class="r__name">wilson w.</div>
+          <div class="r__name">wilson wuchen</div>
           <div class="college">stony brook university '26</div>
           <div class="role">captain</div>
           <div class="about">
-            spent like 16 hours straight just coding one time, somehow breaks
-            the code but still makes it work
+            spent like 16 hours straight just coding one time, somehow break
+            thecode but still makes it work
           </div>
 
           <div class="social__links">
@@ -28,7 +28,7 @@
         <div class="team__members">
           <img src="~/assets/images/pfps/ganyu.png" alt="" />
           <div class="name">harvue</div>
-          <div class="r__name">harvey j.</div>
+          <div class="r__name">harvey jiang</div>
           <div class="college">staten island tech hs '23</div>
           <div class="role">frontend/backend</div>
           <div class="about">
@@ -46,7 +46,7 @@
         <div class="team__members">
           <img src="~/assets/images/pfps/ayato.webp" alt="" />
           <div class="name">kenneru</div>
-          <div class="r__name">kenny t.</div>
+          <div class="r__name">kenny tung</div>
           <div class="college">yale university '26</div>
           <div class="role">frontend</div>
           <div class="about">
@@ -64,7 +64,7 @@
         <div class="team__members">
           <img src="~/assets/images/pfps/raiden.png" alt="" />
           <div class="name">edan</div>
-          <div class="r__name">ethan l.</div>
+          <div class="r__name">ethan liang</div>
           <div class="college">boston university '26</div>
           <div class="role">frontend</div>
           <div class="about">
@@ -82,7 +82,7 @@
         <div class="team__members">
           <img src="~/assets/images/pfps/akame.png" alt="" />
           <div class="name">riian</div>
-          <div class="r__name">ryan s.</div>
+          <div class="r__name">ryan sliger</div>
           <div class="college">quinnipiac university '26</div>
           <div class="role">backend</div>
           <div class="about">
