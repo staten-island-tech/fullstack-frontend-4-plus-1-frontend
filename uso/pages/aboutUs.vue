@@ -86,8 +86,8 @@
           <div class="college">quinnipiac university '26</div>
           <div class="role">backend</div>
           <div class="about">
-            idk i speak in code so i dunno,, i am having a for loop error error
-            404... help pls kaboom
+            i definitly did a good amount of work on this project ... didn't get
+            hard carried.
           </div>
 
           <div class="social__links">
