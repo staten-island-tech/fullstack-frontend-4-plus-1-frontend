@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      dy: 8,
+      dy: 15,
       latestHit: null,
       totalHits: {
         320: 0,
@@ -376,11 +376,11 @@ export default {
     startGame() {
       const t = this;
 
-      let testTime = 0;
+      /* let testTime = 0;
       setInterval(() => {
         console.log(`${testTime} milliseconds passed`);
         testTime += 300;
-      }, 300);
+      }, 300); */
 
       t.music.play();
       const durr = Math.round(t.music.duration()) * 1000;

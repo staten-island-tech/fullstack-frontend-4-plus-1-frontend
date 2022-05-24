@@ -137,10 +137,11 @@ export default {
     const promise = await fetch(
       `/beatmaps/${this.beatmapSetID}/${this.beatmapID}.json`
     );
+    /* const promise = await fetch('/beatmaps/test/slider.json'); */
 
     this.beatmapData = await promise.json();
 
-    // CHECK IF EMPTY
+    // CHECK IF SONG NOT FOUND
     if (!Object.keys(this.beatmapData).length) this.beatmapNotFoundError = true;
     else this.loaded.beatmapData = true;
   },

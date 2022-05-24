@@ -1,10 +1,12 @@
 <template>
   <div>
+    <routeChange />
     <div class="under-nav"></div>
+
     <div id="lb__index">
       <div class="lb__container">
         <div class="lb__titlebox">
-          <h1 class="lb__title">Beatmap Set ID: {{ beatmapSetID }}</h1>
+          <h1 class="lb__title">♬ rankings</h1>
         </div>
 
         <div class="yae__filler"></div>
@@ -16,201 +18,60 @@
                 <th class="lb__rankingHeading"></th>
                 <th class="lb__rankingHeading lb__rankingHeading--main"></th>
                 <th class="lb__rankingHeading">Accuracy</th>
-                <th class="lb__rankingHeading">Score</th>
+                <th class="lb__rankingHeading">Play Count</th>
                 <th class="lb__rankingHeading lb__rankingHeading--focused">
-                  Grade
+                  Performance
                 </th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">SS</th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">S</th>
+                <th class="lb__rankingHeading lb__rankingHeading--grade">A</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr class="lb__rankingTable__row">
+              <tr
+                v-for="user in userData"
+                :key="user.name"
+                class="lb__rankingTable__row"
+              >
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--rank"
                 >
-                  #1
+                  #{{ user.leaderBoardPos }}
                 </td>
                 <td class="lb__rankingTable__column">
-                  <div class="lb__user">Wiichen</div>
+                  <div class="lb__user">{{ user.userSettings.username }}</div>
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  100%
+                  {{ user.gameData.accuracy }}%
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  160,000
+                  {{ user.gameData.playCount }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--focused"
                 >
-                  SS
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #2
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Sliger</div>
+                  {{ user.gameData.performance }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  98.40%
+                  {{ user.gameData.SS }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  129,750
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  S
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #3
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Harshey</div>
+                  {{ user.gameData.S }}
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"
                 >
-                  92.7%
+                  {{ user.gameData.A }}
                 </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  68,950
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  A
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #4
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Edan</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  87.3%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  44,500
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  B
-                </td>
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #5
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">Kenneru</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  74.8%
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                >
-                  24,000
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                >
-                  C
-                </td>
-
-                <!-- delete tables below, just wanted to see how it looks -->
-              </tr>
-
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #6
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-              </tr>
-              <tr class="lb__rankingTable__row">
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--rank"
-                >
-                  #7
-                </td>
-                <td class="lb__rankingTable__column">
-                  <div class="lb__user">L Bozo</div>
-                </td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--focused"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
-                <td
-                  class="lb__rankingTable__column lb__rankingTable__column--dimmed"
-                ></td>
               </tr>
             </tbody>
           </table>
@@ -222,12 +83,34 @@
 
 <script>
 export default {
-  computed: {
-    beatmapSetID() {
-      return this.$route.params.beatmapSetID;
-    },
-    beatmapID() {
-      return this.$route.params.beatmapID;
+  auth: false,
+  data() {
+    return {
+      userDataFetch: [],
+      userData: [],
+    };
+  },
+
+  created() {
+    this.fetchNewUser();
+  },
+
+  methods: {
+    async fetchNewUser() {
+      // const getUserId = this.$auth.user.sub.replace('auth0|', '');
+      // http://localhost:8000/6289babceda0db001153a8d8
+      // `http://localhost:8000/${getUserId}`
+      const token = await this.$auth.strategy.token.get();
+      // const getUserId = this.userdata.sub.replace('auth0|', '');
+      // console.log(getUserId);
+      const userDataFetch = await fetch('http://localhost:8000/', {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const userDataFetched = await userDataFetch.json();
+      this.userData = userDataFetched;
+      console.log(this.userData);
     },
   },
 };

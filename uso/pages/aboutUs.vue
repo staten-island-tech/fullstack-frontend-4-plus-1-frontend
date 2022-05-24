@@ -68,8 +68,8 @@
           <div class="college">boston university '26</div>
           <div class="role">frontend</div>
           <div class="about">
-            "Did you know every time you sigh, a little bit of happiness
-            escapes?"
+            "did you know every time you sigh, a little bit of happiness
+            escapes?" <br /><br />
           </div>
 
           <div class="social__links">
