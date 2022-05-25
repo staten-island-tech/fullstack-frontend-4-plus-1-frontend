@@ -56,10 +56,6 @@ export default {
 
 <style scoped>
 
-a {
-  cursor: url('~/assets/images/cursor/paimonCursor1.png'), auto;
-}
-
 .feature-card {
   cursor: url('~/assets/images/cursor/paimonCursor4.png'), auto;
   width: 50rem;

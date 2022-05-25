@@ -130,8 +130,6 @@ export default {
       pbdur: null,
       progressBarVol: null,
       health: 100,
-      notesCol: null,
-      sliderCol: null,
     };
   },
 
@@ -237,11 +235,7 @@ export default {
     onLoad() {
       const t = this;
 
-      // console.log(Object.keys(t.beatmapData));
-
       t.notes = t.beatmapData.hitObjects;
-      t.notesCol = t.notes.filter((note) => note.type === 'note');
-      t.sliderCol = t.notes.filter((note) => note.type === 'hold');
       t.numColumns = t.beatmapData.columns;
 
       t.beatmapIntro = t.notes[0].time < 3000 ? 0 : t.notes[0].time - 3000;
@@ -376,22 +370,26 @@ export default {
     startGame() {
       const t = this;
 
-      /* let testTime = 0;
-      setInterval(() => {
-        console.log(`${testTime} milliseconds passed`);
-        testTime += 300;
-      }, 300); */
-
       t.music.play();
-      const durr = Math.round(t.music.duration()) * 1000;
-      this.$store.commit('currSongDuration', durr);
+
+      t.started = true;
 
       const firstNote = t.notes[0];
       const lastNote = t.notes[t.notes.length - 1];
 
+      console.log(firstNote, lastNote);
+      console.log(t.beatmapIntro);
+      console.log(
+        (lastNote.endTime ? lastNote.endTime : lastNote.time) -
+          firstNote.time +
+          (1000 * t.stageHeight * t.hitPercent + t.radius) /
+            (t.dy * t.stageFPS) +
+          4000
+      );
+
       setTimeout(() => {
         this.$emit('endGameParent', this.totalHits, this.maxCombo);
-      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 3000);
+      }, (lastNote.endTime ? lastNote.endTime : lastNote.time) - firstNote.time + (1000 * t.stageHeight * t.hitPercent + t.radius) / (t.dy * t.stageFPS) + 4000);
 
       /* ===============
           HP DRAIN
@@ -434,7 +432,7 @@ export default {
         300: Math.floor(64 - 3 * OD) + 0.5,
         200: Math.floor(97 - 3 * OD) + 0.5,
         100: Math.floor(127 - 3 * OD) + 0.5,
-        50: Math.floor(160 - 3 * OD) + 0.5,
+        50: Math.floor(151 - 3 * OD) + 0.5,
         0: Math.floor(170 - 3 * OD) + 0.5,
       };
 
@@ -656,8 +654,6 @@ export default {
 
             t.ss.columnContainers[this.i].addChild(this);
             t.PIXIapp.ticker.add(this.animateDrop, this);
-
-            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 
@@ -875,7 +871,6 @@ export default {
             this.timerID = null;
 
             t.PIXIapp.ticker.add(this.animateDrop, this);
-            console.log('Added:', Math.round(this.remainingTime));
           }, this.remainingTime);
         }
 
@@ -885,62 +880,15 @@ export default {
         }
       }
 
-      // const Slider = function (note) {
-      //   const sliderHeight =
-      //     (t.dy * t.stageFPS * (note.endTime - note.time)) / 1000;
-
-      //   const slider = new PIXI.Graphics();
-
-      //   slider.i = note.columnIndex;
-      //   slider.sliderHeight = sliderHeight;
-
-      //   /* slider
-      //     .lineStyle(1)
-      //     .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
-      //     .drawRoundedRect(
-      //       t.stageColWidth / 2 - t.radius,
-      //       slider.sliderHeight + 2 * t.radius,
-      //       2 * t.radius,
-      //       slider.sliderHeight + 2 * t.radius,
-      //       t.radius
-      //     )
-      //     .endFill(); */
-
-      //   slider
-      //     .lineStyle(1)
-      //     .beginFill(parseInt(t.colors[slider.i].slice(1), 16))
-      //     .drawRoundedRect(
-      //       t.stageColWidth / 2 - t.radius,
-      //       -t.stageHeight / 5,
-      //       2 * t.radius,
-      //       slider.sliderHeight + 2 * t.radius,
-      //       t.radius
-      //     )
-      //     .endFill();
-
-      //   slider.time = note.time;
-      //   slider.remainingTime =
-      //     note.time -
-      //     t.beatmapIntro -
-      //     (1000 * t.stageHeight * t.hitPercent + t.radius) /
-      //       (t.dy * t.stageFPS);
-
-      //   t.notesToFallArray.push(slider);
-
-      //   slider.resumeDropTimer();
-
-      //   t.ss.sliderColumnContainers[slider.i].addChild(slider);
-      //   t.PIXIapp.ticker.add(() => {
-      //     slider.y += t.dy / 10;
-      //   });
-      // };
-
-      for (let index = 0; index < t.notesCol.length; index++) {
-        new Note(t.notesCol[index]);
-      }
-      for (let index = 0; index < t.sliderCol.length; index++) {
-        new Slider(t.sliderCol[index]);
-      }
+      t.notes.forEach((note) => {
+        if (note.type === 'note') {
+          new Note(note);
+        } else if (note.type === 'hold') {
+          new Slider(note);
+        } else {
+          console.log(`Invalid note type: ${note.type}`);
+        }
+      });
     },
     onPauseKey(isPaused) {
       if (isPaused) {

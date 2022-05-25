@@ -15,31 +15,17 @@
       ></video>
     </section>
 
-    <button
-      class="btn"
-      @click="
-        $store.commit('setSettings', masterVolume),
-          $store.commit(
-            'setSettings2',
-
-            musicVolume
-          ),
-          $store.commit(
-            'setSettings3',
-
-            hitSoundsVolume
-          ),
-          $store.commit(
-            'setSettings4',
-
-            scrollSpeed
-          ),
-          $store.commit('setSettings5', username),
-          patch()
-      "
-    >
-      update
-    </button>
+    <button class="btn" @click="
+              $store.commit(
+                'setSettings',
+                masterVolume,
+                musicVolume,
+                hitSoundsVolume,
+                scrollSpeed,
+                username
+              ),
+                patch()
+            ">update</button>
 
     <div class="settings__container">
       <h1 id="settings__title">settings.</h1>
@@ -51,6 +37,7 @@
           </header>
 
           <fieldset class="settings__field">
+
             <div id="fieldset__user" class="fieldset-item">
               <div class="username-container">
                 <h1 class="username">ktestusername</h1>
@@ -176,6 +163,7 @@
 </template>
 
 <script>
+
 export default {
   components: {},
   data() {
@@ -232,6 +220,7 @@ export default {
 </script>
 
 <style scoped>
+
 * {
   font-family: 'Dongle', sans-serif;
   margin: 0;
@@ -245,10 +234,16 @@ export default {
 .settings__page {
   min-height: 100vh;
   height: 100%;
+  /* background-image: linear-gradient(rgba(4, 22, 54, 0.7), rgba(11, 4, 48, 0.7)),
+    url('~/assets/images/backgrounds/fleeting-colors.jpg'); 
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed; */
 }
 
 .landing {
   width: 100%;
+  /* height: calc(100vh - 9.5rem); */
 }
 
 .btn {
@@ -256,7 +251,7 @@ export default {
   width: 11rem;
   font-size: 3rem;
   margin: auto;
-  transform: translate(17rem, 16.75rem);
+  transform: translate(17rem, 17.25rem);
   color: #f0f1ff;
   background-color: #6847dd;
   border-radius: 12px;
@@ -265,14 +260,14 @@ export default {
 }
 
 .btn:hover {
-  transform: translate(17rem, 16.25rem);
+  transform: translate(17rem, 16.75rem);
   background: #c850cc;
 }
 
 .btn:active {
-  transform: scale(0.8);
+  transform: scale(.8);
   background: #14127c;
-  transform: translate(17rem, 16.25rem);
+  transform: translate(17rem, 16.75rem);
 }
 
 .video-bg {
@@ -309,12 +304,15 @@ export default {
 .settings__container {
   display: grid;
   gap: 3rem;
+  /* align-content: center;
+  justify-content: center; */
   place-content: center;
-  padding: 5rem;
+  padding: 6rem;
 }
 
 .settings__form {
   max-width: 90vw;
+  /* display: grid; */
   gap: 3rem 6rem;
   --repeat: auto-fit;
   grid-template-columns: repeat(auto-fit, minmax(min(10ch, 100%), 35ch));
@@ -426,6 +424,8 @@ input[type='range'] {
 
 .user-form > input {
   font-size: 2.5rem;
+  /* height: initial; */
+  /* margin: 0 1rem; */
   height: 4rem;
   color: black;
 
@@ -443,4 +443,5 @@ input[type='range'] {
   height: 3rem;
   padding: 0.25rem 0 0 1.25rem;
 }
+
 </style>

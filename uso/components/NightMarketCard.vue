@@ -42,6 +42,9 @@ export default {
   computed: {
     rimSrc() {
       return require(`../assets/images/night-market-${this.cardBg}-rim.png`);
+
+      /* /_nuxt/assets/images/night-market-bad-rim.png */
+      /* ../assets/images/night-market-bad-rim.png */
     },
   },
   watch: {
@@ -248,5 +251,41 @@ button {
 .flipped {
   transform: rotateY(180deg);
   transition: 0.8s ease-in-out;
+  /*   animation-name: cardFlip;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards; */
 }
+
+/* @keyframes cardFlip {
+  10% {
+  }
+  20% {
+    transform: rotateY(20deg);
+  }
+  30% {
+    transform: rotateY(30deg);
+  }
+  40% {
+    transform: rotateY(40deg);
+  }
+  50% {
+    transform: rotateY(50deg);
+  }
+  60% {
+    transform: rotateY(80deg);
+  }
+  70% {
+    transform: rotateY(100deg);
+  }
+  80% {
+    transform: rotateY(130deg);
+  }
+  90% {
+    transform: rotateY(160deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+
+}*/
 </style>

@@ -27,6 +27,8 @@
 
 <script>
 export default {
+  name: 'ParseTest',
+
   data() {
     return {
       loaded: {
@@ -100,6 +102,11 @@ export default {
           new zip.BlobReader(this.rawFile)
         ).getEntries();
 
+        /* for (let i = 0; i < this.entries.length; i++) {
+          const data = await this.entries[i].getData(new zip.Writer());
+
+          this.readEntries.push(data);
+        } */
       } else {
         alert(`${this.rawFile.name} is not a valid .osz file!`);
       }
