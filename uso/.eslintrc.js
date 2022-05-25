@@ -26,6 +26,13 @@ module.exports = {
     'no-console': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/multiline-html-element-content-newline': 'off',
+    'vue/first-attribute-linebreak': [
+      'error',
+      {
+        singleline: 'ignore',
+        multiline: 'ignore',
+      },
+    ],
   },
   ignorePatterns: ['static/*'],
 };

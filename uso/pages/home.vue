@@ -1,7 +1,8 @@
 <template>
   <div>
-    <routeChange />
     <div class="under-nav"></div>
+
+    <h1 class="hello__user">welcome to uso, {{ username }} !</h1>
 
     <section class="landing">
       <video
@@ -19,8 +20,6 @@
     <section class="home-main">
       <div class="home-content-container">
         <section class="feature-songs home-section">
-          <!-- <feature-song-card :v-for="song in featureSongs" /> -->
-
           <feature-song-card
             card-title="Six Trillion Years and Overnight Story"
             card-artist="kemu feat. IA"
@@ -33,34 +32,17 @@
             card-route="beatmaps"
             card-img="/beatmaps/689134/BG.jpg"
           />
-          <!-- <feature-song-card
+          <feature-song-card
             card-title="Goodbye Moonmen"
             card-artist="The Living Tombstone feat. Fart"
             card-route="beatmaps"
             card-img="/beatmaps/1249137/mJGRHh3.jpg"
-          /> -->
-          <feature-song-card
-            card-title="Yoru ni Kakeru"
-            card-artist="YOASOBI"
-            card-route="/beatmaps"
           />
           <feature-song-card
-            card-title="Unravel"
-            card-artist="Toru Kitajima"
-            card-route="/beatmaps"
-            card-img="https://i.pinimg.com/736x/47/50/49/47504980e845df1adc7677e8fa09e44c--kaneki-wallpaper-tokyo-ghoul.jpg"
-          />
-          <feature-song-card
-            card-title="Brave Shine"
-            card-artist="Aimer"
-            card-route="/beatmaps"
-            card-img="https://images5.alphacoders.com/470/thumb-1920-470240.jpg"
-          />
-          <feature-song-card
-            card-title="Dawn Blue"
-            card-artist="Mori Calliope"
-            card-route="/beatmaps"
-            card-img="https://images.alphacoders.com/111/thumb-1920-1113744.png"
+            card-title="Harumachi Clover (TV Size)"
+            card-artist="Hanasaka Yui (CV: M.A.O)"
+            card-route="beatmaps"
+            card-img="/beatmaps/682518/Harumachi%20bg1.jpg"
           />
         </section>
         <section class="news home-section">
@@ -70,27 +52,20 @@
         </section>
       </div>
     </section>
-    <!-- <button @click="auth(), testEnv()">Sign In</button>
-     <a href="http://localhost:8080/home/auth/callback" @click="auth()">LOG IN XD</a> -->
   </div>
 </template>
 
 <script>
-/* import axios from 'axios'; */
-
 import FeatureSongCard from '../components/homepage/FeatureSongCard.vue';
 import NewsCard from '../components/homepage/NewsCard.vue';
 
 export default {
   auth: false,
   components: { FeatureSongCard, NewsCard },
-  /* async asyncData({ $axios }) {
-    const data = await $axios.$get('../assets/data/data.json');
-    console.log(data);
-  }, */
 
   data() {
     return {
+      username: this.$auth.user.nickname,
       featureSongs: [
         {
           cardType: 'Featured Map',
@@ -104,46 +79,8 @@ export default {
     };
   },
 
-  async fetch() {
-    // http://localhost:8000/6289babceda0db001153a8d8
-    // `http://localhost:8000/${getUserId}`
-    const token = await this.$auth.strategy.token.get();
-    // const getUserId = this.userdata.sub.replace('auth0|', '');
-    // console.log(getUserId);
-    const userDataFetch = await fetch(
-      'http://localhost:8000/6289babceda0db001153a8d8',
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    const userDataFetched = await userDataFetch.json();
-    // userDataFetched.forEach((user) => {
-    //   this.userData.push(user);
-    // });
-
-    console.log(userDataFetched);
-  },
-
-  // async fetch() {
-  //   const userDataFetch = await fetch('https://usobackend.onrender.com/');
-  //   const userDataFetched = await userDataFetch.json();
-
-  //   userDataFetched.forEach((user) => {
-  //     this.userData.push(user);
-  //   });
-
-  //   console.log(this.userData);
-  //   //  this.userDataFetch.forEach(user => {
-  //   //     this.userData = Object.keys(user)
-
-  //   //   });
-  // },
   created() {
     this.getFeatureCards();
-    console.log(process.env)
-    /* this.getFeatureCards(); */
   },
 
   methods: {
@@ -229,6 +166,7 @@ export default {
     filter: hue-rotate(0deg);
   }
 }
+
 @-webkit-keyframes filterChange {
   0% {
     filter: hue-rotate(0deg);
@@ -248,6 +186,16 @@ export default {
   100% {
     filter: hue-rotate(0deg);
   }
+}
+
+.hello__user {
+  font-size: 15rem;
+  font-weight: 400;
+  text-shadow: 4px 4px 5px #212272;
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  width: 100%;
 }
 
 .container {
@@ -290,30 +238,19 @@ button {
 
 .landing {
   width: 100%;
-  /* max-width: 100%; */
 
   height: calc(100vh - 9.5rem);
-  /*   background-image: url('./assets/images/backgrounds/landing.png');
-
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; */
 }
 
 .home-main {
   width: 100%;
   height: auto;
   padding-bottom: 5rem;
-  /* height: calc(100vh - 9.5rem); */
-  /*   background-image: url('./assets/images/backgrounds/enkanomiya-blurred.jpg'); */
   background-image: linear-gradient(
       rgba(16, 51, 112, 0.8),
       rgba(16, 51, 112, 0.7)
     ),
     url('~/assets/images/navigation/nav-bg.jpg');
-  /*  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; */
   background-attachment: fixed;
 }
 
@@ -330,8 +267,6 @@ button {
 }
 
 .news-header {
-  /* color: #b7ba91; */
-
   animation: filterChange 5s infinite ease 0s;
   color: #9cf5b9;
 }

@@ -1,6 +1,5 @@
 <template>
   <div class="beatmaps__content--body">
-    <routeChange />
     <div class="under-nav"></div>
 
     <div id="play-index">
@@ -30,11 +29,10 @@
         <div class="my-video-audio">
           <div class="audio-cntrl-cont">
             <font-awesome-icon
-              icon="backward"
+              icon="fa-solid fa-backward-step"
               class="svg"
-              @click="prevSongIndex()"
+              @click="changeSongIndex(-1)"
             />
-            <!-- <fa-backward class="svg"/> -->
           </div>
 
           <div class="audio-cntrl-cont">
@@ -50,14 +48,13 @@
               class="svg"
               @click="toggleAudio()"
             />
-            <!-- <font-awesome-icon icon="pasue" class="svg"/> -->
           </div>
 
           <div class="audio-cntrl-cont">
             <font-awesome-icon
               icon="fa-solid fa-forward-step"
               class="svg"
-              @click="nextSongIndex()"
+              @click="changeSongIndex(1)"
             />
           </div>
 
@@ -65,7 +62,7 @@
 
           <div class="audio-cntrl-cont">
             <font-awesome-icon
-              v-if="mute"
+              v-if="!muted"
               icon="fa-solid fa-volume-high"
               class="svg"
               @click="audioBarMute()"
@@ -88,8 +85,6 @@
                 (clickedBmSetName = bmSetName), beatmapSoundBit(), changeSound()
               "
             >
-              <h2 class="audio__preview">click for audio preview...</h2>
-
               <img
                 v-if="oszArray[0].events[0]"
                 class="beatmap-set-img"
@@ -137,14 +132,24 @@
                     `${clickedBmSetName}`
                   ]"
                   :key="index"
-                  @click="$store.commit('setBeatmap', bmDifficulty)"
-                  @mouseover="$store.commit('setBeatmap', bmDifficulty)"
                 >
-                  <th>{{ bmDifficulty.metadata.Version }}</th>
                   <th>
-                    <nuxt-link :to="`/play`">PLAY</nuxt-link>
+                    <nuxt-link
+                      :to="`/play/${bmDifficulty.metadata.BeatmapSetID}/${bmDifficulty.metadata.BeatmapID}`"
+                      >{{ bmDifficulty.metadata.Version }}</nuxt-link
+                    >
                   </th>
-                  <th>??? notes/s</th>
+
+                  <th>{{ bmDifficulty.columns }}K</th>
+
+                  <th>
+                    {{
+                      Math.round(
+                        bmDifficulty.hitObjects.length / bmDifficulty.columns
+                      )
+                    }}
+                    Notes/Col
+                  </th>
                 </tr>
               </tbody>
             </table>
@@ -154,7 +159,7 @@
               class="img-placeholder"
               src="~/assets/images/backgrounds/landing.png"
             />
-            <p class="hover-msg">hover, then click on a song!~</p>
+            <p class="text-placeholder">click on a song! ~</p>
           </div>
         </div>
       </div>
@@ -163,59 +168,63 @@
 </template>
 
 <script>
-/* eslint-disable */
-
 export default {
   auth: false,
   data() {
     return {
       bmSets: {},
-      songIndexs: null,
-      mute: true,
-      minIndex: 0,
-      maxIndex: 24,
-      currentSongIndex: null,
+      songIndexes: null,
+      muted: false,
+      currentIndex: null,
       currAudioBarVal: null,
       timeoutID: null,
       currAudioProg: null,
-      userdata: null,
+
       bmSetsData: {},
       clickedBmSetName: null,
       clicked: true,
       clickBack: false,
       searchQuery: null,
       id: null,
-      SoundPrevBarDur: null,
-      musicBeatmapDuration: 0,
 
       musicBeatmapDuration: 0,
       executed: false,
       chageExeuted: false,
-      firstBeatmapVal: null,
-      audioId: null,
-      currVal: null,
-      test: 1,
+      firstBeatmapAudio: null,
+      currentAudio: null,
     };
   },
 
   async login() {
     await this.$auth.loginWith('auth0');
   },
+
   async fetch() {
-    const beatmapsData = await fetch('/beatmaps/beatmaps.json');
-    this.bmSets = await beatmapsData.json();
+    const t = this;
 
-    Object.keys(this.bmSets).forEach((folder) => {
-      this.bmSetsData[folder] = [];
+    const listOfBeatmaps = await fetch('/beatmaps/beatmaps.json');
+    t.bmSets = await listOfBeatmaps.json();
 
-      this.bmSets[folder].forEach((osz) => {
-        this.bmSetsData[folder].push(this.getBmData(folder, osz));
-      });
-    });
+    for (let i = 0; i < Object.keys(t.bmSets).length; i++) {
+      const bmSetID = Object.keys(t.bmSets)[i];
+
+      t.bmSetsData[bmSetID] = [];
+
+      for (let bmI = 0; bmI < t.bmSets[bmSetID].length; bmI++) {
+        const bmID = t.bmSets[bmSetID][bmI];
+
+        const promise = await fetch(`/beatmaps/${bmSetID}/${bmID}.json`);
+        const beatmapData = await promise.json();
+
+        t.bmSetsData[bmSetID].push(beatmapData);
+      }
+    }
+
+    t.songIndexes = Object.keys(t.bmSets);
   },
 
   mounted() {
-    this.progressAudioBar = new ProgressBar.Line(audioProgress, {
+    this.progressAudioBar = new ProgressBar.Line('#audioProgress', {
       strokeWidth: 5,
       color: '#8C9EFF',
       duration: 10000,
@@ -226,238 +235,50 @@ export default {
   },
 
   methods: {
-    getBmData(folder, osz) {
-      const beatmap = {
-        general: {},
-        metadata: {},
-        difficulty: {},
-        events: [],
-        timingPoints: [],
-        hitObjects: [],
-        columns: null,
-      };
-
-      fetch(`/beatmaps/${folder}/${osz}`)
-        .then((response) => response.text())
-        .then((beatmapData) => {
-          // Split the data by line breaks into an array
-          const lines = beatmapData.replaceAll('\r', '').split('\n');
-
-          // If it is NOT an osu file
-          if (!lines[0].includes('osu file format')) {
-            console.log('Not an osu file!');
-          } else {
-            // If it is an osu file but not the latest version
-            if (lines[0] !== 'osu file format v14') {
-              console.log(
-                `Careful: The osu file version is ${lines[0].match(
-                  '1[0-3]|[1-9]'
-                )}`,
-                folder
-              );
-            }
-
-            let section;
-            const xValues = [];
-
-            for (let i = 0; i < lines.length; i++) {
-              // removes whitespace at beginning/end of line
-              const line = lines[i].trim();
-
-              // "continue" terminates current iteration of for loop and starts new iteration
-              if (line === '') continue;
-              if (line.indexOf('//') === 0) continue;
-              if (line.indexOf('[') === 0) {
-                section = line;
-                continue;
-              }
-
-              let key, value, array, parts, t, hit, hitSample;
-
-              switch (section) {
-                case '[General]':
-                  key = line.slice(0, line.indexOf(':'));
-                  value = line.slice(line.indexOf(':') + 1).trim();
-
-                  //  the +_ operator converts "value" to a number
-                  beatmap.general[key] = isNaN(value) ? value : +value;
-                  break;
-                case '[Metadata]':
-                  key = line.slice(0, line.indexOf(':'));
-                  value = line.slice(line.indexOf(':') + 1).trim();
-                  beatmap.metadata[key] = value;
-                  break;
-                case '[Events]':
-                  array = line
-                    .replaceAll('"', '')
-                    .split(',')
-                    .map((e) => {
-                      return isNaN(e) ? e : +e;
-                    });
-                  beatmap.events.push(array);
-                  break;
-                case '[Difficulty]':
-                  key = line.slice(0, line.indexOf(':'));
-                  if (key === 'HPDrainRate' || key === 'OverallDifficulty') {
-                    value = line.slice(line.indexOf(':') + 1).trim();
-                    beatmap.difficulty[key] = +value;
-                  } else continue;
-                  break;
-                case '[TimingPoints]':
-                  parts = line.split(',');
-                  t = {
-                    time: +parts[0],
-                    millisecondsPerBeat: +parts[1],
-                    beatsPerMeasure: +parts[2],
-                    sampleSet: +parts[3],
-                    sampleIndex: +parts[4],
-                    volume: +parts[5],
-                    uninherited: +parts[6],
-                    kiaiMode: +parts[7],
-                  };
-                  if (t.millisecondsPerBeat < 0) {
-                    t.uninherited = 0;
-                  }
-                  beatmap.timingPoints.push(t);
-                  break;
-                case '[HitObjects]':
-                  parts = line.split(',');
-
-                  // Columns are indexed 0.
-
-                  hit = {
-                    x: +parts[0],
-                    time: +parts[2],
-                    type: +parts[3],
-                    hitSound: +parts[4],
-                  };
-
-                  // Stores all possible x-values in order to calculate numColumns with array.length
-                  if (!xValues.includes(hit.x)) {
-                    xValues.push(hit.x);
-                  }
-
-                  // Decode specific hit object type
-                  switch (hit.type) {
-                    case 1:
-                    case 5:
-                      hit.type = 'note';
-
-                      hitSample = parts[5].split(':');
-
-                      hit.hitSample = {
-                        normalSet: +hitSample[0],
-                        additionSet: +hitSample[1],
-                        index: +hitSample[2],
-                        volume: +hitSample[3],
-                        filename: hitSample[4],
-                      };
-
-                      break;
-                    case 128: // hold
-                      hit.type = 'hold';
-
-                      hitSample = parts[5].split(':');
-
-                      hit.endTime = +hitSample[0];
-                      hit.hitSample = {
-                        normalSet: +hitSample[1],
-                        additionSet: +hitSample[2],
-                        index: +hitSample[3],
-                        volume: +hitSample[4],
-                        filename: hitSample[5],
-                      };
-
-                      break;
-                    default:
-                      // Unknown hit type
-                      console.log(
-                        `Attempted to decode unknown hit object type ${hit.type}: ${line}`,
-                        folder,
-                        osz
-                      );
-                      break;
-                  }
-
-                  beatmap.hitObjects.push(hit);
-                  break;
-              }
-            }
-
-            // Calculates the number of columns in beatmap with the number of distinct x-values.
-            beatmap.columns = xValues.length;
-
-            // Calculates the column for each hit object
-            beatmap.hitObjects.forEach((hit) => {
-              hit.columnIndex = Math.floor((hit.x * beatmap.columns) / 512);
-            });
-          }
-        });
-
-      return beatmap;
-    },
     beatmapSoundBit() {
       const t = this;
-      t.clicked = false;
-      //  t.musicBeatmapDuration = Math.round(
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime/1000
-      // ) *1000 /2
 
-      // t.musicBeatmapDuration = Math.round(
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime / 2000
-      // );
-      // console.log(
-      // console.log(
-      //   `/beatmaps/${this.clickedBmSetName}/B${
-      //     this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
-      //   }`
-      // );
-      //   this.bmSetsData[this.clickedBmSetName][0].general.PreviewTime
-      // );
+      t.clicked = false;
+
       t.musicBeatmap = new Howl({
         src: [
-          `/beatmaps/${this.clickedBmSetName}/B${
-            this.bmSetsData[this.clickedBmSetName][0].general.AudioFilename
+          `/beatmaps/${t.clickedBmSetName}/B${
+            t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename
           }`,
         ],
-        //  src: [`/beatmaps/defaultHitSound/normal-hitnormal.wav`],
         volume: 0.5,
         preload: true,
         html5: true,
-        // sprite: {
-        //   prevMusic: [t.musicBeatmapDuration, 10000, false],
-        // },
       });
 
       if (!t.executed) {
         t.executed = true;
 
-        // t.musicBeatmap.play('prevMusic');
-        this.progressAudioBar.set(0);
-        this.progressAudioBar.animate(1.0);
+        t.progressAudioBar.set(0);
+        t.progressAudioBar.animate(1.0);
         t.musicBeatmap.play();
-        t.firstBeatmapVal =
+        t.firstBeatmapAudio =
           t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-        this.timeoutID = setTimeout(() => {
-          this.resetAudio();
+        t.timeoutID = setTimeout(() => {
+          t.resetAudio();
         }, 10000);
       }
-      t.songIndexs = Object.keys(t.bmSets);
 
-      t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+      t.currentAudio =
+        t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
     },
     changeSound() {
       const t = this;
-      if (t.firstBeatmapVal !== t.currVal) {
-        this.progressAudioBar.set(0);
+
+      if (t.firstBeatmapAudio !== t.currentAudio) {
+        t.progressAudioBar.set(0);
         t.progressAudioBar.animate(1, {
           duration: 10000,
         });
-        t.firstBeatmapVal = t.currVal;
+        t.firstBeatmapAudio = t.currentAudio;
 
         Howler.stop();
         t.musicBeatmap.play();
-        //  t.musicBeatmap.play('prevMusic');
         clearTimeout(t.timeoutID);
         t.timeoutID = setTimeout(() => {
           t.resetAudio();
@@ -465,7 +286,6 @@ export default {
       }
     },
     resetAudio() {
-      Howler.stop();
       this.executed = false;
       this.progressAudioBar.set(0);
       this.clicked = true;
@@ -474,13 +294,18 @@ export default {
       const t = this;
       t.clicked = !t.clicked;
 
+      if (!t.clickedBmSetName) {
+        t.clickedBmSetName = Object.keys(t.bmSets)[0];
+        t.beatmapSoundBit();
+        t.changeSound();
+      }
+
       if (t.clicked === true) {
         clearTimeout(t.timeoutID);
         t.currAudioBarVal = t.progressAudioBar.value();
         t.musicBeatmap.pause();
         t.progressAudioBar.stop();
       } else {
-        // t.musicBeatmap.play('prevMusic');
         clearTimeout(t.timeoutID);
         t.currAudioProg = Math.round((1 - t.currAudioBarVal) * 10000);
 
@@ -494,35 +319,23 @@ export default {
         t.musicBeatmap.play();
       }
     },
-    prevSongIndex() {
+    changeSongIndex(i) {
       const t = this;
-      // t.songIndexs
+      const currentIndex = t.songIndexes.indexOf(t.clickedBmSetName);
+      const newIndex =
+        (((currentIndex + i) % t.songIndexes.length) + t.songIndexes.length) %
+        t.songIndexes.length;
 
-      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
-
-      if (currSong > t.minIndex) {
-        const prevSong = currSong - 1;
-        t.clickedBmSetName = t.songIndexs[prevSong];
-        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-        t.beatmapSoundBit();
-        t.changeSound();
-      }
-    },
-    nextSongIndex() {
-      const t = this;
-      const currSong = t.songIndexs.indexOf(t.clickedBmSetName);
-
-      if (currSong <= t.maxIndex) {
-        const prevSong = currSong + 1;
-        t.clickedBmSetName = t.songIndexs[prevSong];
-        t.currVal = t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
-        t.beatmapSoundBit();
-        t.changeSound();
-      }
+      t.clickedBmSetName = t.songIndexes[newIndex];
+      t.currentAudio =
+        t.bmSetsData[t.clickedBmSetName][0].general.AudioFilename;
+      t.beatmapSoundBit();
+      t.changeSound();
     },
     audioBarMute() {
-      this.mute = !this.mute;
-      if (this.mute === false) {
+      this.muted = !this.muted;
+
+      if (this.muted) {
         Howler.volume(0);
       } else {
         Howler.volume(1);
@@ -573,6 +386,10 @@ export default {
 }
 
 .play-content {
+  --content-width: 55vw;
+  --beatmap-set-container-width: 45vw;
+  --sidebar: 25rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -581,15 +398,20 @@ export default {
       rgba(41, 34, 80, 0.7),
       rgba(33, 26, 77, 0.7)
     ),
-    /* url('~/assets/images/backgrounds/fleeting-colors.jpg'); */
-      url('~/assets/images/backgrounds/landing.png');
+    url('~/assets/images/backgrounds/landing.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
 
+.play-title-textbox,
+.search-container,
+.play-beatmap-content {
+  width: var(--content-width);
+  min-width: 60rem;
+}
+
 .play-title-textbox {
-  width: 55vw;
   margin-top: 2rem;
   background-color: rgb(42, 36, 75);
 }
@@ -605,15 +427,9 @@ export default {
   padding-top: 0.5rem;
 }
 
-.audio__preview {
-  position: absolute;
-  transform: translate(9%, -225%);
-}
-
 /* Search Container */
 
 .search-container {
-  width: 55vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -663,8 +479,6 @@ export default {
 .song-search-form > input {
   font-size: 2.5rem;
   height: initial;
-  /* margin: 0 1rem; */
-  /* height: 5vh; */
 
   overflow: hidden;
   background-color: rgb(49, 45, 58);
@@ -692,9 +506,6 @@ export default {
 /* Beatmap Content */
 
 .play-beatmap-content {
-  --content-width: 55vw;
-  --beatmap-set-container-width: 45vw;
-  --sidebar: 25rem;
   width: var(--content-width);
   display: flex;
   align-items: flex-start;
@@ -714,7 +525,6 @@ export default {
   width: calc(var(--content-width) - var(--sidebar));
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: center; */
   /* Gap => Column Gap, Row Gap */
   gap: 2rem 2rem;
 }
@@ -736,7 +546,6 @@ export default {
 
 .play-beatmap-set:hover {
   transform: scale(1.05);
-  /* transform: translate(0, -2%); */
 }
 
 .play-beatmap-set:hover::after {
@@ -917,7 +726,7 @@ export default {
   color: rgb(197, 221, 240);
 }
 
-.hover-msg {
+.text-placeholder {
   text-align: center;
   margin-bottom: 1rem;
   font-size: 4rem;

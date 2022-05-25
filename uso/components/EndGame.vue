@@ -31,9 +31,10 @@
             <h1 class="title">Results</h1>
             <div class="content-sidebar">
               <div id="left__col" class="col">
-
                 <div class="score__container">
-                  <div class="score">Score: {{ Math.floor(stats.score) }} |</div>
+                  <div class="score">
+                    Score: {{ Math.floor(stats.score) }} |
+                  </div>
                   <div class="score">Combo: {{ stats.maxCombo }} |</div>
                   <div class="score">
                     Accuracy: {{ Math.round(stats.accuracy * 10000) / 100 }}%
@@ -45,7 +46,7 @@
                     <div id="s320" class="stats">300</div>
                     <div id="s300" class="stats">300</div>
                     <div id="s200" class="stats">200</div>
-                  </div>   
+                  </div>
                   <div class="scoreValues">
                     <div class="stats">x{{ totalHits['320'] }}</div>
                     <div class="stats">x{{ totalHits['300'] }}</div>
@@ -96,11 +97,15 @@ export default {
   },
   data() {
     return {
+      user: null,
       grade: null,
+      userdata: this.$auth.user,
     };
   },
   created() {
     const t = this;
+    t.fetchUser();
+    console.log(t.stats);
 
     if (t.stats.accuracy === 1) t.grade = 'SS';
     else if (t.stats.accuracy > 0.95) t.grade = 'S';
@@ -108,6 +113,56 @@ export default {
     else if (t.stats.accuracy > 0.8) t.grade = 'B';
     else if (t.stats.accuracy > 0.7) t.grade = 'C';
     else t.grade = 'D';
+
+    this.patch();
+  },
+
+  methods: {
+    async fetchUser() {
+      const getUserId = this.$auth.user.sub.replace('auth0|', '');
+      // http://localhost:8000/6289babceda0db001153a8d8
+      // `http://localhost:8000/${getUserId}`
+      const token = await this.$auth.strategy.token.get();
+      // const getUserId = this.userdata.sub.replace('auth0|', '');
+      // console.log(getUserId);
+      const userDataFetch = await fetch(`http://localhost:8000/${getUserId}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      const userDataFetched = await userDataFetch.json();
+      this.user = userDataFetched;
+    },
+    async patch() {
+      if (this.user.gameData.performance < this.stats.score) {
+        const getUserId = this.userdata.sub.replace('auth0|', '');
+
+        const pref = Math.round(this.stats.score);
+
+        const acc = Math.round(this.stats.accuracy * 1000) / 10;
+        const maxcombo = this.stats.maxCombo;
+        try {
+          const token = await this.$auth.strategy.token.get();
+          fetch(`http://localhost:8000/update/${getUserId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              gameData: {
+                playCount: 1,
+                performance: pref,
+                accuracy: acc,
+                maxCombo: maxcombo,
+              },
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: token,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
   },
 };
 </script>
@@ -121,7 +176,7 @@ export default {
 }
 
 #leftTitle {
-  font-size: 4rem;
+  font-size: 4.5rem;
   text-shadow: 4px 2px 3px #000;
 }
 
@@ -336,5 +391,4 @@ export default {
 #s0 {
   color: rgb(224, 46, 46);
 }
-
 </style>

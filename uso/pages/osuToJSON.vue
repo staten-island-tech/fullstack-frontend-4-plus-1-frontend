@@ -10,6 +10,7 @@
       type="file"
       accept=".osu"
       hidden
+      multiple
       @change="(e) => (fileList = e.target.files)"
     />
 
