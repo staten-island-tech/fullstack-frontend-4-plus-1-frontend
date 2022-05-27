@@ -157,6 +157,8 @@ export default {
     return {
       onPlayPage: true,
       loginSatus: this.$store.state.auth.loggedIn,
+      newUser: this.$auth.loggedIn,
+      userdata: this.$auth.user,
     };
   },
 
@@ -173,10 +175,17 @@ export default {
         this.onPlayPage = true;
       }
     },
+    newUser(to, from) {
+      if (this.loginSatus) {
+        // ass
+      }
+    },
   },
 
   mounted() {
     if (this.loginSatus) {
+      this.$forceUpdate();
+      this.patch();
       this.fetchNewUser();
     }
 
@@ -223,6 +232,27 @@ export default {
     async login() {
       await this.$auth.loginWith('auth0');
     },
+    async patch() {
+      const getUserId = this.userdata.sub.replace('auth0|', '');
+      try {
+        const token = await this.$auth.strategy.token.get();
+        fetch(`http://localhost:8000/update/${getUserId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            gameData: {
+              song: '',
+            },
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: token,
+          },
+        });
+        console.log('patch');
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async fetchNewUser() {
       const getUserId = this.$auth.user.sub.replace('auth0|', '');
       // http://localhost:8000/6289babceda0db001153a8d8
@@ -236,6 +266,7 @@ export default {
         },
       });
       const userDataFetched = await userDataFetch.json();
+      console.log(userDataFetched);
       // userDataFetched.forEach((user) => {
       //   this.userData.push(user);
       // });
@@ -258,7 +289,7 @@ export default {
         'setSettings4',
         userDataFetched.gameSettings.scrollSpeed
       );
-      this.$store.commit('setSettings5', userDataFetched.userSettings.username);
+      // this.$store.commit('setSettings5', userDataFetched.username);
 
       // this.$store.commit(' gameData', userDataFetched.gameData.A);
       // this.$store.commit(' gameData2', userDataFetched.gameData.S);
@@ -267,7 +298,6 @@ export default {
       // this.$store.commit(' gameData5', userDataFetched.gameData.maxCombo);
       // this.$store.commit(' gameData6', userDataFetched.gameData.performance);
       // this.$store.commit(' gameData7', userDataFetched.gameData.playCount);
-      console.log(this.$store.state.gameData.A);
     },
     async logout() {
       await this.$auth.logout();

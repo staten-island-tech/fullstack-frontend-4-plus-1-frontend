@@ -40,7 +40,7 @@
                   #{{ user.leaderBoardPos }}
                 </td>
                 <td class="lb__rankingTable__column">
-                  <div class="lb__user">{{ user.userSettings.username }}</div>
+                  <div class="lb__user">{{ user.username }}</div>
                 </td>
                 <td
                   class="lb__rankingTable__column lb__rankingTable__column--dimmed"

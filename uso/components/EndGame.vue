@@ -102,7 +102,7 @@ export default {
       userdata: this.$auth.user,
     };
   },
-  created() {
+  mounted() {
     const t = this;
     t.fetchUser();
     console.log(t.stats);
@@ -114,7 +114,7 @@ export default {
     else if (t.stats.accuracy > 0.7) t.grade = 'C';
     else t.grade = 'D';
 
-    this.patch();
+    t.patch();
   },
 
   methods: {

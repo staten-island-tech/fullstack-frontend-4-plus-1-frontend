@@ -196,8 +196,6 @@ export default {
     onLoad() {
       const t = this;
 
-      Howler.volume(1);
-
       if (document.querySelector('#game-pb')) {
         t.progressBar = new ProgressBar.Circle('#game-pb', {
           strokeWidth: 50,

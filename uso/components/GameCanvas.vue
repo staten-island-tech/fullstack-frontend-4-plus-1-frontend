@@ -58,7 +58,7 @@ export default {
       combo: 0,
       index: 0,
       maxCombo: 0,
-      dy: 15,
+      dy: 10,
       latestHit: null,
       totalHits: {
         320: 0,
