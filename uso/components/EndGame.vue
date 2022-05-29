@@ -102,9 +102,12 @@ export default {
       userdata: this.$auth.user,
     };
   },
+  created() {
+    // this.fetchUser();
+  },
   mounted() {
     const t = this;
-    t.fetchUser();
+
     console.log(t.stats);
 
     if (t.stats.accuracy === 1) t.grade = 'SS';
@@ -118,23 +121,24 @@ export default {
   },
 
   methods: {
-    async fetchUser() {
-      const getUserId = this.$auth.user.sub.replace('auth0|', '');
-      // http://localhost:8000/6289babceda0db001153a8d8
-      // `http://localhost:8000/${getUserId}`
-      const token = await this.$auth.strategy.token.get();
-      // const getUserId = this.userdata.sub.replace('auth0|', '');
-      // console.log(getUserId);
-      const userDataFetch = await fetch(`http://localhost:8000/${getUserId}`, {
-        headers: {
-          Authorization: token,
-        },
-      });
-      const userDataFetched = await userDataFetch.json();
-      this.user = userDataFetched;
-    },
+    // async fetchUser() {
+    //   const getUserId = this.$auth.user.sub.replace('auth0|', '');
+    //   // http://localhost:8000/6289babceda0db001153a8d8
+    //   // `http://localhost:8000/${getUserId}`
+    //   const token = await this.$auth.strategy.token.get();
+    //   // const getUserId = this.userdata.sub.replace('auth0|', '');
+    //   // console.log(getUserId);
+    //   const userDataFetch = await fetch(`http://localhost:8000/${getUserId}`, {
+    //     headers: {
+    //       Authorization: token,
+    //     },
+    //   });
+    //   const userDataFetched = await userDataFetch.json();
+    //   this.user = userDataFetched;
+    //   console.log(this.user.gameData);
+    // },
     async patch() {
-      if (this.user.gameData.performance < this.stats.score) {
+      if (this.$store.state.gameData.gameData.performance < this.stats.score) {
         const getUserId = this.userdata.sub.replace('auth0|', '');
 
         const pref = Math.round(this.stats.score);

@@ -362,7 +362,7 @@ export default {
         src: [
           `/beatmaps/${this.beatmapData.metadata.BeatmapSetID}/${this.beatmapData.general.AudioFilename}`,
         ],
-        volume: 0.5,
+        volume: this.$store.state.userSettings.musicVolume,
         preload: 'metadata',
         onload: () => (this.songLoaded = true),
       });

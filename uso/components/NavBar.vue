@@ -182,13 +182,14 @@ export default {
     },
   },
 
-  mounted() {
+  created() {
     if (this.loginSatus) {
-      this.$forceUpdate();
       this.patch();
       this.fetchNewUser();
     }
+  },
 
+  mounted() {
     if (this.onPlayPage === true) {
       document
         .querySelector('#show-login')
@@ -267,6 +268,9 @@ export default {
       });
       const userDataFetched = await userDataFetch.json();
       console.log(userDataFetched);
+      this.$store.commit('gameData', userDataFetched);
+      // this.user = userDataFetched;
+
       // userDataFetched.forEach((user) => {
       //   this.userData.push(user);
       // });
@@ -289,6 +293,7 @@ export default {
         'setSettings4',
         userDataFetched.gameSettings.scrollSpeed
       );
+
       // this.$store.commit('setSettings5', userDataFetched.username);
 
       // this.$store.commit(' gameData', userDataFetched.gameData.A);

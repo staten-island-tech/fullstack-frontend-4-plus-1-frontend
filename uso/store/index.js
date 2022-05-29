@@ -7,15 +7,16 @@ export const state = () => ({
     scrollSpeed: 10,
     username: '',
   },
-  gameData: {
-    A: 0,
-    S: 0,
-    SS: 0,
-    accuracy: null,
-    maxCombo: null,
-    performance: null,
-    playCount: 0,
-  },
+  // gameData: {
+  //   A: 0,
+  //   S: 0,
+  //   SS: 0,
+  //   accuracy: null,
+  //   maxCombo: null,
+  //   performance: null,
+  //   playCount: 0,
+  // },
+  gameData: null,
   songDuration: null,
   pageData: {
     currentPage: '',
@@ -50,27 +51,30 @@ export const mutations = {
     state.userSettings.username = userDataFetch;
   },
 
-  gameData(state, gamedata) {
-    state.gameData.A = gamedata;
+  gameData(state, allGameData) {
+    state.gameData = allGameData;
   },
-  gameData2(state, gamedata) {
-    state.gameData.S = gamedata;
-  },
-  gameData3(state, gamedata) {
-    state.gameData.SS = gamedata;
-  },
-  gameData4(state, gamedata) {
-    state.gameData.accuracy = gamedata;
-  },
-  gameData5(state, gamedata) {
-    state.gameData.maxCombo = gamedata;
-  },
-  gameData6(state, gamedata) {
-    state.gameData.performance = gamedata;
-  },
-  gameData7(state, gamedata) {
-    state.gameData.playCount = gamedata;
-  },
+  // gameData(state, gamedata) {
+  //   state.gameData.A = gamedata;
+  // },
+  // gameData2(state, gamedata) {
+  //   state.gameData.S = gamedata;
+  // },
+  // gameData3(state, gamedata) {
+  //   state.gameData.SS = gamedata;
+  // },
+  // gameData4(state, gamedata) {
+  //   state.gameData.accuracy = gamedata;
+  // },
+  // gameData5(state, gamedata) {
+  //   state.gameData.maxCombo = gamedata;
+  // },
+  // gameData6(state, gamedata) {
+  //   state.gameData.performance = gamedata;
+  // },
+  // gameData7(state, gamedata) {
+  //   state.gameData.playCount = gamedata;
+  // },
 
   currSongDuration(state, songDur) {
     state.songDuration = songDur;

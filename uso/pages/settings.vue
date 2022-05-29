@@ -18,7 +18,8 @@
     <button
       class="btn"
       @click="
-        $store.commit('setSettings', masterVolume),
+        patch(),
+          $store.commit('setSettings', masterVolume),
           $store.commit(
             'setSettings2',
 
@@ -34,8 +35,7 @@
 
             scrollSpeed
           ),
-          $store.commit('setSettings5', username),
-          patch()
+          $store.commit('setSettings5', username)
       "
     >
       update
@@ -198,7 +198,7 @@ export default {
   methods: {
     async patch() {
       const getUserId = this.userdata.sub.replace('auth0|', '');
-      console.log(this.musicVolume);
+
       try {
         const token = await this.$auth.strategy.token.get();
         fetch(`http://localhost:8000/update/${getUserId}`, {
@@ -219,6 +219,7 @@ export default {
             Authorization: token,
           },
         });
+        console.log(this.musicVolume);
       } catch (error) {
         console.log(error);
       }
