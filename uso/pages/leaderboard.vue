@@ -88,29 +88,31 @@ export default {
     return {
       userDataFetch: [],
       userData: [],
+      perfArr: [],
     };
   },
 
   created() {
-    this.fetchNewUser();
+    this.fetchAllUser();
   },
 
   methods: {
-    async fetchNewUser() {
-      // const getUserId = this.$auth.user.sub.replace('auth0|', '');
-      // http://localhost:8000/6289babceda0db001153a8d8
-      // `http://localhost:8000/${getUserId}`
+    async fetchAllUser() {
       const token = await this.$auth.strategy.token.get();
-      // const getUserId = this.userdata.sub.replace('auth0|', '');
-      // console.log(getUserId);
-      const userDataFetch = await fetch('http://localhost:8000/', {
+
+      const userDataFetch = await fetch('https://usobackend.onrender.com/', {
         headers: {
           Authorization: token,
         },
       });
       const userDataFetched = await userDataFetch.json();
+
+      userDataFetched.sort(
+        (a, b) => b.gameData.performance - a.gameData.performance
+      );
       this.userData = userDataFetched;
-      console.log(this.userData);
+
+      // console.log(userDataFetched );
     },
   },
 };

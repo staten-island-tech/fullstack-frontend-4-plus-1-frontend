@@ -102,9 +102,10 @@ export default {
       userdata: this.$auth.user,
     };
   },
-  created() {
-    // this.fetchUser();
-  },
+  // created() {
+
+  //   this.fetchUser();
+  // },
   mounted() {
     const t = this;
 
@@ -116,8 +117,8 @@ export default {
     else if (t.stats.accuracy > 0.8) t.grade = 'B';
     else if (t.stats.accuracy > 0.7) t.grade = 'C';
     else t.grade = 'D';
-
-    t.patch();
+    t.patch2();
+    t.patch3();
   },
 
   methods: {
@@ -135,26 +136,98 @@ export default {
     //   });
     //   const userDataFetched = await userDataFetch.json();
     //   this.user = userDataFetched;
-    //   console.log(this.user.gameData);
+    //   console.log(this.user);
     // },
-    async patch() {
+    async patch2() {
       if (this.$store.state.gameData.gameData.performance < this.stats.score) {
         const getUserId = this.userdata.sub.replace('auth0|', '');
 
         const pref = Math.round(this.stats.score);
-
+        const newPlayCount = this.$store.state.gameData.gameData.playCount + 1;
         const acc = Math.round(this.stats.accuracy * 1000) / 10;
         const maxcombo = this.stats.maxCombo;
+
         try {
           const token = await this.$auth.strategy.token.get();
-          fetch(`http://localhost:8000/update/${getUserId}`, {
+          fetch(`https://usobackend.onrender.com/update/${getUserId}`, {
             method: 'PATCH',
             body: JSON.stringify({
               gameData: {
-                playCount: 1,
                 performance: pref,
                 accuracy: acc,
                 maxCombo: maxcombo,
+                playCount: newPlayCount,
+              },
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: token,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      // if (this.$store.state.gameData.play === 'false')
+      // if (this.$store.state.gameData.play === 'false') {
+    },
+    async patch3() {
+      if (this.grade === 'SS') {
+        const getUserId = this.userdata.sub.replace('auth0|', '');
+
+        const numOfSS = (this.$store.state.gameData.gameData.SS += 1);
+
+        try {
+          const token = await this.$auth.strategy.token.get();
+          fetch(`https://usobackend.onrender.com/update/${getUserId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              gameData: {
+                SS: numOfSS,
+              },
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: token,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.grade === 'S') {
+        const getUserId = this.userdata.sub.replace('auth0|', '');
+
+        const numOfS = (this.$store.state.gameData.gameData.S += 1);
+
+        try {
+          const token = await this.$auth.strategy.token.get();
+          fetch(`https://usobackend.onrender.com/update/${getUserId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              gameData: {
+                SS: numOfS,
+              },
+            }),
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: token,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else if (this.grade === 'A') {
+        const getUserId = this.userdata.sub.replace('auth0|', '');
+
+        const numOfA = (this.$store.state.gameData.gameData.A += 1);
+
+        try {
+          const token = await this.$auth.strategy.token.get();
+          fetch(`https://usobackend.onrender.com/update/${getUserId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              gameData: {
+                SS: numOfA,
               },
             }),
             headers: {

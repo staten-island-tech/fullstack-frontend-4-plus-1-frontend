@@ -186,7 +186,7 @@ export default {
       musicVolume: this.$store.state.userSettings.musicVolume,
       hitSoundsVolume: this.$store.state.userSettings.hitSoundsVolume,
       scrollSpeed: this.$store.state.userSettings.scrollSpeed,
-      username: '',
+      username: this.$store.state.username,
     };
   },
   watch: {
@@ -201,9 +201,10 @@ export default {
 
       try {
         const token = await this.$auth.strategy.token.get();
-        fetch(`http://localhost:8000/update/${getUserId}`, {
+        fetch(`https://usobackend.onrender.com/update/${getUserId}`, {
           method: 'PATCH',
           body: JSON.stringify({
+            username: `${this.username}`,
             volSettings: {
               master: `${this.masterVolume}`,
               music: `${this.musicVolume}`,
