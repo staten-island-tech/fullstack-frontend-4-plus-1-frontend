@@ -1,7 +1,7 @@
 <template>
   <div id="canvas__container" :style="{ width: canvasWidth + 'px' }">
-    <NavBar />
-    <div class="under-nav"></div>
+    <!-- <NavBar />
+    <div class="under-nav"></div> -->
 
     <canvas id="game__canvas" :style="{ width: canvasWidth + 'px' }">
       Canvas is not supported on your browser.
@@ -32,12 +32,13 @@
 </template>
 
 <script>
-import NavBar from './NavBar.vue';
+// import NavBar from './NavBar.vue';
+
 /* eslint-disable */
 
 export default {
-  components: { NavBaNavBarr },
-  layouts: 'nonav',
+  // components: { NavBar },
+  // layouts: 'noNav',
   props: {
     beatmapData: {
       required: true,
