@@ -5,7 +5,7 @@
     <h1 class="hello__user">welcome to uso, {{ username }} !</h1>
 
     <section class="landing">
-      <video
+      <!-- <video
         id="landing-video"
         class="video-bg"
         autoplay
@@ -15,7 +15,11 @@
         disablePictureInPicture
         src="../assets/images/backgrounds/landing-narukami-shrine-2.mp4"
         type="video/mp4"
-      ></video>
+      ></video> -->
+      <img
+        src="../assets/images/backgrounds/landing-narukami-shrine-2-img.png"
+        alt=""
+      />
     </section>
     <section class="home-main">
       <div class="home-content-container">
