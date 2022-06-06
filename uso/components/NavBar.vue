@@ -159,7 +159,6 @@ export default {
       loginSatus: this.$store.state.auth.loggedIn,
       newUser: this.$auth.loggedIn,
       userdata: this.$auth.user,
-      username: this.$auth.user.nickname,
       reapeat: 1,
     };
   },
