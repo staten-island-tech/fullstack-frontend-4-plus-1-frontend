@@ -99,6 +99,7 @@ import GameCanvas from '../../../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas, PlayBeatmapNotFound },
+  layout: 'noNav',
 
   data() {
     return {

@@ -37,8 +37,9 @@
 /* eslint-disable */
 
 export default {
+ 
   // components: { NavBar },
-  // layouts: 'noNav',
+   layouts: 'noNav',
   props: {
     beatmapData: {
       required: true,
@@ -1078,4 +1079,7 @@ export default {
   border-radius: 0.5rem;
   box-shadow: inset -0.1rem -0.1rem 1rem rgb(0 0 0 / 0.5);
 }
+
+
+
 </style>
