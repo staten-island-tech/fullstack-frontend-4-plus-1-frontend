@@ -1,8 +1,5 @@
 <template>
   <div id="canvas__container" :style="{ width: canvasWidth + 'px' }">
-    <!-- <NavBar />
-    <div class="under-nav"></div> -->
-
     <canvas id="game__canvas" :style="{ width: canvasWidth + 'px' }">
       Canvas is not supported on your browser.
     </canvas>

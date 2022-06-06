@@ -1,5 +1,6 @@
 <template>
   <div v-if="loaded.beatmapData" id="game-index">
+    <NavBar v-show="false" />
     <div v-if="!gameEnded" id="game-page-container">
       <div
         v-if="beatmapData.metadata"
@@ -99,6 +100,8 @@ import GameCanvas from '../../../components/GameCanvas.vue';
 
 export default {
   components: { GameCanvas, PlayBeatmapNotFound },
+
+  layout: 'nonav',
 
   data() {
     return {
